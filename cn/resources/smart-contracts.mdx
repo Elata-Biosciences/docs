@@ -1,0 +1,298 @@
+---
+title: "Smart Contracts"
+description: "Contract addresses and references for the Elata Protocol"
+---
+
+## Overview
+
+All contracts on Base. Non-upgradeable. Verified on Basescan.
+
+<Info>
+  **Current Deployment**: Base Sepolia (Testnet)
+  
+  Mainnet deployment coming soon.
+</Info>
+
+---
+
+## Core Protocol Contracts
+
+These contracts power the fundamental protocol operations.
+
+### ELTA Token
+
+The main governance and utility token.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0x6D83439381e89C95742D0A8200E24563079b33dd` |
+| **Network** | Base Sepolia |
+| **Standard** | ERC-20 with Votes + Permit |
+| **Max Supply** | 77,000,000 ELTA |
+
+<Card title="View on Basescan" icon="arrow-up-right-from-square" href="https://sepolia.basescan.org/address/0x6D83439381e89C95742D0A8200E24563079b33dd">
+  ELTA Token Contract
+</Card>
+
+### VeELTA
+
+Vote-escrowed ELTA for governance and rewards.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0xA4Be295DE6B59B5DD34891a9B177F9E31A6CFcFf` |
+| **Lock Range** | 7 days - 2 years |
+| **Boost** | 1x - 2x |
+
+<Card title="View on Basescan" icon="arrow-up-right-from-square" href="https://sepolia.basescan.org/address/0xA4Be295DE6B59B5DD34891a9B177F9E31A6CFcFf">
+  VeELTA Contract
+</Card>
+
+### ElataXP
+
+Non-transferable experience points for participation rewards.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0xEf85d704217857d18B331FDe50A063b1bff7147B` |
+| **Transferable** | No (soulbound) |
+
+<Card title="View on Basescan" icon="arrow-up-right-from-square" href="https://sepolia.basescan.org/address/0xEf85d704217857d18B331FDe50A063b1bff7147B">
+  ElataXP Contract
+</Card>
+
+---
+
+## Rewards & Fees
+
+Contracts handling fee collection and distribution.
+
+### RewardsDistributor
+
+Distributes protocol fees (70/15/15 split).
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0xf23cE8E582020F86Cd2E48fdb6A3F6F7FBe6e610` |
+| **App Stakers** | 70% |
+| **veELTA Holders** | 15% |
+| **Treasury** | 15% |
+
+### AppRewardsDistributor
+
+Distributes rewards to app token stakers.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0x3b8f4f3993448c6a745767F4747EAee901187893` |
+
+### AppFeeRouter
+
+Routes trading fees to the rewards system.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0xc60629c4c1Fe5eB4AEEEB95A83494aE16974D1CE` |
+| **Fee Rate** | 1% (100 bps) |
+
+---
+
+## App Launch Infrastructure
+
+Contracts for creating and managing apps.
+
+### AppFactory
+
+Creates new app tokens with bonding curves.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0xa88206c28D2005D2640a94A9D4aDDd9a66D91aC6` |
+| **Launch Cost** | 110 ELTA |
+| **Graduation Target** | 42,000 ELTA |
+
+<Card title="View on Basescan" icon="arrow-up-right-from-square" href="https://sepolia.basescan.org/address/0xa88206c28D2005D2640a94A9D4aDDd9a66D91aC6">
+  AppFactory Contract
+</Card>
+
+### AppModuleFactory
+
+Deploys utility modules (items, staking, rewards) for apps.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0x2AEb03A678A1e1E99a2AeEb4CeFCD0263A2D3587` |
+
+### TournamentFactory
+
+Creates tournament contracts for apps.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0x6335495c88D1D78245BB50f321E4e450f865CfD0` |
+| **Protocol Fee** | 2.5% |
+| **Burn Fee** | 1% |
+
+---
+
+## Governance
+
+Contracts for protocol governance.
+
+### ElataGovernor
+
+On-chain governance for protocol decisions.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0xf0cE79AE5F9Ea9052F1a15E584EB2080C9bB8e91` |
+| **Voting Period** | 7 days |
+| **Quorum** | 4% |
+| **Proposal Threshold** | 0.1% |
+
+### ElataTimelock
+
+Execution delay for governance actions.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0x9ec0cdF3d6930818DaC209417F169F9f50081e42` |
+| **Delay** | 48 hours |
+
+### LotPool
+
+XP-weighted funding rounds.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0xdA8b884823F9C980fe329C6412e029bECfD4e6e6` |
+
+---
+
+## DEX Infrastructure
+
+Uniswap V2 contracts for graduated app tokens.
+
+### UniswapV2Factory
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0xBC3390E39CD49c9dd6009a71712a54A7Aae84c58` |
+
+### UniswapV2Router
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0x800adAE093773642cFeD76cCc6916b9Fd829c34D` |
+
+---
+
+## Per-App Contracts
+
+Each app creates these contracts on launch:
+
+| Contract | Purpose |
+|----------|---------|
+| **AppToken** | ERC-20 token for the app |
+| **AppBondingCurve** | Price discovery mechanism |
+| **AppStakingVault** | Staking for fee rewards |
+| **LpLocker** | LP token lock (2 years) |
+
+After deploying modules:
+
+| Contract | Purpose |
+|----------|---------|
+| **AppAccess1155** | NFT items and passes |
+| **EpochRewards** | Seasonal reward distribution |
+| **Tournament** | Individual tournament instances |
+
+---
+
+## Contract Addresses Summary
+
+```json
+{
+  "network": "base-sepolia",
+  "chainId": 84532,
+  "contracts": {
+    "ELTA": "0x6D83439381e89C95742D0A8200E24563079b33dd",
+    "ElataXP": "0xEf85d704217857d18B331FDe50A063b1bff7147B",
+    "VeELTA": "0xA4Be295DE6B59B5DD34891a9B177F9E31A6CFcFf",
+    "LotPool": "0xdA8b884823F9C980fe329C6412e029bECfD4e6e6",
+    "RewardsDistributor": "0xf23cE8E582020F86Cd2E48fdb6A3F6F7FBe6e610",
+    "ElataTimelock": "0x9ec0cdF3d6930818DaC209417F169F9f50081e42",
+    "ElataGovernor": "0xf0cE79AE5F9Ea9052F1a15E584EB2080C9bB8e91",
+    "AppFactory": "0xa88206c28D2005D2640a94A9D4aDDd9a66D91aC6",
+    "AppModuleFactory": "0x2AEb03A678A1e1E99a2AeEb4CeFCD0263A2D3587",
+    "TournamentFactory": "0x6335495c88D1D78245BB50f321E4e450f865CfD0",
+    "AppRewardsDistributor": "0x3b8f4f3993448c6a745767F4747EAee901187893",
+    "AppFeeRouter": "0xc60629c4c1Fe5eB4AEEEB95A83494aE16974D1CE",
+    "UniswapV2Factory": "0xBC3390E39CD49c9dd6009a71712a54A7Aae84c58",
+    "UniswapV2Router": "0x800adAE093773642cFeD76cCc6916b9Fd829c34D"
+  }
+}
+```
+
+---
+
+## Source Code
+
+All contracts are open source and available on GitHub:
+
+<CardGroup cols={2}>
+  <Card title="Protocol Repository" icon="github" href="https://github.com/elata-biosciences/elata-protocol">
+    Smart contract source code
+  </Card>
+  <Card title="App Store Repository" icon="github" href="https://github.com/elata-biosciences/elata-appstore">
+    Frontend and ABIs
+  </Card>
+</CardGroup>
+
+### ABIs
+
+Contract ABIs are available in the App Store repository:
+
+```
+elata-appstore/src/abi/
+├── ELTA.json
+├── VeELTA.json
+├── AppFactory.json
+├── AppBondingCurve.json
+├── AppToken.json
+├── AppStakingVault.json
+├── AppAccess1155.json
+├── Tournament.json
+└── ...
+```
+
+---
+
+## Security
+
+### Audits
+
+- Contracts follow OpenZeppelin standards
+- Non-upgradeable design
+- Comprehensive test coverage
+
+### Key Security Features
+
+| Feature | Protection |
+|---------|------------|
+| **LP Locking** | 2-year lock prevents rug pulls |
+| **Timelock** | 48h delay on governance |
+| **Role-based Access** | Minimal admin functions |
+| **Non-upgradeable** | Immutable contract logic |
+
+---
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card title="Discord" icon="discord" href="https://discord.gg/GqS9CstffK">
+    Ask questions in #dev-support
+  </Card>
+  <Card title="GitHub Issues" icon="github" href="https://github.com/elata-biosciences/elata-protocol/issues">
+    Report bugs or request features
+  </Card>
+</CardGroup>

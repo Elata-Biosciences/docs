@@ -1,0 +1,278 @@
+---
+title: "FAQ"
+description: "Frequently asked questions about Elata Protocol"
+---
+
+## General
+
+<AccordionGroup>
+  <Accordion title="What is Elata?">
+    A protocol for launching neurotech apps with their own tokens. You build an app, pay 110 ELTA to launch, and get a token that trades on a bonding curve. Users can buy in early, stake for fees, and participate in governance.
+  </Accordion>
+  
+  <Accordion title="Why does this exist?">
+    Building neurotech is hard. Getting paid for it is harder. Most devs either join closed platforms or spend months fundraising. Elata lets you launch with built-in economics — no VCs, no gatekeepers.
+  </Accordion>
+  
+  <Accordion title="What blockchain?">
+    **Base** — Coinbase's L2. Low fees, fast transactions, Ethereum security.
+    
+    Currently live on **Base Sepolia** (testnet). Mainnet soon.
+  </Accordion>
+  
+  <Accordion title="How do I get testnet tokens?">
+    1. **ETH for gas**: [Alchemy Faucet](https://www.alchemy.com/faucets/base-sepolia) or [QuickNode](https://faucet.quicknode.com/base/sepolia)
+    2. **ELTA**: DM [@elata_bio](https://x.com/elata_bio) your wallet address
+    
+    Testnet tokens have no value. Testing only.
+  </Accordion>
+  
+  <Accordion title="Is it audited?">
+    Uses OpenZeppelin standards. Contracts are non-upgradeable and open source. Formal audit before mainnet.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## ELTA Token
+
+<AccordionGroup>
+  <Accordion title="What's ELTA for?">
+    - **Launch apps** — costs 110 ELTA
+    - **Buy app tokens** — ELTA is the trading pair
+    - **Governance** — lock as veELTA to vote
+    - **Earn** — veELTA holders get 15% of all fees
+  </Accordion>
+  
+  <Accordion title="How much ELTA exists?">
+    77 million max. Hard cap, can't be changed.
+  </Accordion>
+  
+  <Accordion title="Where do I get ELTA?">
+    **Testnet**: DM [@elata_bio](https://x.com/elata_bio) your wallet address.
+    
+    **Mainnet**: Uniswap, or sell app tokens you own.
+  </Accordion>
+  
+  <Accordion title="What's veELTA?">
+    Lock ELTA for 7 days to 2 years → get veELTA. Longer lock = more veELTA (up to 2x). veELTA = voting power + 15% of protocol fees.
+  </Accordion>
+  
+  <Accordion title="Can I sell veELTA?">
+    No. Non-transferable. Stops vote-buying.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## App Tokens
+
+<AccordionGroup>
+  <Accordion title="How do app tokens work?">
+    Each app gets an ERC-20 with 1B supply. 50% goes to the creator (auto-staked), 50% sells on a bonding curve. 1% fee on all trades.
+  </Accordion>
+  
+  <Accordion title="What's a bonding curve?">
+    Math that sets price based on how many tokens have sold. Early = cheap. More buyers = higher price. You can always buy or sell — the curve provides liquidity.
+  </Accordion>
+  
+  <Accordion title="What's 'Raising' mean?">
+    Bonding curve is active. Buy directly from the curve, price goes up with demand.
+  </Accordion>
+  
+  <Accordion title="What's 'Live' mean?">
+    Graduated. Hit 42,000 ELTA. Now trades on Uniswap instead of the curve.
+  </Accordion>
+  
+  <Accordion title="What happens at graduation?">
+    Curve hits 42K ELTA → liquidity moves to Uniswap → LP locked 2 years → free market trading starts → curve closes forever.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Staking & Rewards
+
+<AccordionGroup>
+  <Accordion title="How do I earn?">
+    Two ways:
+    1. **Stake app tokens** → 70% of that app's fees
+    2. **Lock ELTA as veELTA** → 15% of all protocol fees
+  </Accordion>
+  
+  <Accordion title="What's the 70/15/15 split?">
+    Every fee gets split: 70% to app stakers, 15% to veELTA holders, 15% to treasury.
+  </Accordion>
+  
+  <Accordion title="Is staking locked?">
+    **App staking**: No lock. Unstake anytime.
+    **veELTA**: Yes, you choose 7 days to 2 years when you lock.
+  </Accordion>
+  
+  <Accordion title="When can I claim?">
+    Anytime. No deadline. Just watch gas costs on small amounts.
+  </Accordion>
+  
+  <Accordion title="What token are rewards in?">
+    ELTA. Always ELTA, no matter which app you staked.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Building Apps
+
+<AccordionGroup>
+  <Accordion title="How much to launch?">
+    110 ELTA. 100 seeds your curve, 10 goes to treasury.
+  </Accordion>
+  
+  <Accordion title="What do I get?">
+    - 500M tokens (50%), auto-staked and earning
+    - Ability to add tournaments and items
+    - Full control of app content
+  </Accordion>
+  
+  <Accordion title="Can I update after launch?">
+    Yes — app files, description, links, team. No — token supply, fee rate.
+  </Accordion>
+  
+  <Accordion title="What can I build?">
+    Anything that runs in a browser. Focus tools, games, wellness apps, research platforms. Neurotech focus but not enforced.
+  </Accordion>
+  
+  <Accordion title="Do I need Solidity?">
+    No. Contracts deploy automatically. You just build the frontend.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Tournaments & Items
+
+<AccordionGroup>
+  <Accordion title="What are tournaments?">
+    Competitions with entry fees. Pay to enter, compete, winners split the pool.
+  </Accordion>
+  
+  <Accordion title="How do prizes work?">
+    96.5% to winners, 2.5% protocol fee, 1% burned.
+  </Accordion>
+  
+  <Accordion title="What are items?">
+    NFTs that unlock features or cosmetics. When someone buys, the payment burns — shrinks token supply.
+  </Accordion>
+  
+  <Accordion title="Can items be traded?">
+    Builder decides. Can be soulbound (stuck to buyer) or tradeable.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## XP System
+
+<AccordionGroup>
+  <Accordion title="What's XP?">
+    Reputation score. Non-transferable, can't be bought.
+  </Accordion>
+  
+  <Accordion title="What's it for?">
+    - **Early access**: 6-hour head start on new app launches
+    - **LotPool voting**: Weight in funding rounds
+    - **Reputation**: Proof you actually use the protocol
+  </Accordion>
+  
+  <Accordion title="How do I get XP?">
+    Participate: tournaments, data contributions, community stuff.
+  </Accordion>
+  
+  <Accordion title="Can I sell XP?">
+    No. Soulbound. That's the point.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Safety & Security
+
+<AccordionGroup>
+  <Accordion title="Is this safe?">
+    **Risks**:
+    - Token prices can go to zero
+    - Most apps won't succeed
+    - Only risk what you can lose
+    
+    **Protections**:
+    - LP locked 2 years (no rug pulls)
+    - Contracts can't be changed post-deploy
+    - All code is open source
+  </Accordion>
+  
+  <Accordion title="What if a creator disappears?">
+    LP stays locked, liquidity stays. Token keeps trading. Community can fork or continue the app.
+  </Accordion>
+  
+  <Accordion title="How do I verify contracts?">
+    Check address against docs, verify on Basescan, only use links from official sources. Don't interact with random contracts.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Technical
+
+<AccordionGroup>
+  <Accordion title="What wallet?">
+    MetaMask, Coinbase Wallet, Rainbow — anything that supports Base.
+  </Accordion>
+  
+  <Accordion title="What network?">
+    **Base Sepolia** (testnet now). **Base** (mainnet soon).
+    
+    Chain ID: 84532 (testnet) / 8453 (mainnet)
+  </Accordion>
+  
+  <Accordion title="Are contracts upgradeable?">
+    No. Once deployed, rules don't change.
+  </Accordion>
+  
+  <Accordion title="Where's the code?">
+    GitHub:
+    - [elata-protocol](https://github.com/elata-biosciences/elata-protocol) — contracts
+    - [elata-appstore](https://github.com/elata-biosciences/elata-appstore) — frontend
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Getting Help
+
+<AccordionGroup>
+  <Accordion title="Where do I get help?">
+    [Discord](https://discord.gg/GqS9CstffK), [@elata_bio](https://x.com/elata_bio), or [GitHub](https://github.com/elata-biosciences).
+  </Accordion>
+  
+  <Accordion title="Found a bug?">
+    [GitHub Issues](https://github.com/elata-biosciences/elata-protocol/issues). Include steps to reproduce, what happened, what should have happened.
+  </Accordion>
+  
+  <Accordion title="Lost wallet access?">
+    Can't help. Protocol is decentralized — no one has access to your funds. Back up your seed phrase.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## More Questions?
+
+<CardGroup cols={2}>
+  <Card title="Discord" icon="discord" href="https://discord.gg/GqS9CstffK">
+    Ask the community
+  </Card>
+  <Card title="Docs" icon="book" href="/learn/protocol-overview">
+    Read more
+  </Card>
+</CardGroup>
+
+

@@ -1,0 +1,159 @@
+---
+title: "Tokenomics"
+description: "ELTA token supply, distribution, and veELTA mechanics"
+---
+
+## ELTA Token
+
+ELTA is the protocol token. You use it to launch apps, trade app tokens, and participate in governance.
+
+<Info>
+  **Contract**: ELTA is currently deployed on Base Sepolia (testnet). View on [Basescan](https://sepolia.basescan.org/address/0x6D83439381e89C95742D0A8200E24563079b33dd). Mainnet deployment coming soon.
+</Info>
+
+---
+
+## Supply
+
+|                |                            |
+| -------------- | -------------------------- |
+| **Max supply** | 77,000,000 ELTA            |
+| **Decimals**   | 18                         |
+| **Standard**   | ERC-20 with Votes + Permit |
+
+Hard cap. Can't be increased.
+
+### Distribution Breakdown
+
+<img
+  src="/images/main/elta-distribution-light.svg"
+  alt="ELTA distribution"
+  className="block dark:hidden"
+/>
+
+<img
+  src="/images/main/elta-distribution-dark.svg"
+  alt="ELTA distribution"
+  className="hidden dark:block"
+/>
+
+| Category               | Allocation | Vesting       |
+| ---------------------- | ---------- | ------------- |
+| **Treasury**           | 38%        | 4-year linear |
+| **Community Benefits** | 19.5%      | 3-year linear |
+| **Contributors**       | 15%        | 6-year linear |
+| **Liquidity**          | 12.5%      | Immediate     |
+| **Public Sale**        | 10%        | Immediate     |
+| **Community Sale**     | 5%         | Immediate     |
+
+---
+
+## What ELTA Does
+
+**Launch apps** — 110 ELTA (100 seeds curve, 10 to treasury)
+
+**Trade** — All app tokens trade against ELTA
+
+**Stake** — Lock as veELTA → 15% of all fees + voting power
+
+**Govern** — veELTA holders vote on proposals (0.1% to propose, 4% quorum)
+
+---
+
+## veELTA
+
+Lock ELTA → get veELTA. Longer lock = more veELTA.
+
+|              |                    |
+| ------------ | ------------------ |
+| **Min lock** | 7 days             |
+| **Max lock** | 730 days (2 years) |
+| **Boost**    | 1x to 2x           |
+
+### Math
+
+$$
+\text{veELTA} = \text{ELTA} \times \left(1 + \frac{\text{Days Locked}}{730}\right)
+$$
+
+| Lock    | Boost | 1,000 ELTA → |
+| ------- | ----- | ------------ |
+| 7 days  | 1.01x | 1,010 veELTA |
+| 1 year  | 1.5x  | 1,500 veELTA |
+| 2 years | 2x    | 2,000 veELTA |
+
+### Properties
+
+- **Non-transferable** — can't sell or send veELTA
+- **One lock per wallet** — can add to it or extend, but only one
+- **No decay** — veELTA stays constant until unlock
+- **Full return** — get all your ELTA back when lock expires
+
+<Note>
+  No early unlock. Choose duration carefully.
+</Note>
+
+---
+
+## App Tokens
+
+Each app launches with its own ERC-20:
+
+|                   |                    |
+| ----------------- | ------------------ |
+| **Supply**        | 1 billion          |
+| **Creator**       | 50% (auto-staked)  |
+| **Bonding curve** | 50%                |
+| **Graduation**    | 42,000 ELTA raised |
+
+### Transfer Fee
+
+1% on every transfer (max 2%). Split 70/15/15 like other fees.
+
+---
+
+## Fee Sources
+
+| Source          | Rate    |
+| --------------- | ------- |
+| **Trading**     | 1%      |
+| **Launches**    | 10 ELTA |
+| **Tournaments** | 2.5%    |
+| **Transfers**   | 1%      |
+
+All fees split 70/15/15: stakers, veELTA holders, treasury.
+
+---
+
+## Release Schedule
+
+![ELTA release schedule](/images/ELTAReleaseschedule.svg)
+
+ELTA is released according to predefined vesting schedules:
+
+- **Year 1**: ~25% of supply circulating
+- **Year 2**: ~45% of supply circulating
+- **Year 4**: ~85% of supply circulating
+- **Year 6**: 100% fully vested
+
+---
+
+## Summary
+
+- **77M max** — fixed forever
+- **Fees, not inflation** — rewards come from usage
+- **Lock longer = earn more** — veELTA boost up to 2x
+- **Multiple fee sources** — trading, launches, tournaments, transfers
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Revenue Model" icon="money-bill" iconType="light" href="/learn/revenue-model">
+    Fee mechanics and math
+  </Card>
+  <Card title="Lock ELTA" icon="lock-keyhole" iconType="light" href="/users/veelta-governance">
+    Start earning
+  </Card>
+</CardGroup>
