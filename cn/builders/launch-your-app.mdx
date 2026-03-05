@@ -1,0 +1,308 @@
+---
+title: "Launch Your App"
+description: "Step-by-step guide to deploying your neurotech application"
+---
+
+## Overview
+
+Launch an app, get a token. This guide covers the whole process — about 5 minutes start to finish.
+
+<Info>
+  **Cost**: 110 ELTA total (100 seed + 10 protocol fee)
+  
+  **Time**: ~5 minutes
+</Info>
+
+<Warning>
+  **Testnet Notice**: Elata is currently live on **Base Sepolia** (testnet). Mainnet launch on **Base** is coming soon. All apps launched on testnet are for testing purposes only.
+</Warning>
+
+---
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+<Steps>
+  <Step title="Web3 Wallet">
+    MetaMask, Coinbase Wallet, Rainbow, or any WalletConnect-compatible wallet
+  </Step>
+  <Step title="Base Sepolia ETH (for gas)">
+    Get free testnet ETH from a faucet (see below)
+  </Step>
+  <Step title="Testnet ELTA Tokens">
+    Request 110+ ELTA from us on Twitter (see below)
+  </Step>
+  <Step title="App Details Ready">
+    - App name (e.g., "NeuroPong")
+    - Token symbol (e.g., "NPONG")
+    - Description (what your app does)
+    - App image (square, recommended 512x512)
+  </Step>
+</Steps>
+
+### Getting Base Sepolia ETH
+
+You need a small amount of ETH on Base Sepolia for transaction fees. Use one of these faucets:
+
+1. **[Alchemy Faucet](https://www.alchemy.com/faucets/base-sepolia)** — Requires Alchemy account
+2. **[Coinbase Faucet](https://faucet.quicknode.com/base/sepolia)** — QuickNode faucet
+3. **[Superchain Faucet](https://app.optimism.io/faucet)** — Works for Base Sepolia
+
+### Getting Testnet ELTA
+
+To get testnet ELTA tokens for launching your app:
+
+1. Follow [@elata_bio](https://x.com/elata_bio) on X/Twitter
+2. Post or DM us with your wallet address requesting testnet ELTA
+3. We'll send you tokens within 24 hours
+
+<Note>
+  Testnet tokens have no monetary value. They're for testing the app launch flow before mainnet.
+</Note>
+
+---
+
+## Step 1: Connect Your Wallet
+
+1. Go to [app.elata.bio/launch](https://app.elata.bio/launch)
+2. Click "Connect Wallet" in the header
+3. Select your wallet provider
+4. Approve the connection
+
+<Warning>
+  Make sure you're connected to **Base Sepolia** network (Chain ID: 84532). The app will prompt you to switch if needed.
+</Warning>
+
+---
+
+## Step 2: Fill in App Details
+
+### App Name
+
+Choose a memorable name for your application:
+- 3-50 characters
+- Will be displayed in the App Store
+- Cannot be changed after launch
+
+**Good examples**: NeuroPong, FocusFlow, BrainWave Trainer
+
+### Token Symbol
+
+Your token's ticker symbol:
+- 2-10 characters
+- Uppercase letters and numbers only
+- Will appear as $SYMBOL in trading
+
+**Good examples**: NPONG, FOCUS, BWT
+
+### Description
+
+Explain what your app does:
+- Up to 1,000 characters
+- Be specific about features and benefits
+- This appears on your app's detail page
+
+### App Image
+
+Upload a square image:
+- Recommended: 512x512 pixels
+- Formats: PNG, JPG, SVG
+- Max size: 5MB
+- This becomes your app's icon
+
+---
+
+## Step 3: Approve ELTA
+
+Before creating your app, you need to approve the ELTA spending:
+
+1. Click "Approve ELTA" button
+2. Your wallet will show an approval request for 110 ELTA
+3. Confirm the transaction
+4. Wait for confirmation (~2-5 seconds on Base)
+
+<Note>
+  This is a standard ERC-20 approval. You're authorizing the contract to transfer exactly 110 ELTA.
+</Note>
+
+---
+
+## Step 4: Create Your App
+
+Once approved:
+
+1. Click "Launch App" button
+2. Confirm the transaction in your wallet
+3. Wait for the transaction to be mined
+4. You'll be redirected to your new app's page
+
+The transaction creates:
+- Your app token (1 billion supply)
+- Bonding curve for trading
+- Staking vault for rewards
+- Your 50% allocation (auto-staked)
+
+---
+
+## Step 5: Upload Your Game
+
+Your app page is live, but you need to upload your actual application:
+
+1. On your app's detail page, scroll to "Creator Console"
+2. Find the "Upload / Replace Game" section
+3. Drag and drop your game folder (must contain `index.html`)
+4. Wait for upload to complete
+
+### Game Requirements
+
+Your game/app must:
+- Have an `index.html` file at the root
+- Be self-contained (all assets included)
+- Work in an iframe context
+
+### Supported Technologies
+
+- Vanilla HTML/CSS/JavaScript
+- React, Vue, Svelte (compiled)
+- Phaser, Three.js, PixiJS, Unity
+- Any web framework that compiles to static files
+
+---
+
+## What You Get
+
+After launching, your app includes:
+
+### Token Economics
+
+| Item | Value |
+|------|-------|
+| **Total Supply** | 1,000,000,000 tokens |
+| **Your Allocation** | 500,000,000 (50%, auto-staked) |
+| **Public Sale** | 500,000,000 (50%, on bonding curve) |
+| **Trading Fee** | 1% on all trades |
+
+### Your Earning Potential
+
+As the creator with 50% staked:
+- You earn proportionally from the 70% staker share of fees
+- If trading volume is 10,000 ELTA/month, you'd earn ~35 ELTA/month
+
+### Infrastructure
+
+- **Staking Vault**: Users can stake your token
+- **Bonding Curve**: Fair price discovery
+- **Rewards System**: Automatic fee distribution
+- **Graduation Path**: Auto-deploy to DEX at 42K ELTA
+
+---
+
+## Post-Launch Checklist
+
+<Steps>
+  <Step title="Upload Your Game">
+    Upload your application files so users can play
+  </Step>
+  <Step title="Add Social Links">
+    In app settings, add your Twitter, Discord, website
+  </Step>
+  <Step title="Add Team Members">
+    List team wallet addresses for transparency
+  </Step>
+  <Step title="Share the Launch">
+    Announce on social media with your app link
+  </Step>
+  <Step title="Deploy Modules">
+    Add items (NFTs) and tournaments when ready
+  </Step>
+</Steps>
+
+---
+
+## Managing Your App
+
+### Edit App Details
+
+As the creator, you can update:
+- Description
+- Social links
+- Preview images
+- Team members
+
+Click "Edit App" on your app's detail page.
+
+### Deploy Modules
+
+Add additional features:
+- **Items (NFTs)**: Sell in-app items that burn tokens
+- **Tournaments**: Run competitions with entry fees
+
+Go to "Creator Console" → "Deploy Modules"
+
+### View Analytics
+
+Monitor your app's performance:
+- Trading volume
+- Holder distribution
+- Staking stats
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Transaction Failed">
+    Common causes:
+    - Insufficient ELTA balance (need 110)
+    - Insufficient ETH for gas
+    - Approval not yet confirmed
+    
+    **Solution**: Check balances, wait for approval confirmation, try again
+  </Accordion>
+  <Accordion title="Approval Not Working">
+    If approval seems stuck:
+    - Check transaction on Basescan
+    - Try increasing gas price
+    - Clear wallet cache and reconnect
+  </Accordion>
+  <Accordion title="Game Not Uploading">
+    Requirements:
+    - Must have `index.html` at root
+    - Max ~50MB total size
+    - No server-side code (static files only)
+    
+    **Solution**: Verify folder structure, compress assets if needed
+  </Accordion>
+  <Accordion title="App Not Showing">
+    After creation, apps may take a few minutes to index:
+    - Wait 1-2 minutes
+    - Refresh the page
+    - Check if transaction succeeded on Basescan
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Example: Sample Game
+
+Don't have an app ready? Try our sample:
+
+1. Download the [TicTacToe sample](https://github.com/elata-biosciences/elata-appstore/tree/main/samples/tictactoe)
+2. Upload it to your app
+3. Test the full flow
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Bonding Curves" icon="chart-line" href="/builders/bonding-curve-economics">
+    Understand pricing and graduation
+  </Card>
+  <Card title="Grow Community" icon="users" href="/builders/grow-your-community">
+    Tournaments, items, and engagement
+  </Card>
+</CardGroup>
+
+

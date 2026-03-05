@@ -141,6 +141,100 @@
             ]
           }
         ]
+      },
+      {
+        "language": "cn",
+        "tabs": [
+          {
+            "tab": "学习",
+            "groups": [
+              {
+                "group": "介绍",
+                "pages": [
+                  "cn/learn/protocol-overview",
+                  "cn/learn/how-it-works"
+                ]
+              },
+              {
+                "group": "经济模型",
+                "pages": [
+                  "cn/learn/tokenomics",
+                  "cn/learn/revenue-model"
+                ]
+              },
+              {
+                "group": "治理",
+                "pages": [
+                  "cn/home/governance/structure",
+                  "cn/home/governance/teams"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "开发者参考",
+            "groups": [
+              {
+                "group": "快速开始",
+                "pages": [
+                  "cn/builders/getting-started",
+                  "cn/builders/launch-your-app"
+                ]
+              },
+              {
+                "group": "应用经济",
+                "pages": [
+                  "cn/builders/bonding-curve-economics",
+                  "cn/builders/grow-your-community"
+                ]
+              },
+              {
+                "group": "集成",
+                "pages": [
+                  "cn/builders/api-overview"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "用户中心",
+            "groups": [
+              {
+                "group": "快速开始",
+                "pages": [
+                  "cn/users/explore-apps",
+                  "cn/users/buy-and-trade"
+                ]
+              },
+              {
+                "group": "收益与治理",
+                "pages": [
+                  "cn/users/stake-and-earn",
+                  "cn/users/veelta-governance"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "资源",
+            "groups": [
+              {
+                "group": "参考",
+                "pages": [
+                  "cn/resources/smart-contracts",
+                  "cn/resources/faq"
+                ]
+              },
+              {
+                "group": "社区",
+                "pages": [
+                  "cn/resources/media-assets",
+                  "cn/resources/references"
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
   },
