@@ -1,0 +1,351 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Elata App Store API",
+    "description": "REST API for reading app data, metadata, and prices from the Elata App Store.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Elata Biosciences",
+      "url": "https://elata.bio",
+      "email": "team@elata.bio"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://app.elata.bio",
+      "description": "Production"
+    }
+  ],
+  "security": [],
+  "paths": {
+    "/api/apps": {
+      "get": {
+        "summary": "Get All Apps",
+        "description": "Returns a list of all biometric apps registered in the Elata App Store, including their token address, metadata, status, and creator information.",
+        "operationId": "getApps",
+        "tags": ["Apps"],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter apps by launch status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["raising", "live"]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of results to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50,
+              "maximum": 200
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of results to skip for pagination",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of apps",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apps": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AppSummary"
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Total number of apps matching the query"
+                    }
+                  }
+                },
+                "example": {
+                  "apps": [
+                    {
+                      "id": "1",
+                      "tokenAddress": "0xAbCdEf1234567890AbCdEf1234567890AbCdEf12",
+                      "name": "NeuroPong",
+                      "symbol": "NPONG",
+                      "description": "A classic game controlled by your brainwaves via EEG.",
+                      "imageUrl": "https://app.elata.bio/images/neuropong.png",
+                      "creator": "0x1234567890AbCdEf1234567890AbCdEf12345678",
+                      "status": "live",
+                      "createdAt": "2024-06-01T00:00:00Z"
+                    }
+                  ],
+                  "total": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/apps/{tokenAddress}": {
+      "get": {
+        "summary": "Get App",
+        "description": "Returns detailed information about a single app, including its metadata, social links, team members, and uploaded artifacts (e.g. game files).",
+        "operationId": "getApp",
+        "tags": ["Apps"],
+        "parameters": [
+          {
+            "name": "tokenAddress",
+            "in": "path",
+            "description": "The ERC-20 token address of the app (checksummed hex, 0x-prefixed)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]{40}$"
+            },
+            "example": "0xAbCdEf1234567890AbCdEf1234567890AbCdEf12"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "App details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppDetail"
+                },
+                "example": {
+                  "id": "1",
+                  "tokenAddress": "0xAbCdEf1234567890AbCdEf1234567890AbCdEf12",
+                  "name": "NeuroPong",
+                  "symbol": "NPONG",
+                  "description": "A classic game controlled by your brainwaves via EEG.",
+                  "imageUrl": "https://app.elata.bio/images/neuropong.png",
+                  "creator": "0x1234567890AbCdEf1234567890AbCdEf12345678",
+                  "status": "live",
+                  "createdAt": "2024-06-01T00:00:00Z",
+                  "website": "https://neuropong.xyz",
+                  "socialLinks": {
+                    "twitter": "https://twitter.com/neuropong",
+                    "discord": "https://discord.gg/neuropong"
+                  },
+                  "team": [
+                    {
+                      "name": "Alice",
+                      "role": "Founder",
+                      "avatar": "https://app.elata.bio/avatars/alice.png"
+                    }
+                  ],
+                  "artifacts": [
+                    {
+                      "type": "game",
+                      "url": "https://app.elata.bio/artifacts/neuropong/index.html"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "App not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prices": {
+      "get": {
+        "summary": "Get Prices",
+        "description": "Returns current ELTA token price data for display in app UIs. Prices are updated periodically from on-chain sources.",
+        "operationId": "getPrices",
+        "tags": ["Market Data"],
+        "responses": {
+          "200": {
+            "description": "Current price data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriceData"
+                },
+                "example": {
+                  "elta": {
+                    "usd": 0.042,
+                    "eth": 0.000014,
+                    "updatedAt": "2024-06-01T12:00:00Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AppSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique app ID (sequential integer as string)"
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "ERC-20 token contract address"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the app"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "ERC-20 token symbol"
+          },
+          "description": {
+            "type": "string",
+            "description": "Short description of the app"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the app's cover image"
+          },
+          "creator": {
+            "type": "string",
+            "description": "Wallet address of the app creator"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["raising", "live"],
+            "description": "Current launch status. `raising` means the bonding curve is active; `live` means the token has graduated."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp of app creation"
+          }
+        },
+        "required": ["id", "tokenAddress", "name", "symbol", "creator", "status", "createdAt"]
+      },
+      "AppDetail": {
+        "allOf": [
+          { "$ref": "#/components/schemas/AppSummary" },
+          {
+            "type": "object",
+            "properties": {
+              "website": {
+                "type": "string",
+                "format": "uri",
+                "description": "App's external website URL"
+              },
+              "socialLinks": {
+                "type": "object",
+                "description": "Map of social platform names to URLs",
+                "additionalProperties": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              },
+              "team": {
+                "type": "array",
+                "description": "Team members listed on the app",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "role": { "type": "string" },
+                    "avatar": { "type": "string", "format": "uri" }
+                  }
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "description": "Uploaded files or embeddable URLs for the app",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["game", "embed", "file"]
+                    },
+                    "url": { "type": "string", "format": "uri" }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "PriceData": {
+        "type": "object",
+        "properties": {
+          "elta": {
+            "type": "object",
+            "properties": {
+              "usd": {
+                "type": "number",
+                "format": "double",
+                "description": "ELTA price in USD"
+              },
+              "eth": {
+                "type": "number",
+                "format": "double",
+                "description": "ELTA price in ETH"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "When the price was last updated"
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable error message"
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code"
+          }
+        },
+        "required": ["error"]
+      }
+    }
+  }
+}
