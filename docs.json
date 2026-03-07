@@ -2,7 +2,6 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Elata Docs",
-  "openapi": "/openapi.json",
   "colors": {
     "primary": "#7D66D9",
     "light": "#7D66D9",
@@ -38,7 +37,7 @@
           "href": "https://github.com/elata-biosciences"
         },
         {
-          "anchor": "Discord",
+          "anchor": "Discord Community",
           "icon": "discord",
           "color": {
             "light": "#5865F2",
@@ -50,331 +49,200 @@
     },
     "tabs": [
       {
-        "tab": "Overview",
-        "groups": [
+        "tab": "Untitled Tab",
+        "languages": [
           {
-            "group": "Getting Started",
-            "pages": [
-              "quickstart",
-              "home/about-elata",
-              "home/problem",
-              "home/solution"
-            ]
-          },
-          {
-            "group": "How It Works",
-            "pages": [
-              "home/how-elata-works",
-              "home/elata",
-              "home/tournaments-intro",
-              "home/build-an-app"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Learn",
-        "groups": [
-          {
-            "group": "Introduction",
-            "pages": [
-              "learn/protocol-overview",
-              "learn/how-it-works"
-            ]
-          },
-          {
-            "group": "Neurotechnology",
-            "pages": [
-              "learn/neurotechnology",
-              "learn/eeg-basics",
-              "learn/rppg-basics",
-              "home/brain-operating-system/ebos-overview"
-            ]
-          },
-          {
-            "group": "Economics",
-            "pages": [
-              "learn/tokenomics",
-              "learn/revenue-model"
-            ]
-          },
-          {
-            "group": "User Guide",
-            "pages": [
-              "users/explore-apps",
-              "users/buy-and-trade",
-              "users/stake-and-earn",
-              "users/veelta-governance"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Build Apps",
-        "groups": [
-          {
-            "group": "Getting Started",
-            "pages": [
-              "builders/introduction",
-              "builders/getting-started",
-              "builders/install-and-run"
-            ]
-          },
-          {
-            "group": "Launch",
-            "pages": [
-              "builders/launch-your-app",
-              "builders/grow-your-community"
-            ]
-          },
-          {
-            "group": "App Economics",
-            "pages": [
-              "home/app-tokens",
-              "builders/bonding-curve-economics",
-              "builders/fee-pipeline"
-            ]
-          },
-          {
-            "group": "Brain Token Deployer",
-            "pages": [
-              "home/brain-token-deployer/how-it-works",
-              "home/brain-token-deployer/bonding-curve"
-            ]
-          },
-          {
-            "group": "Configuration",
-            "pages": [
-              "builders/protocol-config"
-            ]
-          },
-          {
-            "group": "AI Tools",
-            "pages": [
-              "ai-tools/claude-code",
-              "ai-tools/cursor",
-              "ai-tools/windsurf"
+            "language": "en",
+            "tabs": [
+              {
+                "tab": "Home",
+                "pages": [
+                  "untitled-page"
+                ]
+              },
+              {
+                "tab": "Learn",
+                "groups": [
+                  {
+                    "group": "Introduction",
+                    "pages": [
+                      "learn/protocol-overview",
+                      "learn/how-it-works"
+                    ]
+                  },
+                  {
+                    "group": "Economics",
+                    "pages": [
+                      "learn/tokenomics",
+                      "learn/revenue-model"
+                    ]
+                  },
+                  {
+                    "group": "Governance",
+                    "pages": [
+                      "home/governance/structure",
+                      "home/governance/teams"
+                    ]
+                  }
+                ]
+              },
+              {
+                "tab": "Builders Reference",
+                "groups": [
+                  {
+                    "group": "Getting Started",
+                    "pages": [
+                      "builders/getting-started",
+                      "builders/launch-your-app"
+                    ]
+                  },
+                  {
+                    "group": "App Economics",
+                    "pages": [
+                      "builders/bonding-curve-economics",
+                      "builders/grow-your-community"
+                    ]
+                  },
+                  {
+                    "group": "Integration",
+                    "pages": [
+                      "builders/api-overview"
+                    ]
+                  }
+                ]
+              },
+              {
+                "tab": "User Hub",
+                "groups": [
+                  {
+                    "group": "Getting Started",
+                    "pages": [
+                      "users/explore-apps",
+                      "users/buy-and-trade"
+                    ]
+                  },
+                  {
+                    "group": "Earning & Governance",
+                    "pages": [
+                      "users/stake-and-earn",
+                      "users/veelta-governance"
+                    ]
+                  }
+                ]
+              },
+              {
+                "tab": "Resources",
+                "groups": [
+                  {
+                    "group": "Reference",
+                    "pages": [
+                      "resources/smart-contracts",
+                      "resources/faq"
+                    ]
+                  },
+                  {
+                    "group": "Community",
+                    "pages": [
+                      "resources/media-assets",
+                      "resources/references"
+                    ]
+                  }
+                ]
+              }
             ]
           }
         ]
       },
       {
-        "tab": "Biometric SDKs",
-        "groups": [
+        "language": "cn",
+        "tabs": [
           {
-            "group": "Overview",
-            "pages": [
-              "sdk/overview"
+            "tab": "学习",
+            "groups": [
+              {
+                "group": "介绍",
+                "pages": [
+                  "cn/learn/protocol-overview",
+                  "cn/learn/how-it-works"
+                ]
+              },
+              {
+                "group": "经济模型",
+                "pages": [
+                  "cn/learn/tokenomics",
+                  "cn/learn/revenue-model"
+                ]
+              },
+              {
+                "group": "治理",
+                "pages": [
+                  "cn/home/governance/structure",
+                  "cn/home/governance/teams"
+                ]
+              }
             ]
           },
           {
-            "group": "EEG Web",
-            "pages": [
-              "sdk/eeg-web/getting-started",
-              "sdk/eeg-web/models",
-              "sdk/eeg-web/signal-processing",
-              "sdk/eeg-web/headband-transport"
+            "tab": "开发者参考",
+            "groups": [
+              {
+                "group": "快速开始",
+                "pages": [
+                  "cn/builders/getting-started",
+                  "cn/builders/launch-your-app"
+                ]
+              },
+              {
+                "group": "应用经济",
+                "pages": [
+                  "cn/builders/bonding-curve-economics",
+                  "cn/builders/grow-your-community"
+                ]
+              },
+              {
+                "group": "集成",
+                "pages": [
+                  "cn/builders/api-overview"
+                ]
+              }
             ]
           },
           {
-            "group": "EEG Web BLE",
-            "pages": [
-              "sdk/eeg-web-ble/getting-started",
-              "sdk/eeg-web-ble/muse-device"
+            "tab": "用户中心",
+            "groups": [
+              {
+                "group": "快速开始",
+                "pages": [
+                  "cn/users/explore-apps",
+                  "cn/users/buy-and-trade"
+                ]
+              },
+              {
+                "group": "收益与治理",
+                "pages": [
+                  "cn/users/stake-and-earn",
+                  "cn/users/veelta-governance"
+                ]
+              }
             ]
           },
           {
-            "group": "rPPG",
-            "pages": [
-              "sdk/rppg-web/getting-started",
-              "sdk/rppg-web/calibration",
-              "sdk/rppg-web/frame-sources"
-            ]
-          },
-          {
-            "group": "Integration Guides",
-            "pages": [
-              "sdk/guides/eeg-ble-integration",
-              "sdk/guides/rppg-camera"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Protocol",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": [
-              "home/elata-eeg/elata-eeg-overview",
-              "home/elata-eeg/eeg-architecture"
-            ]
-          },
-          {
-            "group": "On-Chain",
-            "pages": [
-              "onchain-build"
-            ]
-          },
-          {
-            "group": "ZORP Protocol",
-            "pages": [
-              "zorp-protocol/zorp-intro",
-              "zorp-protocol/zorp-function"
-            ]
-          },
-          {
-            "group": "Open Source",
-            "pages": [
-              "open-source/agentforge/overview",
-              "open-source/agentforge/concepts",
-              "open-source/agentforge/cli",
-              "open-source/agentforge/studio",
-              "open-source/newsreader/overview",
-              "open-source/newsreader/architecture"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "$ELTA & Governance",
-        "groups": [
-          {
-            "group": "ELTA Token",
-            "pages": [
-              "home/elta-token/elta-overview",
-              "home/elta-token/elta-distribution",
-              "home/elta-token/elta-release",
-              "home/elta-token/staking",
-              "home/elta-token/veelta"
-            ]
-          },
-          {
-            "group": "Economy",
-            "pages": [
-              "home/ELTA-Economy",
-              "elata-eco-points",
-              "elata-points"
-            ]
-          },
-          {
-            "group": "Governance",
-            "pages": [
-              "home/governance",
-              "home/governance/structure",
-              "home/governance/teams"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": [
-              "builders/api-overview"
-            ]
-          },
-          {
-            "group": "Apps",
-            "pages": [
-              "api-reference/get-apps",
-              "api-reference/get-app"
-            ]
-          },
-          {
-            "group": "Market Data",
-            "pages": [
-              "api-reference/get-prices"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Resources",
-        "groups": [
-          {
-            "group": "Reference",
-            "pages": [
-              "resources/faq",
-              "resources/smart-contracts",
-              "resources/references"
-            ]
-          },
-          {
-            "group": "Community",
-            "pages": [
-              "resources/media-assets"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "中文",
-        "groups": [
-          {
-            "group": "介绍",
-            "pages": [
-              "cn/learn/protocol-overview",
-              "cn/learn/how-it-works"
-            ]
-          },
-          {
-            "group": "经济模型",
-            "pages": [
-              "cn/learn/tokenomics",
-              "cn/learn/revenue-model"
-            ]
-          },
-          {
-            "group": "治理",
-            "pages": [
-              "cn/home/governance/structure",
-              "cn/home/governance/teams"
-            ]
-          },
-          {
-            "group": "开发者参考",
-            "pages": [
-              "cn/builders/getting-started",
-              "cn/builders/launch-your-app",
-              "cn/builders/bonding-curve-economics",
-              "cn/builders/grow-your-community",
-              "cn/builders/api-overview"
-            ]
-          },
-          {
-            "group": "用户中心",
-            "pages": [
-              "cn/users/explore-apps",
-              "cn/users/buy-and-trade",
-              "cn/users/stake-and-earn",
-              "cn/users/veelta-governance"
-            ]
-          },
-          {
-            "group": "SDK",
-            "pages": [
-              "cn/sdk/overview",
-              "cn/sdk/eeg-web/getting-started",
-              "cn/sdk/eeg-web/models",
-              "cn/sdk/eeg-web/signal-processing",
-              "cn/sdk/eeg-web/headband-transport",
-              "cn/sdk/eeg-web-ble/getting-started",
-              "cn/sdk/eeg-web-ble/muse-device",
-              "cn/sdk/rppg-web/getting-started",
-              "cn/sdk/rppg-web/calibration",
-              "cn/sdk/rppg-web/frame-sources"
-            ]
-          },
-          {
-            "group": "资源",
-            "pages": [
-              "cn/resources/faq",
-              "cn/resources/smart-contracts",
-              "cn/resources/references",
-              "cn/resources/media-assets"
+            "tab": "资源",
+            "groups": [
+              {
+                "group": "参考",
+                "pages": [
+                  "cn/resources/smart-contracts",
+                  "cn/resources/faq"
+                ]
+              },
+              {
+                "group": "社区",
+                "pages": [
+                  "cn/resources/media-assets",
+                  "cn/resources/references"
+                ]
+              }
             ]
           }
         ]
