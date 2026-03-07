@@ -1,0 +1,81 @@
+---
+title: "Studio Dashboard"
+description: "Multi-run analysis dashboard with charts, gossip analysis, and ML toolkit"
+---
+
+## Overview
+
+AgentForge Studio is a Bloomberg Terminal-inspired dashboard for analyzing simulation runs. Launch it with:
+
+```bash
+forge-sim studio
+```
+
+---
+
+## Dashboard Tabs
+
+### Session Management
+
+Browse all simulation runs, build or open dashboards, and download artifacts. Each run is identified by its scenario name, seed, and timestamp.
+
+### Financial Charts
+
+Interactive time-series charts powered by Lightweight Charts:
+
+- Price, volume, and custom metric visualization
+- Zoom, pan, and crosshair tooltips
+- Multi-metric overlay for correlation analysis
+
+### Timeline Inspector
+
+Virtualized action log showing every agent action across all ticks:
+
+- Filter by agent, action type, or tick range
+- JSON inspection popovers for action parameters and results
+- Color-coded by action outcome (success/failure)
+
+### Gossip Analysis
+
+Channel-level message flow visualization:
+
+- Per-channel message volume and timing
+- Author tracking and delivery status
+- Credibility score distribution
+- Strategy channel isolation view
+
+### Agent Stats
+
+Per-agent performance breakdown:
+
+- Action counts and success rates
+- Revenue/PnL tracking (when applicable)
+- Drill-down into individual agent histories
+
+### ML Toolkit
+
+Server-side statistical analysis tools:
+
+- **Regression** — fit models to metric time series
+- **PCA** — dimensionality reduction across agent behaviors
+- **K-means clustering** — group runs or agents by behavior patterns
+- **Cross-run comparison** — overlay metrics from multiple seeds or variants
+
+### Report
+
+Auto-generated Markdown report with:
+
+- Run summary and configuration
+- Key metric highlights
+- Assertion results
+- Notable agent behaviors
+
+---
+
+## Keyboard Navigation
+
+Studio is designed for keyboard-driven use:
+
+- Tab navigation between panels
+- Command palette for quick access to runs and tools
+- Terminal-inspired aesthetic with monospace typography

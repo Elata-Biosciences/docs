@@ -1,0 +1,82 @@
+---
+title: "Analysis Models"
+description: "Alpha bump detection, alpha peak tracking, and calmness scoring"
+---
+
+## WasmAlphaBumpDetector
+
+Detects alpha bumps — transient increases in alpha band power that indicate state transitions.
+
+```typescript
+import { initEegWasm, WasmAlphaBumpDetector } from "@elata-biosciences/eeg-web";
+
+await initEegWasm();
+
+const detector = new WasmAlphaBumpDetector();
+
+// Feed samples and check for bumps
+const bumpDetected = detector.process(samples, sampleRateHz);
+```
+
+---
+
+## WasmAlphaPeakModel
+
+Tracks the individual alpha peak frequency (typically 8-13 Hz) which varies per person.
+
+```typescript
+import { WasmAlphaPeakModel } from "@elata-biosciences/eeg-web";
+
+const model = new WasmAlphaPeakModel();
+
+// Feed EEG data to refine peak estimate
+model.process(samples, sampleRateHz);
+const peakHz = model.peak_frequency();
+```
+
+---
+
+## WasmCalmnessModel
+
+Computes a calmness score based on the ratio of alpha to beta power — higher alpha relative to beta generally indicates a more relaxed state.
+
+```typescript
+import { WasmCalmnessModel } from "@elata-biosciences/eeg-web";
+
+const model = new WasmCalmnessModel();
+
+model.process(samples, sampleRateHz);
+const score = model.score(); // 0.0 to 1.0
+```
+
+---
+
+## AthenaWasmDecoder
+
+Decodes raw Athena protocol packets from Muse S (Athena firmware) headbands. Used as a factory parameter for `BleTransport`:
+
+```typescript
+import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+
+const decoder = new AthenaWasmDecoder();
+
+decoder.reset();
+decoder.set_use_device_timestamps(true);
+decoder.set_clock_kind("monotonic");
+decoder.set_reorder_window_ms(50);
+
+const output = decoder.decode(rawBytes);
+```
+
+The Athena decoder is typically not used directly — it's passed as a factory to [`BleTransport`](/sdk/eeg-web-ble/getting-started):
+
+```typescript
+import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+
+const transport = new BleTransport({
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),
+  },
+});
+```

@@ -1,0 +1,152 @@
+---
+title: "SDK Overview"
+description: "Cross-platform SDK for EEG signal processing, BLE headband connectivity, and rPPG"
+---
+
+## Elata SDK
+
+The Elata SDK is a cross-platform Hardware Abstraction Layer (HAL) for EEG devices with real-time signal processing, analysis models, and remote photoplethysmography (rPPG). It provides three npm packages for web applications.
+
+<Info>
+  **Repository**: [github.com/elata-bio/elata-sdk](https://github.com/elata-bio/elata-sdk)
+</Info>
+
+---
+
+## Architecture
+
+```
+┌──────────────────────────────────────────────────────┐
+│                        Elata SDK                      │
+├──────────────────────────────────────────────────────┤
+│  Platform Bindings                                    │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐            │
+│  │  WASM    │  │  Swift   │  │  Kotlin  │            │
+│  │ (Browser)│  │  (iOS)   │  │(Android) │            │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘            │
+│       └─────────────┴─────────────┘                  │
+│                      │                                │
+│  Models Layer        │                                │
+│  ┌─────────────────┐ ┌─────────────────┐              │
+│  │ Alpha Bump      │ │ Calmness        │              │
+│  │ Detector        │ │ Model           │              │
+│  └────────┬────────┘ └────────┬────────┘              │
+│           └────────┬──────────┘                       │
+│  Signal Processing │                                  │
+│  ┌─────────────────────────────────────┐              │
+│  │ FFT │ Band Power │ Filtering        │              │
+│  └─────────────────────────────────────┘              │
+│                    ▲                                  │
+│  HAL Layer         │                                  │
+│  ┌─────────────────────────────────────┐              │
+│  │         EegDevice Trait             │              │
+│  │ connect() │ start_stream() │ read() │              │
+│  └─────────────────────────────────────┘              │
+└──────────────────────────────────────────────────────┘
+```
+
+---
+
+## npm Packages
+
+| Package | Version | Description |
+|---------|---------|-------------|
+| [`@elata-biosciences/eeg-web`](https://www.npmjs.com/package/@elata-biosciences/eeg-web) | 0.1.0 | EEG WASM bindings — signal processing, band power, models |
+| [`@elata-biosciences/eeg-web-ble`](https://www.npmjs.com/package/@elata-biosciences/eeg-web-ble) | 0.1.0 | Web Bluetooth transport for EEG headband devices |
+| [`@elata-biosciences/rppg-web`](https://www.npmjs.com/package/@elata-biosciences/rppg-web) | 0.1.1 | rPPG pipeline — heart rate from camera via face detection |
+
+---
+
+## Installation
+
+```bash
+# EEG signal processing (WASM)
+pnpm add @elata-biosciences/eeg-web
+
+# BLE headband connectivity (requires eeg-web)
+pnpm add @elata-biosciences/eeg-web-ble @elata-biosciences/eeg-web
+
+# rPPG (camera-based heart rate)
+pnpm add @elata-biosciences/rppg-web
+```
+
+**Requirements**: Node.js 18+, modern browser with WebAssembly support.
+
+---
+
+## Rust Crates
+
+The SDK is built on Rust crates that compile to WASM and native targets:
+
+| Crate | Purpose |
+|-------|---------|
+| `eeg-hal` | Core HAL traits: `EegDevice`, `SampleBuffer`, `ChannelConfig` |
+| `eeg-hal-synthetic` | Synthetic EEG device for testing |
+| `eeg-signal` | FFT, band power analysis, filtering |
+| `eeg-models` | Alpha Bump Detector, Calmness Model |
+| `eeg-ffi` | UniFFI bindings for iOS/Android |
+| `eeg-wasm` | WebAssembly bindings for browser |
+| `rppg` | rPPG pipeline core |
+| `rppg-wasm` | rPPG WASM bindings |
+| `bridge-proto` | BLE packet format and protocol |
+| `muse-proto` | Muse classic and Athena protocol |
+
+---
+
+## Device Support
+
+| Device | Protocol | Channels | Status |
+|--------|----------|----------|--------|
+| Muse 2 | Classic BLE | 4 EEG (TP9, AF7, AF8, TP10) | Supported |
+| Muse S | Classic BLE | 4 EEG + PPG | Supported |
+| Muse S (Athena) | Athena v2 | 8 EEG + optics + accgyro | Supported |
+| Synthetic Bridge | BLE bridge | Configurable | Testing only |
+
+---
+
+## Platform Support
+
+| Platform | EEG Processing | BLE Headband | rPPG |
+|----------|---------------|-------------|------|
+| Chrome/Edge (desktop) | WASM | Web Bluetooth | MediaPipe |
+| Chrome (Android) | WASM | Web Bluetooth | MediaPipe |
+| Safari/iOS | WASM | Native bridge required | MediaPipe |
+| Node.js | WASM | N/A | N/A |
+| iOS (Swift) | UniFFI | CoreBluetooth | Native |
+| Android (Kotlin) | UniFFI | Android BLE | Native |
+| Rust (desktop) | Native | N/A | Native |
+
+<Note>
+  Safari/iOS does not support Web Bluetooth. Use a native app shell with CoreBluetooth, or a companion bridge app streaming frames over WebSocket.
+</Note>
+
+---
+
+## Build from Source
+
+```bash
+git clone https://github.com/elata-bio/elata-sdk.git
+cd elata-sdk
+
+./run.sh install          # Install dependencies
+./run.sh build all        # Release build (WASM + TS)
+./run.sh test             # Run all tests
+./run.sh demo eeg         # Launch EEG demo
+./run.sh demo rppg        # Launch rPPG demo
+```
+
+---
+
+## Next
+
+<CardGroup cols={3}>
+  <Card title="EEG Web" icon="brain" iconType="light" href="/sdk/eeg-web/getting-started">
+    Signal processing and models
+  </Card>
+  <Card title="BLE Transport" icon="bluetooth" iconType="light" href="/sdk/eeg-web-ble/getting-started">
+    Connect to headband devices
+  </Card>
+  <Card title="rPPG" icon="heart-pulse" iconType="light" href="/sdk/rppg-web/getting-started">
+    Heart rate from camera
+  </Card>
+</CardGroup>

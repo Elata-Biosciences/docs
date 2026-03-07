@@ -1,170 +1,59 @@
 ---
 title: "How Elata Works"
-description: "Understanding the protocol architecture and value flows"
+description: "Current protocol architecture and value flow"
 ---
 
 ## Architecture
 
-Three layers, each doing one thing well.
+Three practical layers:
 
-<img
-  src="/images/how-elata-works-light.svg"
-  alt="Elata architecture"
-  className="block dark:hidden"
-/>
-
-<img
-  src="/images/how-elata-works-dark.svg"
-  alt="Elata architecture"
-  className="hidden dark:block"
-/>
-
----
-
-## Layer 1: Apps
-
-Where users actually do stuff.
-
-- **App Store** — browse and launch apps
-- **App Tokens** — each app has its own ERC-20 token (1B supply)
-- **Features** — tournaments with prize pools, NFT items that unlock things
-
-### Layer 2: Economics
-
-Where money moves.
-
-| Piece                   | Job                                   |
-| ----------------------- | ------------------------------------- |
-| **Bonding Curves**      | Set token prices based on supply sold |
-| **Staking Vaults**      | Deposit tokens, earn fees             |
-| **Fee Router**          | Collect fees from all sources         |
-| **Rewards Distributor** | Split fees 70/15/15                   |
-
-### Layer 3: Governance
-
-Where decisions happen.
-
-- **veELTA** — lock ELTA for voting power (longer lock = bigger boost)
-- **Governor** — on-chain proposals and voting
-- **LotPool** — XP-weighted funding for new projects
-- **Timelock** — 48-hour delay before execution
-
----
-
-## Where Fees Come From
-
-```mermaid
-graph LR
-    subgraph "Fee Sources"
-        A[Trading Fees 1%]
-        B[App Launch Fees]
-        C[Tournament Fees]
-    end
-    
-    subgraph "Distribution"
-        D[Rewards Distributor]
-    end
-    
-    subgraph "Recipients"
-        E[App Stakers 70%]
-        F[veELTA Holders 15%]
-        G[Treasury 15%]
-    end
-    
-    A --> D
-    B --> D
-    C --> D
-    D --> E
-    D --> F
-    D --> G
-```
-
-Three sources:
-
-1. **Trading (1%)** — every buy/sell on a bonding curve
-2. **Launches (10 ELTA)** — flat fee per new app
-3. **Tournaments (2.5%)** — cut of prize pools
-
-### Where Fees Go
-
-| Who                | Cut | Why                                          |
-| ------------------ | --- | -------------------------------------------- |
-| **App stakers**    | 70% | Reward people holding and staking app tokens |
-| **veELTA holders** | 15% | Reward long-term ELTA lockers                |
-| **Treasury**       | 15% | Fund development, grants, ops                |
+1. **Launch layer**: `AppFactory`, `AppRegistry`, `AppBondingCurve`, `AppToken`
+2. **Fee layer**: `FeeCollector`, `FeeSwapper`, `ContributorSplit`
+3. **Governance layer**: `ELTA`, `VeELTA`, `ElataPoints`, governor/timelock/config
 
 ---
 
 ## App Lifecycle
 
-### Launch
-
-Developer pays **110 ELTA**:
-
-- 100 ELTA → seeds the bonding curve
-- 10 ELTA → treasury
-
-Gets:
-
-- 1 billion tokens total
-- 50% auto-staked (earning fees immediately)
-- 50% on the bonding curve for sale
-
-### Raising
-
-- Users buy from the curve
-- Price rises with each purchase
-- 1% fee on every trade
-- XP holders get 6-hour head start
-
-### Graduation
-
-Curve hits **42,000 ELTA** collected:
-
-- Liquidity auto-deploys to Uniswap
-- LP tokens locked 2 years (no rug pulls)
-- Free market trading begins
-
-### Live
-
-Post-graduation:
-
-- Trades on DEX
-- Staking rewards keep flowing
-- Creator can add tournaments, items
-- Token holders can organize around the app
+1. Register app and contributor split.
+2. Launch token stack (`10,000,000` app supply).
+3. Run active curve distribution (`x*y=k`).
+4. Graduate to LP at target/deadline.
+5. Continue app-level fee routing post-graduation.
 
 ---
 
-## Who Does What
+## Fee Flow
 
-| Role              | Does                         | Earns                              |
-| ----------------- | ---------------------------- | ---------------------------------- |
-| **Builders**      | Launch apps                  | 50% of tokens (auto-staked) + fees |
-| **Token holders** | Buy/stake app tokens         | 70% of trading fees                |
-| **ELTA lockers**  | Lock ELTA as veELTA          | 15% of all protocol fees + votes   |
-| **Users**         | Play apps, enter tournaments | XP, early access, prizes           |
+```mermaid
+graph LR
+    A[LaunchAndTradingAndTransferFees] --> B[FeeCollector]
+    B --> C[FeeSwapper]
+    C --> D[Treasury]
+    C --> E[ContributorSplit]
+```
 
----
+Routing policy:
 
-## Security
+- launch fee -> treasury
+- app-revenue fee kinds -> contributors + treasury (default `80/20`)
+- paused app -> treasury
 
-| Protection              | How                                                            |
-| ----------------------- | -------------------------------------------------------------- |
-| **LP locking**          | Liquidity locked 2 years at graduation. Can't rug.             |
-| **Immutable contracts** | No admin keys. Rules can't change post-deploy.                 |
-| **Timelock**            | 48-hour delay on governance actions.                           |
-| **XP early access**     | 6-hour window for XP holders before public launch. Stops bots. |
+For full details on fee kinds, routing, and configuration, see the [Fee Pipeline](/builders/fee-pipeline) reference.
 
 ---
 
-## Next
+## XP and veELTA
 
-<CardGroup cols={2}>
-  <Card title="Tokenomics" icon="chart-pie" iconType="light" href="/learn/tokenomics">
-    ELTA supply, distribution, veELTA math
-  </Card>
-  <Card title="Revenue Model" icon="money-bill" iconType="light" href="/learn/revenue-model">
-    Fee mechanics and yield calculations
-  </Card>
-</CardGroup>
+- XP gates early buys during launch windows (default `100 XP`, `6h`).
+- veELTA provides time-weighted voting power via ELTA locks (`7-730` days, `1x-2x` boost).
+
+---
+
+## Security Posture
+
+- fixed ELTA supply (`77,000,000`)
+- explicit curve lifecycle states
+- LP lock on graduation
+- explicit fee-kind taxonomy
+- per-app fee accounting (no unbounded global sweeps)

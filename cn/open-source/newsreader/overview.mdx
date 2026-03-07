@@ -1,0 +1,63 @@
+---
+title: "Newsreader Overview"
+description: "AI-powered environmental scanner for the Elata DAO — news.elata.bio"
+---
+
+## What is the Newsreader?
+
+The Elata Newsreader implements **System 4** of Stafford Beer's [Viable System Model](https://kelsienabben.substack.com/p/aligning-the-concept-of-decentralized) — the "outside and future" sensing organ of the DAO. It monitors the external environment across neuroscience, psychiatry, DeSci, and adjacent fields, then transforms raw information into actionable intelligence for token holders and contributors.
+
+<Info>
+  **Live at**: [news.elata.bio](https://news.elata.bio)
+</Info>
+
+The system aggregates content from **400+ sources** spanning academic journals, pharma news, neurotech companies, DeSci communities, regulatory bodies, and more. Every article is scored for relevance using OpenAI, tagged across 86 domain-specific tags, and surfaced through a Next.js frontend with full-text search and filtering.
+
+---
+
+## Source Categories
+
+| Category | Examples |
+|----------|---------|
+| **Neuroscience journals** | Nature Neuroscience, Cell Neuron, Frontiers, Journal of Neuroscience |
+| **Psychiatry & clinical** | Medscape, Psychiatric News, Lancet Psychiatry, MedPage Today |
+| **Hardware & BCI** | OpenBCI, Neuralink, Synchron, Kernel, NeuroTechX |
+| **Pharma & biotech** | STAT News, Fierce Pharma, BioPharma Dive, Endpoints |
+| **DeSci & Web3** | CoinDesk, Decrypt, molecule.xyz, VitaDAO |
+| **Preprints & archives** | arXiv (q-bio.NC, cs.AI), PubMed, bioRxiv |
+| **Regulatory** | FDA, EMA, NIH, NSF |
+| **Community** | Warpcast channels, Reddit, Discord |
+
+---
+
+## Key Features
+
+- **NewsAPI integration** for keyword-based aggregation across global news
+- **Web scraping** of curated scientific and industry sources
+- **GPT-powered relevance scoring** — each article is evaluated against the Elata mission
+- **86 domain-specific tags** covering EEG, BCI, precision psychiatry, DeSci, pharmacology, biohacking, and more
+- **Podcast generation** — AI-narrated audio summaries via ElevenLabs
+- **Discord notifications** for high-relevance articles
+- **REST API** serving `current.json` with date-filtered queries
+
+---
+
+## Tech Stack
+
+| Component | Technology |
+|-----------|-----------|
+| Scraper engine | Node.js, Express, TypeScript |
+| Process management | PM2 |
+| AI analysis | OpenAI API |
+| News aggregation | NewsAPI |
+| Audio generation | ElevenLabs |
+| Data validation | Zod schemas |
+| Frontend | Next.js 15, App Router, SSR |
+
+---
+
+## Links
+
+- [Live site — news.elata.bio](https://news.elata.bio)
+- [GitHub repository](https://github.com/Elata-Biosciences/elata-vsm-system-4)
+- [Discord](https://discord.gg/VmkH5JfxMC)

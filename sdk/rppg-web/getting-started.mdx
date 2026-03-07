@@ -1,0 +1,119 @@
+---
+title: "rPPG Web — Getting Started"
+description: "Camera-based heart rate measurement with @elata-biosciences/rppg-web"
+---
+
+## What is rPPG?
+
+Remote photoplethysmography (rPPG) extracts heart rate from subtle color changes in facial skin captured by a standard camera. No contact sensor is needed — just a webcam.
+
+---
+
+## Installation
+
+```bash
+pnpm add @elata-biosciences/rppg-web
+```
+
+Requirements: Node.js 18+, browser with camera access and WebAssembly support.
+
+---
+
+## Basic Usage
+
+```typescript
+import { RppgProcessor } from "@elata-biosciences/rppg-web";
+
+const processor = new RppgProcessor("wasm", 30); // backend, sampleRate
+
+// Feed green-channel intensity from face ROI each frame
+processor.pushSample(performance.now(), greenIntensity);
+
+// Get current heart rate estimate
+const metrics = processor.getMetrics();
+console.log("BPM:", metrics.bpm);
+console.log("Quality:", metrics.quality);
+```
+
+---
+
+## RppgProcessor
+
+The main class that processes a stream of color samples and produces heart rate estimates.
+
+### Constructor
+
+```typescript
+new RppgProcessor(backend: Backend, sampleRate: number, windowSeconds?: number)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `backend` | `"wasm"` or `"native"` | Processing backend |
+| `sampleRate` | `number` | Expected frames per second (e.g., 30) |
+| `windowSeconds` | `number` | Analysis window length (default: 10) |
+
+### Pushing Samples
+
+Three methods for different input formats:
+
+```typescript
+// Green channel only
+processor.pushSample(timestampMs, intensity);
+
+// RGB channels
+processor.pushSampleRgb(timestampMs, r, g, b, skinRatio?);
+
+// RGB with motion and clip metadata
+processor.pushSampleRgbMeta(timestampMs, r, g, b, skinRatio?, motion?, clipRatio?);
+```
+
+### Getting Metrics
+
+```typescript
+const metrics: Metrics = processor.getMetrics();
+```
+
+`Metrics` includes:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `bpm` | `number` | Estimated heart rate in BPM |
+| `quality` | `number` | Signal quality (0-1) |
+| `spectralBpm` | `number` | Spectral analysis estimate |
+| `acfBpm` | `number` | Autocorrelation estimate |
+| `confidence` | `number` | Overall confidence |
+
+### Particle Tracker
+
+Enable for more robust BPM tracking:
+
+```typescript
+processor.enableTracker(minBpm?, maxBpm?, numParticles?);
+```
+
+### State Persistence
+
+Save and restore processor state:
+
+```typescript
+const snapshot = processor.getStateSnapshot();
+// ... later
+processor.loadStateSnapshot(snapshot);
+```
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Frame Sources" icon="camera" iconType="light" href="/sdk/rppg-web/frame-sources">
+    MediaPipe face detection and camera capture
+  </Card>
+  <Card title="Calibration" icon="bullseye" iconType="light" href="/sdk/rppg-web/calibration">
+    Muse fusion and calibration models
+  </Card>
+  <Card title="Camera Integration Guide" icon="video" iconType="light" href="/sdk/guides/rppg-camera">
+    End-to-end rPPG setup
+  </Card>
+</CardGroup>

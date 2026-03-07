@@ -1,0 +1,132 @@
+---
+title: "EEG Web BLE — Getting Started"
+description: "Connect to EEG headband devices over Web Bluetooth"
+---
+
+## Installation
+
+```bash
+pnpm add @elata-biosciences/eeg-web-ble @elata-biosciences/eeg-web
+```
+
+`eeg-web-ble` depends on `eeg-web` for shared frame types and the WASM module.
+
+---
+
+## Requirements
+
+- Browser with **Web Bluetooth** support (Chrome/Edge on desktop or Android)
+- Served from a **secure context** (`https://`)
+- Safari/iOS does **not** support Web Bluetooth — see [platform notes](/sdk/overview) for alternatives
+
+---
+
+## Basic Usage
+
+```typescript
+import { initEegWasm } from "@elata-biosciences/eeg-web";
+import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+
+// Initialize WASM first
+await initEegWasm();
+
+// Create transport
+const transport = new BleTransport();
+
+// Handle incoming EEG frames
+transport.onFrame = (frame) => {
+  console.log(`EEG samples: ${frame.eeg.samples.length} rows`);
+  console.log(`Channels: ${frame.eeg.channelNames.join(", ")}`);
+};
+
+// Handle connection status changes
+transport.onStatus = (status) => {
+  console.log(`Transport: ${status.state}`, status.reason || "");
+};
+
+// Connect and start streaming
+await transport.connect();   // triggers Bluetooth device picker
+await transport.start();     // begins EEG data stream
+
+// ... later
+await transport.stop();
+await transport.disconnect();
+```
+
+---
+
+## BleTransport Lifecycle
+
+| Method | What it does |
+|--------|-------------|
+| `connect()` | Opens Bluetooth device picker, pairs, and prepares session |
+| `start()` | Begins EEG data stream; `onFrame` callbacks fire |
+| `stop()` | Stops the data stream; connection stays open |
+| `disconnect()` | Releases the Bluetooth session |
+
+---
+
+## BleTransportOptions
+
+```typescript
+const transport = new BleTransport({
+  sourceName: "my-app-ble",           // name tag in frame.source
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),  // for Athena headbands
+    logger: (msg) => console.debug(msg),
+    onDisconnected: () => console.warn("Device disconnected"),
+  },
+});
+```
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `sourceName` | `string` | Identifier included in `HeadbandFrameV1.source` |
+| `deviceOptions` | `MuseDeviceOptions` | Passed to underlying `MuseBleDevice` |
+| `device` | `BleDeviceLike` | Inject a custom device implementation |
+
+---
+
+## Athena Support
+
+Muse S headbands with Athena firmware require an Athena decoder factory:
+
+```typescript
+import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+
+const transport = new BleTransport({
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),
+  },
+});
+```
+
+Athena headbands provide 8 EEG channels, optics, accelerometer/gyroscope, and battery data in each frame.
+
+---
+
+## Device Info
+
+After connecting, you can query device metadata:
+
+```typescript
+await transport.connect();
+
+const isAthena = transport.getIsAthena();
+const boardInfo = transport.getBoardInfo();
+const channelNames = transport.getEegNames();
+```
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Muse Device Details" icon="microchip" iconType="light" href="/sdk/eeg-web-ble/muse-device">
+    Protocol details, characteristics, and compatibility
+  </Card>
+  <Card title="EEG + BLE Integration" icon="link" iconType="light" href="/sdk/guides/eeg-ble-integration">
+    End-to-end streaming and processing guide
+  </Card>
+</CardGroup>

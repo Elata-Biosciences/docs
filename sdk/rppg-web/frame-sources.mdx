@@ -1,0 +1,131 @@
+---
+title: "Frame Sources"
+description: "Camera capture and face detection with MediaPipe"
+---
+
+## FrameSource Interface
+
+All frame sources implement this interface:
+
+```typescript
+interface FrameSource {
+  onFrame: ((frame: Frame) => void) | null;
+  start(): Promise<void>;
+  stop(): Promise<void>;
+}
+
+type Frame = {
+  data: Uint8ClampedArray | number[];  // RGBA pixel data
+  width: number;
+  height: number;
+  roi?: ROI;
+  rois?: ROI[];
+  timestampMs?: number;
+};
+
+type ROI = { x: number; y: number; w: number; h: number };
+```
+
+---
+
+## MediaPipeFrameSource
+
+Captures camera frames and uses MediaPipe for face detection, providing a face ROI with each frame:
+
+```typescript
+import { MediaPipeFrameSource } from "@elata-biosciences/rppg-web";
+
+const source = new MediaPipeFrameSource();
+
+source.onFrame = (frame) => {
+  // frame.roi contains the detected face bounding box
+  // frame.data contains the camera image pixels
+  console.log("Face ROI:", frame.roi);
+};
+
+await source.start();
+// ... later
+await source.stop();
+```
+
+---
+
+## MediaPipeFaceFrameSource
+
+A more specialized variant that uses MediaPipe FaceMesh for precise facial landmark detection. Provides multiple ROIs for forehead, cheeks, etc.:
+
+```typescript
+import { MediaPipeFaceFrameSource, loadFaceMesh } from "@elata-biosciences/rppg-web";
+
+const faceMesh = await loadFaceMesh();
+const source = new MediaPipeFaceFrameSource(faceMesh);
+
+source.onFrame = (frame) => {
+  // frame.rois may contain multiple face regions
+  console.log("Face regions:", frame.rois?.length);
+};
+
+await source.start();
+```
+
+---
+
+## loadFaceMesh
+
+Helper to load the MediaPipe FaceMesh model:
+
+```typescript
+import { loadFaceMesh } from "@elata-biosciences/rppg-web";
+
+const faceMesh = await loadFaceMesh();
+```
+
+---
+
+## DemoRunner
+
+`DemoRunner` orchestrates a frame source and `RppgProcessor` together, handling ROI extraction, skin masking, and stats reporting:
+
+```typescript
+import { DemoRunner, MediaPipeFrameSource, RppgProcessor } from "@elata-biosciences/rppg-web";
+import type { DemoRunnerOptions } from "@elata-biosciences/rppg-web";
+
+const source = new MediaPipeFrameSource();
+const processor = new RppgProcessor("wasm", 30);
+
+const options: DemoRunnerOptions = {
+  useSkinMask: true,
+  onStats: (stats) => {
+    console.log(`Green: ${stats.intensity}, Skin: ${stats.skinRatio}, FPS: ${stats.fps}`);
+  },
+};
+
+const runner = new DemoRunner(source, processor, options);
+await runner.start();
+
+// ... later
+await runner.stop();
+```
+
+### DemoRunnerOptions
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `roi` | `ROI \| null` | `null` | Fixed ROI override (null = use face detection) |
+| `sampleRate` | `number` | — | Override sample rate |
+| `roiSmoothingAlpha` | `number` | — | Exponential smoothing for ROI jitter |
+| `useSkinMask` | `boolean` | `false` | Apply YCbCr skin tone mask |
+| `skinRatioSmoothingAlpha` | `number` | — | Smooth the skin ratio metric |
+| `onStats` | `function` | — | Callback with per-frame statistics |
+
+---
+
+## ROI Helper
+
+Extract average green channel intensity from a region of interest:
+
+```typescript
+import { averageGreenInROI } from "@elata-biosciences/rppg-web";
+
+const intensity = averageGreenInROI(frame, roi.x, roi.y, roi.w, roi.h);
+```

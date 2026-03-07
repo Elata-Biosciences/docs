@@ -5,7 +5,7 @@ description: "A decentralized protocol for building and monetizing neurotech app
 
 ## Overview
 
-Elata lets you launch neurotech apps with their own tokens — no fundraising, no gatekeepers. You bring the app, we handle the token economics.
+Elata is a permissionless app-launch protocol. Builders register an app, launch an app token, and distribute it on a constant-product ELTA bonding curve.
 
 <Info>
   **Network**: Live on **Base Sepolia** (testnet). Mainnet on **Base** coming soon.
@@ -16,7 +16,7 @@ Elata lets you launch neurotech apps with their own tokens — no fundraising, n
     Launch your app with a native token in minutes
   </Card>
   <Card title="For Users" icon="user" iconType="light" href="/users/explore-apps">
-    Find apps, stake tokens, earn fees
+    Find apps, trade tokens, participate in governance
   </Card>
 </CardGroup>
 
@@ -24,31 +24,31 @@ Elata lets you launch neurotech apps with their own tokens — no fundraising, n
 
 ## Why This Exists
 
-Building neurotech is hard. Getting paid for it is harder. Most developers either join a closed platform that takes ownership of their work, or spend months chasing grants and investors instead of building.
+Building neurotech products is hard. Bootstrapping distribution and aligned economics is usually harder. Elata packages launch mechanics, curve distribution, and fee routing into reusable contracts.
 
-Elata flips this: launch an app, get a token, start earning from day one. Users who believe in your app can buy in early and share in its success.
+The protocol focuses on deterministic on-chain behavior: explicit lifecycle states, fixed launch defaults, and transparent routing of launch and trading fees.
 
 ---
 
 ## What Elata Does
 
-The short version: permissionless app launches with built-in token economics.
+Short version: register app -> launch app token -> trade on curve -> graduate to LP.
 
 ### If You're Building
 
-- **Pay 110 ELTA**, get a token with 1 billion supply
-- **Keep 50%** of your token, auto-staked and earning fees
-- **Sell the other 50%** through a bonding curve — price goes up as people buy
-- **Add features** like tournaments, NFT items, staking rewards
+- **Pay 110 ELTA total** (`10` creation fee + `100` seed)
+- **Launch a 10,000,000 supply app token**
+- **Default allocation**: `50%` curve, `25%` vesting, `25%` ecosystem
+- **Use fee pipeline contracts** for launch/trading/transfer fee routing
 
 No smart contract development needed. The infrastructure deploys automatically.
 
 ### If You're Using or Investing
 
 - **Browse apps** on the App Store
-- **Buy tokens early** through bonding curves (lower price = earlier)
-- **Stake tokens** to earn 70% of trading fees
-- **Lock ELTA as veELTA** for governance votes and 15% of all protocol fees
+- **Buy during active curve phase**
+- **Track graduation** to DEX LP once target is reached
+- **Use XP for early access** during launch windows when enabled
 
 ---
 
@@ -57,19 +57,18 @@ No smart contract development needed. The infrastructure deploys automatically.
 ```mermaid
 graph TD
     A[Developer Launches App] --> B[App Token Created]
-    B --> C[Users Buy Tokens via Bonding Curve]
-    C --> D[Trading Fees Generated]
-    D --> E[70% to App Stakers]
-    D --> F[15% to veELTA Holders]
-    D --> G[15% to Treasury]
-    E --> H[Rewards Distributed]
-    F --> H
+    B --> C[Users Buy On Active Curve]
+    C --> D[Fees Accumulate]
+    D --> E[FeeCollector Buckets By AppAndKind]
+    E --> F[FeeSwapper Routes]
+    F --> G[LaunchFee To Treasury]
+    F --> H[AppRevenue To ContributorsAndTreasury]
 ```
 
-1. **Launch**: Pay 110 ELTA, get 1B tokens (50% yours, 50% for sale)
-2. **Trade**: Bonding curve sets price based on demand. 1% fee on every trade.
-3. **Earn**: Fees split 70/15/15: stakers, veELTA holders, treasury
-4. **Graduate**: Hit 42,000 ELTA raised: liquidity moves to Uniswap, LP locked for 2 years
+1. **Launch**: `110 ELTA` total cost and app stack deployment.
+2. **Trade**: buyers interact with an `x*y=k` bonding curve while active.
+3. **Route fees**: fees move through `FeeCollector` -> `FeeSwapper`.
+4. **Graduate**: at `42,000 ELTA` (default), LP is created and locked for `2 years`.
 
 ---
 
@@ -77,11 +76,11 @@ graph TD
 
 | Component          | What It Does                                    |
 | ------------------ | ----------------------------------------------- |
-| **ELTA**           | Protocol token. Used to launch apps and trade.  |
-| **veELTA**         | Locked ELTA. Gets you votes + 15% of fees.      |
-| **App Tokens**     | Each app's own token. 1B supply per app.        |
-| **Bonding Curves** | Sets price based on demand until graduation.    |
-| **Staking Vaults** | Stake app tokens → earn 70% of that app's fees. |
+| **ELTA**           | Base protocol token (fixed 77,000,000 supply).  |
+| **veELTA**         | Time-locked voting power (1x-2x boost).         |
+| **App Tokens**     | Per-app tokens with fixed 10,000,000 supply.    |
+| **Bonding Curves** | Constant-product launch trading until graduation.|
+| **Fee Pipeline**   | FeeCollector + FeeSwapper route by fee kind.    |
 
 ---
 
@@ -97,13 +96,19 @@ graph TD
   <Card title="Explore Apps" icon="compass" iconType="light" href="/users/explore-apps">
     See what's live
   </Card>
+  <Card title="SDK" icon="code" iconType="light" href="/sdk/overview">
+    EEG, BLE, and rPPG libraries
+  </Card>
+  <Card title="Open Source Projects" icon="github" iconType="light" href="/home/elata-eeg/elata-eeg-overview">
+    EEG hardware, Newsreader, AgentForge
+  </Card>
 </CardGroup>
 
 ---
 
 ## Links
 
-- [Apps Ecosystem](app.elata.bio)
+- [Apps Ecosystem](https://app.elata.bio)
 - [GitHub](https://github.com/elata-biosciences)
 - [Discord](https://discord.gg/GqS9CstffK)
 - [Twitter/X](https://x.com/elata_bio)

@@ -1,0 +1,171 @@
+---
+title: "Core Concepts"
+description: "Scenarios, agents, ticks, packs, and determinism in AgentForge"
+---
+
+## Scenarios
+
+A scenario is the top-level configuration for a simulation run. It defines:
+
+- **`name`** — identifier for the scenario
+- **`seed`** — deterministic RNG seed (same seed = same results)
+- **`ticks`** — number of simulation steps
+- **`tickSeconds`** — simulated time per tick (e.g., 3600 = 1 hour)
+- **`pack`** — protocol adapter that sets up world state
+- **`agents`** — list of agent types, counts, and parameters
+- **`assertions`** — post-run validation checks
+- **`gossip`** — channel definitions, budgets, and trust settings
+
+```typescript
+import { defineScenario } from '@elata-biosciences/agentforge';
+
+export default defineScenario({
+  name: 'my-scenario',
+  seed: 42,
+  ticks: 200,
+  tickSeconds: 3600,
+  pack: myPack,
+  agents: [
+    { type: MyAgent, count: 10 },
+  ],
+  assertions: [
+    { type: 'gt', metric: 'totalVolume', value: 0 },
+  ],
+});
+```
+
+---
+
+## Ticks
+
+A tick is one simulation step. During each tick:
+
+1. The engine calls `step(ctx)` on every agent in order
+2. Each agent returns zero, one, or up to three actions
+3. The pack executes each action against the protocol state
+4. Metrics, gossip, and artifacts are recorded
+
+Tick ordering can be configured: **priority-based** (default), **random**, or **custom**. The ordering policy affects outcomes — see the mechanism experiments for analysis.
+
+---
+
+## Agents
+
+Agents are autonomous actors. Every agent extends `BaseAgent` and implements `step()`:
+
+```typescript
+export class MyAgent extends BaseAgent {
+  async step(ctx: TickContext): Promise<Action | Action[] | null> {
+    // Observe state, decide, and return actions
+  }
+}
+```
+
+### Agent Context
+
+Each tick, agents receive a `TickContext` with:
+
+| Property | Description |
+|----------|-------------|
+| `ctx.rng` | Deterministic random number generator |
+| `ctx.world` | Current protocol state |
+| `ctx.gossip` | Read and post gossip messages |
+| `ctx.capabilities` | Available contracts, tools, and action templates |
+| `ctx.tick` | Current tick number |
+| `ctx.tickSeconds` | Simulated seconds per tick |
+
+### Agent State
+
+Agents can persist state across ticks:
+
+- **`this.remember(key, value)`** — store a value
+- **`this.recall(key)`** — retrieve a stored value
+- **`this.setCooldown(name, ticks)`** — rate-limit an action
+- **`this.isOnCooldown(name)`** — check cooldown status
+
+### Multi-Action Support
+
+Agents can return an array of up to 3 actions per tick. The engine executes each action in order within the same tick:
+
+```typescript
+return [
+  { id: this.generateActionId('swap', ctx.tick), name: 'swap', params: { ... } },
+  { id: this.generateActionId('post', ctx.tick), name: 'PostMessage', params: { ... } },
+];
+```
+
+### Persona LLM Agents
+
+`PersonaLlmAgentBase` provides a reusable base for LLM-driven agents with:
+
+- Persona profile (id, style, goals, risk profile, tool preferences)
+- Structured prompt assembly with full capability manifest context
+- Two-stage OODA loop: plan then act, with fallback to single-shot parsing
+- Schema-validated action intents via Zod
+
+---
+
+## Packs
+
+Packs are protocol adapters. They bridge AgentForge to your smart contracts by implementing the `Pack` interface:
+
+- **`setup()`** — deploy contracts, initialize state
+- **`executeAction(action)`** — execute an agent's action against the protocol
+- **`getWorldState()`** — return current protocol state for agents to observe
+- **`getCapabilityManifest()`** — describe available contracts, functions, and action templates
+
+The built-in `ToyPack` provides a simple price-simulation environment for getting started.
+
+---
+
+## Gossip
+
+The gossip bus enables inter-agent communication:
+
+- **Channels** — global broadcast or scoped strategy channels with membership lists
+- **Free-form messages** — text payloads with optional `credibilityPrior` scores (0-1)
+- **Budgets** — configurable `maxPostsPerTick` and `maxReadsPerTick` per agent
+- **Cooldowns** — per-channel `postCooldownTicks` to rate-limit posting
+
+```typescript
+gossip: {
+  channels: [
+    { id: 'global', members: 'all' },
+    { id: 'strategy', members: ['LlmAgent-0', 'LlmAgent-1'] },
+  ],
+  budgets: { maxPostsPerTick: 3, maxReadsPerTick: 10 },
+}
+```
+
+Strategy channels are useful for LLM-only coordination without flooding deterministic agents.
+
+---
+
+## Determinism
+
+Same seed + same scenario = identical results. All randomness flows through a seeded RNG. This enables:
+
+- **Reproducible CI** — assertions pass or fail consistently
+- **Replay** — re-run exploration traces deterministically against updated contracts
+- **Comparison** — diff two runs with `forge-sim compare`
+
+```bash
+forge-sim run --toy --seed 123 --out run1 --ci
+forge-sim run --toy --seed 123 --out run2 --ci
+forge-sim compare run1/toy-market-ci run2/toy-market-ci
+```
+
+---
+
+## Exploration / Replay Workflow
+
+1. **Explore** — run with LLM agents in exploration mode to discover behaviors
+2. **Capture** — a `replay_bundle.json` records the full decision trace
+3. **Replay** — re-run the exact same trace deterministically against updated contracts
+
+```bash
+forge-sim run scenario.ts --mode exploration
+forge-sim run scenario.ts --mode replay --replay-bundle results/run/replay_bundle.json
+```
+
+This allows you to discover emergent attack vectors with LLMs, then regression-test them after contract changes.

@@ -118,13 +118,13 @@ For direct blockchain interaction, these are the key contracts:
 
 ### Per-App Contracts
 
-| Contract            | Purpose                    |
-| ------------------- | -------------------------- |
-| **AppToken**        | Individual app token       |
-| **AppBondingCurve** | Price discovery            |
-| **AppStakingVault** | Staking for rewards        |
-| **AppAccess1155**   | NFT items                  |
-| **Tournament**      | Competition infrastructure |
+| Contract               | Purpose                          |
+| ---------------------- | -------------------------------- |
+| **AppToken**           | Individual app ERC-20 token      |
+| **AppBondingCurve**    | Price discovery via ELTA curve   |
+| **AppVestingWallet**   | 25% supply — cliff + linear vest |
+| **AppEcosystemVault**  | 25% supply — admin-controlled    |
+| **FeeCollector**       | Collects and routes protocol fees |
 
 ### Contract Addresses
 
@@ -158,23 +158,32 @@ const appData = await client.readContract({
 
 | Contract        | Function             | Returns                                        |
 | --------------- | -------------------- | ---------------------------------------------- |
-| AppFactory      | `apps(uint256)`      | App tuple (creator, token, vault, curve, etc.) |
-| AppFactory      | `appCount()`         | Total apps launched                            |
-| AppToken        | `balanceOf(address)` | User token balance                             |
-| AppStakingVault | `balanceOf(address)` | User staked balance                            |
-| AppBondingCurve | `getPrice()`         | Current curve price                            |
-| VeELTA          | `balanceOf(address)` | User veELTA balance                            |
+| AppFactory        | `apps(uint256)`      | App tuple (creator, token, curve, etc.)  |
+| AppFactory        | `appCount()`         | Total apps launched                      |
+| AppToken          | `balanceOf(address)` | User token balance                       |
+| AppBondingCurve   | `getPrice()`         | Current curve price                      |
+| AppVestingWallet  | `releasable()`       | Vested tokens available to release       |
+| AppEcosystemVault | `balance()`          | Vault token balance                      |
+| VeELTA            | `balanceOf(address)` | User veELTA balance                      |
 
 ---
 
 ## Writing Transactions
 
-### App Launch
+### App Launch (Two-Phase)
 
 ```typescript
 import { writeContract } from 'wagmi'
 
-// Approve ELTA first
+// Phase 1 — register the app (no token yet)
+await writeContract({
+  address: APP_FACTORY_ADDRESS,
+  abi: AppFactoryABI,
+  functionName: 'createAppWithoutToken',
+  args: [name, symbol, description, imageUrl, website]
+})
+
+// Phase 2 — approve ELTA and launch the token + bonding curve
 await writeContract({
   address: ELTA_ADDRESS,
   abi: ERC20ABI,
@@ -182,12 +191,11 @@ await writeContract({
   args: [APP_FACTORY_ADDRESS, 110n * 10n**18n]
 })
 
-// Create app
 await writeContract({
   address: APP_FACTORY_ADDRESS,
   abi: AppFactoryABI,
-  functionName: 'createApp',
-  args: [name, symbol, 0n, description, imageUrl, website]
+  functionName: 'launchTokenForApp',
+  args: [appId]
 })
 ```
 
@@ -211,23 +219,23 @@ await writeContract({
 })
 ```
 
-### Stake Tokens
+### Lock ELTA as veELTA
 
 ```typescript
-// Approve tokens for vault
+// Approve ELTA for the VeELTA contract
 await writeContract({
-  address: APP_TOKEN_ADDRESS,
+  address: ELTA_ADDRESS,
   abi: ERC20ABI,
   functionName: 'approve',
-  args: [VAULT_ADDRESS, amount]
+  args: [VEELTA_ADDRESS, amount]
 })
 
-// Stake
+// Lock ELTA (unlockTime is a Unix timestamp)
 await writeContract({
-  address: VAULT_ADDRESS,
-  abi: AppStakingVaultABI,
-  functionName: 'stake',
-  args: [amount]
+  address: VEELTA_ADDRESS,
+  abi: VeELTAABI,
+  functionName: 'lock',
+  args: [amount, unlockTime]
 })
 ```
 
@@ -261,8 +269,7 @@ When embedded, your app receives:
 
 - Connected wallet address
 - App token balance
-- Staked amount
-- Owned items
+- veELTA balance
 
 ---
 
@@ -271,40 +278,35 @@ When embedded, your app receives:
 Future webhook support for:
 
 - New token purchases
-- Staking events
-- Tournament entries
-- Item purchases
+- Fee collection events
 
 ---
 
 ## SDKs & Libraries
 
-### Official Packages
+### Elata Bio SDK
 
-| Package        | Purpose        | Status  |
-| -------------- | -------------- | ------- |
-| `@elata/sdk`   | TypeScript SDK | Planned |
-| `@elata/react` | React hooks    | Planned |
+| Package | Purpose | Docs |
+|---------|---------|------|
+| `@elata-biosciences/eeg-web` | EEG signal processing via WASM | [SDK — eeg-web](/sdk/eeg-web/getting-started) |
+| `@elata-biosciences/eeg-web-ble` | Web Bluetooth headband connection | [SDK — eeg-web-ble](/sdk/eeg-web-ble/getting-started) |
+| `@elata-biosciences/rppg-web` | Camera-based heart rate (rPPG) | [SDK — rppg-web](/sdk/rppg-web/getting-started) |
 
-### Current Approach
+See the full [SDK documentation](/sdk/overview) for installation, architecture, and integration guides.
 
-Use the App Store source as reference:
+### App Store Source
 
-- [elata-appstore](https://github.com/elata-biosciences/elata-appstore) - Frontend code
-- [elata-protocol](https://github.com/elata-biosciences/elata-protocol) - Smart contracts
+Use the App Store codebase as an integration reference:
 
-### Useful Hooks from App Store
-
-The App Store includes React hooks you can reference:
+- [elata-appstore](https://github.com/elata-biosciences/elata-appstore) — Frontend code
+- [elata-protocol](https://github.com/elata-biosciences/elata-protocol) — Smart contracts
 
 ```typescript
-// Examples from elata-appstore/src/hooks/
-
+// Useful hooks from elata-appstore/src/hooks/
 useAppFactory()      // App creation and data
 useBondingCurve()    // Price quotes, buy/sell
 useAppHoldings()     // User balances
-useVeELTA()          // veELTA staking
-useTournament()      // Tournament interactions
+useVeELTA()          // veELTA locking
 ```
 
 ---
@@ -318,9 +320,9 @@ elata-appstore/src/abi/
 ├── AppFactory.json
 ├── AppBondingCurve.json
 ├── AppToken.json
-├── AppStakingVault.json
-├── AppAccess1155.json
-├── Tournament.json
+├── AppVestingWallet.json
+├── AppEcosystemVault.json
+├── FeeCollector.json
 ├── ELTA.json
 ├── VeELTA.json
 └── ...

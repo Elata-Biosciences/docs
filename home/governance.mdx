@@ -2,129 +2,21 @@
 title: "Governance"
 ---
 
-Elata utilizes a decentralized governance structure which relies on a multi-step implementation process and is decided by holders of Elata's native token, ELTA. This structure was purpose-built to gradually transition key decision making within Elata from its core stewards to the community over time.
+Elata governance is contract-based and timelocked.
 
-Elata does not have a CEO or Board of Directors. A person or organization verifiably holding any given number of ELTA can become a member automatically depending on their desire to opt-in to governance decisions.
+## How Voting Power Works
 
-<Tip>
-  **Paticipating in Elata Governance: **Elata's governance structure relies on participation from \$ELTA holders to stake the desired portion of tokens from their holdings and vote in accordance to their beliefs.
-</Tip>
+- lock ELTA into veELTA
+- longer locks increase voting power (up to 2x boost)
+- voting uses governor + timelock flow
 
-Elata employs a democratic governance model where each token holder's voting power is directly proportional to their holdings. Specifically, each ELTA token represents one vote, ensuring that governance is distributed among all token holders based on their stake in the DAO. 
+## Proposal Defaults
 
-This one token, one vote system is guided by insights from our stewards and core teams to facilitate a community-driven approach where every token holder's voice is heard, proportional to their commitment to the DAO.
+| Parameter | Value |
+|---|---|
+| Voting delay | 1 day |
+| Voting period | 7 days |
+| Proposal threshold | 0.1% of supply |
+| Quorum | 4% of supply |
 
-Our governance process is outlined below.
-
----
-
-## Proposals
-
-Elata initiates projects based on proposals that are submitted by individuals, the engineering team, community, and organizations either internally or externally. In addition, projects are reviewed by relevant Elata teams for scientific, clinical, technological, and business relevance, and proposed for funding. Once funding is released, the Development team or the engineering team monitors the project and offers assistance to its implementation based on expertise.
-
-Elata leverages [Snapshot](https://snapshot.box/#/), a leading blockchain voting platform, to facilitate on-chain voting. Snapshot facilitates all votes and proposals without users having to incur gas fees, providing a clear and verifiable record of governance decisions. Additionally, Elata may utilize third-party audits and community oversight to further ensure the integrity of the voting process.
-
----
-
-## Voting
-
-The voting process for proposals consists of two stages:
-
-<Steps>
-  <Step title="Initial Voting">
-    Proposals are first posted in the "governance forum" channel on the Elata Discord server. To advance to the next stage, a proposal must:
-
-    - Remain open for 2 days.
-    - Receive a majority of positive votes.
-  </Step>
-  <Step title="Snapshot vote">
-    If a proposal passes the initial voting stage, it is then submitted to an off-chain decentralized voting platform known as [Snapshot](https://snapshot.org/#/). To be validated on Snapshot, a proposal must:
-
-    - Achieve a quorum of 15% of circulating tokens.
-    - Secure a majority of positive votes.
-    - Remain open for 4 days.
-
-    Once a proposal successfully passes both stages, the Elata community will execute it.
-  </Step>
-</Steps>
-
----
-
-## Teams 
-
-Elata’s internal units are referred to as teams - which are essentially working groups - composed of Elata members. They are tasked by the member community to perform a set of thematic activities in line with the mission and vision of Elata.
-
-<Note>
-  **Joining a team: **If you are interested in joining an Elata team, please complete [**this**](https://tally.so/r/wkPZ71) form to declare your interest.
-</Note>
-
-The following teams comprise Elata's organizational structure:
-
-1. **Development team**
-2. **Operations team**
-3. **Engineering team**
-4. **Engagement team**
-
-Teams are supposed to encourage member involvement. Their purpose is to incentivize efficiency and results by rewarding members and contributors based on their performance.
-
-## Development
-
-Responsible for screening, segmenting, and seeking projects for Elata to finance and develop, and is responsible for the following:
-
-Critically analyzes inbound and outbound investment opportunities; uses scientific and clinical analysis to gauge likelihood of regulatory approval and positive patient outcomes.
-
-Organizes, reviews, and segments all inbound and outbound opportunities for Elata’s research dealings.
-
-Works together with engagement and engineering teams to ensure opportunities pursued fall in line with community interest.
-
-Works together with operations team and licensing offices/project managers to assume IP ownership.
-
-## Operations
-
-Operations ensures security practices, legal needs, promotes transparency, and fulfills ancillary needs that relieve logistical burden from other teams, and is responsible for:
-
-Asset management; oversees technical and product development of all digital, physical, and intangible assets owned or managed by Elata, ensuring they align with the DAO's strategic goals.
-
-Manage legal affairs related to Elata's operations, including compliance, contracts, and regulatory affairs.
-
-Design and refine the economic models, including token distribution, incentives, and financial sustainability strategies.
-
-Implement and maintain security measures to protect assets, data, and member information from threats, ensuring the integrity and safety of all operations.
-
-## Engineering
-
-The Engineering Team builds and maintains the core technology stack powering Elata’s mission. From open-source neuroimaging hardware that captures brainwave or behavioral data to decentralized software that processes and protects these data streams, this team bridges cutting-edge innovations in neuroscience, ML/AI, cryptography, and web services. They are responsible for the following:
-
-Developing open-source hardware for capturing relevant biomarkers or treating mental health issues (e.g., EEG, TMS, light/actigraphy sensors).
-
-Designing secure, privacy-preserving data pipelines, including those leveraging zero-knowledge proofs.
-
-Creating machine learning models aimed at mental health applications, especially computational neuroscience and psychiatry.
-
-Maintaining and expanding Elata’s suite of web services, such as our open-source news aggregator, contributor portals, and governance tools.
-
-Working in tandem with other teams to translate open-source insights into practical and profitable solutions that sustain the DAO.
-
-## Engagement
-
-The engagement team carries a broad responsibility which is to promote Elata initiatives across various channels, act as liaison between community members and projects, provides updates to community, and ensures collaboration with external partnerships. They are responsible for the following:
-
-Educate and raise awareness about the significance of Elata Biosciences through targeted outreach and educational programs.
-
-Cultivate and sustain a vibrant, supportive community, ensuring active member participation and retention.
-
-Promote the growth and visibility of Elata, enhancing its reputation and reach within relevant communities.
-
-Drive business development by forging partnerships and collaborations that align with Elata’s mission and can amplify its impact.
-
-## Stewardship & Core
-
-Each team is guided by a steward, which are elected by ELTA holders. Stewards act as leaders, ensuring the smooth operation and direction of their respective working groups.
-
-ElataCore is an advisory group that represents various groups of stakeholders. They are not a “Board of Directors”, but rather the opposite: ElataCore supports the Stewards. ElataCore is accountable to tokenholders, who define the scope of ElataCore's executive power over operational decisions and may refine these at any time in a new governance proposal.
-
-Each ElataCore member is chosen to support a specific strategic objective of the DAO. In that sense, holders of our tokens are represented by ElataCore, but the token holders are the overseeing and superior entity that governs ElataCore through proposals.
-
-To facillitate impartial decision-making, a clear separation between ElataCore and stewards will be indicated in Governance initiatives. This allows ElataCore to prioritize the highest-impact initiatives while stewards provide unbiased oversight. However, resource and contributor limitations may necessitate some overlap. The ultimate goal remains a clear and practical division between the two groups.
-
----
+Emergency proposal paths can use stricter thresholds and faster windows depending on deployment config.

@@ -5,7 +5,7 @@ description: "ELTA token supply, distribution, and veELTA mechanics"
 
 ## ELTA Token
 
-ELTA is the protocol token. You use it to launch apps, trade app tokens, and participate in governance.
+ELTA is the protocol base token used for launches, curve trading, and governance/staking flows.
 
 <Info>
   **Contract**: ELTA is currently deployed on Base Sepolia (testnet). View on [Basescan](https://sepolia.basescan.org/address/0x6D83439381e89C95742D0A8200E24563079b33dd). Mainnet deployment coming soon.
@@ -19,44 +19,19 @@ ELTA is the protocol token. You use it to launch apps, trade app tokens, and par
 | -------------- | -------------------------- |
 | **Max supply** | 77,000,000 ELTA            |
 | **Decimals**   | 18                         |
-| **Standard**   | ERC-20 with Votes + Permit |
+| **Model**      | Fixed supply, minted once  |
 
-Hard cap. Can't be increased.
-
-### Distribution Breakdown
-
-<img
-  src="/images/main/elta-distribution-light.svg"
-  alt="ELTA distribution"
-  className="block dark:hidden"
-/>
-
-<img
-  src="/images/main/elta-distribution-dark.svg"
-  alt="ELTA distribution"
-  className="hidden dark:block"
-/>
-
-| Category               | Allocation | Vesting       |
-| ---------------------- | ---------- | ------------- |
-| **Treasury**           | 38%        | 4-year linear |
-| **Community Benefits** | 19.5%      | 3-year linear |
-| **Contributors**       | 15%        | 6-year linear |
-| **Liquidity**          | 12.5%      | Immediate     |
-| **Public Sale**        | 10%        | Immediate     |
-| **Community Sale**     | 5%         | Immediate     |
-
----
+Hard cap. No inflation path in current token contract.
 
 ## What ELTA Does
 
-**Launch apps** — 110 ELTA (100 seeds curve, 10 to treasury)
+**Launch apps** — `110 ELTA` total (`100` seed + `10` creation fee)
 
 **Trade** — All app tokens trade against ELTA
 
-**Stake** — Lock as veELTA → 15% of all fees + voting power
+**Stake** — Lock ELTA as veELTA for governance-weighted voting power
 
-**Govern** — veELTA holders vote on proposals (0.1% to propose, 4% quorum)
+**Govern** — vote through governor/timelock system
 
 ---
 
@@ -101,14 +76,15 @@ Each app launches with its own ERC-20:
 
 |                   |                    |
 | ----------------- | ------------------ |
-| **Supply**        | 1 billion          |
-| **Creator**       | 50% (auto-staked)  |
+| **Supply**        | 10,000,000         |
 | **Bonding curve** | 50%                |
+| **Vesting wallet**| 25%                |
+| **Ecosystem vault**| 25%               |
 | **Graduation**    | 42,000 ELTA raised |
 
 ### Transfer Fee
 
-1% on every transfer (max 2%). Split 70/15/15 like other fees.
+Default transfer tax is `1%` (max `2%`) and is LP-keyed: it only applies when transfers touch allowlisted liquidity-pool addresses.
 
 ---
 
@@ -118,32 +94,22 @@ Each app launches with its own ERC-20:
 | --------------- | ------- |
 | **Trading**     | 1%      |
 | **Launches**    | 10 ELTA |
-| **Tournaments** | 2.5%    |
-| **Transfers**   | 1%      |
+| **Transfers**   | 1% (default) |
+| **Modules**     | Configurable by module |
 
-All fees split 70/15/15: stakers, veELTA holders, treasury.
+Current routing policy in V2 pipeline:
 
----
-
-## Release Schedule
-
-![ELTA release schedule](/images/ELTAReleaseschedule.svg)
-
-ELTA is released according to predefined vesting schedules:
-
-- **Year 1**: ~25% of supply circulating
-- **Year 2**: ~45% of supply circulating
-- **Year 4**: ~85% of supply circulating
-- **Year 6**: 100% fully vested
+- `LAUNCH_FEE` -> `100%` treasury
+- App-revenue fee kinds -> default `80%` contributors / `20%` treasury (governance configurable)
 
 ---
 
 ## Summary
 
 - **77M max** — fixed forever
-- **Fees, not inflation** — rewards come from usage
-- **Lock longer = earn more** — veELTA boost up to 2x
-- **Multiple fee sources** — trading, launches, tournaments, transfers
+- **10M app supply per launch** — fixed by current factory defaults
+- **Lock longer = more voting power** — veELTA boost up to 2x
+- **Explicit fee kinds** — launch fee and app-revenue kinds are routed differently
 
 ---
 

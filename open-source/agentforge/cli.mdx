@@ -1,0 +1,160 @@
+---
+title: "CLI Reference"
+description: "Full command and option reference for the AgentForge CLI"
+---
+
+## Installation
+
+The CLI is available as `forge-sim` (or `agentforge`) after installing the package:
+
+```bash
+pnpm add @elata-biosciences/agentforge
+```
+
+---
+
+## Commands
+
+### `forge-sim init [path]`
+
+Scaffold a simulation folder with example scenarios and configuration.
+
+```bash
+forge-sim init                    # Initialize in current directory
+forge-sim init sim/               # Initialize in sim/ subdirectory
+```
+
+### `forge-sim run <scenario>`
+
+Execute a scenario file and produce artifacts.
+
+```bash
+forge-sim run sim/scenarios/stress.ts
+forge-sim run --toy                          # Run built-in demo scenario
+```
+
+**Options:**
+
+| Flag | Description |
+|------|-------------|
+| `--seed <n>` | Override random seed |
+| `--ticks <n>` | Override tick count |
+| `--out <dir>` | Output directory for artifacts |
+| `--mode <mode>` | `deterministic` (default), `exploration`, or `replay` |
+| `--replay-bundle <path>` | Replay bundle path (for `--mode replay`) |
+| `--capture-memory` | Persist agent memory snapshots |
+| `--live` | Enable live WebSocket event stream |
+| `--ci` | CI mode — no colors, stable naming |
+| `--verbose` | Verbose logging |
+| `--json` | Output results as JSON |
+
+**Mode guidance:**
+- **`deterministic`** — no live LLM calls; best for baselines and CI
+- **`exploration`** — LLM-enabled red-team discovery; produces `replay_bundle.json`
+- **`replay`** — deterministic re-run of prior exploration traces
+
+### `forge-sim studio`
+
+Launch the Studio dashboard for multi-run analysis.
+
+```bash
+forge-sim studio
+```
+
+### `forge-sim report <runDir>`
+
+Generate a Markdown report from run artifacts.
+
+```bash
+forge-sim report results/market-stress-ci/
+```
+
+### `forge-sim dashboard <runDir>`
+
+Build a static HTML dashboard from run artifacts.
+
+```bash
+forge-sim dashboard results/market-stress-ci/
+```
+
+### `forge-sim serve <runDir>`
+
+Serve a run dashboard over HTTP.
+
+```bash
+forge-sim serve results/market-stress-ci/
+```
+
+### `forge-sim compare <runA> <runB>`
+
+Diff two runs — compare metrics, actions, and artifact hashes.
+
+```bash
+forge-sim compare results/run1 results/run2
+```
+
+### `forge-sim sweep <scenario>`
+
+Multi-seed statistical analysis. Runs the same scenario across a range of seeds and aggregates results.
+
+```bash
+forge-sim sweep sim/scenarios/stress.ts --seeds 1..50
+```
+
+### `forge-sim matrix <scenario>`
+
+Multi-variant matrix comparison. Runs multiple parameter combinations and produces a comparison matrix.
+
+```bash
+forge-sim matrix sim/scenarios/stress.ts
+```
+
+### `forge-sim extract-agent <bundle>`
+
+Generate a deterministic agent from a replay bundle. Useful for converting LLM exploration traces into reproducible test agents.
+
+```bash
+forge-sim extract-agent results/run/replay_bundle.json
+```
+
+### `forge-sim doctor`
+
+Check that all dependencies (Node.js, Foundry, Anvil) are available and correctly configured.
+
+```bash
+forge-sim doctor
+```
+
+### `forge-sim types`
+
+Generate TypeScript types from Foundry artifacts.
+
+```bash
+forge-sim types
+```
+
+---
+
+## CI Integration
+
+AgentForge is designed for CI pipelines. Exit codes:
+
+| Code | Meaning |
+|------|---------|
+| `0` | All assertions passed |
+| `1` | One or more assertions failed |
+| `2` | Infrastructure error |
+
+Example GitHub Actions workflow:
+
+```yaml
+- name: Run simulations
+  run: npx forge-sim run sim/scenarios/stress.ts --ci --seed 42
+
+- name: Upload artifacts
+  uses: actions/upload-artifact@v4
+  if: always()
+  with:
+    name: simulation-results
+    path: sim/results/
+```

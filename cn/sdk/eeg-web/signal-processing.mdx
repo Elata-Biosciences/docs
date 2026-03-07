@@ -1,0 +1,85 @@
+---
+title: "Signal Processing"
+description: "Band power analysis, FFT, and spectrum computation"
+---
+
+## Band Powers
+
+Compute standard EEG frequency band powers from a sample array:
+
+```typescript
+import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
+
+await initEegWasm();
+
+const powers = band_powers(samples, sampleRateHz);
+// powers.delta  — 0.5–4 Hz
+// powers.theta  — 4–8 Hz
+// powers.alpha  — 8–13 Hz
+// powers.beta   — 13–30 Hz
+// powers.gamma  — 30–100 Hz
+```
+
+`band_powers` returns a `WasmBandPowers` object with named fields for each standard band.
+
+---
+
+## Individual Band Functions
+
+For targeted analysis, use individual band functions:
+
+```typescript
+import {
+  alpha_power,
+  beta_power,
+  theta_power,
+  delta_power,
+  gamma_power,
+  custom_band_power,
+} from "@elata-biosciences/eeg-web";
+
+const alpha = alpha_power(samples, sampleRateHz);
+const beta = beta_power(samples, sampleRateHz);
+const theta = theta_power(samples, sampleRateHz);
+const delta = delta_power(samples, sampleRateHz);
+const gamma = gamma_power(samples, sampleRateHz);
+
+// Custom frequency range
+const mu = custom_band_power(samples, sampleRateHz, 8.0, 12.0);
+```
+
+---
+
+## Power Spectrum
+
+Compute the full power spectrum via FFT:
+
+```typescript
+import { compute_power_spectrum, get_fft_frequencies } from "@elata-biosciences/eeg-web";
+
+const spectrum = compute_power_spectrum(samples, sampleRateHz);
+const frequencies = get_fft_frequencies(samples.length, sampleRateHz);
+
+// spectrum[i] is the power at frequencies[i] Hz
+```
+
+---
+
+## Input Format
+
+All signal processing functions expect:
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `samples` | `Float64Array` or `number[]` | Single-channel EEG time series |
+| `sampleRateHz` | `number` | Sampling rate in Hz (e.g., 256 for Muse) |
+
+For multi-channel data (e.g., from `HeadbandFrameV1.eeg.samples`), extract individual channels and process them separately:
+
+```typescript
+const frame: HeadbandFrameV1 = /* ... from transport ... */;
+const channelIndex = 0; // TP9
+
+const channelSamples = frame.eeg.samples.map(row => row[channelIndex]);
+const powers = band_powers(new Float64Array(channelSamples), frame.eeg.sampleRateHz);
+```

@@ -2,139 +2,39 @@
 title: "Why Elata?"
 ---
 
-## TL;DR
+## Builder Summary
 
-- **Brain-native protocol for everyday apps:** Elata lets you plug brain & biometric signals into any app, such as games, productivity, wellness, or education, without dealing with raw neuroscience or hardware complexity. On top of that, our hardware abstraction layer, ML-driven neuro-profiles, signal decoding engine, and simple APIs let devs ship “brain-aware” features using familiar tools.
-- **Privacy-preserving personalization:** Elata uses Federated Learning, which keeps raw data local while global models improve for everyone, turning usage into compounding intelligence rather than extractive surveillance. Additionally, our Rust, TypeScript, and AI tooling gives developers end-to-end control over signal acquisition, analysis, and UX.
-- **Onchain economic design for builders:** Elata routes value through the \$ELTA token (governance, staking, treasury funding, and liquidity mechanisms) so that as your apps drive more usage and network effects, you can capture a meaningful share of that upside through revenue accumulation, launch-stage funding, and influence over future incentive design.
-- **Built-in reach & distribution:** Building on Elata plugs your app into a growing “internet of brains” (i.e. shared EEG devices, research cohorts, onchain protocols & gamers, and user communities) so every app or feature you ship has a clear path to real users instead of living in a siloed lab tool or closed ecosystem.
+Elata gives builders a ready-made launch and fee-routing stack:
 
----
+- app registration and ownership model
+- token launch flow with deterministic defaults
+- bonding-curve distribution and graduation
+- fee accounting and routing to contributor split + treasury
 
-## A platform for building deeply innovative brain-connected apps
+## What You Avoid Building Yourself
 
-Elata is a protocol for coordinating people, signals, and software. It turns messy physiological and behavioral data into a clean, programmable layer that any app can tap into.
+- launch contract wiring
+- supply allocation logic
+- curve lifecycle state machine
+- per-app fee bookkeeping
 
-Instead of building your own neuro stack, you plug into Elata and get:
+## Protocol Defaults
 
-- A real neuro and cognitive problem-solving engine instead of wrestling with closed EEG vendors and fragmented tooling
-- A unified way to read signals (from EEG, eye-tracking, and other inputs)
-- A continuously improving personalization layer (neuro-profiles)
-- A toolkit of protocol-native economic incentive mechanisms that rewards useful behavior and consistent ecosystem engagement
+| Parameter | Value |
+|---|---|
+| Launch cost | `110 ELTA` |
+| App token supply | `10,000,000` |
+| Allocation | `50%` curve, `25%` vesting, `25%` ecosystem |
+| Graduation target | `42,000 ELTA` |
+| LP lock | `730 days` |
 
-Elata enables builders to:
+## Next Steps
 
-- **Focus on user value, not neuro plumbing:** You don’t need to be a neuroscientist or hardware engineer. You call APIs like `getFocusLevel()`, `subscribeToFlowState()`, or `triggerPersonalizedRoutine()` and build the experience you want.
-- **Ship brain-connected apps for everyday life**\
-  Use Elata to power:
-  - Focus & productivity tools that adapt to cognitive fatigue
-  - Games that respond to immersion, frustration, or flow
-  - Mental fitness & wellness apps that personalize routines
-  - Learning platforms that adjust difficulty to attention and stress
-  - Accessibility features that let people use subtle signals instead of keystrokes
-  - Personalized neuro-insights for trading desks/crypto enthusiasts throughout their trading day
-
-A core benefit of building on Elata is that developers can reach global users on any compatible device. The protocol is device-agnostic. If a user has a supported headset, webcam, or other sensor, Elata’s hardware abstraction layer can speak to it. Your app just talks to Elata.
-
-Under the hood, Elata coordinates three key actors:
-
-1. Users, who provide signals and app usage while retaining control of their data and identity.
-2. Developers, who build apps that transform those signals into value.
-3. Model & signal providers, who improve decoding, personalization, and UX over time.
-
-Elata's underlying economic design ensures all three groups can share in the upside as the ecosystem grows.
-
----
-
-## Tools built for developer experience
-
-Developers choose Elata because it behaves like a full “brain OS” for apps, abstracting away hardware, signal processing, and ML so you can build over clean primitives.
-
-Some of the core components you can plug into include:
-
-- **Hardware Abstraction Layer:** A unified interface to compatible neuro and biometric devices. You don’t write drivers; you target Elata’s device API and let the protocol handle different vendors, form factors, and capabilities.
-- **Neuro-Profile Engine:** Each user maintains a private, ML-driven neuro-profile: a compact representation of how their brain and behavior respond over time.
-  - Updates as they use apps in the ecosystem
-  - Learns patterns like focus rhythms, stress triggers, preference signatures
-  - Surfaces high-level signals and traits apps can query (with user permission)
-- **Signal Processing & Decoding Engine:** Elata handles filtering, artifact removal, feature extraction, and decoding into interpretable states (attention, workload, affective markers, etc.).\
-  Your app gets semantic streams and events rather than raw voltages or waveforms.
-- **Federated Learning Layer:** Models improve as more people use Elata, without centralizing raw data.
-  - Training happens at the edge (on devices or secure environments)
-  - Only model updates/gradients are aggregated
-  - Users can opt-in and earn rewards for helping models learn. This makes the personalization engine a shared public good rather than a closed silo.
-
-**Elata APIs & SDKs:** Simple APIs (REST/WebSocket/SDKs) expose high-level capabilities:
-
-- Subscribe to real-time cognitive state streams
-- Request personalization suggestions for timing, content, or intensity
-- Register new “neuro-capabilities” (e.g., a custom decoder or model) and make them available to other apps via the protocol
-- Integrate onchain incentives, rewards, and reputation into your experience
-
----
-
-## Market design primitives
-
-The core innovation is that Elata bakes economic coordination into the protocol itself. As a builder, you can tap into:
-
-- **Usage-based revenue sharing:** A portion of value created by fees from app tokens and in-app features can be turned on such that upside automatically flow to users whose signals and historical data made that personalization possible.
-- **Model marketplaces:** Register your own models/decoders; get paid when apps use them. The protocol routes rewards based on invocation and performance.
-- **Neuro-bounties and incentives:** Define onchain bounties for specific patterns (e.g., “collect 10,000 minutes of focus data in a certain context” or “validate this new decoder across 500 users”) and let your users opt in.
-- **Reputation-weighted markets:** Contributors accrue reputation as their models or apps generate value; the protocol can route more flow, visibility, or governance weight to high-signal actors.
-
-Because these mechanisms are standardized and composable, you don’t have to design your own custom token or points scheme from scratch. You plug into Elata’s economic layer and focus on UX and building your community.
-
----
-
-## Support mechanisms for builders
-
-Elata treats developers as co-owners of the protocol’s growth, not just tenants on a platform.
-
-A few ways you benefit as a builder:
-
-**1. Aligned, programmable revenue**
-
-- Earn directly from app usage, which is paid by users, sponsors, or other stakeholders.
-- Opt into shared value flows where your app pays contributors (model owners, data contributors) without you having to design bespoke rev-sharing systems.
-
-Use protocol gauges/weights (if configured) to direct more rewards toward the behaviors your app cares about (e.g. long-term engagement, validated outcomes, research-backed protocols).
-
-**2. Compounding network effects**
-
-Every new app that integrates Elata enriches the shared neuro-profile and decoding ecosystem. This is a core way in which Elata differentiates itself from other protocols.
-
-The value of the ecosystem is proportional to the square of the number of connected users (think $n^2$; Metcalfe's Law) meaning that as the ecosystem grows, its value increases exponentially, making it more useful and attractive to new users.
-
-This means your app gets better personalization from day one, thanks to patterns learned in other contexts.
-
-Furthermore, your own contributions (models, decoders, task designs) can be reused across the ecosystem, earning you additional rewards.
-
-**3. Lower barrier to experimentation**
-
-Because the hardware, ML, and economic rails are abstracted away:
-
-- You can go from idea to prototype to live neuro-enabled app in a fraction of the time it would normally take.
-- You can test new pricing, reward, or incentive schemes using protocol primitives instead of writing bespoke contracts or backend logic.
-
-As a builder, you have the ability to easily deploy small experiments (e.g., a mini neuro-game, a focus widget, a meditation companion) and scale only what sticks.
-
-**4. User trust via privacy & sovereignty**
-
-Elata’s architecture is designed so that:
-
-- Users control which apps can access which signals or derived features.
-- Raw data doesn’t need to leave their device for models to improve.
-- Economic participation is transparent and auditable: users can see how they’re being rewarded and why.
-
-This makes it easier to convince users to adopt brain- and behavior-aware apps without the usual “surveillance tech” concerns.
-
-**5. A home for both apps and protocols**
-
-Whether you’re:
-
-- Building a consumer app
-- Shipping a new decoding model
-- Creating a set of tasks/experiments as a service
-- Or designing new market mechanisms on top of Elata’s primitives, the protocol is designed so you can plug in, get discovered, and be rewarded as usage grows.
-
-Elata exists so that everyday apps, not just lab tools, can become brain-aware, and so the people who build and use those apps can share fairly in the value created. As a developer, you get a complete stack for neuro-powered experiences plus a built-in economic engine that makes your work sustainable as the ecosystem matures.
+<CardGroup cols={2}>
+  <Card title="Getting Started" icon="rocket" href="/builders/getting-started">
+    Quickstart
+  </Card>
+  <Card title="Launch Guide" icon="play" href="/builders/launch-your-app">
+    Step-by-step launch
+  </Card>
+</CardGroup>

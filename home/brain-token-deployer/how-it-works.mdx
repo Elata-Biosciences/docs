@@ -2,19 +2,23 @@
 title: "How it works"
 ---
 
----
+## Brain Token Launcher Flow
 
-## Quickstart
+The launcher follows the same protocol launch defaults:
 
-The Elata Brain Token Launcher allows app builders to launch their brain apps or services by locking a certain amount of ELTA tokens, which are then used to establish liquidity pools for the app's tokens.
+1. Pay `110 ELTA` total (`10` creation fee + `100` seed).
+2. Deploy app token stack and initialize curve.
+3. Sell through bonding curve until graduation.
+4. Move liquidity to DEX and lock LP.
 
-In essence, the Brain Token Launcher acts as not only a way for app builders to launch apps and build communities, but it also helps them with [liquidity bootstrapping](https://messari.io/copilot/share/understanding-liquidity-bootstrapping-f797cd4f-83fa-4caa-8c65-af9912457387) purposes. Below is a high-level step-by-step overview on how builders go about launching their brain app tokens:
+## Defaults
 
-1. **Token Launch**: A builder decides to launch a new app on the Elata app platform.
-2. **Bonding Curve Creation**: The app builder deposits 110 ELTA tokens and a bonding curve will be created for the new app token, which will be paired with ELTA to ensure liquidity.
-3. **Liquidity Pool Launch**: Once the bonding curve limit is reached (42,000 ELTA accumulated in the bonding curve) the app token launches and a liquidity pool of the app token paired with the ELTA token is created, upholding the fair launch principle with no insiders.
-4. **Liquidity Lock**: The liquidity pool smart contract is automatically locked for six years to ensure long-term commitment, price stability, and ultimately, ecosystem integrity.
+- App token supply: `10,000,000`
+- Allocation: `50%` curve, `25%` vesting, `25%` ecosystem
+- Graduation target: `42,000 ELTA`
+- LP lock: `2 years`
 
-## Economics
+## Fees
 
-All trades will incur a 1% tax. This token mechanism is designed to facilitate the financial resources of each app builder's business, supporting both fixed costs associated with running apps (i.e. data processing and storage) and variable costs over time. Given that all tokens are launched fairly, adding a tax mechanism provides a sustainable way to support key actors throughout the ecosystem without compromising the fair launch principle and therefore unsustainable economics.
+- Curve buys use configurable trade fee bps (default `1%`).
+- Fees route through `FeeCollector` and `FeeSwapper`.

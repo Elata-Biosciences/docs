@@ -2,61 +2,31 @@
 title: "Bonding curve info"
 ---
 
----
-
 ## Overview
 
-This governs app token launches via bonding curves.
+App launches use a constant-product bonding curve:
 
-### Parameters
+```
+k = reserveElta * reserveToken
+```
 
-- $F_p$: Protocol fee (2.5%)
-- $P$: Purchase amount
-- $F_e$: Curve reserves share (97.5%)
-- $C_l$: Launch cost (110 ELTA)
-- $S_a$: App token supply (1 billion)
-- $G$: Launch threshold (42,000 ELTA)
+Buy path:
 
-Plugging in these parameters, our equation reads as following:
+```
+newReserveElta = reserveElta + eltaIn
+newReserveToken = k / newReserveElta
+tokensOut = reserveToken - newReserveToken
+```
 
-$$
-F_p = 0.025 × P
-$$
+## Current Defaults
 
-Below are a set of charts illustrating how the App Launch Bonding Curve works:
+- Launch cost: `110 ELTA` (`10` fee + `100` seed)
+- App token supply: `10,000,000`
+- Initial curve supply: `5,000,000` (50%)
+- Graduation target: `42,000 ELTA`
+- LP lock: `730 days`
 
-#### Elata App Token Launch Bonding Curve Model
+## Fee Notes
 
-<img
-  src="/images/main/bonding-curve-model-main-light.svg"
-  alt="App Token Bonding Curve Main Model"
-  className="block dark:hidden"
-/>
-
-<img
-  src="/images/main/bonding-curve-model-main-dark.svg"
-  alt="App Token Bonding Curve Main Model"
-  className="hidden dark:block"
-/>
-
-#### Elata App Token Bonding Curve: Price Growth with Supply
-
-<img
-  src="/images/main/bonding-curve-chart-extended-light.svg"
-  alt="App Token Bonding Curve Extended"
-  className="block dark:hidden"
-/>
-
-<img
-  src="/images/main/bonding-curve-chart-extended-dark.svg"
-  alt="App Token Bonding Curve Extended"
-  className="hidden dark:block"
-/>
-
-### Details
-
-$F_c = 0.975 × P.$ Launch cost: 100 ELTA for liquidity, 10 for fee. App supply: 10% to creator, 90% to curve. At $G$, liquidity locks for 2 years. Item purchases burn 100% proceeds.
-
-The purpose of these mechanisms is to enable fair token launches with transparent pricing. Developers may launch a host of apps (e.g., anxiety neurofeedback) with 110 ELTA, raising funds via bonding curves. Furthermore, apps are tied to devices (e.g., EEG headsets) and grow the ecosystem via token sales and fees which constitute revenue for both the ecosystem and individual apps.
-
-These mechanisms also supports users and stakers, who are essentially early adopters that buy tokens and gain upside.
+- Base curve fee defaults to `1%`.
+- Fee policy is managed in routing pipeline contracts.

@@ -1,86 +1,38 @@
 ---
-title: "How Elata Works "
+title: "How Elata Works"
 ---
 
 ## TL;DR
 
-- **What Elata is:** Elata is a global system that lets everyday apps safely plug into signals from your brain (via headsets, webcams, and other sensors) and combines that with a built-in rewards and funding system so the people who use, build, and research with it can all share in the value created.
-- **How the “brain” part works:** Elata has a hardware layer that talks to many different devices (EEG headsets, camera-based rPPG, etc.) and a signal engine that cleans and interprets those signals. Over time, it builds a privacy-preserving “neuro-profile” for each person, so apps can request simple things like focus, engagement, or session summaries instead of dealing with raw brain data.
-- **How apps work:** Developers use Elata’s APIs to build any kind of app (e.g. games, focus tools, learning apps, wellness tools, and more) that can optionally react to these signals. They can also plug in tournaments, challenges, and their own app tokens to run events, reward users, and create in-app economies without reinventing all the crypto and economics themselves.
-- **Mechanism Design:** Activity in apps generates small fees that the protocol shares with app communities and long-term ELTA stakers. Ecosystem-wide points (a non-transferable score) is used to decide which new apps and tools.
-- **Importance:** The result is an “internet of brains” where anyone, anywhere, can use familiar devices to access brain-aware apps, contribute to neuroscience and mental-health research, and earn real upside without needing to understand the underlying neurotech or crypto.
-
-  ---
-
-## The Big Picture: Three Layered Architecture
-
-At a high level, Elata works as three tightly-coupled layers:
-
-1. **Neuro Layer: Signals, Features, and Actions**
-   - Device-agnostic hardware abstraction and signal capture
-   - Real-time and offline signal processing (EEG, rPPG, etc.)
-   - ML decoders + personalized _neuro-profiles_
-   - Federated learning to improve models without centralizing raw data; users exert full ownership over own their data
-2. **App Layer: Apps, Tasks, and User Experiences**
-   - Apps that use brain-aware inputs (or normal inputs)
-   - Tournaments, challenges, and tasks defined by app creators or researchers
-   - App-specific tokens, access passes, and in-app economies (optional).
-3. **Cryptoeconomic Layer: Components & Main Ideas**
-   - \$ELTA (main protocol token) and veELTA (locked staking)
-   - Points (non-transferable reputation) used to direct new app launches
-   - App tokens, bonding curves, and staking vaults for each app
-   - A shared rewards system and onchain governance
-
-### Overview Diagram
-
-<img
-  src="/images/how-elata-works-light.svg"
-  alt="Elata ecosystem overview"
-  className="block dark:hidden"
-  style={{ width:"56%" }}
-/>
-
-<img
-  src="/images/how-elata-works-dark.svg"
-  alt="Elata ecosystem overview"
-  className="hidden dark:block"
-/>
-
-The mental model:
-
-Signals & behavior are interpreted by ML, and subsequently used inside apps. Apps & tasks generate fees, and therefore rewards. Onchain protocol distributes value and funds the next wave of experiments and apps.
+- Builders launch app tokens through a deterministic on-chain flow.
+- Launches use ELTA and a constant-product bonding curve.
+- Fees are routed by explicit fee kinds, not hidden heuristics.
+- Governance and risk controls live in timelocked config/governor contracts.
 
 ---
 
-## Actors of the Elata Ecosystem
+## Launch Lifecycle
 
-Elata is designed around a few core roles:
-
-- **Everyday users**
-  - Use apps (focus tools, games, social, creativity, wellness, etc.)
-  - Optionally connect a neuro device or just use a webcam / phone camera
-  - Earn XP, app tokens, and sometimes ELTA-denominated rewards through participation
-- **Builders**
-  - Build apps using Elata’s APIs and SDKs (no PhD in neuroscience or Finance required)
-  - Plug into the neuro stack (neuro-profiles, decoded features, event streams)
-  - Launch app tokens, tournaments, and in-app economies permissionlessly via the protocol
-- **Researchers & scientific teams**
-  - Define structured tasks and experiments (e.g. cognitive tasks, clinical assessments, training protocols)
-  - Use Elata to collect pseudonymous data and distribute rewards to participants. 
-- **Protocol stewards & long-term ELTA holders**
-  - Lock \$ELTA into veELTA for yield and governance power 
-  - Help govern parameters (fees, XP rules, funding budgets, etc.)
-  - Benefit from protocol revenue that flows through the RewardsDistributor.
+1. Register app metadata and contributor split.
+2. Launch token stack for the app ID.
+3. Activate curve after delay.
+4. Distribute on curve until graduation target or deadline.
+5. Graduate to LP and lock liquidity.
 
 ---
 
-## 
+## Fee Lifecycle
+
+- Fees are accumulated by `FeeCollector`.
+- Fees are routed by `FeeSwapper`.
+- Launch fee routes to treasury.
+- App-revenue fee kinds route to contributors + treasury.
 
 ---
 
-## Actors of the Elata Ecosystem
+## Why This Matters
 
-- **App Users**
-- **Stakers**
-- **App developers**
-- **Elata Community Members**
+- transparent launch and supply rules
+- explicit fee routing policy
+- clear on-chain ownership and contributor accounting
+- no hidden upgradeable logic in core flows

@@ -1,260 +1,91 @@
 ---
 title: "Revenue Model"
-description: "How fees are collected and distributed across the ecosystem"
+description: "How fees are collected and routed in the current protocol"
 ---
 
 ## Overview
 
-Protocol fees come from trading, launches, and tournaments. They get split 70/15/15 and distributed to stakers, veELTA holders, and treasury. No token inflation — rewards come from actual usage.
+The current fee system uses explicit fee kinds and a two-step pipeline:
 
-<Info>
-  Fee parameters can be changed through governance.
-</Info>
+1. `FeeCollector` records pending balances per app, fee kind, and asset.
+2. `FeeSwapper` routes each fee kind according to policy.
+
+No inflation is required for this flow; fees come from protocol usage.
 
 ---
 
 ## Fee Sources
 
-### 1. Trading Fees (Primary Revenue)
-
-A **1% fee** is charged on all bonding curve transactions:
-
-| Transaction Type      | Fee | When Applied      |
-| --------------------- | --- | ----------------- |
-| Buy on Bonding Curve  | 1%  | Before graduation |
-| Sell on Bonding Curve | 1%  | Before graduation |
-
-**Example**: Buying 1,000 ELTA worth of app tokens costs 1,010 ELTA total (1,000 + 10 fee).
-
-### 2. App Launch Fees
-
-When developers launch new apps, they pay **110 ELTA**:
-
-| Component      | Amount   | Destination        |
-| -------------- | -------- | ------------------ |
-| Seed Liquidity | 100 ELTA | Bonding Curve      |
-| Protocol Fee   | 10 ELTA  | Treasury → Rewards |
-
-### 3. App Token Transfer Fees
-
-App tokens include a **1% transfer fee** (configurable, max 2%):
-
-| Parameter    | Default | Maximum |
-| ------------ | ------- | ------- |
-| Transfer Fee | 1%      | 2%      |
-
-This creates ongoing yield even after graduation to DEX trading.
-
-### 4. Tournament Fees
-
-Tournaments collect fees from prize pools:
-
-| Fee Type     | Rate | Destination           |
-| ------------ | ---- | --------------------- |
-| Protocol Fee | 2.5% | Rewards Distributor   |
-| Burn Fee     | 1%   | Burned (deflationary) |
+| Source | Mechanic |
+|---|---|
+| Launch fee | `10 ELTA`, tagged `LAUNCH_FEE` |
+| Curve trading fee | Configured in `AppFeeRouter` (default `1%`) |
+| Transfer tax | LP-keyed in `AppToken` (default `1%`, max `2%`) |
+| Module fees | `CONTENT_SALE`, `TOURNAMENT_FEE`, `OTHER` |
 
 ---
 
-## The 70/15/15 Split
-
-All protocol revenue is automatically split:
+## Routing Policy
 
 ```mermaid
 graph TD
-    A[Protocol Fees] --> B[Rewards Distributor]
-    B --> C[70% App Token Stakers]
-    B --> D[15% veELTA Holders]
-    B --> E[15% Treasury]
+    A[FeesFromApps] --> B[FeeCollector]
+    B --> C[FeeSwapper]
+    C --> D[LaunchFeeToTreasury100]
+    C --> E[AppRevenueToContributorSplit]
+    C --> F[AppRevenueToTreasury]
 ```
 
-### Recipient Details
+### Rules
 
-<AccordionGroup>
-  <Accordion title="App Token Stakers (70%)">
-    The majority of fees go to users who stake app tokens in staking vaults. Rewards are distributed proportionally based on stake size.
-
-    **How to earn**: Stake any app token in its staking vault. The longer and more you stake, the larger your share of rewards.
-  </Accordion>
-  <Accordion title="veELTA Holders (15%)">
-    A portion of all protocol fees flows to users who have locked ELTA as veELTA. This rewards long-term protocol supporters.
-
-    **How to earn**: Lock ELTA for 7 days to 2 years. Longer locks receive boosted voting power (1x-2x).
-  </Accordion>
-  <Accordion title="Treasury (15%)">
-    Treasury funds support ongoing development, grants, and ecosystem growth initiatives. Treasury spending is governed by veELTA holders.
-
-    **What it funds**: Developer grants, security audits, marketing, partnerships, and infrastructure.
-  </Accordion>
-</AccordionGroup>
+- `LAUNCH_FEE` routes `100%` to treasury.
+- App-revenue fee kinds route to contributor split + treasury.
+- Default app-revenue take is `80% contributors / 20% treasury`.
+- If app is paused in `AppRegistry`, routing is `100%` treasury.
 
 ---
 
-## Revenue Flow Example
+## Worked Example
 
-Let's trace a \$1,000 ELTA trade through the system:
+Assume a curve buy where `actualEltaIn = 1,000` and fee bps is `100`:
 
-### Step 1: Trade Execution
+| Component | Amount |
+|---|---|
+| Trade amount | 1,000 ELTA |
+| Trading fee | 10 ELTA |
+| Fee kind | `TRADING_FEE` |
 
-A user buys app tokens worth **1,000 ELTA** on the bonding curve.
+With default app-revenue routing:
 
-| Amount   | Destination        |
-| -------- | ------------------ |
-| 990 ELTA | App Token Purchase |
-| 10 ELTA  | Trading Fee (1%)   |
+| Recipient | Amount |
+|---|---|
+| ContributorSplit | 8 ELTA |
+| Treasury | 2 ELTA |
 
-### Step 2: Fee Distribution
-
-The 10 ELTA trading fee is split:
-
-| Recipient      | Share | Amount   |
-| -------------- | ----- | -------- |
-| App Stakers    | 70%   | 7 ELTA   |
-| veELTA Holders | 15%   | 1.5 ELTA |
-| Treasury       | 15%   | 1.5 ELTA |
-
-### Step 3: Staker Rewards
-
-The 7 ELTA for app stakers is distributed proportionally:
-
-```
-Your Share = (Your Stake / Total Staked) × 7 ELTA
-```
-
-If you've staked 1% of the total vault, you earn 0.07 ELTA from this trade.
+Contributors claim from `ContributorSplit` based on configured shares.
 
 ---
 
-## Yield Calculations
+## Key Defaults
 
-### App Staker Yield
-
-Your yield as an app staker depends on:
-
-- **Your stake size** relative to total staked
-- **Trading volume** of the app token
-- **Transfer volume** after graduation
-
-**Formula:**
-
-$$
-\text{Annual Yield} = \frac{\text{Your Stake}}{\text{Total Staked}} \times \text{Annual Fees} \times 0.70
-$$
-
-### veELTA Yield
-
-Your yield as a veELTA holder depends on:
-
-- **Your veELTA balance** relative to total veELTA
-- **Total protocol revenue** across all apps
-
-**Formula:**
-
-$$
-\text{Annual Yield} = \frac{\text{Your veELTA}}{\text{Total veELTA}} \times \text{Annual Protocol Fees} \times 0.15
-$$
+| Metric | Value |
+|---|---|
+| Launch fee | `10 ELTA` |
+| Seed ELTA | `100 ELTA` |
+| Curve fee baseline | `1%` |
+| Transfer tax baseline | `1%` |
+| Launch fee routing | `100% treasury` |
+| App-revenue routing default | `80% contributors / 20% treasury` |
 
 ---
 
-## Claiming Rewards
-
-### For App Stakers
-
-Rewards accumulate in the Rewards Distributor and can be claimed at any time:
-
-1. Go to the app's detail page
-2. Navigate to the "Rewards" section
-3. Click "Claim" to receive your ELTA
-
-### For veELTA Holders
-
-veELTA rewards are distributed in epochs:
-
-1. Go to the [Rewards page](https://app.elata.bio/rewards)
-2. View your claimable rewards
-3. Click "Claim veELTA Rewards"
-
-<Note>
-  There's no deadline to claim rewards. Unclaimed rewards remain available indefinitely.
-</Note>
-
----
-
-## Deflationary Mechanics
-
-Beyond fee distribution, Elata includes deflationary mechanisms:
-
-### Item Purchase Burns
-
-When users buy items in apps, **100% of the payment is burned**:
-
-```
-User pays 100 APP tokens → 100 APP tokens burned → Item minted
-```
-
-### Tournament Burns
-
-Tournament prize pools include a **1% burn fee**:
-
-| Pool Size     | Burn Amount | Winners Receive    |
-| ------------- | ----------- | ------------------ |
-| 10,000 tokens | 100 burned  | 9,650 (after fees) |
-
-### App Token Supply Reduction
-
-Over time, burns from items and tournaments reduce app token supply, benefiting remaining holders.
-
----
-
-## Growth Loop
-
-More apps → more trading → more fees → better yields → more staking → more demand → more apps.
-
-```mermaid
-graph LR
-    A[More Apps] --> B[More Trading]
-    B --> C[More Fees]
-    C --> D[Better Yields]
-    D --> E[More Staking]
-    E --> F[More Demand]
-    F --> A
-```
-
-Simple: usage drives rewards, rewards drive usage.
-
----
-
-## vs. Inflationary Models
-
-|                            | Elata                   | Most DeFi             |
-| -------------------------- | ----------------------- | --------------------- |
-| **Where yield comes from** | Fees from usage         | Printing new tokens   |
-| **What happens over time** | More usage = more yield | Dilution eats returns |
-| **Who wins**               | Long-term holders       | Early farmers         |
-
----
-
-## Key Numbers
-
-| Metric                    | Value        |
-| ------------------------- | ------------ |
-| Trading Fee               | 1%           |
-| App Launch Fee            | 10 ELTA      |
-| Tournament Protocol Fee   | 2.5%         |
-| Transfer Fee (App Tokens) | 1% (default) |
-| App Staker Share          | 70%          |
-| veELTA Share              | 15%          |
-| Treasury Share            | 15%          |
-
----
-
-## Next Steps
+## Next
 
 <CardGroup cols={2}>
-  <Card title="Stake App Tokens" icon="coins" iconType="light" href="/users/stake-and-earn">
-    Start earning 70% of trading fees
+  <Card title="Protocol Overview" icon="diagram-project" iconType="light" href="/learn/protocol-overview">
+    Full lifecycle and equations
   </Card>
-  <Card title="Lock ELTA" icon="lock-keyhole" iconType="light" href="/users/veelta-governance">
-    Earn 15% of all protocol fees
+  <Card title="Launch Guide" icon="rocket" iconType="light" href="/builders/launch-your-app">
+    Builder launch flow
   </Card>
 </CardGroup>

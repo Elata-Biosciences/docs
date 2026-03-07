@@ -69,6 +69,15 @@
                 ]
               },
               {
+                "group": "ELTA Token",
+                "pages": [
+                  "home/elta-token/elta-overview",
+                  "home/elta-token/elta-distribution",
+                  "home/elta-token/elta-release",
+                  "home/elta-token/veelta"
+                ]
+              },
+              {
                 "group": "Governance",
                 "pages": [
                   "home/governance/structure",
@@ -92,6 +101,13 @@
                 "pages": [
                   "builders/bonding-curve-economics",
                   "builders/grow-your-community"
+                ]
+              },
+              {
+                "group": "Protocol Internals",
+                "pages": [
+                  "builders/fee-pipeline",
+                  "builders/protocol-config"
                 ]
               },
               {
@@ -139,6 +155,76 @@
                 ]
               }
             ]
+          },
+          {
+            "tab": "SDK",
+            "groups": [
+              {
+                "group": "Overview",
+                "pages": [
+                  "sdk/overview"
+                ]
+              },
+              {
+                "group": "@elata-biosciences/eeg-web",
+                "pages": [
+                  "sdk/eeg-web/getting-started",
+                  "sdk/eeg-web/signal-processing",
+                  "sdk/eeg-web/models",
+                  "sdk/eeg-web/headband-transport"
+                ]
+              },
+              {
+                "group": "@elata-biosciences/eeg-web-ble",
+                "pages": [
+                  "sdk/eeg-web-ble/getting-started",
+                  "sdk/eeg-web-ble/muse-device"
+                ]
+              },
+              {
+                "group": "@elata-biosciences/rppg-web",
+                "pages": [
+                  "sdk/rppg-web/getting-started",
+                  "sdk/rppg-web/frame-sources",
+                  "sdk/rppg-web/calibration"
+                ]
+              },
+              {
+                "group": "Integration Guides",
+                "pages": [
+                  "sdk/guides/eeg-ble-integration",
+                  "sdk/guides/rppg-camera"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Open Source",
+            "groups": [
+              {
+                "group": "Elata EEG",
+                "pages": [
+                  "home/elata-eeg/elata-eeg-overview",
+                  "home/elata-eeg/eeg-architecture"
+                ]
+              },
+              {
+                "group": "Newsreader",
+                "pages": [
+                  "open-source/newsreader/overview",
+                  "open-source/newsreader/architecture"
+                ]
+              },
+              {
+                "group": "AgentForge",
+                "pages": [
+                  "open-source/agentforge/overview",
+                  "open-source/agentforge/concepts",
+                  "open-source/agentforge/cli",
+                  "open-source/agentforge/studio"
+                ]
+              }
+            ]
           }
         ]
       },
@@ -160,6 +246,15 @@
                 "pages": [
                   "cn/learn/tokenomics",
                   "cn/learn/revenue-model"
+                ]
+              },
+              {
+                "group": "ELTA代币",
+                "pages": [
+                  "cn/home/elta-token/elta-overview",
+                  "cn/home/elta-token/elta-distribution",
+                  "cn/home/elta-token/elta-release",
+                  "cn/home/elta-token/veelta"
                 ]
               },
               {
@@ -186,6 +281,13 @@
                 "pages": [
                   "cn/builders/bonding-curve-economics",
                   "cn/builders/grow-your-community"
+                ]
+              },
+              {
+                "group": "协议内部",
+                "pages": [
+                  "cn/builders/fee-pipeline",
+                  "cn/builders/protocol-config"
                 ]
               },
               {
@@ -230,6 +332,76 @@
                 "pages": [
                   "cn/resources/media-assets",
                   "cn/resources/references"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "SDK",
+            "groups": [
+              {
+                "group": "概览",
+                "pages": [
+                  "cn/sdk/overview"
+                ]
+              },
+              {
+                "group": "@elata-biosciences/eeg-web",
+                "pages": [
+                  "cn/sdk/eeg-web/getting-started",
+                  "cn/sdk/eeg-web/signal-processing",
+                  "cn/sdk/eeg-web/models",
+                  "cn/sdk/eeg-web/headband-transport"
+                ]
+              },
+              {
+                "group": "@elata-biosciences/eeg-web-ble",
+                "pages": [
+                  "cn/sdk/eeg-web-ble/getting-started",
+                  "cn/sdk/eeg-web-ble/muse-device"
+                ]
+              },
+              {
+                "group": "@elata-biosciences/rppg-web",
+                "pages": [
+                  "cn/sdk/rppg-web/getting-started",
+                  "cn/sdk/rppg-web/frame-sources",
+                  "cn/sdk/rppg-web/calibration"
+                ]
+              },
+              {
+                "group": "集成指南",
+                "pages": [
+                  "cn/sdk/guides/eeg-ble-integration",
+                  "cn/sdk/guides/rppg-camera"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "开源项目",
+            "groups": [
+              {
+                "group": "Elata EEG",
+                "pages": [
+                  "cn/home/elata-eeg/elata-eeg-overview",
+                  "cn/home/elata-eeg/eeg-architecture"
+                ]
+              },
+              {
+                "group": "Newsreader",
+                "pages": [
+                  "cn/open-source/newsreader/overview",
+                  "cn/open-source/newsreader/architecture"
+                ]
+              },
+              {
+                "group": "AgentForge",
+                "pages": [
+                  "cn/open-source/agentforge/overview",
+                  "cn/open-source/agentforge/concepts",
+                  "cn/open-source/agentforge/cli",
+                  "cn/open-source/agentforge/studio"
                 ]
               }
             ]

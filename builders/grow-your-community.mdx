@@ -11,15 +11,13 @@ Once your app is live, you have three levers: staking (passive income for holder
 
 ## Staking
 
-Your app ships with a staking vault. Users deposit tokens, earn 70% of trading fees.
-
-```mermaid
-graph LR
-    A[Trading Fees] --> B[70% to Vault]
-    B --> C[Split by Stake Size]
-```
+Your app ships with a staking vault. Users can deposit tokens to signal commitment and participate in app governance.
 
 **Why it matters**: Stakers don't sell. More staking = less sell pressure = healthier token.
+
+<Note>
+  Trading and transfer fees are routed through the protocol fee pipeline (`FeeCollector` → `FeeSwapper`). App-revenue fee kinds are split between the app's `ContributorSplit` (default 80%) and treasury (default 20%). Check the current fee configuration for your app's specific routing.
+</Note>
 
 ---
 

@@ -1,0 +1,119 @@
+---
+title: "Muse Device"
+description: "MuseBleDevice internals, protocol details, and compatibility"
+---
+
+## MuseBleDevice
+
+`MuseBleDevice` is the low-level Web Bluetooth class that handles device pairing, GATT characteristic subscriptions, and packet decoding. `BleTransport` wraps it to provide the normalized `HeadbandTransport` interface.
+
+You typically don't use `MuseBleDevice` directly — use `BleTransport` instead.
+
+---
+
+## Supported Protocols
+
+| Protocol | Headbands | EEG Channels | Extra Data |
+|----------|-----------|-------------|------------|
+| **Classic** | Muse 2, Muse S (classic) | 4 (TP9, AF7, AF8, TP10) | PPG (3 channels) |
+| **Athena** | Muse S (Athena firmware) | 8 (TP9, AF7, AF8, TP10, AUX1-4) | Optics, accgyro, battery |
+
+Protocol is auto-detected during connection based on device characteristics.
+
+---
+
+## Classic Protocol
+
+Classic Muse headbands expose 4 EEG channels at 256 Hz. Each channel has its own GATT characteristic:
+
+| Characteristic | Channel |
+|---------------|---------|
+| `273e0003-...` | TP9 |
+| `273e0004-...` | AF7 |
+| `273e0005-...` | AF8 |
+| `273e0006-...` | TP10 |
+
+PPG is available on 3 additional characteristics (`PPG1`, `PPG2`, `PPG3`).
+
+---
+
+## Athena Protocol
+
+Athena headbands use a different packet format with two main characteristics:
+
+| Characteristic | Data |
+|---------------|------|
+| `273e0013-...` | EEG (8 channels, multiplexed) |
+| `273e0014-...` | Auxiliary (optics, accgyro, battery) |
+
+Athena requires a decoder factory. Without one, connection will fail:
+
+```typescript
+import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+
+const transport = new BleTransport({
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),
+  },
+});
+```
+
+---
+
+## MuseDeviceOptions
+
+```typescript
+interface MuseDeviceOptions {
+  athenaDecoderFactory?: AthenaDecoderFactory;
+  sleepMs?: (ms: number) => Promise<void>;
+  logger?: (message: string) => void;
+  onDisconnected?: () => void;
+}
+```
+
+---
+
+## MuseBoardInfo
+
+Returned by `getBoardInfo()` after connection:
+
+```typescript
+interface MuseBoardInfo {
+  device_name: string;
+  sample_rate_hz: number;        // 256
+  channel_count: number;         // 4 or 8
+  eeg_channel_names: string[];
+  board_id: number;
+  protocol: "classic" | "athena";
+  optics_channel_count: number;
+  description: string;
+}
+```
+
+---
+
+## Browser Compatibility
+
+| Browser | Platform | Status |
+|---------|----------|--------|
+| Chrome 56+ | Windows, macOS, Linux, Android | Supported |
+| Edge 79+ | Windows, macOS | Supported |
+| Opera 43+ | Desktop | Supported |
+| Safari | macOS, iOS | Not supported |
+| Firefox | All | Not supported |
+
+<Warning>
+  Web Bluetooth requires HTTPS. It will not work on `http://` (except `localhost` for development).
+</Warning>
+
+---
+
+## Safari/iOS Workarounds
+
+Three strategies for iOS support:
+
+1. **Native app shell** (recommended): implement BLE in Swift with CoreBluetooth, bridge frames to web UI
+2. **Companion bridge**: native app streams frames over WebSocket/WebRTC to the web app
+3. **Hybrid WebView**: `WKWebView` with native message handlers for BLE
+
+In all cases, use the `HeadbandFrameV1` schema as the interface boundary so browser and native transports emit the same frame shape.
