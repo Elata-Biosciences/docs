@@ -1,0 +1,63 @@
+---
+title: "AppFeeRouter"
+description: "Routes fees from apps to protocol destinations"
+---
+
+## Overview
+
+`AppFeeRouter` is the first stop for all fees collected from app activity (buys, sells, transfers). It determines which downstream contracts receive what portion of each fee.
+
+---
+
+## Key Functions
+
+### Read
+
+| Function | Returns | Description |
+|---|---|---|
+| `getRoutes(uint256 appId)` | `Route[]` | Fee routing config for an app |
+| `defaultRoutes()` | `Route[]` | Protocol-default routing |
+| `protocolFeeRate()` | `uint256` | Protocol fee in basis points |
+
+### Write
+
+| Function | Access | Description |
+|---|---|---|
+| `routeFees(uint256 appId, address token, uint256 amount)` | Internal | Route collected fees to destinations |
+| `setDefaultRoutes(Route[] calldata routes)` | Governance | Update default routing |
+| `setAppRoutes(uint256 appId, Route[] calldata routes)` | App owner | Override routing for specific app |
+
+---
+
+## Route Struct
+
+```solidity
+struct Route {
+    address destination;     // Receiving contract
+    uint256 shareBps;        // Share in basis points
+    bytes4 callbackSelector; // Optional callback on receive
+}
+```
+
+---
+
+## Default Fee Flow
+
+```
+App Activity
+  → FeeCollector (collects raw fees)
+  → AppFeeRouter (splits by route)
+    → ContributorSplit (app team share)
+    → FeeSwapper (protocol share → swap to USDC/ELTA)
+    → TreasuryUSDCVault (treasury share)
+```
+
+---
+
+## Events
+
+| Event | Emitted When |
+|---|---|
+| `FeesRouted(uint256 appId, address token, uint256 amount)` | Fees distributed |
+| `RoutesUpdated(uint256 appId)` | App routing changed |
+| `DefaultRoutesUpdated()` | Default routing changed |

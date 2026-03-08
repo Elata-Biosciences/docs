@@ -1,0 +1,70 @@
+---
+title: "ContributorSplit"
+description: "Pull-based contributor payout accounting"
+---
+
+## Overview
+
+`ContributorSplit` manages revenue distribution among app contributors. The app owner configures share percentages, and contributors pull their earned amounts on demand.
+
+---
+
+## Key Functions
+
+### Read
+
+| Function | Returns | Description |
+|---|---|---|
+| `getShares(address contributor)` | `uint256` | Contributor's share (basis points) |
+| `totalShares()` | `uint256` | Sum of all shares |
+| `releasable(address contributor, address token)` | `uint256` | Claimable balance for a token |
+| `released(address contributor, address token)` | `uint256` | Already-claimed amount |
+| `contributors()` | `address[]` | List of all contributors |
+
+### Write
+
+| Function | Access | Description |
+|---|---|---|
+| `setShares(address[] calldata addrs, uint256[] calldata shares)` | App owner | Set contributor shares |
+| `release(address token)` | Contributor | Claim earned tokens |
+| `releaseAll(address[] calldata tokens)` | Contributor | Claim across multiple tokens |
+
+---
+
+## Share Mechanics
+
+- Shares are in basis points (10000 = 100%)
+- Sum of all shares must not exceed 10000
+- When fees arrive, they are split proportionally
+- Contributors call `release()` to pull their share
+
+---
+
+## Events
+
+| Event | Emitted When |
+|---|---|
+| `SharesUpdated(address contributor, uint256 shares)` | Shares configured |
+| `PaymentReleased(address contributor, address token, uint256 amount)` | Funds claimed |
+
+---
+
+## Usage Example
+
+```typescript
+// Check claimable amount
+const claimable = await client.readContract({
+  address: SPLIT_ADDRESS,
+  abi: ContributorSplitABI,
+  functionName: 'releasable',
+  args: [contributorAddress, ELTA_ADDRESS]
+})
+
+// Claim
+await writeContract({
+  address: SPLIT_ADDRESS,
+  abi: ContributorSplitABI,
+  functionName: 'release',
+  args: [ELTA_ADDRESS]
+})
+```

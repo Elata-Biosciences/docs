@@ -1,0 +1,79 @@
+---
+title: "AppRegistry"
+description: "Canonical app ownership and contributor-split mapping"
+---
+
+## Overview
+
+`AppRegistry` is the on-chain source of truth for app metadata. It maps each app to its owner, token, bonding curve, and contributor-split contract. The `AppFactory` writes entries here during app creation.
+
+---
+
+## Key Functions
+
+### Read
+
+| Function | Returns | Description |
+|---|---|---|
+| `getApp(uint256 appId)` | `App` struct | Full app record |
+| `appCount()` | `uint256` | Total registered apps |
+| `ownerOf(uint256 appId)` | `address` | App owner address |
+| `getContributorSplit(uint256 appId)` | `address` | Linked ContributorSplit contract |
+
+### Write
+
+| Function | Access | Description |
+|---|---|---|
+| `registerApp(...)` | Factory only | Register a new app |
+| `transferOwnership(uint256 appId, address newOwner)` | App owner | Transfer app ownership |
+| `setContributorSplit(uint256 appId, address split)` | App owner | Link a ContributorSplit contract |
+
+---
+
+## App Struct
+
+```solidity
+struct App {
+    uint256 id;
+    address owner;
+    address token;           // AppToken ERC-20
+    address bondingCurve;    // AppBondingCurve
+    address vestingWallet;   // AppVestingWallet
+    address ecosystemVault;  // AppEcosystemVault
+    address contributorSplit;
+    string name;
+    string symbol;
+    uint256 createdAt;
+}
+```
+
+---
+
+## Events
+
+| Event | Emitted When |
+|---|---|
+| `AppRegistered(uint256 appId, address owner)` | New app created |
+| `OwnershipTransferred(uint256 appId, address from, address to)` | App ownership changed |
+| `ContributorSplitSet(uint256 appId, address split)` | Split contract linked |
+
+---
+
+## Usage Example
+
+```typescript
+import { createPublicClient, http } from 'viem'
+import { base } from 'viem/chains'
+
+const client = createPublicClient({
+  chain: base,
+  transport: http()
+})
+
+const app = await client.readContract({
+  address: APP_REGISTRY_ADDRESS,
+  abi: AppRegistryABI,
+  functionName: 'getApp',
+  args: [1n]
+})
+```

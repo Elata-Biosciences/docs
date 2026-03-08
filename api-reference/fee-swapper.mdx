@@ -1,0 +1,55 @@
+---
+title: "FeeSwapper"
+description: "Swaps collected fee tokens before distribution"
+---
+
+## Overview
+
+`FeeSwapper` implements `IFeeRouterV2` and converts fee tokens into the desired output token (typically USDC or ELTA) before forwarding to final destinations. Uses DEX integration for on-chain swaps.
+
+---
+
+## Key Functions
+
+### Read
+
+| Function | Returns | Description |
+|---|---|---|
+| `getSwapRoute(address tokenIn, address tokenOut)` | `SwapRoute` | Configured swap path |
+| `supportedTokens()` | `address[]` | Tokens the swapper can handle |
+| `slippageTolerance()` | `uint256` | Max slippage in basis points |
+
+### Write
+
+| Function | Access | Description |
+|---|---|---|
+| `swap(address tokenIn, uint256 amountIn, address tokenOut, uint256 minAmountOut)` | FeeRouter | Execute a swap |
+| `setSwapRoute(address tokenIn, address tokenOut, SwapRoute calldata route)` | Governance | Configure swap path |
+| `setSlippageTolerance(uint256 bps)` | Governance | Update max slippage |
+
+---
+
+## SwapRoute Struct
+
+```solidity
+struct SwapRoute {
+    address router;      // DEX router address
+    bytes path;          // Encoded swap path
+    uint256 maxSlippage; // Override per-route slippage
+}
+```
+
+---
+
+## Supported DEXes
+
+The FeeSwapper integrates with Uniswap V3 on Base for token swaps. Swap routes are configurable via governance to add new paths or switch DEX backends.
+
+---
+
+## Events
+
+| Event | Emitted When |
+|---|---|
+| `Swapped(address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOut)` | Swap executed |
+| `SwapRouteUpdated(address tokenIn, address tokenOut)` | Route reconfigured |

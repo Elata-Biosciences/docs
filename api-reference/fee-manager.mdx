@@ -1,0 +1,54 @@
+---
+title: "FeeManager"
+description: "Fee accounting buckets by app, kind, and asset"
+---
+
+## Overview
+
+`FeeManager` (deployed as `FeeCollector`) tracks all protocol fees in structured buckets. Each fee entry records which app generated it, what kind of fee it is, and which asset was collected.
+
+---
+
+## Key Functions
+
+### Read
+
+| Function | Returns | Description |
+|---|---|---|
+| `getBalance(uint256 appId, FeeKind kind, address token)` | `uint256` | Accrued balance for a bucket |
+| `totalCollected(address token)` | `uint256` | Total fees collected in a token |
+| `feeKinds()` | `FeeKind[]` | All fee categories |
+
+### Write
+
+| Function | Access | Description |
+|---|---|---|
+| `collectFee(uint256 appId, FeeKind kind, address token, uint256 amount)` | Authorized contracts | Record a fee |
+| `flush(uint256 appId, FeeKind kind, address token)` | Keeper / Governance | Send accrued fees to router |
+| `flushAll(uint256 appId)` | Keeper / Governance | Flush all buckets for an app |
+
+---
+
+## Fee Kinds
+
+| Kind | Source |
+|---|---|
+| `BUY` | Bonding curve purchases |
+| `SELL` | Bonding curve sales |
+| `TRANSFER` | App token transfers with tax |
+| `GRADUATION` | Curve graduation event |
+
+---
+
+## Accounting Model
+
+Fees are accrued in buckets keyed by `(appId, kind, token)`. Flushing moves the accrued balance to the `AppFeeRouter` for distribution. This two-step model allows batching and gas optimization.
+
+---
+
+## Events
+
+| Event | Emitted When |
+|---|---|
+| `FeeCollected(uint256 appId, FeeKind kind, address token, uint256 amount)` | Fee recorded |
+| `FeeFlushed(uint256 appId, FeeKind kind, address token, uint256 amount)` | Fees sent to router |
