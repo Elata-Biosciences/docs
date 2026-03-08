@@ -1,0 +1,63 @@
+---
+title: "StakeVault Votes"
+description: "Staking vault voting weight"
+---
+
+## Overview
+
+`StakeVault` provides flexible ELTA staking without time locks. Staked ELTA earns voting weight and protocol rewards, but at a lower multiplier than veELTA. Suitable for users who want liquidity without committing to a lock period.
+
+---
+
+## Key Functions
+
+### Read
+
+| Function | Returns | Description |
+|---|---|---|
+| `balanceOf(address account)` | `uint256` | Staked ELTA balance |
+| `totalStaked()` | `uint256` | Total ELTA in vault |
+| `getVotes(address account)` | `uint256` | Governance voting power |
+| `getPastVotes(address account, uint256 timepoint)` | `uint256` | Historical voting power |
+| `weightMultiplier()` | `uint256` | Vote weight multiplier (basis points) |
+
+### Write
+
+| Function | Access | Description |
+|---|---|---|
+| `stake(uint256 amount)` | User | Stake ELTA into vault |
+| `unstake(uint256 amount)` | User | Withdraw staked ELTA |
+| `delegate(address delegatee)` | User | Delegate voting power |
+
+---
+
+## Weight Calculation
+
+StakeVault voting weight uses a configurable multiplier (default: 25%):
+
+$$
+\text{votes} = \text{stakedAmount} \times \frac{\text{weightMultiplier}}{10000}
+$$
+
+This means 1 ELTA staked in the vault yields 0.25 votes versus up to 1.0 votes via veELTA with a 4-year lock.
+
+---
+
+## veELTA vs StakeVault
+
+| Feature | veELTA | StakeVault |
+|---|---|---|
+| Lock required | Yes (up to 4 years) | No |
+| Max vote weight | 1.0x | 0.25x |
+| Reward share | Higher | Lower |
+| Liquidity | Locked until expiry | Withdraw anytime |
+
+---
+
+## Events
+
+| Event | Emitted When |
+|---|---|
+| `Staked(address account, uint256 amount)` | ELTA staked |
+| `Unstaked(address account, uint256 amount)` | ELTA withdrawn |
+| `DelegateChanged(address delegator, address delegatee)` | Voting power delegated |

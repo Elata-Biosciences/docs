@@ -1,0 +1,60 @@
+---
+title: "ElataPoints"
+description: "Non-transferable participation reputation"
+---
+
+## Overview
+
+`ElataPoints` is a non-transferable (soulbound) token that tracks user participation and reputation within the Elata ecosystem. Points are minted by authorized protocol contracts based on user activity.
+
+---
+
+## Key Functions
+
+### Read
+
+| Function | Returns | Description |
+|---|---|---|
+| `balanceOf(address account)` | `uint256` | User's point balance |
+| `totalSupply()` | `uint256` | Total points issued |
+| `hasMinPoints(address account, uint256 threshold)` | `bool` | Check if user meets threshold |
+
+### Write
+
+| Function | Access | Description |
+|---|---|---|
+| `mint(address account, uint256 amount)` | Authorized minters | Award points to user |
+| `addMinter(address minter)` | Governance | Authorize a minting contract |
+| `removeMinter(address minter)` | Governance | Revoke minting authorization |
+
+---
+
+## Point Sources
+
+Points are minted by protocol contracts for:
+
+| Activity | Source Contract |
+|---|---|
+| App token purchases | AppBondingCurve |
+| Staking ELTA | VeELTA / StakeVault |
+| Governance voting | ElataGovernor |
+| App creation | AppFactory |
+
+---
+
+## Soulbound Properties
+
+- **Non-transferable**: `transfer()` and `transferFrom()` are disabled
+- **Non-approvable**: `approve()` is disabled
+- **Permanent**: Points cannot be burned or revoked
+- **Composable**: Other contracts can gate features behind point thresholds
+
+---
+
+## Events
+
+| Event | Emitted When |
+|---|---|
+| `PointsMinted(address account, uint256 amount, address minter)` | Points awarded |
+| `MinterAdded(address minter)` | New minter authorized |
+| `MinterRemoved(address minter)` | Minter revoked |

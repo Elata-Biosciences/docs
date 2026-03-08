@@ -1,0 +1,76 @@
+---
+title: "快速入门"
+description: "几分钟内开始构建优秀的文档"
+---
+
+## 三步开始
+
+在本地运行文档站点并进行首次自定义。
+
+### 步骤 1：设置本地环境
+
+<AccordionGroup>
+  <Accordion icon="copy" title="在本地克隆文档">
+    在入门过程中，如果您还没有包含文档内容的 GitHub 仓库，系统会为您创建一个。您可以在 [控制面板](https://dashboard.mintlify.com) 中找到该仓库的链接。
+
+    要在本地克隆仓库以便预览和修改文档，请参阅 GitHub 文档中的 [克隆仓库](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) 指南。
+  </Accordion>
+  <Accordion icon="rectangle-terminal" title="启动预览服务器">
+    1. 安装 Mintlify CLI：`npm i -g mint`
+    2. 进入文档目录并运行：`mint dev`
+    3. 打开 `http://localhost:3000` 查看文档！
+
+    <Tip>编辑文件时预览会自动更新。</Tip>
+  </Accordion>
+</AccordionGroup>
+
+### 步骤 2：部署更改
+
+<AccordionGroup>
+  <Accordion icon="github" title="安装 GitHub 应用">
+    从 [控制面板](https://dashboard.mintlify.com/settings/organization/github-app) 安装 Mintlify GitHub 应用。
+
+    GitHub 应用会自动将更改部署到文档站点，无需手动管理部署。
+</Accordion>
+<Accordion icon="palette" title="更新站点名称和颜色">
+    作为第一个更改，让我们更新文档站点的名称和颜色。
+
+    1. 在编辑器中打开 `docs.json`。
+    2. 将 `"name"` 字段更改为您的项目名称。
+    3. 更新 `"colors"` 以匹配您的品牌。
+    4. 保存并在 `http://localhost:3000` 即时查看更改。
+
+    <Tip>尝试更改主色调以查看即时效果！</Tip>
+  </Accordion>
+</AccordionGroup>
+
+### 步骤 3：上线
+
+<Accordion icon="rocket" title="发布文档">
+  1. 提交并推送更改。
+  2. 文档将立即更新并上线！
+</Accordion>
+
+## 后续步骤
+
+文档运行后，探索以下关键功能：
+
+<CardGroup cols={2}>
+
+<Card title="编写内容" icon="pen-to-square" href="/essentials/markdown">
+  学习 MDX 语法并开始编写文档。
+</Card>
+
+<Card title="自定义样式" icon="palette" href="/essentials/settings">
+  让文档完美匹配您的品牌。
+</Card>
+
+<Card title="添加代码示例" icon="square-code" href="/essentials/code">
+  包含语法高亮的代码块。
+</Card>
+
+<Card title="API 文档" icon="code" href="/api-reference/overview">
+  查看完整的协议 API 参考。
+</Card>
+
+</CardGroup>

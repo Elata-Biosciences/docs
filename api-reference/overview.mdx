@@ -1,0 +1,88 @@
+---
+title: "API Reference Overview"
+description: "Smart contract interfaces for the Elata protocol"
+---
+
+## Overview
+
+The Elata protocol is composed of modular smart contracts deployed on Base. This reference documents the public interfaces for each contract in the vNext stack.
+
+---
+
+## Contract Map
+
+| Contract | Purpose | Category |
+|---|---|---|
+| **AppRegistry** | Canonical app ownership and contributor-split mapping | Core |
+| **ContributorSplit** | Pull-based contributor payout accounting | Core |
+| **AppFeeRouter** | Routes fees from apps to protocol destinations | Fees |
+| **FeeSwapper** | Swaps collected fee tokens before distribution | Fees |
+| **FeeManager** | Fee accounting buckets by app, kind, and asset | Fees |
+| **RewardsDistributor** | Protocol-level reward distribution to stakers | Rewards |
+| **AppRewardsDistributor** | Per-app reward distribution to token holders | Rewards |
+| **VeELTA Votes** | Vote-escrowed ELTA governance power | Governance |
+| **StakeVault Votes** | Staking vault voting weight | Governance |
+| **ElataPoints** | Non-transferable participation reputation | Reputation |
+| **TreasuryUSDCVault** | USDC treasury custody | Treasury |
+
+---
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph "App Layer"
+        AR[AppRegistry]
+        CS[ContributorSplit]
+    end
+
+    subgraph "Fee Pipeline"
+        AFR[AppFeeRouter]
+        FS[FeeSwapper]
+        FM[FeeManager]
+    end
+
+    subgraph "Rewards"
+        RD[RewardsDistributor]
+        ARD[AppRewardsDistributor]
+    end
+
+    subgraph "Governance"
+        VE[VeELTA Votes]
+        SV[StakeVault Votes]
+    end
+
+    subgraph "Other"
+        EP[ElataPoints]
+        TV[TreasuryUSDCVault]
+    end
+
+    AR --> AFR
+    AFR --> FS
+    FS --> FM
+    FM --> RD
+    FM --> ARD
+    FM --> TV
+    AR --> CS
+    VE --> RD
+    SV --> RD
+```
+
+---
+
+## Networks
+
+| Network | Status |
+|---|---|
+| Base Mainnet | Production |
+| Base Sepolia | Testnet |
+
+For deployed addresses, see [Resources → Smart Contracts](/resources/smart-contracts).
+
+---
+
+## Source Code
+
+All contracts are open source:
+
+- [elata-protocol](https://github.com/elata-biosciences/elata-protocol) — Solidity source and deployment scripts
