@@ -14,7 +14,7 @@ Launch an app, get a token. This guide covers the whole process — about 5 minu
 </Info>
 
 <Warning>
-  **Testnet Notice**: Elata is currently live on **Base Sepolia** (testnet). Mainnet launch on **Base** is coming soon. All apps launched on testnet are for testing purposes only.
+  **Testnet Notice**: Elata is currently live on **Ethereum Sepolia** (testnet). Mainnet launch coming soon. All apps launched on testnet are for testing purposes only.
 </Warning>
 
 ---
@@ -27,7 +27,7 @@ Before you begin, make sure you have:
   <Step title="Web3 Wallet">
     MetaMask, Coinbase Wallet, Rainbow, or any WalletConnect-compatible wallet
   </Step>
-  <Step title="Base Sepolia ETH (for gas)">
+  <Step title="Sepolia ETH (for gas)">
     Get free testnet ETH from a faucet (see below)
   </Step>
   <Step title="Testnet ELTA Tokens">
@@ -41,13 +41,13 @@ Before you begin, make sure you have:
   </Step>
 </Steps>
 
-### Getting Base Sepolia ETH
+### Getting Sepolia ETH
 
-You need a small amount of ETH on Base Sepolia for transaction fees. Use one of these faucets:
+You need a small amount of ETH on Ethereum Sepolia for transaction fees. Use one of these faucets:
 
-1. **[Alchemy Faucet](https://www.alchemy.com/faucets/base-sepolia)** — Requires Alchemy account
-2. **[Coinbase Faucet](https://faucet.quicknode.com/base/sepolia)** — QuickNode faucet
-3. **[Superchain Faucet](https://app.optimism.io/faucet)** — Works for Base Sepolia
+1. **[Alchemy Faucet](https://www.alchemy.com/faucets/ethereum-sepolia)** — Requires Alchemy account
+2. **[QuickNode Faucet](https://faucet.quicknode.com/ethereum/sepolia)** — Quick and easy
+3. **[Google Cloud Faucet](https://cloud.google.com/application/web3/faucet/ethereum/sepolia)** — Free Sepolia ETH
 
 ### Getting Testnet ELTA
 
@@ -71,7 +71,7 @@ To get testnet ELTA tokens for launching your app:
 4. Approve the connection
 
 <Warning>
-  Make sure you're connected to **Base Sepolia** network (Chain ID: 84532). The app will prompt you to switch if needed.
+  Make sure you're connected to **Ethereum Sepolia** network (Chain ID: 11155111). The app will prompt you to switch if needed.
 </Warning>
 
 ---
@@ -120,7 +120,7 @@ Before creating your app, you need to approve the ELTA spending:
 1. Click "Approve ELTA" button
 2. Your wallet will show an approval request for 110 ELTA
 3. Confirm the transaction
-4. Wait for confirmation (~2-5 seconds on Base)
+4. Wait for confirmation (a few seconds on Sepolia)
 
 <Note>
   This is a standard ERC-20 approval. You're authorizing the contract to transfer exactly 110 ELTA.
@@ -262,7 +262,7 @@ Monitor your app's performance:
   </Accordion>
   <Accordion title="Approval Not Working">
     If approval seems stuck:
-    - Check transaction on Basescan
+    - Check transaction on Etherscan
     - Try increasing gas price
     - Clear wallet cache and reconnect
   </Accordion>
@@ -278,7 +278,7 @@ Monitor your app's performance:
     After creation, apps may take a few minutes to index:
     - Wait 1-2 minutes
     - Refresh the page
-    - Check if transaction succeeded on Basescan
+    - Check if transaction succeeded on Etherscan
   </Accordion>
 </AccordionGroup>
 

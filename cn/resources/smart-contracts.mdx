@@ -5,10 +5,10 @@ description: "Contract addresses and references for the Elata Protocol"
 
 ## Overview
 
-All contracts on Base. Non-upgradeable. Verified on Basescan.
+All contracts on Ethereum Sepolia. Non-upgradeable. Verified on Etherscan.
 
 <Info>
-  **Current Deployment**: Base Sepolia (Testnet)
+  **Current Deployment**: Ethereum Sepolia (Testnet)
   
   Mainnet deployment coming soon.
 </Info>
@@ -25,12 +25,12 @@ The main governance and utility token.
 
 | Property | Value |
 |----------|-------|
-| **Address** | `0x6D83439381e89C95742D0A8200E24563079b33dd` |
-| **Network** | Base Sepolia |
+| **Address** | `0x2AEb03A678A1e1E99a2AeEb4CeFCD0263A2D3587` |
+| **Network** | Ethereum Sepolia |
 | **Standard** | ERC-20 with Votes + Permit |
 | **Max Supply** | 77,000,000 ELTA |
 
-<Card title="View on Basescan" icon="arrow-up-right-from-square" href="https://sepolia.basescan.org/address/0x6D83439381e89C95742D0A8200E24563079b33dd">
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0x2AEb03A678A1e1E99a2AeEb4CeFCD0263A2D3587">
   ELTA Token Contract
 </Card>
 
@@ -40,60 +40,68 @@ Vote-escrowed ELTA for governance and rewards.
 
 | Property | Value |
 |----------|-------|
-| **Address** | `0xA4Be295DE6B59B5DD34891a9B177F9E31A6CFcFf` |
+| **Address** | `0x143A2B10CeA2d27d5903443FF351023C5E0CFe51` |
 | **Lock Range** | 7 days - 2 years |
 | **Boost** | 1x - 2x |
 
-<Card title="View on Basescan" icon="arrow-up-right-from-square" href="https://sepolia.basescan.org/address/0xA4Be295DE6B59B5DD34891a9B177F9E31A6CFcFf">
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0x143A2B10CeA2d27d5903443FF351023C5E0CFe51">
   VeELTA Contract
 </Card>
 
-### ElataXP
+### ElataPoints
 
 Non-transferable experience points for participation rewards.
 
 | Property | Value |
 |----------|-------|
-| **Address** | `0xEf85d704217857d18B331FDe50A063b1bff7147B` |
+| **Address** | `0x6335495c88D1D78245BB50f321E4e450f865CfD0` |
 | **Transferable** | No (soulbound) |
 
-<Card title="View on Basescan" icon="arrow-up-right-from-square" href="https://sepolia.basescan.org/address/0xEf85d704217857d18B331FDe50A063b1bff7147B">
-  ElataXP Contract
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0x6335495c88D1D78245BB50f321E4e450f865CfD0">
+  ElataPoints Contract
+</Card>
+
+### ProtocolConfig
+
+Bounded protocol parameter storage.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0xDe5090F5269786671a9bff0C91A538Af34069a95` |
+
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0xDe5090F5269786671a9bff0C91A538Af34069a95">
+  ProtocolConfig Contract
 </Card>
 
 ---
 
-## Rewards & Fees
+## Fees
 
 Contracts handling fee collection and distribution.
 
-### RewardsDistributor
+### FeeCollector
 
-Distributes protocol fees (70/15/15 split).
-
-| Property | Value |
-|----------|-------|
-| **Address** | `0xf23cE8E582020F86Cd2E48fdb6A3F6F7FBe6e610` |
-| **App Stakers** | 70% |
-| **veELTA Holders** | 15% |
-| **Treasury** | 15% |
-
-### AppRewardsDistributor
-
-Distributes rewards to app token stakers.
+Fee accounting buckets by app, kind, and asset.
 
 | Property | Value |
 |----------|-------|
-| **Address** | `0x3b8f4f3993448c6a745767F4747EAee901187893` |
+| **Address** | `0x0584a9894B44939E77330bEa6720BAB6FA263862` |
 
-### AppFeeRouter
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0x0584a9894B44939E77330bEa6720BAB6FA263862">
+  FeeCollector Contract
+</Card>
 
-Routes trading fees to the rewards system.
+### FeeSwapper
+
+Final routing and optional swaps (IFeeRouterV2).
 
 | Property | Value |
 |----------|-------|
-| **Address** | `0xc60629c4c1Fe5eB4AEEEB95A83494aE16974D1CE` |
-| **Fee Rate** | 1% (100 bps) |
+| **Address** | `0x909e0fF2c22554E98de83BB495B95765F4C4eD11` |
+
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0x909e0fF2c22554E98de83BB495B95765F4C4eD11">
+  FeeSwapper Contract
+</Card>
 
 ---
 
@@ -107,21 +115,25 @@ Creates new app tokens with bonding curves.
 
 | Property | Value |
 |----------|-------|
-| **Address** | `0xa88206c28D2005D2640a94A9D4aDDd9a66D91aC6` |
+| **Address** | `0x2a108dB28E2790129F4C0F5b13e11A74A19eD677` |
 | **Launch Cost** | 110 ELTA |
 | **Graduation Target** | 42,000 ELTA |
 
-<Card title="View on Basescan" icon="arrow-up-right-from-square" href="https://sepolia.basescan.org/address/0xa88206c28D2005D2640a94A9D4aDDd9a66D91aC6">
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0x2a108dB28E2790129F4C0F5b13e11A74A19eD677">
   AppFactory Contract
 </Card>
 
-### AppModuleFactory
+### AppRegistry
 
-Deploys utility modules (items, staking, rewards) for apps.
+Canonical app ownership and contributor split mapping.
 
 | Property | Value |
 |----------|-------|
-| **Address** | `0x2AEb03A678A1e1E99a2AeEb4CeFCD0263A2D3587` |
+| **Address** | `0x5d3677d30fa585497863A4fEA80FCcCC0162cFda` |
+
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0x5d3677d30fa585497863A4fEA80FCcCC0162cFda">
+  AppRegistry Contract
+</Card>
 
 ### TournamentFactory
 
@@ -129,9 +141,49 @@ Creates tournament contracts for apps.
 
 | Property | Value |
 |----------|-------|
-| **Address** | `0x6335495c88D1D78245BB50f321E4e450f865CfD0` |
+| **Address** | `0x79241D3500C87aEA0B028391444350fDEdA35342` |
 | **Protocol Fee** | 2.5% |
 | **Burn Fee** | 1% |
+
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0x79241D3500C87aEA0B028391444350fDEdA35342">
+  TournamentFactory Contract
+</Card>
+
+### InAppContent721Factory
+
+Deploys ERC-721 content contracts for apps.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0x12e5ed2FE7Ffa07727c2540Dd05Fcb33D1869ECE` |
+
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0x12e5ed2FE7Ffa07727c2540Dd05Fcb33D1869ECE">
+  InAppContent721Factory Contract
+</Card>
+
+### ContentStoreFactory
+
+Deploys content storage contracts for apps.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0x849239432F29a8efAd9CAdA835c46bF533FD739a` |
+
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0x849239432F29a8efAd9CAdA835c46bF533FD739a">
+  ContentStoreFactory Contract
+</Card>
+
+### ContributorSplitFactory
+
+Creates pull-based contributor payout contracts.
+
+| Property | Value |
+|----------|-------|
+| **Address** | `0x5f4879607a28626f062f758e77D4234654BCD6A0` |
+
+<Card title="View on Etherscan" icon="arrow-up-right-from-square" href="https://sepolia.etherscan.io/address/0x5f4879607a28626f062f758e77D4234654BCD6A0">
+  ContributorSplitFactory Contract
+</Card>
 
 ---
 
@@ -145,7 +197,7 @@ On-chain governance for protocol decisions.
 
 | Property | Value |
 |----------|-------|
-| **Address** | `0xf0cE79AE5F9Ea9052F1a15E584EB2080C9bB8e91` |
+| **Address** | `0xE81Bd81701ec98287709F25EeD37083500dbcF4C` |
 | **Voting Period** | 7 days |
 | **Quorum** | 4% |
 | **Proposal Threshold** | 0.1% |
@@ -156,34 +208,8 @@ Execution delay for governance actions.
 
 | Property | Value |
 |----------|-------|
-| **Address** | `0x9ec0cdF3d6930818DaC209417F169F9f50081e42` |
+| **Address** | `0x615f240D21940813C8bB45239A98b791c9d6e064` |
 | **Delay** | 48 hours |
-
-### LotPool
-
-XP-weighted funding rounds.
-
-| Property | Value |
-|----------|-------|
-| **Address** | `0xdA8b884823F9C980fe329C6412e029bECfD4e6e6` |
-
----
-
-## DEX Infrastructure
-
-Uniswap V2 contracts for graduated app tokens.
-
-### UniswapV2Factory
-
-| Property | Value |
-|----------|-------|
-| **Address** | `0xBC3390E39CD49c9dd6009a71712a54A7Aae84c58` |
-
-### UniswapV2Router
-
-| Property | Value |
-|----------|-------|
-| **Address** | `0x800adAE093773642cFeD76cCc6916b9Fd829c34D` |
 
 ---
 
@@ -212,23 +238,23 @@ After deploying modules:
 
 ```json
 {
-  "network": "base-sepolia",
-  "chainId": 84532,
+  "network": "sepolia",
+  "chainId": 11155111,
   "contracts": {
-    "ELTA": "0x6D83439381e89C95742D0A8200E24563079b33dd",
-    "ElataXP": "0xEf85d704217857d18B331FDe50A063b1bff7147B",
-    "VeELTA": "0xA4Be295DE6B59B5DD34891a9B177F9E31A6CFcFf",
-    "LotPool": "0xdA8b884823F9C980fe329C6412e029bECfD4e6e6",
-    "RewardsDistributor": "0xf23cE8E582020F86Cd2E48fdb6A3F6F7FBe6e610",
-    "ElataTimelock": "0x9ec0cdF3d6930818DaC209417F169F9f50081e42",
-    "ElataGovernor": "0xf0cE79AE5F9Ea9052F1a15E584EB2080C9bB8e91",
-    "AppFactory": "0xa88206c28D2005D2640a94A9D4aDDd9a66D91aC6",
-    "AppModuleFactory": "0x2AEb03A678A1e1E99a2AeEb4CeFCD0263A2D3587",
-    "TournamentFactory": "0x6335495c88D1D78245BB50f321E4e450f865CfD0",
-    "AppRewardsDistributor": "0x3b8f4f3993448c6a745767F4747EAee901187893",
-    "AppFeeRouter": "0xc60629c4c1Fe5eB4AEEEB95A83494aE16974D1CE",
-    "UniswapV2Factory": "0xBC3390E39CD49c9dd6009a71712a54A7Aae84c58",
-    "UniswapV2Router": "0x800adAE093773642cFeD76cCc6916b9Fd829c34D"
+    "ELTA": "0x2AEb03A678A1e1E99a2AeEb4CeFCD0263A2D3587",
+    "VeELTA": "0x143A2B10CeA2d27d5903443FF351023C5E0CFe51",
+    "ElataPoints": "0x6335495c88D1D78245BB50f321E4e450f865CfD0",
+    "ProtocolConfig": "0xDe5090F5269786671a9bff0C91A538Af34069a95",
+    "FeeCollector": "0x0584a9894B44939E77330bEa6720BAB6FA263862",
+    "FeeSwapper": "0x909e0fF2c22554E98de83BB495B95765F4C4eD11",
+    "AppFactory": "0x2a108dB28E2790129F4C0F5b13e11A74A19eD677",
+    "AppRegistry": "0x5d3677d30fa585497863A4fEA80FCcCC0162cFda",
+    "TournamentFactory": "0x79241D3500C87aEA0B028391444350fDEdA35342",
+    "InAppContent721Factory": "0x12e5ed2FE7Ffa07727c2540Dd05Fcb33D1869ECE",
+    "ContentStoreFactory": "0x849239432F29a8efAd9CAdA835c46bF533FD739a",
+    "ContributorSplitFactory": "0x5f4879607a28626f062f758e77D4234654BCD6A0",
+    "ElataGovernor": "0xE81Bd81701ec98287709F25EeD37083500dbcF4C",
+    "ElataTimelock": "0x615f240D21940813C8bB45239A98b791c9d6e064"
   }
 }
 ```
