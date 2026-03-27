@@ -5,10 +5,10 @@ description: "Cross-platform SDK for EEG signal processing, BLE headband connect
 
 ## Elata SDK
 
-The Elata SDK is a cross-platform Hardware Abstraction Layer (HAL) for EEG devices with real-time signal processing, analysis models, and remote photoplethysmography (rPPG). It provides three npm packages for web applications.
+The Elata SDK is a cross-platform biosignal SDK spanning EEG device pipelines, browser transports, and rPPG processing for web and native clients. It provides four npm packages and a set of Rust crates that compile to WASM and native targets.
 
 <Info>
-  **Repository**: [github.com/elata-bio/elata-sdk](https://github.com/elata-bio/elata-sdk)
+  **Repository**: [github.com/Elata-Biosciences/elata-bio-sdk](https://github.com/Elata-Biosciences/elata-bio-sdk)
 </Info>
 
 ---
@@ -47,17 +47,56 @@ The Elata SDK is a cross-platform Hardware Abstraction Layer (HAL) for EEG devic
 
 ---
 
+## Quick Start
+
+The fastest path is to scaffold a demo app with `create-elata-demo`:
+
+```bash
+# rPPG web demo (default template)
+npm create @elata-biosciences/elata-demo my-app
+
+# EEG web demo
+npm create @elata-biosciences/elata-demo my-app -- --template eeg-web-demo
+
+# EEG Web Bluetooth demo
+npm create @elata-biosciences/elata-demo my-app -- --template eeg-web-ble-demo
+```
+
+After scaffolding:
+
+```bash
+cd my-app
+pnpm install
+pnpm run dev
+```
+
+<Tip>
+  If you're scaffolding inside an existing `pnpm` workspace, use `pnpm --dir my-app --ignore-workspace install` instead.
+</Tip>
+
+---
+
+## Choose the Right Package
+
+| Goal | Start here | Notes |
+|------|------------|-------|
+| Scaffold a new demo app | `@elata-biosciences/create-elata-demo` | Fastest path for evaluation and onboarding |
+| Run EEG WASM APIs in the browser | `@elata-biosciences/eeg-web` | Signal processing, models, and WASM helpers |
+| Connect to a Muse-compatible EEG device in the browser | `@elata-biosciences/eeg-web-ble` | Requires `eeg-web` and Web Bluetooth |
+| Run camera-based rPPG in a browser app | `@elata-biosciences/rppg-web` | Includes processor, backend loader, and demo helpers |
+
+---
+
 ## npm Packages
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| [`@elata-biosciences/eeg-web`](https://www.npmjs.com/package/@elata-biosciences/eeg-web) | 0.1.0 | EEG WASM bindings — signal processing, band power, models |
-| [`@elata-biosciences/eeg-web-ble`](https://www.npmjs.com/package/@elata-biosciences/eeg-web-ble) | 0.1.0 | Web Bluetooth transport for EEG headband devices |
-| [`@elata-biosciences/rppg-web`](https://www.npmjs.com/package/@elata-biosciences/rppg-web) | 0.1.1 | rPPG pipeline — heart rate from camera via face detection |
+| [`@elata-biosciences/create-elata-demo`](https://www.npmjs.com/package/@elata-biosciences/create-elata-demo) | 0.1.9 | Demo scaffolder with rPPG, EEG, and EEG BLE templates |
+| [`@elata-biosciences/eeg-web`](https://www.npmjs.com/package/@elata-biosciences/eeg-web) | 0.1.9 | EEG WASM bindings — signal processing, band power, models |
+| [`@elata-biosciences/eeg-web-ble`](https://www.npmjs.com/package/@elata-biosciences/eeg-web-ble) | 0.1.9 | Web Bluetooth transport for EEG headband devices |
+| [`@elata-biosciences/rppg-web`](https://www.npmjs.com/package/@elata-biosciences/rppg-web) | 0.1.9 | rPPG pipeline — heart rate from camera via face detection |
 
----
-
-## Installation
+### Add packages to an existing app
 
 ```bash
 # EEG signal processing (WASM)
@@ -104,20 +143,17 @@ The SDK is built on Rust crates that compile to WASM and native targets:
 
 ---
 
-## Platform Support
+## Compatibility
 
-| Platform | EEG Processing | BLE Headband | rPPG |
-|----------|---------------|-------------|------|
-| Chrome/Edge (desktop) | WASM | Web Bluetooth | MediaPipe |
-| Chrome (Android) | WASM | Web Bluetooth | MediaPipe |
-| Safari/iOS | WASM | Native bridge required | MediaPipe |
-| Node.js | WASM | N/A | N/A |
-| iOS (Swift) | UniFFI | CoreBluetooth | Native |
-| Android (Kotlin) | UniFFI | Android BLE | Native |
-| Rust (desktop) | Native | N/A | Native |
+| Surface | Chrome / Edge | Safari macOS | Safari iOS | Node.js |
+|---------|--------------|--------------|------------|---------|
+| `create-elata-demo` | n/a | n/a | n/a | `>= 18` |
+| `eeg-web` | Supported | Supported | Supported | `>= 20` for local repo tooling |
+| `eeg-web-ble` | Supported | Not supported | Not supported | `>= 20` for local repo tooling |
+| `rppg-web` | Supported | Supported | Supported (with camera permissions) | `>= 20` for local repo tooling |
 
 <Note>
-  Safari/iOS does not support Web Bluetooth. Use a native app shell with CoreBluetooth, or a companion bridge app streaming frames over WebSocket.
+  `eeg-web-ble` requires Web Bluetooth and an `https://` origin or `localhost`. Safari and iOS do not support Web Bluetooth for Muse browser workflows — use a native app shell with CoreBluetooth or a companion bridge app streaming frames over WebSocket.
 </Note>
 
 ---
@@ -125,8 +161,8 @@ The SDK is built on Rust crates that compile to WASM and native targets:
 ## Build from Source
 
 ```bash
-git clone https://github.com/elata-bio/elata-sdk.git
-cd elata-sdk
+git clone https://github.com/Elata-Biosciences/elata-bio-sdk.git
+cd elata-bio-sdk
 
 ./run.sh install          # Install dependencies
 ./run.sh build all        # Release build (WASM + TS)

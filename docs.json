@@ -152,7 +152,17 @@
               {
                 "group": "Overview",
                 "pages": [
-                  "sdk/overview"
+                  "sdk/overview",
+                  "sdk/create-elata-demo"
+                ]
+              },
+              {
+                "group": "Tutorials",
+                "pages": [
+                  "sdk/tutorials/first-app",
+                  "sdk/tutorials/eeg-existing-app",
+                  "sdk/tutorials/eeg-ble-live-stream",
+                  "sdk/tutorials/rppg-existing-app"
                 ]
               },
               {

@@ -3,13 +3,29 @@ title: "EEG Web — Getting Started"
 description: "Install and initialize the @elata-biosciences/eeg-web WASM package"
 ---
 
+## When To Use This Package
+
+Use `@elata-biosciences/eeg-web` when your app needs:
+
+- EEG analysis APIs in the browser
+- shared EEG web contracts used by higher-level integrations
+- browser-side access to Elata WASM models and signal-processing helpers
+
+This package does not implement Bluetooth device connection. Add `@elata-biosciences/eeg-web-ble` if you also need live Muse-compatible browser transport.
+
+<Tip>
+  New to the SDK? Start by scaffolding a demo app with `create-elata-demo` before wiring packages manually. See the [First App tutorial](/sdk/tutorials/first-app).
+</Tip>
+
+---
+
 ## Installation
 
 ```bash
 pnpm add @elata-biosciences/eeg-web
 ```
 
-Requirements: Node.js 18+, browser with WebAssembly support.
+Requirements: Node.js 20+ for server-side usage and local repo tooling; modern browser with WebAssembly support for in-browser usage.
 
 ---
 
@@ -63,9 +79,29 @@ console.log("Gamma:", powers.gamma);
 - Headband frame types — normalized data schema for EEG transports
 - All WASM APIs — re-exported from the generated bindings
 
-The full API surface includes signal processing functions, analysis models, and the Athena decoder. See the following pages for details:
+### Key Exports
+
+- `initEegWasm`
+- `initEegWasmSync`
+- `band_powers`
+- `WasmAlphaBumpDetector`
+- `WasmAlphaPeakModel`
+- `WasmCalmnessModel`
+- `AthenaWasmDecoder`
+- `createRppgPipeline`
+
+<Note>
+  Generated `wasm-bindgen` exports are re-exported for compatibility and SDK debugging. Avoid instantiating generated wrappers directly unless you are intentionally debugging the SDK itself.
+</Note>
+
+---
+
+## Next
 
 <CardGroup cols={2}>
+  <Card title="Add EEG to an Existing App" icon="circle-play" iconType="light" href="/sdk/tutorials/eeg-existing-app">
+    Step-by-step integration tutorial
+  </Card>
   <Card title="Signal Processing" icon="wave-square" iconType="light" href="/sdk/eeg-web/signal-processing">
     Band powers, FFT, spectrum analysis
   </Card>

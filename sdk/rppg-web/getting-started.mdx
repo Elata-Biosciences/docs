@@ -9,6 +9,16 @@ Remote photoplethysmography (rPPG) extracts heart rate from subtle color changes
 
 ---
 
+## When To Use This Package
+
+Use `@elata-biosciences/rppg-web` when your app needs:
+
+- camera-based biosignal processing in the browser
+- a higher-level rPPG session API instead of raw WASM orchestration
+- diagnostics and app-facing helpers around rPPG sessions
+
+---
+
 ## Installation
 
 ```bash
@@ -19,7 +29,47 @@ Requirements: Node.js 18+, browser with camera access and WebAssembly support.
 
 ---
 
-## Basic Usage
+## Recommended Usage: `createRppgSession`
+
+For most browser apps, start with `createRppgSession()`. It handles WASM init, frame capture, ROI orchestration, diagnostics, and cleanup.
+
+```typescript
+import { createRppgSession } from "@elata-biosciences/rppg-web";
+
+const session = await createRppgSession({
+  video: videoEl,
+  sampleRate: 30,
+  backend: "auto",
+  faceMesh: "off",
+  onDiagnostics: (diagnostics) => {
+    console.log(diagnostics.state.status, diagnostics.faceTrackingMode);
+    console.log(diagnostics.framesSeen, diagnostics.totalSamplesReceived);
+  },
+});
+
+const metrics = session.getMetrics();
+console.log("BPM:", metrics.bpm);
+
+// Stop and release camera on cleanup
+await session.stop();
+```
+
+Use `createManagedRppgSession()` if you also want automatic restart after terminal processor failures.
+
+---
+
+## Diagnostics Guidance
+
+Every session diagnostics payload includes state, issue codes, sampling stats, and processor failure information.
+
+- If `session.state.status` becomes `failed`, treat the underlying processor as terminal and recreate the session.
+- If `backend: "auto"` falls back to an unavailable backend mode, diagnostics report that state instead of failing silently.
+
+---
+
+## Advanced: `RppgProcessor`
+
+For custom orchestration, drop to `RppgProcessor` directly. Only use this when you need something `createRppgSession()` doesn't provide — if you're debugging, compare against `createRppgSession()` first.
 
 ```typescript
 import { RppgProcessor } from "@elata-biosciences/rppg-web";
@@ -29,17 +79,9 @@ const processor = new RppgProcessor("wasm", 30); // backend, sampleRate
 // Feed green-channel intensity from face ROI each frame
 processor.pushSample(performance.now(), greenIntensity);
 
-// Get current heart rate estimate
 const metrics = processor.getMetrics();
 console.log("BPM:", metrics.bpm);
-console.log("Quality:", metrics.quality);
 ```
-
----
-
-## RppgProcessor
-
-The main class that processes a stream of color samples and produces heart rate estimates.
 
 ### Constructor
 
@@ -55,58 +97,42 @@ new RppgProcessor(backend: Backend, sampleRate: number, windowSeconds?: number)
 
 ### Pushing Samples
 
-Three methods for different input formats:
-
 ```typescript
-// Green channel only
-processor.pushSample(timestampMs, intensity);
-
-// RGB channels
+processor.pushSample(timestampMs, intensity);           // green channel only
 processor.pushSampleRgb(timestampMs, r, g, b, skinRatio?);
-
-// RGB with motion and clip metadata
 processor.pushSampleRgbMeta(timestampMs, r, g, b, skinRatio?, motion?, clipRatio?);
 ```
 
-### Getting Metrics
-
-```typescript
-const metrics: Metrics = processor.getMetrics();
-```
-
-`Metrics` includes:
+### Metrics
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `bpm` | `number` | Estimated heart rate in BPM |
-| `quality` | `number` | Signal quality (0-1) |
+| `quality` | `number` | Signal quality (0–1) |
 | `spectralBpm` | `number` | Spectral analysis estimate |
 | `acfBpm` | `number` | Autocorrelation estimate |
 | `confidence` | `number` | Overall confidence |
 
-### Particle Tracker
+---
 
-Enable for more robust BPM tracking:
+## Key Exports
 
-```typescript
-processor.enableTracker(minBpm?, maxBpm?, numParticles?);
-```
-
-### State Persistence
-
-Save and restore processor state:
-
-```typescript
-const snapshot = processor.getStateSnapshot();
-// ... later
-processor.loadStateSnapshot(snapshot);
-```
+- `createRppgSession`
+- `createManagedRppgSession`
+- `RppgProcessor`
+- `loadWasmBackend`
+- `createRppgAppAdapter`
+- `createRppgAppMonitor`
+- `normalizeRppgError`
 
 ---
 
 ## Next
 
 <CardGroup cols={2}>
+  <Card title="rPPG Existing App Tutorial" icon="circle-play" iconType="light" href="/sdk/tutorials/rppg-existing-app">
+    Step-by-step integration guide
+  </Card>
   <Card title="Frame Sources" icon="camera" iconType="light" href="/sdk/rppg-web/frame-sources">
     MediaPipe face detection and camera capture
   </Card>

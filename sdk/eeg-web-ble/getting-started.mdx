@@ -3,6 +3,18 @@ title: "EEG Web BLE — Getting Started"
 description: "Connect to EEG headband devices over Web Bluetooth"
 ---
 
+## When To Use This Package
+
+Use `@elata-biosciences/eeg-web-ble` when your app needs:
+
+- browser-side discovery of Muse-compatible devices
+- live EEG streaming over Web Bluetooth
+- normalized headband frames for app logic or downstream analysis
+
+Install it alongside `@elata-biosciences/eeg-web`.
+
+---
+
 ## Installation
 
 ```bash
@@ -16,22 +28,28 @@ pnpm add @elata-biosciences/eeg-web-ble @elata-biosciences/eeg-web
 ## Requirements
 
 - Browser with **Web Bluetooth** support (Chrome/Edge on desktop or Android)
-- Served from a **secure context** (`https://`)
+- Served from a **secure context** (`https://` or `localhost`)
 - Safari/iOS does **not** support Web Bluetooth — see [platform notes](/sdk/overview) for alternatives
 
 ---
 
 ## Basic Usage
 
+`startStreaming()` is the recommended default. It wraps `connect()` and `start()` together and avoids the common mistake of connecting successfully but never beginning to stream.
+
 ```typescript
-import { initEegWasm } from "@elata-biosciences/eeg-web";
+import { initEegWasm, AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
 import { BleTransport } from "@elata-biosciences/eeg-web-ble";
 
 // Initialize WASM first
 await initEegWasm();
 
 // Create transport
-const transport = new BleTransport();
+const transport = new BleTransport({
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),
+  },
+});
 
 // Handle incoming EEG frames
 transport.onFrame = (frame) => {
@@ -44,13 +62,11 @@ transport.onStatus = (status) => {
   console.log(`Transport: ${status.state}`, status.reason || "");
 };
 
-// Connect and start streaming
-await transport.connect();   // triggers Bluetooth device picker
-await transport.start();     // begins EEG data stream
+// Connect and start streaming (triggers Bluetooth device picker)
+await transport.startStreaming();
 
 // ... later
 await transport.stop();
-await transport.disconnect();
 ```
 
 ---
@@ -59,6 +75,7 @@ await transport.disconnect();
 
 | Method | What it does |
 |--------|-------------|
+| `startStreaming()` | Recommended: connects and starts the stream in one call |
 | `connect()` | Opens Bluetooth device picker, pairs, and prepares session |
 | `start()` | Begins EEG data stream; `onFrame` callbacks fire |
 | `stop()` | Stops the data stream; connection stays open |
@@ -89,7 +106,7 @@ const transport = new BleTransport({
 
 ## Athena Support
 
-Muse S headbands with Athena firmware require an Athena decoder factory:
+Muse S headbands with Athena firmware require an Athena decoder factory. Include it up front to keep both classic and Athena flows covered:
 
 ```typescript
 import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
@@ -120,9 +137,20 @@ const channelNames = transport.getEegNames();
 
 ---
 
+## Platform Caveats
+
+- Safari and iOS do not provide usable Web Bluetooth support for this workflow.
+- For Safari and iOS, use a native BLE shell, companion bridge, or hybrid WebView strategy with `@elata-biosciences/eeg-web` frame contracts as the boundary.
+- Firmware variants may differ in command behavior.
+
+---
+
 ## Next
 
 <CardGroup cols={2}>
+  <Card title="Live Stream Tutorial" icon="circle-play" iconType="light" href="/sdk/tutorials/eeg-ble-live-stream">
+    Step-by-step BLE streaming guide
+  </Card>
   <Card title="Muse Device Details" icon="microchip" iconType="light" href="/sdk/eeg-web-ble/muse-device">
     Protocol details, characteristics, and compatibility
   </Card>
