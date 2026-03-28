@@ -154,20 +154,27 @@
                 "group": "Overview",
                 "pages": [
                   "sdk/overview",
-                  "sdk/create-elata-demo"
+                  "sdk/create-elata-demo",
+                  {
+                    "group": "Guides",
+                    "pages": [
+                      "sdk/guides/eeg-ble-integration",
+                      "sdk/guides/rppg-camera"
+                    ]
+                  },
+                  {
+                    "group": "Tutorials",
+                    "pages": [
+                      "sdk/tutorials/first-app",
+                      "sdk/tutorials/eeg-existing-app",
+                      "sdk/tutorials/eeg-ble-live-stream",
+                      "sdk/tutorials/rppg-existing-app"
+                    ]
+                  }
                 ]
               },
               {
-                "group": "Tutorials",
-                "pages": [
-                  "sdk/tutorials/first-app",
-                  "sdk/tutorials/eeg-existing-app",
-                  "sdk/tutorials/eeg-ble-live-stream",
-                  "sdk/tutorials/rppg-existing-app"
-                ]
-              },
-              {
-                "group": "EEG: Web SDK",
+                "group": "EEG Web SDK",
                 "pages": [
                   "sdk/eeg-web/getting-started",
                   "sdk/eeg-web/headband-transport",
@@ -176,25 +183,18 @@
                 ]
               },
               {
-                "group": "EEG: Web BLE",
+                "group": "EEG BLE Web SDK",
                 "pages": [
                   "sdk/eeg-web-ble/getting-started",
                   "sdk/eeg-web-ble/muse-device"
                 ]
               },
               {
-                "group": "Camera: Web SDK",
+                "group": "Camera Web SDK",
                 "pages": [
                   "sdk/rppg-web/getting-started",
                   "sdk/rppg-web/frame-sources",
                   "sdk/rppg-web/calibration"
-                ]
-              },
-              {
-                "group": "Guides",
-                "pages": [
-                  "sdk/guides/eeg-ble-integration",
-                  "sdk/guides/rppg-camera"
                 ]
               }
             ]

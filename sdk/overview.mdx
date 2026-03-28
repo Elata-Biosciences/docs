@@ -1,5 +1,5 @@
 ---
-title: "SDK Overview"
+title: "Getting Started"
 description: "Cross-platform SDK for EEG signal processing, BLE headband connectivity, and rPPG"
 ---
 
@@ -15,7 +15,7 @@ The Elata SDK is a cross-platform biosignal SDK spanning EEG device pipelines, b
 
 ## Architecture
 
-```
+```text
 ┌──────────────────────────────────────────────────────┐
 │                        Elata SDK                      │
 ├──────────────────────────────────────────────────────┤
@@ -79,7 +79,7 @@ pnpm run dev
 ## Choose the Right Package
 
 | Goal | Start here | Notes |
-|------|------------|-------|
+| --- | --- | --- |
 | Scaffold a new demo app | `@elata-biosciences/create-elata-demo` | Fastest path for evaluation and onboarding |
 | Run EEG WASM APIs in the browser | `@elata-biosciences/eeg-web` | Signal processing, models, and WASM helpers |
 | Connect to a Muse-compatible EEG device in the browser | `@elata-biosciences/eeg-web-ble` | Requires `eeg-web` and Web Bluetooth |
@@ -90,7 +90,7 @@ pnpm run dev
 ## npm Packages
 
 | Package | Version | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | [`@elata-biosciences/create-elata-demo`](https://www.npmjs.com/package/@elata-biosciences/create-elata-demo) | 0.1.9 | Demo scaffolder with rPPG, EEG, and EEG BLE templates |
 | [`@elata-biosciences/eeg-web`](https://www.npmjs.com/package/@elata-biosciences/eeg-web) | 0.1.9 | EEG WASM bindings — signal processing, band power, models |
 | [`@elata-biosciences/eeg-web-ble`](https://www.npmjs.com/package/@elata-biosciences/eeg-web-ble) | 0.1.9 | Web Bluetooth transport for EEG headband devices |
@@ -109,7 +109,7 @@ pnpm add @elata-biosciences/eeg-web-ble @elata-biosciences/eeg-web
 pnpm add @elata-biosciences/rppg-web
 ```
 
-**Requirements**: Node.js 18+, modern browser with WebAssembly support.
+**Requirements**: Node.js 18\+, modern browser with WebAssembly support.
 
 ---
 
@@ -118,7 +118,7 @@ pnpm add @elata-biosciences/rppg-web
 The SDK is built on Rust crates that compile to WASM and native targets:
 
 | Crate | Purpose |
-|-------|---------|
+| --- | --- |
 | `eeg-hal` | Core HAL traits: `EegDevice`, `SampleBuffer`, `ChannelConfig` |
 | `eeg-hal-synthetic` | Synthetic EEG device for testing |
 | `eeg-signal` | FFT, band power analysis, filtering |
@@ -135,10 +135,10 @@ The SDK is built on Rust crates that compile to WASM and native targets:
 ## Device Support
 
 | Device | Protocol | Channels | Status |
-|--------|----------|----------|--------|
+| --- | --- | --- | --- |
 | Muse 2 | Classic BLE | 4 EEG (TP9, AF7, AF8, TP10) | Supported |
-| Muse S | Classic BLE | 4 EEG + PPG | Supported |
-| Muse S (Athena) | Athena v2 | 8 EEG + optics + accgyro | Supported |
+| Muse S | Classic BLE | 4 EEG \+ PPG | Supported |
+| Muse S (Athena) | Athena v2 | 8 EEG \+ optics \+ accgyro | Supported |
 | Synthetic Bridge | BLE bridge | Configurable | Testing only |
 
 ---
@@ -146,7 +146,7 @@ The SDK is built on Rust crates that compile to WASM and native targets:
 ## Compatibility
 
 | Surface | Chrome / Edge | Safari macOS | Safari iOS | Node.js |
-|---------|--------------|--------------|------------|---------|
+| --- | --- | --- | --- | --- |
 | `create-elata-demo` | n/a | n/a | n/a | `>= 18` |
 | `eeg-web` | Supported | Supported | Supported | `>= 20` for local repo tooling |
 | `eeg-web-ble` | Supported | Not supported | Not supported | `>= 20` for local repo tooling |
@@ -179,9 +179,11 @@ cd elata-bio-sdk
   <Card title="EEG Web" icon="brain" iconType="light" href="/sdk/eeg-web/getting-started">
     Signal processing and models
   </Card>
+
   <Card title="BLE Transport" icon="bluetooth" iconType="light" href="/sdk/eeg-web-ble/getting-started">
     Connect to headband devices
   </Card>
+
   <Card title="rPPG" icon="heart-pulse" iconType="light" href="/sdk/rppg-web/getting-started">
     Heart rate from camera
   </Card>
