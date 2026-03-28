@@ -9,11 +9,11 @@ description: "Open-source, low-cost EEG hardware for precision psychiatry and ne
 
 ## What is Elata EEG?
 
-Elata EEG is an **open-source electroencephalography platform** built around a Raspberry Pi 5 and the Texas Instruments ADS1299 analog front-end. The goal is to democratize EEG hardware with a fully open, right-to-repair design that any lab or hacker can build, modify, and extend.
+Elata EEG is an open-source electroencephalography platform built around a [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/) and the [Texas Instruments ADS1299](https://www.ti.com/product/ADS1299) analog front-end. The goal is to democratize EEG hardware with a fully open, right-to-repair design that any lab or hacker can build, modify, and extend.
 
 The system supports 8+ channels of 24-bit EEG at research-grade resolution, with real-time streaming, a plugin-based DSP pipeline, and a browser-based kiosk UI.
 
-<Card title="GitHub Repository" icon="github" href="https://github.com/Elata-Biosciences/elata-eeg">
+<Card icon="github" href="https://github.com/Elata-Biosciences/elata-eeg" title="GitHub Repository">
   Source code, schematics, and build instructions (GPLv3)
 </Card>
 
@@ -21,31 +21,32 @@ The system supports 8+ channels of 24-bit EEG at research-grade resolution, with
 
 ## Hardware
 
-| Component | Details |
-|-----------|---------|
-| **Controller** | Raspberry Pi 5 (quad-core Arm Cortex, 40-pin GPIO) |
-| **ADC** | TI ADS1299 EEGFE — 8-channel, 24-bit analog front-end via SPI |
-| **Electrodes** | Wet Ag/AgCl or gold-cup with conductive paste (e.g. Ten20) |
-| **Display** | 5-inch or 7-inch HDMI touchscreen (optional) |
-| **Cables** | Dupont jumpers (2.54 mm), optional shielding / ferrite beads |
+| Component      | Details                                                      |
+| -------------- | ------------------------------------------------------------ |
+| **Controller** | Raspberry Pi 5 (quad-core Arm Cortex, 40-pin GPIO)           |
+| **ADC**        | TI ADS1299 EEGFE: 8-channel, 24-bit analog front-end via SPI |
+| **Electrodes** | Wet Ag/AgCl or gold-cup with conductive paste (e.g. Ten20)   |
+| **Display**    | 5-inch or 7-inch HDMI touchscreen (optional)                 |
+| **Cables**     | Dupont jumpers (2.54 mm), optional shielding / ferrite beads |
 
 Two board configurations are supported:
 
-- **V1** — Single ADS1299 EVM (8 channels)
-- **V2** — Four synchronized ADS1299 EVMs with shared clock and SPI (32 channels)
+- **V1**: Single ADS1299 EVM (8 channels)
+- **V2**: Four synchronized ADS1299 EVMs with shared clock and SPI (32 channels)
 
 ---
 
+
 ## Software Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **OS** | Raspberry Pi OS (Debian) |
-| **Firmware / Backend** | Rust workspace — `sensors`, `boards`, `pipeline`, `daemon` crates |
-| **Frontend** | Next.js kiosk with WebSocket data streaming |
-| **Hardware Interface** | `rppal` crate (GPIO / SPI / I2C) |
-| **Plugin System** | Event-driven DSP plugins on a shared `EventBus` |
-| **License** | GPLv3 (strong copyleft) |
+| Layer                  | Technology                                                       |
+| ---------------------- | ---------------------------------------------------------------- |
+| **OS**                 | Raspberry Pi OS (Debian)                                         |
+| **Firmware / Backend** | Rust workspace: `sensors`, `boards`, `pipeline`, `daemon` crates |
+| **Frontend**           | Next.js kiosk with WebSocket data streaming                      |
+| **Hardware Interface** | `rppal` crate (GPIO / SPI / I2C)                                 |
+| **Plugin System**      | Event-driven DSP plugins on a shared `EventBus`                  |
+| **License**            | GPLv3 (strong copyleft)                                          |
 
 ---
 
@@ -65,10 +66,10 @@ The install script handles system dependencies (Rust, Node.js, Chromium), builds
 # Stop kiosk mode
 bash scripts/stop.sh
 
-# Terminal 1 — daemon (from repo root)
+# Terminal 1: daemon (from repo root)
 cargo run --bin eeg_daemon -- --mock   # --mock for testing without hardware
 
-# Terminal 2 — kiosk
+# Terminal 2: kiosk
 cd kiosk && npm run dev
 ```
 
@@ -79,10 +80,10 @@ The kiosk UI is available at `http://localhost:3000`. The WebSocket data endpoin
 ## Next
 
 <CardGroup cols={2}>
-  <Card title="Architecture" icon="diagram-project" href="/home/elata-eeg/eeg-architecture">
+  <Card icon="compass" href="/home/elata-eeg/eeg-architecture" title="Architecture">
     Crate layering, plugin system, and WebSocket API
   </Card>
-  <Card title="SDK — eeg-web" icon="microchip" href="/sdk/eeg-web/getting-started">
+  <Card icon="microchip" href="/sdk/eeg-web/getting-started" title="SDK — eeg-web">
     Browser-side EEG signal processing with WASM
   </Card>
 </CardGroup>

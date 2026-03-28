@@ -9,9 +9,9 @@
   },
   "favicon": "/favicon.svg",
   "background": {
-    "decoration": "gradient",
+    "decoration": "grid",
     "color": {
-      "light": "#F8F5EE",
+      "light": "#f7f7f7",
       "dark": "#171717"
     }
   },
@@ -73,6 +73,7 @@
               },
               {
                 "group": "$ELTA Token",
+                "hidden": true,
                 "pages": [
                   "home/elta-token/elta-overview",
                   "home/elta-token/elta-distribution",
@@ -166,7 +167,7 @@
                 ]
               },
               {
-                "group": "EEG Web SDK",
+                "group": "EEG: Web SDK",
                 "pages": [
                   "sdk/eeg-web/getting-started",
                   "sdk/eeg-web/headband-transport",
@@ -175,14 +176,14 @@
                 ]
               },
               {
-                "group": "EEG Web BLE",
+                "group": "EEG: Web BLE",
                 "pages": [
                   "sdk/eeg-web-ble/getting-started",
                   "sdk/eeg-web-ble/muse-device"
                 ]
               },
               {
-                "group": "rPPG Web SDK",
+                "group": "Camera: Web SDK",
                 "pages": [
                   "sdk/rppg-web/getting-started",
                   "sdk/rppg-web/frame-sources",

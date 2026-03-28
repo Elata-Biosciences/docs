@@ -1,5 +1,5 @@
 ---
-title: "EEG Web BLE — Getting Started"
+title: "Getting Started"
 description: "Connect to EEG headband devices over Web Bluetooth"
 ---
 
@@ -74,7 +74,7 @@ await transport.stop();
 ## BleTransport Lifecycle
 
 | Method | What it does |
-|--------|-------------|
+| --- | --- |
 | `startStreaming()` | Recommended: connects and starts the stream in one call |
 | `connect()` | Opens Bluetooth device picker, pairs, and prepares session |
 | `start()` | Begins EEG data stream; `onFrame` callbacks fire |
@@ -97,7 +97,7 @@ const transport = new BleTransport({
 ```
 
 | Option | Type | Description |
-|--------|------|-------------|
+| --- | --- | --- |
 | `sourceName` | `string` | Identifier included in `HeadbandFrameV1.source` |
 | `deviceOptions` | `MuseDeviceOptions` | Passed to underlying `MuseBleDevice` |
 | `device` | `BleDeviceLike` | Inject a custom device implementation |
@@ -154,6 +154,7 @@ const channelNames = transport.getEegNames();
   <Card title="Muse Device Details" icon="microchip" iconType="light" href="/sdk/eeg-web-ble/muse-device">
     Protocol details, characteristics, and compatibility
   </Card>
+
   <Card title="EEG + BLE Integration" icon="link" iconType="light" href="/sdk/guides/eeg-ble-integration">
     End-to-end streaming and processing guide
   </Card>

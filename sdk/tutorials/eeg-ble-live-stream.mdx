@@ -1,10 +1,9 @@
 ---
-title: Stream Muse-Compatible EEG Over Web Bluetooth
-description: Build a browser EEG flow that discovers a supported device, connects, and starts receiving frames.
+title: "Stream EEG Over Web Bluetooth"
+description: "Build a browser EEG flow that discovers a supported device, connects, and starts receiving frames."
 ---
 
-This tutorial builds on the browser EEG package and adds live Web Bluetooth
-transport with `@elata-biosciences/eeg-web-ble`.
+This tutorial builds on the browser EEG package and adds live Web Bluetooth transport with `@elata-biosciences/eeg-web-ble`.
 
 Use this when your app needs real headset data in Chrome or Edge.
 
@@ -74,8 +73,7 @@ Why include `athenaDecoderFactory` up front:
 
 ## Step 3: Connect From A User Gesture
 
-Browser BLE connection prompts usually need a user gesture such as a button
-click.
+Browser BLE connection prompts usually need a user gesture such as a button click.
 
 ```ts
 const transport = createHeadbandTransport();
@@ -91,14 +89,11 @@ export async function connectHeadband() {
 
 Call `connectHeadband()` from a click handler in your UI.
 
-`startStreaming()` is the recommended default because it handles the common
-`connect()` plus `start()` sequence in one call and avoids a frequent mistake
-where apps connect successfully but never actually begin streaming.
+`startStreaming()` is the recommended default because it handles the common `connect()` plus `start()` sequence in one call and avoids a frequent mistake where apps connect successfully but never actually begin streaming.
 
 ## Step 4: Turn Frames Into App State
 
-Once `onFrame` starts firing, move the data into your own app state instead of
-leaving it only in `console.log`.
+Once `onFrame` starts firing, move the data into your own app state instead of leaving it only in `console.log`.
 
 The usual pattern is:
 
@@ -109,8 +104,7 @@ The usual pattern is:
 
 ## Step 5: Clean Up On Route Or Component Exit
 
-When the current view is leaving, stop streaming so later reconnect attempts
-start from a clean state:
+When the current view is leaving, stop streaming so later reconnect attempts start from a clean state:
 
 ```ts
 export async function stopHeadband() {
@@ -118,14 +112,11 @@ export async function stopHeadband() {
 }
 ```
 
-If you prefer finer-grained lifecycle control, you can still call
-`connect()` and `start()` separately. The tutorial uses `startStreaming()`
-because it is the safest default for most app integrations.
+If you prefer finer-grained lifecycle control, you can still call `connect()` and `start()` separately. The tutorial uses `startStreaming()` because it is the safest default for most app integrations.
 
 ## Step 6: Handle Browser And Platform Constraints
 
-If the chooser never appears or `navigator.bluetooth` is missing, check these
-first:
+If the chooser never appears or `navigator.bluetooth` is missing, check these first:
 
 - the page is running on `https://` or `localhost`
 - you are using Chrome or Edge
@@ -139,8 +130,7 @@ This repo supports:
 - Muse 2 and Muse S classic BLE devices
 - Muse S Athena protocol v2 devices
 
-Including `athenaDecoderFactory` is the simplest supported way to keep both
-flows covered.
+Including `athenaDecoderFactory` is the simplest supported way to keep both flows covered.
 
 ## Common Problems
 

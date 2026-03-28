@@ -1,4 +1,214 @@
 ---
-title: 'ElataXP'
+title: "Elata Points"
+description: "Non-transferable reputation points that gate early access, weight funding votes, and track meaningful participation across the Elata ecosystem."
 ---
 
+Elata Points are the protocol's on-chain reputation primitive. Points are earned by participating in the ecosystem: playing apps, submitting data, and engaging in governance and therefore, cannot be bought, sold, or transferred. Your points balance signals genuine contribution and unlocks privileged access across the protocol.
+
+<Info>
+  Points live in the `ElataPoints` smart contract (`src/experience/ElataPoints.sol`) and is soulbound, meaning it is permanently bound to the address that earned it.
+</Info>
+
+---
+
+## Why Points Matters
+
+<Columns cols={3}>
+  <Card icon="rocket" title="Early Launch Access">
+    Points holders meeting the minimum threshold get a 6-hour head start on every new app token launch, buying from the bonding curve before the general public
+  </Card>
+  <Card icon="vote" title="Funding Votes">
+    Points determines your voting weight in the weekly LotPool funding round, where the community allocates treasury ELTA to research proposals and development grants
+  </Card>
+  <Card icon="fingerprint" title="Reputation Signal">
+    Because points are non-transferable and earned exclusively through participation, they serve as an unfakeable signal of commitment to the ecosystem
+  </Card>
+</Columns>
+
+---
+
+## How Points Work
+
+Unlike ELTA (which is a tradeable ERC-20), points are a non-transferable point balance tracked on-chain. It accumulates over time as you interact with the protocol and can never be sent to another address or listed on a market.
+
+### Core Properties
+
+| Property           | Detail                                                                                                             |
+| :----------------- | :----------------------------------------------------------------------------------------------------------------- |
+| **Contract**       | [`ElataPoints.sol`](https://github.com/Elata-Biosciences/elata-protocol/blob/vNext/src/experience/ElataPoints.sol) |
+| **Token standard** | Non-standard (non-transferable, soulbound)                                                                         |
+| **Transferable**   | No                                                                                                                 |
+| **Burnable**       | No. Points are permanent once earned                                                                               |
+| **Mintable by**    | Authorized protocol operator(s) via role-based access                                                              |
+| **Chain**          | Same chain as the core Elata Protocol deployment                                                                   |
+
+<Warning>
+  Points cannot be purchased with ELTA or any other token. Any claim to sell or transfer points are fraudulent. The contract enforces non-transferability at the smart contract level.
+</Warning>
+
+---
+
+## Earning points
+
+Points are awarded for meaningful, verifiable participation across three categories:
+
+<Tabs>
+  <Tab title="Using Apps">
+    Engage with neurotech applications in the Elata ecosystem, such as neurofeedback sessions, brain-training games, meditation experiences, EEG-based interactions, and more. Each qualifying session or milestone earns points proportional to the depth of engagement.
+  </Tab>
+  <Tab title="Contributing Data">
+    Submit biosensor data (EEG, eye-tracking, or other biometric signals) to research experiments or app-level data pipelines. Data contributions that pass validation earn points, rewarding users who actively power the ecosystem's scientific infrastructure.
+  </Tab>
+  <Tab title="Governance Participation">
+    Vote on proposals, participate in funding rounds, and engage in protocol discussions. Active governance participants earn points that further amplifies their future influence.
+  </Tab>
+</Tabs>
+
+<Tip>
+  Points are designed to reward consistent, genuine participation rather than one-time actions. Engage regularly across multiple categories for the fastest accumulation.
+</Tip>
+
+---
+
+## Early Access Gating
+
+One of the most impactful functions for points is gating access to new app token launches on the bonding curve.
+
+<Steps>
+  <Step title="App Launches on the curve">
+    When a new app is launched via `AppFactory`, its token begins selling on a constant-product bonding curve (`x*y=k`). The initial supply is 10,000,000 app tokens with 50% allocated to the curve.
+  </Step>
+  <Step title="Point-Gating activates">
+    For the first 6 hours after launch, only wallets holding at least 100 XP can buy from the curve. This gives active ecosystem participants first access at the earliest (and lowest) prices.
+  </Step>
+  <Step title="Public Trading Opens">
+    After the 6-hour window, the curve opens to all buyers regardless of XP balance. The 1% trading fee applies to all trades throughout the curve's lifecycle.
+  </Step>
+  <Step title="Graduation to DEX">
+    Once the curve collects 42,000 ELTA, liquidity auto-deploys to Uniswap V2 and LP tokens are locked for 2 years. Free-market trading begins.
+  </Step>
+</Steps>
+
+<Note>
+  The default gate parameters (100 points minimum, 6-hour window) are configurable through governance. These values represent the current protocol defaults on the `vNext` branch.
+</Note>
+
+---
+
+## Funding Allocation
+
+Points play a central role in how the protocol supports capital expenditures:
+
+Each week, the LotPool governance mechanism opens a funding round where the community votes to allocate ELTA from the treasury to submitted proposals — research studies, open-source tools, neurotech hardware, and more.
+
+Your voting weight in LotPool is determined by your points balance, not your ELTA holdings or veELTA position. This separates financial stake from contribution-based influence, ensuring that the people who have participated most actively in the ecosystem have the greatest say over where funding goes
+
+<Columns cols={2}>
+  <Card icon="vote" title="Point-Weighted Voting">
+    Every point counts equally. Your share of total points supply determines your proportional weight in each funding round
+  </Card>
+  <Card icon="calendar" title="Weekly Cadence">
+    Funding rounds run on a weekly cycle. Proposals are submitted, the community votes, and winning proposals receive ELTA from the treasury
+  </Card>
+</Columns>
+
+---
+
+## Points vs veELTA vs ELTA
+
+The protocol uses three distinct primitives for different functions. Understanding how they interact is key to navigating the ecosystem:
+
+|                     | **ELTA**                 | **veELTA**                       | **Elata Points**              |
+| :------------------ | :----------------------- | :------------------------------- | :---------------------------- |
+| **Type**            | ERC-20 token             | Vote-escrowed ELTA               | Non-transferable points       |
+| **Transferable**    | Yes                      | No                               | No                            |
+| **How to get**      | Buy, earn, or receive    | Lock ELTA (7–730 days)           | Participate in ecosystem      |
+| **Governance role** | None directly            | On-chain proposal & voting power | Funding vote weight (LotPool) |
+| **Revenue share**   | None directly            | 15% of protocol fees             | None directly                 |
+| **Launch access**   | Required to buy on curve | No special access                | Gates 6-hour early window     |
+| **Boost mechanic**  | N/A                      | 1×–2× linear by lock duration    | Accumulates over time         |
+
+<Info>
+  ELTA is the economic primitive (money). veELTA is the governance primitive (voting power + revenue). XP is the reputation primitive (contribution signal + funding influence). All three work together to align incentives across the ecosystem.
+</Info>
+
+---
+
+## Points Distribution Architecture
+
+Points are minted by authorized operators — protocol-level contracts and admin roles that can verify qualifying actions. The distribution system is designed with these principles:
+
+<AccordionGroup>
+  <Accordion title="Operator Model">
+    The `ElataPoints` contract uses a role-based access pattern. Only addresses granted the operator role can mint new XP. This role is managed by the protocol's multisig admin, ensuring no single actor can inflate XP balances arbitrarily.
+  </Accordion>
+  <Accordion title="On-Chain Verification">
+    Wherever possible, point-earning actions are verified on-chain. For example, completing a bonding curve purchase, voting on a governance proposal, or staking ELTA. Off-chain actions (such as data submissions) flow through an authorized backend operator that validates participation before minting.
+  </Accordion>
+  <Accordion title="No Inflation Schedule">
+    Unlike ELTA (which has a fixed 77M supply), XP has no hard cap. However, points can only be minted in response to verified actions. There is no passive emission or time-based inflation. Growth is organic and participation-driven.
+  </Accordion>
+  <Accordion title="Immutable Contract">
+    Like all protocol contracts, `ElataPoints` is non-upgradeable. The minting logic and non-transferability guarantees are permanently enforced at the contract level with no proxy pattern or admin override.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Can I buy points?">
+    No. Points cannot be purchased, traded, or transferred. It is exclusively earned through verified participation in the ecosystem. Any entity claiming to sell points are fraudulent.
+  </Accordion>
+  <Accordion title="What happens if I lose access to my wallet?">
+    Points are bound to your on-chain address. If you lose access to your wallet, your points are not recoverable. Secure your keys carefully.
+  </Accordion>
+  <Accordion title="Do points decay over time?">
+    No. Once earned, points are permanent and do not decrease. Your balance can only grow as you continue to participate.
+  </Accordion>
+  <Accordion title="Do I need points to use the protocol?">
+    No. You can buy ELTA, trade on bonding curves (after the early-access window), stake, and participate in governance without any points. Points provide additional benefits, such as early launch access and funding vote weight. However, points are not a hard requirement for basic protocol usage.
+  </Accordion>
+  <Accordion title="How much points do I need for early launch access?">
+    The current default threshold is 100 Points. This grants access to the 6-hour early buy window on new app token launches. Both the threshold and the window duration are configurable through governance.
+  </Accordion>
+  <Accordion title="Can the points contract be upgraded?">
+    No. All Elata protocol contracts are non-upgradeable and immutable after deployment. The rules governing points minting and non-transferability cannot be changed post-deployment.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Security Considerations
+
+The points system inherits the same security posture as the rest of the Elata Protocol:
+
+- **Non-upgradeable**: No proxy patterns, no admin upgrade keys
+- **Role-based minting**: Only authorized operator addresses can mint points, managed by multisig
+- **Soulbound enforcement**: Transfer functions are disabled at the contract level, not just by convention
+- **Open source**: Full contract source is available for public review and audit
+
+<Warning>
+  The protocol is currently pending an external security audit before mainnet deployment. All contracts, including `ElataPoints`, are open-source on the `vNext` branch and available for community review.
+</Warning>
+
+<Card icon="github" href="https://github.com/Elata-Biosciences/elata-protocol/tree/vNext/src/experience" title="View the Source">
+  Explore the ElataPoints contract on the `vNext` branch of the Elata Protocol repository.
+</Card>
+
+---
+
+## Related Pages
+
+<Columns cols={3}>
+  <Card icon="lock" href="/home/elta-token/staking" title="ELTA Staking">
+    Lock ELTA for veELTA: governance voting power and protocol revenue share
+  </Card>
+  <Card icon="recycle" href="/learn/how-it-works" title="How Elata Works">
+    Full protocol architecture, app lifecycle, and fee flow overview
+  </Card>
+  <Card icon="chart-pie" href="/learn/tokenomics" title="Tokenomics">
+    ELTA supply, distribution, and economic model breakdown
+  </Card>
+</Columns>

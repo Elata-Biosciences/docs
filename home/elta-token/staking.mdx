@@ -1,4 +1,208 @@
 ---
-title: 'ELTA Staking'
+title: "ELTA Staking"
+sidebarTitle: "Staking"
+description: "Lock ELTA to receive veELTA and earn voting power, protocol revenue, and governance rights"
+icon: "lock"
 ---
 
+Lock your ELTA tokens into the [veELTA](/home/elta-token/veelta) contract to receive vote-escrowed ELTA (veELTA). Longer lock durations earn a higher boost on voting power and a proportional share of protocol fees.
+
+Additionally, individual apps may opt-in and give extra rewards to veELTA holders.
+
+<Info>
+  Staking is non-custodial. Your ELTA remains in the immutable `VeELTA` smart contract — no multisig, admin, or third party can move your tokens.
+</Info>
+
+---
+
+## Why Stake?
+
+<Columns cols={3}>
+  <Card icon="vote" title="Voting Power">
+    veELTA grants on-chain voting rights in the Elata Governor. Propose and vote on protocol upgrades, parameter changes, and treasury allocations
+  </Card>
+  <Card icon="coins" title="Protocol Revenue">
+    veELTA holders receive 15% of all protocol fee revenue routed through the `FeeSwapper`. Rewards are distributed proportionally to your veELTA balance
+  </Card>
+  <Card icon="landmark" title="Governance Weight">
+    Longer lock durations produce a higher boost (up to 2x), giving committed participants greater influence over the protocol's direction
+  </Card>
+</Columns>
+
+---
+
+## How It Works
+
+The veELTA staking model follows a vote-escrow design. When you lock ELTA, you receive a non-transferable veELTA balance that determines your share of governance power and fee revenue. Your veELTA balance is a function of the amount locked and the duration of your lock.
+
+### Boost Mechanics
+
+Your veELTA balance is calculated using a **linear boost** between `1×` and `2×` based on lock duration:
+
+```text
+veELTA = ELTA_locked × boost(duration)
+
+boost(d) = 1 + (d - MIN_LOCK) / (MAX_LOCK - MIN_LOCK)
+```
+
+Where `MIN_LOCK = 7 days` and `MAX_LOCK = 730 days (2 years)`.
+
+| Lock Duration | Boost Multiplier | 10,000 ELTA Locked → veELTA |
+| :-----------: | :--------------: | :-------------------------: |
+| 7 days        | 1.00×            | 10,000                      |
+| 6 months      | ~1.25×           | ~12,500                     |
+| 1 year        | ~1.50×           | ~15,000                     |
+| 2 years       | 2.00×            | 20,000                      |
+
+<Tip>
+  Locking for the maximum duration of **730 days** doubles your effective veELTA balance — giving you twice the voting power and twice the fee share compared to the minimum lock.
+</Tip>
+
+---
+
+## Key Parameters
+
+| Parameter               | Value                                                                                                 |
+| :---------------------- | :---------------------------------------------------------------------------------------------------- |
+| **Minimum lock**        | 7 days                                                                                                |
+| **Maximum lock**        | 730 days (2 years)                                                                                    |
+| **Boost range**         | 1× → 2× (linear)                                                                                      |
+| **ELTA total supply**   | 77,000,000                                                                                            |
+| **veELTA transferable** | No (non-transferable, soulbound)                                                                      |
+| **Contract**            | [`VeELTA.sol`](https://github.com/Elata-Biosciences/elata-protocol/blob/vNext/src/staking/VeELTA.sol) |
+
+---
+
+## Revenue Share
+
+Protocol fees flow through the **V2 Fee Pipeline** (`FeeCollector → FeeSwapper`) and are split across three destinations:
+
+<Columns cols={3}>
+  <Card icon="lock" title="70% to App Stakers">
+    Distributed to users who stake individual app tokens within each app's ecosystem.
+  </Card>
+  <Card icon="lock" title="15% to veELTA Holders">
+    Your share of protocol-wide revenue, proportional to your veELTA balance relative to total veELTA supply.
+  </Card>
+  <Card icon="vault" title="15% to Treasury">
+    Funds protocol development, grants, and ecosystem growth managed through governance.
+  </Card>
+</Columns>
+
+Revenue originates from three fee sources:
+
+- **Trading fees (1%)**: Charged on every buy/sell on an app's bonding curve
+- **Launch fees (10 ELTA)**: Flat fee per new app launch, routed 100% to treasury
+- **Tournament rake (2.5%)**: Cut from app tournament prize pools (if individual apps opt in)
+
+<Note>
+  If an app is paused, 100% of its fees route to the treasury until it resumes normal operations.
+</Note>
+
+---
+
+## How to Stake
+
+<Steps>
+  <Step title="Acquire ELTA">
+    Obtain ELTA tokens through the Elata ecosystem via. app bonding curves, community distributions (e.g. airdrops), secondary markets, or by directly contributing to ecosystem growth.
+  </Step>
+  <Step title="Approve the VeELTA Contract">
+    Call `approve()` on the ELTA token contract, authorizing the `veELTA` contract to transfer your chosen amount.
+
+    ```solidity
+    ELTA.approve(veELTAAddress, amount);
+    ```
+  </Step>
+  <Step title="Lock Your ELTA">
+    Call `lock()` on the veELTA contract, specifying the amount and lock duration (between 7 and 730 days).
+
+    ```solidity
+    veELTA.lock(amount, durationInDays);
+    ```
+
+    Your veELTA balance is minted immediately based on the amount and chosen duration.
+  </Step>
+  <Step title="Participate in Governance">
+    Once locked, your veELTA balance enables you to create and vote on proposals through the Elata Governor contract. Proposals require a threshold of ~77,000 ELTA (0.1% of total supply) in veELTA to submit, and quorum is set at 4% of total supply.
+  </Step>
+  <Step title="Claim Revenue">
+    Protocol fees are distributed to veELTA holders on a rolling basis. Claim your share through the rewards distribution mechanism.
+  </Step>
+</Steps>
+
+---
+
+## Governance Integration
+
+veELTA is the sole source of voting power in the on-chain governance system:
+
+| Governance Parameter        | Value                                          |
+| :-------------------------- | :--------------------------------------------- |
+| **Proposal threshold**      | 0.1% of total supply (~77,000 ELTA equivalent) |
+| **Quorum**                  | 4% of total supply                             |
+| **Voting delay**            | 1 day                                          |
+| **Standard voting period**  | 7 days                                         |
+| **Emergency voting period** | 3 days                                         |
+| **Timelock delay**          | 48 hours                                       |
+
+<Warning>
+  veELTA is non-transferable. You cannot sell, trade, or delegate your veELTA balance. It represents a personal, time-locked commitment to the protocol.
+</Warning>
+
+---
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Can I unlock early?">
+    No. ELTA is locked for the full duration you select at staking time. Choose a lock period that matches your commitment level. The minimum lock is 7 days.
+  </Accordion>
+  <Accordion title="What happens when my lock expires?">
+    Once your lock duration ends, you can withdraw your full ELTA balance. Your veELTA balance drops to zero, and you stop earning fee revenue and voting power until you re-lock.
+  </Accordion>
+  <Accordion title="Can I extend my lock duration?">
+    Yes. You can extend your lock to increase your boost multiplier without withdrawing. Extending resets your lock period to the new, longer duration.
+  </Accordion>
+  <Accordion title="Can I add more ELTA to an existing lock?">
+    Yes. You can top up your locked position with additional ELTA. The new tokens inherit your current lock's remaining duration and boost.
+  </Accordion>
+  <Accordion title="Is the VeELTA contract upgradeable?">
+    No. All Elata protocol contracts, including veELTA, are non-upgradeable and immutable after deployment. This eliminates admin-key risk.
+  </Accordion>
+  <Accordion title="Has the contract been audited?">
+    The protocol is currently pending an external security audit before mainnet deployment. The contracts are open-source and available for review on [GitHub](https://github.com/Elata-Biosciences/elata-protocol/tree/vNext).
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Security Design
+
+The staking system is built with these guarantees:
+
+- **Immutable contracts**: No proxy patterns, no upgrade keys
+- **Fixed ELTA supply**: 77,000,000 tokens minted once at deployment, no inflation
+- **Role-based access**: Admin functions require multisig approval
+- **Time-locked governance**: 48-hour delay before any governance action executes on-chain
+- **Open source**: Full contract source available for review
+
+<Card icon="github" href="https://github.com/Elata-Biosciences/elata-protocol/tree/vNext/src/staking" title="View the Source">
+  Explore the VeELTA staking contracts on the `vNext` branch of the Elata Protocol repository.
+</Card>
+
+---
+
+## Related Pages
+
+<Columns cols={3}>
+  <Card icon="globe-lock" href="/home/elta-token/veelta" title="veELTA">
+    Deep dive into the vote-escrow token mechanics
+  </Card>
+  <Card icon="chart-pie" href="/learn/tokenomics" title="Tokenomics">
+    Full breakdown of ELTA supply, distribution, and economic model.
+  </Card>
+  <Card icon="coins" href="/learn/revenue-model" title="Revenue Model">
+    How protocol fees are generated and distributed.
+  </Card>
+</Columns>

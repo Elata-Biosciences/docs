@@ -1,108 +1,163 @@
 ---
 title: "What is Elata?"
-description: "A decentralized protocol for building and monetizing neurotech applications"
 ---
 
 ## Overview
 
-Elata is a permissionless app-launch protocol. Builders register an app, launch an app token, and distribute it on a constant-product ELTA bonding curve.
+Elata is an app-launch protocol designed specifically for biosignal and neurotech applications.
+
+It combines three capabilities that don't currently exist together anywhere: browser-based biosignal acquisition SDKs, on-device processing that keeps all user data local, and an economic app-launch system that lets anyone in the world ship a neurotech product with built-in monetization.
+
+Blockchain provides the best execution framework for this project because it ensures builders can access instant price discovery for their inventions, users are able to parttake in the economic upside they help generate when using apps, and most importantly to ensure anyone in the world can participate with ease.
 
 <Info>
-  **Network**: Live on **Ethereum Sepolia** (testnet). Mainnet coming soon.
+  Network: Live on Base Sepolia (testnet). Mainnet on Base coming soon.
 </Info>
 
-<CardGroup cols={2}>
-  <Card title="For Builders" icon="hammer" iconType="light" href="/builders/getting-started">
-    Launch your app with a native token in minutes
-  </Card>
-  <Card title="For Users" icon="user" iconType="light" href="/users/explore-apps">
-    Find apps, trade tokens, participate in governance
-  </Card>
-</CardGroup>
+<Columns cols={2}>
+  <Column>
+    <Card icon="hammer" href="/builders/getting-started" title="For builders">
+      npm install an SDK, launch an app with a native token, and ship in minutes.
+    </Card>
+  </Column>
+  <Column>
+    <Card icon="user" href="/users/explore-apps" title="For users">
+      Find apps, trade tokens, stake for rewards, participate in governance.
+    </Card>
+  </Column>
+</Columns>
 
 ---
 
 ## Why This Exists
 
-Building neurotech products is hard. Bootstrapping distribution and aligned economics is usually harder. Elata packages launch mechanics, curve distribution, and fee routing into reusable contracts.
+Consumer devices have quietly become biosignal acquisition tools. When modeled and executed well, smartphone camera can accurately infer heart rate measurements, respiratory rate, track pupil dialation and eye movements, and even get relatively accurate inferences on cognitive states. Furthermore, at-home consumer EEG headsets can capture brainwave data that required clinical-grade hardware a decade ago. 
 
-The protocol focuses on deterministic on-chain behavior: explicit lifecycle states, fixed launch defaults, and transparent routing of launch and trading fees.
+The sensors are already in people's pockets. What doesn't exist yet is a standardized application layer for building on top of these signals.
+
+Today, every company that processes biosignal data — from meditation apps to driver-drowsiness systems — does so by extracting user data to centralized servers. Users never see the value their data generates, and Builders must recreate proprietary signal-processing pipelines from scratch. And anyone outside of well-funded markets is simply excluded.
+
+Elata addresses this with three design decisions:
+
+1. Published SDKs that standardize biosignal acquisition across devices, installable as npm packages.
+2. **On-device processing** where all raw data stays on the user's device and never gets extracted — by anyone, including Elata. Model improvements aggregate across the network via parameter updates, not raw signals, so the network gets smarter without compromising privacy.
+3. **Permissionless app launch** with deterministic on-chain mechanics — bonding curves, fee routing, and graduation — so any builder, anywhere, can ship a biosignal app with aligned economics and no gatekeepers.
 
 ---
 
 ## What Elata Does
 
-Short version: register app -> launch app token -> trade on curve -> graduate to LP.
+### Biosignal Acquisition
 
-### If You're Building
+Elata ships published npm packages for browser-based biosignal capture:
 
-- **Pay 110 ELTA total** (`10` creation fee + `100` seed)
-- **Launch a 10,000,000 supply app token**
-- **Default allocation**: `50%` curve, `25%` vesting, `25%` ecosystem
-- **Use fee pipeline contracts** for launch/trading/transfer fee routing
+| Package                          | What It Does                                                                                                           |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `@elata-biosciences/rppg-web`    | Heart rate, respiratory rate, and stress measurement from any standard webcam via rPPG. No wearable hardware required. |
+| `@elata-biosciences/eeg-web`     | Browser-based EEG data acquisition for web applications.                                                               |
+| `@elata-biosciences/eeg-web-ble` | Connect consumer EEG headsets via Web Bluetooth directly in the browser.                                               |
 
-No smart contract development needed. The infrastructure deploys automatically.
+These packages standardize data across devices into a shared format. Hardware makers gain an app ecosystem; builders get a shared data layer instead of rebuilding signal processing from scratch.
 
-### If You're Using or Investing
+All processing runs in the browser, on the user's device.
 
-- **Browse apps** on the App Store
-- **Buy during active curve phase**
-- **Track graduation** to DEX LP once target is reached
-- **Use XP for early access** during launch windows when enabled
+### Data Architecture
 
----
+Raw  biodata never leaves the user's device. Machine learning runs at the edge using on-device inference.
 
-## The Flow
+Model parameter updates (meaning not raw data) aggregate across the network. Each user's local model improves from the network's collective learning without any individual's signals being transmitted, stored, or made accessible to anyone. 
 
-```mermaid
-graph TD
-    A[Developer Launches App] --> B[App Token Created]
-    B --> C[Users Buy On Active Curve]
-    C --> D[Fees Accumulate]
-    D --> E[FeeCollector Buckets By AppAndKind]
-    E --> F[FeeSwapper Routes]
-    F --> G[LaunchFee To Treasury]
-    F --> H[AppRevenue To ContributorsAndTreasury]
-```
+Not only does this mechanism ensure privacy and security of sensitive data, but it also uniquely addresses the nuances inherent to biodata (namely the unique and often unpredictible differences between individual users' biological profiles).
 
-1. **Launch**: `110 ELTA` total cost and app stack deployment.
-2. **Trade**: buyers interact with an `x*y=k` bonding curve while active.
-3. **Route fees**: fees move through `FeeCollector` -> `FeeSwapper`.
-4. **Graduate**: at `42,000 ELTA` (default), LP is created and locked for `2 years`.
+More users means better models for everyone, without data extraction.
 
----
+### App Launch Protocol
 
-## Key Pieces
+Short version: **register app → launch app token → trade on curve → graduate to LP**.
 
-| Component          | What It Does                                    |
-| ------------------ | ----------------------------------------------- |
-| **ELTA**           | Base protocol token (fixed 77,000,000 supply).  |
-| **veELTA**         | Time-locked voting power (1x-2x boost).         |
-| **App Tokens**     | Per-app tokens with fixed 10,000,000 supply.    |
-| **Bonding Curves** | Constant-product launch trading until graduation.|
-| **Fee Pipeline**   | FeeCollector + FeeSwapper route by fee kind.    |
+<AccordionGroup>
+  <Accordion title="If You're Building">
+    - **Pay 110 ELTA total** (`10` creation fee + `100` seed). The protocol deploys the entire app stack automatically.
+    - **Launch a 10,000,000 supply app token**. Default allocation: `50%` curve, `25%` vesting, `25%` ecosystem.
+    - **1% trading fee** routed through the fee pipeline: `FeeCollector` → `FeeSwapper` → `RewardsDistributor`.
+    - **Revenue split**: `70%` to app stakers, `15%` to veELTA holders, `15%` to treasury.
+    - No smart contract development needed. Account abstraction can hide wallets and gas entirely from end users.
+  </Accordion>
+  <Accordion title="If You're Using or Staking">
+    - **Browse apps** on the [App Store](https://app.elata.bio).
+    - **Buy app tokens** during the active bonding-curve phase.
+    - **Stake app tokens** to receive `70%` of the trading fees that app generates.
+    - **Lock ELTA for veELTA** (`7`–`730` days, `1x`–`2x` boost) for protocol-level fee share and governance voting power.
+    - **Track graduation** — at `42,000 ELTA`, LP is created and locked for `2 years`.
+  </Accordion>
+</AccordionGroup>
 
 ---
 
-## Next
+## Why Onchain?
 
-<CardGroup cols={3}>
-  <Card title="Tokenomics" icon="chart-line" iconType="light" href="/learn/tokenomics">
-    ELTA supply and mechanics
-  </Card>
-  <Card title="Launch an App" icon="rocket" iconType="light" href="/builders/launch-your-app">
-    5-minute deployment guide
-  </Card>
-  <Card title="Explore Apps" icon="compass" iconType="light" href="/users/explore-apps">
-    See what's live
-  </Card>
-  <Card title="SDK" icon="code" iconType="light" href="/sdk/overview">
-    EEG, BLE, and rPPG libraries
-  </Card>
-  <Card title="Open Source Projects" icon="github" iconType="light" href="/home/elata-eeg/elata-eeg-overview">
-    EEG hardware, Newsreader, AgentForge
-  </Card>
-</CardGroup>
+Two properties of this design make it such that any design except for blockchain would be incredibly impractical:
+
+**Value return instead of value extraction:** Users who stake into apps are elligible to recieve a portion of the economic value those apps generate. As is the case with any type of bio-data, the traditional model creates a perverse incentive for companies to harvest users data without returning value. Elata inverts this: data stays on the user's device, and economic participation is opt-in.
+
+**Permissionless global access:** Anyone in the world can build on, use, or stake into biosignal applications without providing personal information or requiring a specific form of identification. Builders and users may participate pseudonymously if they please. To prevent value extraction by bad actors, all developers implement core protocol primitives via open APIs that call ecosystem-native contracts only, and the entire onboarding process is completely seamless (no ID, SSN, etc) for all participants.
+
+---
+
+## Key Components
+
+| Component          | What It Does                                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------------------------------ |
+| **ELTA**           | Base protocol token. Fixed `77,000,000` supply, minted once at deployment.                                   |
+| **veELTA**         | Vote-escrow token from locking ELTA (`7`–`730` days). Linear boost `1x`–`2x`. Governance voting + fee share. |
+| **App Tokens**     | Per-app tokens. Fixed `10,000,000` supply. Launched on bonding curves.                                       |
+| **Bonding Curves** | Constant-product (`x·y=k`) launch trading until graduation at `42,000 ELTA`.                                 |
+| **Fee Pipeline**   | `FeeCollector` → `FeeSwapper` → `RewardsDistributor`. `1%` trading fee. `70/15/15` split.                    |
+| **Biometric SDKs** | `rppg-web`, `eeg-web`, `eeg-web-ble`. Browser-based biosignal acquisition. On-device processing.             |
+| **Elata Open EEG** | Open-source 8-channel EEG hardware (Raspberry Pi 5 + ADS1299). Rust signal processing.                       |
+
+---
+
+## Choose your path
+
+<Columns cols={2}>
+  <Column>
+    <Card icon="recycle" href="/learn/how-it-works" title="How Elata Works">
+      Step-by-step walkthrough of the protocol lifecycle
+    </Card>
+  </Column>
+  <Column>
+    <Card icon="coins" href="/learn/tokenomics" title="Tokenomics">
+      ELTA supply, distribution, and ecosystem mechanics
+    </Card>
+  </Column>
+</Columns>
+
+<Columns cols={2}>
+  <Column>
+    <Card icon="brain-circuit" href="/sdk/overview" title="Biometric SDKs">
+      Elata-native rPPG, EEG, and BLE libraries
+    </Card>
+  </Column>
+  <Column>
+    <Card icon="activity" href="/quickstart" title="Launch an App">
+      Select your modality and deploy a neurosignal app in minutes
+    </Card>
+  </Column>
+</Columns>
+
+<Columns cols={2}>
+  <Column>
+    <Card icon="hand-coins" href="/learn/revenue-model" title="Revenue Model">
+      Fee routing, staking economics, and protocol information modules
+    </Card>
+  </Column>
+  <Column>
+    <Card icon="package-open" href="/open-source/agentforge/overview" title="Open Source Projects">
+      Collection of discontinued and/or active Open Source Projects created by Elata
+    </Card>
+  </Column>
+</Columns>
 
 ---
 

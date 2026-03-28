@@ -1,13 +1,11 @@
 ---
-title: Add Camera-Based rPPG To An Existing Browser App
-description: Build a working browser rPPG flow with createRppgSession, diagnostics, and cleanup.
+title: "Add Camera-Based rPPG To An Existing Browser App"
+description: "Build a working browser rPPG flow with createRppgSession, diagnostics, and cleanup."
 ---
 
-This tutorial shows the recommended app integration path for
-`@elata-biosciences/rppg-web`.
+This tutorial shows the recommended app integration path for `@elata-biosciences/rppg-web`.
 
-The core idea is simple: let `createRppgSession()` own the browser runtime,
-video processing loop, and diagnostics while your app owns the UI.
+The core idea is simple: let `createRppgSession()` own the browser runtime, video processing loop, and diagnostics while your app owns the UI.
 
 ## What You Will Build
 
@@ -101,13 +99,11 @@ const metrics = session.getMetrics();
 console.log(metrics);
 ```
 
-In a real app you would poll or subscribe through your own UI state layer and
-show the values that matter to your product.
+In a real app you would poll or subscribe through your own UI state layer and show the values that matter to your product.
 
 ## Step 6: Clean Up Correctly
 
-When the component, route, or page is leaving, stop the session and release the
-camera stream:
+When the component, route, or page is leaving, stop the session and release the camera stream:
 
 ```ts
 await session.stop();
@@ -117,8 +113,7 @@ for (const track of stream.getTracks()) {
 }
 ```
 
-This matters more than it looks. It keeps later sessions from inheriting stale
-camera or runtime state.
+This matters more than it looks. It keeps later sessions from inheriting stale camera or runtime state.
 
 ## What To Do With Diagnostics
 

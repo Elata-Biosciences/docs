@@ -1,5 +1,5 @@
 ---
-title: "EEG Web — Getting Started"
+title: "Getting Started"
 description: "Install and initialize the @elata-biosciences/eeg-web WASM package"
 ---
 
@@ -25,7 +25,8 @@ This package does not implement Bluetooth device connection. Add `@elata-bioscie
 pnpm add @elata-biosciences/eeg-web
 ```
 
-Requirements: Node.js 20+ for server-side usage and local repo tooling; modern browser with WebAssembly support for in-browser usage.
+Requirements: Node.js 18\+, browser with WebAssembly support.
+Node.js 20+ for server-side usage and local repo tooling; modern browser with WebAssembly support for in-browser usage.
 
 ---
 
@@ -105,9 +106,11 @@ console.log("Gamma:", powers.gamma);
   <Card title="Signal Processing" icon="wave-square" iconType="light" href="/sdk/eeg-web/signal-processing">
     Band powers, FFT, spectrum analysis
   </Card>
+
   <Card title="Models" icon="chart-mixed" iconType="light" href="/sdk/eeg-web/models">
     Alpha bump detection, calmness scoring
   </Card>
+
   <Card title="Headband Transport" icon="signal-stream" iconType="light" href="/sdk/eeg-web/headband-transport">
     Frame schema and transport interface
   </Card>
