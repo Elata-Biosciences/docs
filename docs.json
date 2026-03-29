@@ -158,8 +158,12 @@
                   {
                     "group": "Guides",
                     "pages": [
+                      "sdk/guides/rppg-browser",
+                      "sdk/guides/eeg-browser",
+                      "sdk/guides/web-bluetooth",
                       "sdk/guides/eeg-ble-integration",
-                      "sdk/guides/rppg-camera"
+                      "sdk/guides/rppg-camera",
+                      "sdk/guides/federated-learning"
                     ]
                   },
                   {
