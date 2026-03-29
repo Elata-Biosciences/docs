@@ -200,6 +200,13 @@
                   "sdk/rppg-web/frame-sources",
                   "sdk/rppg-web/calibration"
                 ]
+              },
+              {
+                "group": "Operations",
+                "pages": [
+                  "sdk/operations/compatibility",
+                  "sdk/operations/troubleshooting"
+                ]
               }
             ]
           },
