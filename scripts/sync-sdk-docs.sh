@@ -36,14 +36,22 @@ rewrite_links() {
         -e 's|href="/reference/eeg-web-ble|href="/sdk/eeg-web-ble/getting-started|g' \
         -e 's|href="/reference/eeg-web|href="/sdk/eeg-web/getting-started|g' \
         -e 's|href="/reference/rppg-web|href="/sdk/rppg-web/getting-started|g' \
-        -e 's|href="/package-selection|href="/sdk/overview|g' \
-        -e 's|href="/quickstart|href="/sdk/tutorials/first-app|g' \
+        -e 's|href="/package-selection[^"]*"|href="/sdk/overview"|g' \
+        -e 's|href="/quickstart[^"]*"|href="/sdk/tutorials/first-app"|g' \
+        -e 's|href="/browser-apps[^"]*"|href="/sdk/overview"|g' \
+        -e 's|href="/operations/compatibility[^"]*"|href="/sdk/operations/compatibility"|g' \
+        -e 's|href="/operations/troubleshooting[^"]*"|href="/sdk/operations/troubleshooting"|g' \
         -e 's|](/tutorials/|](/sdk/tutorials/|g' \
         -e 's|](/guides/|](/sdk/guides/|g' \
         -e 's|](/reference/create-elata-demo|](/sdk/create-elata-demo|g' \
         -e 's|](/reference/eeg-web-ble|](/sdk/eeg-web-ble/getting-started|g' \
         -e 's|](/reference/eeg-web|](/sdk/eeg-web/getting-started|g' \
-        -e 's|](/reference/rppg-web|](/sdk/rppg-web/getting-started|g'
+        -e 's|](/reference/rppg-web|](/sdk/rppg-web/getting-started|g' \
+        -e 's|](/package-selection)|](/sdk/overview)|g' \
+        -e 's|](/quickstart)|](/sdk/tutorials/first-app)|g' \
+        -e 's|](/browser-apps)|](/sdk/overview)|g' \
+        -e 's|](/operations/compatibility)|](/sdk/operations/compatibility)|g' \
+        -e 's|](/operations/troubleshooting)|](/sdk/operations/troubleshooting)|g'
 }
 
 copy_file() {
@@ -100,6 +108,16 @@ src="$SDK_DOCS/reference/create-elata-demo.mdx"
 [[ -f "$src" ]] && copy_file "$src" "$DOCS_REPO/sdk/create-elata-demo.mdx" "sdk/create-elata-demo.mdx"
 
 # ---------------------------------------------------------------------------
+# Operations pages — 1:1 copy with path rewriting
+# ---------------------------------------------------------------------------
+
+for src in "$SDK_DOCS/operations/"*.mdx; do
+    [[ -f "$src" ]] || continue
+    filename="$(basename "$src")"
+    copy_file "$src" "$DOCS_REPO/sdk/operations/$filename" "sdk/operations/$filename"
+done
+
+# ---------------------------------------------------------------------------
 # Print status to stderr so it doesn't pollute the Claude prompt
 # ---------------------------------------------------------------------------
 
@@ -128,6 +146,15 @@ Here is my SDK docs sync report. The script has already copied tutorials, guides
 
 1. Review the SDK reference files below and merge any updates into the correct sub-pages in this repo (the SDK's single reference file maps to multiple sub-pages here).
 2. Check if any new pages in the SDK's docs.json navigation are missing from this repo's docs.json under the Biometric SDKs tab, and add them if so.
+
+## Mintlify rules — follow these before finishing
+
+This is a Mintlify docs site. Violating these will cause broken pages after deploy:
+
+- **Every page listed in `docs.json` must have a corresponding `.mdx` file on disk.** If you add a page to the nav, create the file. If the file doesn't exist yet, either create a stub or leave it out of the nav.
+- **Every internal link in an `.mdx` file must resolve to a page that exists in `docs.json`.** The SDK source uses paths like `/quickstart`, `/browser-apps`, and `/operations/*` that do not exist in this repo — the sync script rewrites the known ones, but double-check any link that doesn't start with `/sdk/` before saving.
+- **Do not invent new top-level paths.** All SDK content lives under `sdk/`. If a concept from the SDK source has no equivalent page here, link to the closest existing page (e.g. `sdk/overview`) rather than a path that doesn't exist.
+- **File format is `.mdx`, not `.md`.** All files are already `.mdx`; keep it that way.
 
 ---
 
