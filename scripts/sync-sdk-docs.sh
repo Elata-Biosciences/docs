@@ -162,6 +162,23 @@ for src in "$SDK_DOCS/operations/"*.mdx; do
 done
 
 # ---------------------------------------------------------------------------
+# sdk/overview.mdx — sync package version badges from SDK package.json files
+# All packages are versioned in lockstep; we read from eeg-web as the source.
+# ---------------------------------------------------------------------------
+
+_sdk_ver="$(grep -m1 '"version"' "$SDK_REPO/packages/eeg-web/package.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
+_overview="$DOCS_REPO/sdk/overview.mdx"
+
+if [[ -f "$_overview" && -n "$_sdk_ver" ]]; then
+    _before="$(cat "$_overview")"
+    _after="$(sed -E "s/(@elata-biosciences\/(eeg-web|eeg-web-ble|rppg-web|create-elata-demo)[^\|]*\|[[:space:]]*)[0-9]+\.[0-9]+\.[0-9]+/\1$_sdk_ver/g" <<< "$_before")"
+    if [[ "$_before" != "$_after" ]]; then
+        echo "$_after" > "$_overview"
+        CHANGED+=("sdk/overview.mdx (version → $_sdk_ver)")
+    fi
+fi
+
+# ---------------------------------------------------------------------------
 # Print status to stderr so it doesn't pollute the Claude prompt
 # ---------------------------------------------------------------------------
 
