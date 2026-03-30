@@ -1,195 +1,156 @@
 ---
-title: "Build a demo"
-description: "Scaffold a working Elata app with templates for rPPG, EEG, and EEG over Web Bluetooth."
+title: create-elata-demo
+description: Scaffold Elata starter apps from published templates.
 ---
 
-<Note>
-  If you are new to the Elata SDK, start here. This CLI gives you a working app you can run locally before you integrate packages into an existing product.
-</Note>
+## What This Package Is
 
-## What this package does
+This package provides the `create-elata-demo` CLI and the templates behind:
 
-`create-elata-demo` scaffolds demo apps from published Elata templates. It is the fastest way to get a clean reference project running.
+- `rppg-demo`
+- `eeg-demo`
 
-You should use it when you want to:
+Short aliases are also supported:
 
-- get to a working Elata app quickly
-- start from a known-good baseline
-- evaluate the SDK before doing a manual integration
-- compare your existing app against a working template when debugging
+- `rppg`
+- `eeg`
+- `eeg-ble`
 
-## Before you begin
+Use it when you want a clean scaffolded app or a consumer-facing reference project.
 
-- Node.js `18` or higher
-- A browser-based project target
-- `npm`, `pnpm`, or `npx`
+## When To Use It
 
-<Info>
-  If you run the CLI interactively without `--template`, it prompts you to choose a template. In non-interactive runs, it defaults to `rppg-web-demo`.
-</Info>
+Use this package when you want:
 
-## Choose a template
+- the fastest path to a working Elata app
+- a reference project that matches the published package surface
+- a known-good baseline before integrating packages into an existing app
 
-Use the template that matches the sensor workflow you want to test first.
+Do not start with repo-internal demos when this package already covers your use
+case.
 
-| Template | Alias | Best for |
-| --- | --- | --- |
-| `rppg-web-demo` | `rppg` | Camera-based heart rate in the browser |
-| `eeg-web-demo` | `eeg` | EEG signal processing in the browser |
-| `eeg-web-ble-demo` | `eeg-ble` | Live Muse-compatible EEG streaming over Web Bluetooth |
+## Install And Invocation
 
-<Tabs>
-  <Tab title="rPPG">
-    Best when you want the fastest browser demo with camera-based biometrics.
+This package is usually invoked without installing it permanently:
 
-    ```bash
-    npm create @elata-biosciences/elata-demo my-app
-    ```
+<CodeGroup>
 
-    Continue with [/sdk/rppg-web/getting-started](/sdk/rppg-web/getting-started) once the app is running.
-  </Tab>
-  <Tab title="EEG">
-    Best when you want browser EEG processing without device transport yet.
+```bash pnpm
+pnpm create @elata-biosciences/elata-demo my-app
+pnpm dlx @elata-biosciences/create-elata-demo my-app
+```
 
-    ```bash
-    npm create @elata-biosciences/elata-demo my-app -- --template eeg-web-demo
-    ```
+```bash npm
+npm create @elata-biosciences/elata-demo my-app
+npx @elata-biosciences/create-elata-demo my-app
+```
 
-    Continue with [/sdk/eeg-web/getting-started](/sdk/eeg-web/getting-started) once the app is running.
-  </Tab>
-  <Tab title="EEG BLE">
-    Best when you want live browser streaming from a Muse-compatible headset in Chrome or Edge.
+</CodeGroup>
 
-    ```bash
-    npm create @elata-biosciences/elata-demo my-app -- --template eeg-web-ble-demo
-    ```
+## Requirements
 
-    Continue with [/sdk/eeg-web-ble/getting-started](/sdk/eeg-web-ble/getting-started) once the app is running.
-  </Tab>
-</Tabs>
+- Node.js `>= 18`
 
-<Tip>
-  You can also use the short aliases `rppg`, `eeg`, and `eeg-ble` with `--template`.
-</Tip>
+## Template Listing
 
-## Create a new demo app
+<CodeGroup>
 
-<Steps>
-  <Step title="Scaffold the project">
-    <Tabs>
-      <Tab title="npm">
-        ```bash
-        npm create @elata-biosciences/elata-demo my-app
-        ```
-      </Tab>
-      <Tab title="pnpm">
-        ```bash
-        pnpm dlx @elata-biosciences/create-elata-demo my-app
-        ```
-      </Tab>
-      <Tab title="npx">
-        ```bash
-        npx @elata-biosciences/create-elata-demo my-app
-        ```
-      </Tab>
-    </Tabs>
-  </Step>
-  <Step title="Pick a template if you want something other than the default">
-    ```bash
-    npm create @elata-biosciences/elata-demo my-app -- --template eeg
-    ```
+```bash pnpm
+pnpm dlx @elata-biosciences/create-elata-demo -- --list-templates
+```
 
-    To see every available template:
+```bash npm
+npx @elata-biosciences/create-elata-demo -- --list-templates
+```
 
-    <Tabs>
-      <Tab title="pnpm">
-        ```bash
-        pnpm dlx @elata-biosciences/create-elata-demo -- --list-templates
-        ```
-      </Tab>
-      <Tab title="npx">
-        ```bash
-        npx @elata-biosciences/create-elata-demo -- --list-templates
-        ```
-      </Tab>
-    </Tabs>
-  </Step>
-  <Step title="Install dependencies">
-    ```bash
-    cd my-app
-    pnpm install
-    ```
-  </Step>
-  <Step title="Start the app locally">
-    ```bash
-    pnpm run dev
-    ```
+</CodeGroup>
 
-    Open the local URL from your terminal and confirm the template loads correctly.
-  </Step>
-</Steps>
+## Recommended Usage
 
-## What you get
+<CodeGroup>
 
-Every generated app includes:
+```bash pnpm
+# Interactive template chooser
+pnpm create @elata-biosciences/elata-demo my-app
 
-- a minimal Vite \+ React app shell
-- Elata packages pinned to a compatible version set
+# rPPG starter app (alias)
+pnpm create @elata-biosciences/elata-demo my-app -- --template rppg
+
+# EEG starter app
+pnpm create @elata-biosciences/elata-demo my-app -- --template eeg-demo
+
+# EEG starter app (alias)
+pnpm create @elata-biosciences/elata-demo my-app -- --template eeg
+
+# EEG starter app with BLE alias
+pnpm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
+```
+
+```bash npm
+# Interactive template chooser
+npm create @elata-biosciences/elata-demo my-app
+
+# rPPG starter app (alias)
+npm create @elata-biosciences/elata-demo my-app -- --template rppg
+
+# EEG starter app
+npm create @elata-biosciences/elata-demo my-app -- --template eeg-demo
+
+# EEG starter app (alias)
+npm create @elata-biosciences/elata-demo my-app -- --template eeg
+
+# EEG starter app with BLE alias
+npm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
+```
+
+</CodeGroup>
+
+When the CLI is run interactively without `--template`, it prompts you to pick
+a template. In non-interactive runs, it still falls back to `rppg-demo`.
+
+## What You Get
+
+Each generated app includes:
+
+- a minimal Vite + React app shell
+- Elata packages pinned to a compatible set of versions
 - a template-specific `README.md`
-- a buildable reference project you can compare against later
+- a buildable project you can use as a comparison baseline later
 
-## Working inside a pnpm workspace
+## Workspace Caveat
 
-<Warning>
-  If you scaffold inside another `pnpm` workspace and the new app is not included in that workspace's globs, install and run it from the parent directory with `--ignore-workspace`.
-</Warning>
+If you scaffold a new app inside another `pnpm` workspace and that app is not
+added to the workspace globs, run this from the parent directory:
 
-```bash
+<CodeGroup>
+
+```bash pnpm
 pnpm --dir my-app --ignore-workspace install
 pnpm --dir my-app --ignore-workspace run dev
 ```
 
-If that does not fit your setup, run `npm install` and `npm run dev` inside the generated app instead.
+```bash npm
+cd my-app
+npm install
+npm run dev
+```
 
-## Where to go next
+</CodeGroup>
 
-<Columns cols={2}>
-  <Card title="SDK Overview" href="/sdk/overview">
-    See package layout, architecture, compatibility, and the full SDK map.
-  </Card>
+## Repo Verification
 
-  <Card title="Build Your First Elata App" href="/sdk/tutorials/first-app">
-    Follow the full onboarding path from scaffold to working local app.
-  </Card>
-
-  <Card title="Add EEG to an existing browser app" href="/sdk/tutorials/eeg-existing-app">
-    Move from the demo into a manual EEG integration.
-  </Card>
-
-  <Card title="Stream EEG over Web Bluetooth" href="/sdk/tutorials/eeg-ble-live-stream">
-    Connect a Muse-compatible headset and stream live frames in the browser.
-  </Card>
-
-  <Card title="Add camera-based rPPG to an existing browser app" href="/sdk/tutorials/rppg-existing-app">
-    Integrate camera-based heart rate into your own app flow.
-  </Card>
-
-  <Card title="rPPG Web getting started" href="/sdk/rppg-web/getting-started">
-    Learn the higher-level browser rPPG APIs after your demo is running.
-  </Card>
-</Columns>
-
-## Maintainers working in the SDK repo
-
-<Note>
-  This section is only relevant if you are working inside the Elata SDK monorepo.
-</Note>
-
-Run the package tests:
+The package is tested from the repo with:
 
 ```bash
 pnpm --dir packages/create-elata-demo test
 ./run.sh test create-elata-demo
 ```
 
-The second command also smoke-tests each template by scaffolding it, installing dependencies, and running a build.
+The second command also smoke-tests each template by scaffolding, installing
+dependencies, and running a build.
+
+## Related Docs
+
+- Fastest onboarding page: [Quickstart](/sdk/tutorials/first-app)
+- First end-to-end tutorial: [Build Your First Elata App](/sdk/tutorials/first-app)
+- Package choice help: [Package Selection](/sdk/overview)

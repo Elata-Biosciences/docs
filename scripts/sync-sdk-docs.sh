@@ -22,7 +22,13 @@ if [[ ! -d "$SDK_DOCS" ]]; then
     exit 1
 fi
 
+# Tracks content hashes of reference files across runs so we can skip
+# unchanged ones in the prompt. Format: "<sha256>  <sdk-relative-path>"
+SYNC_STATE="$DOCS_REPO/.sdk-sync-state"
+[[ -f "$SYNC_STATE" ]] || touch "$SYNC_STATE"
+
 CHANGED=()
+REMOVED=()
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -36,14 +42,22 @@ rewrite_links() {
         -e 's|href="/reference/eeg-web-ble|href="/sdk/eeg-web-ble/getting-started|g' \
         -e 's|href="/reference/eeg-web|href="/sdk/eeg-web/getting-started|g' \
         -e 's|href="/reference/rppg-web|href="/sdk/rppg-web/getting-started|g' \
-        -e 's|href="/package-selection|href="/sdk/overview|g' \
-        -e 's|href="/quickstart|href="/sdk/tutorials/first-app|g' \
+        -e 's|href="/package-selection[^"]*"|href="/sdk/overview"|g' \
+        -e 's|href="/quickstart[^"]*"|href="/sdk/tutorials/first-app"|g' \
+        -e 's|href="/browser-apps[^"]*"|href="/sdk/overview"|g' \
+        -e 's|href="/operations/compatibility[^"]*"|href="/sdk/operations/compatibility"|g' \
+        -e 's|href="/operations/troubleshooting[^"]*"|href="/sdk/operations/troubleshooting"|g' \
         -e 's|](/tutorials/|](/sdk/tutorials/|g' \
         -e 's|](/guides/|](/sdk/guides/|g' \
         -e 's|](/reference/create-elata-demo|](/sdk/create-elata-demo|g' \
         -e 's|](/reference/eeg-web-ble|](/sdk/eeg-web-ble/getting-started|g' \
         -e 's|](/reference/eeg-web|](/sdk/eeg-web/getting-started|g' \
-        -e 's|](/reference/rppg-web|](/sdk/rppg-web/getting-started|g'
+        -e 's|](/reference/rppg-web|](/sdk/rppg-web/getting-started|g' \
+        -e 's|](/package-selection)|](/sdk/overview)|g' \
+        -e 's|](/quickstart)|](/sdk/tutorials/first-app)|g' \
+        -e 's|](/browser-apps)|](/sdk/overview)|g' \
+        -e 's|](/operations/compatibility)|](/sdk/operations/compatibility)|g' \
+        -e 's|](/operations/troubleshooting)|](/sdk/operations/troubleshooting)|g'
 }
 
 copy_file() {
@@ -66,30 +80,66 @@ copy_file() {
     CHANGED+=("$label")
 }
 
+# Remove files in $dst_dir whose basenames no longer exist in $src_dir.
+# Only touches .mdx files.
+remove_stale_in_dir() {
+    local src_dir="$1"
+    local dst_dir="$2"
+    local label_prefix="$3"
+    [[ -d "$dst_dir" ]] || return 0
+    for dst_file in "$dst_dir"/*.mdx; do
+        [[ -f "$dst_file" ]] || continue
+        local filename
+        filename="$(basename "$dst_file")"
+        if [[ ! -f "$src_dir/$filename" ]]; then
+            rm "$dst_file"
+            REMOVED+=("$label_prefix/$filename")
+        fi
+    done
+}
+
+# Returns the stored hash for a given SDK-relative path, or empty string.
+get_stored_hash() {
+    grep -F "  $1" "$SYNC_STATE" 2>/dev/null | awk '{print $1}' || true
+}
+
+# Upserts the hash for a given SDK-relative path in the state file.
+set_stored_hash() {
+    local rel="$1" hash="$2"
+    local tmp
+    tmp="$(mktemp)"
+    grep -vF "  $rel" "$SYNC_STATE" > "$tmp" 2>/dev/null || true
+    echo "$hash  $rel" >> "$tmp"
+    mv "$tmp" "$SYNC_STATE"
+}
+
 # ---------------------------------------------------------------------------
-# Tutorials — 1:1 copy with path rewriting
+# Tutorials — remove stale, then copy all
 # ---------------------------------------------------------------------------
 
+remove_stale_in_dir "$SDK_DOCS/tutorials" "$DOCS_REPO/sdk/tutorials" "sdk/tutorials"
+
 for src in "$SDK_DOCS/tutorials/"*.mdx; do
+    [[ -f "$src" ]] || continue
     filename="$(basename "$src")"
     copy_file "$src" "$DOCS_REPO/sdk/tutorials/$filename" "sdk/tutorials/$filename"
 done
 
 # ---------------------------------------------------------------------------
-# Guides — copy new or updated files
+# Guides — remove stale SDK-managed files, then copy
+# SDK-managed guides are a named subset; others in sdk/guides/ are repo-only.
 # ---------------------------------------------------------------------------
 
-declare -A GUIDE_MAP=(
-    ["eeg-browser.mdx"]="sdk/guides/eeg-browser.mdx"
-    ["rppg-browser.mdx"]="sdk/guides/rppg-browser.mdx"
-    ["web-bluetooth.mdx"]="sdk/guides/web-bluetooth.mdx"
-    ["federated-learning.mdx"]="sdk/guides/federated-learning.mdx"
-)
+SDK_GUIDES=("eeg-browser.mdx" "rppg-browser.mdx" "web-bluetooth.mdx" "federated-learning.mdx")
 
-for sdk_name in "${!GUIDE_MAP[@]}"; do
-    src="$SDK_DOCS/guides/$sdk_name"
-    dst_rel="${GUIDE_MAP[$sdk_name]}"
-    [[ -f "$src" ]] && copy_file "$src" "$DOCS_REPO/$dst_rel" "$dst_rel"
+for g in "${SDK_GUIDES[@]}"; do
+    src="$SDK_DOCS/guides/$g"
+    dst="$DOCS_REPO/sdk/guides/$g"
+    if [[ ! -f "$src" && -f "$dst" ]]; then
+        rm "$dst"
+        REMOVED+=("sdk/guides/$g")
+    fi
+    [[ -f "$src" ]] && copy_file "$src" "$dst" "sdk/guides/$g"
 done
 
 # ---------------------------------------------------------------------------
@@ -100,18 +150,54 @@ src="$SDK_DOCS/reference/create-elata-demo.mdx"
 [[ -f "$src" ]] && copy_file "$src" "$DOCS_REPO/sdk/create-elata-demo.mdx" "sdk/create-elata-demo.mdx"
 
 # ---------------------------------------------------------------------------
+# Operations pages — remove stale, then copy all
+# ---------------------------------------------------------------------------
+
+remove_stale_in_dir "$SDK_DOCS/operations" "$DOCS_REPO/sdk/operations" "sdk/operations"
+
+for src in "$SDK_DOCS/operations/"*.mdx; do
+    [[ -f "$src" ]] || continue
+    filename="$(basename "$src")"
+    copy_file "$src" "$DOCS_REPO/sdk/operations/$filename" "sdk/operations/$filename"
+done
+
+# ---------------------------------------------------------------------------
+# sdk/overview.mdx — sync package version badges from SDK package.json files
+# All packages are versioned in lockstep; we read from eeg-web as the source.
+# ---------------------------------------------------------------------------
+
+_sdk_ver="$(grep -m1 '"version"' "$SDK_REPO/packages/eeg-web/package.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
+_overview="$DOCS_REPO/sdk/overview.mdx"
+
+if [[ -f "$_overview" && -n "$_sdk_ver" ]]; then
+    _before="$(cat "$_overview")"
+    _after="$(sed -E "s/(@elata-biosciences\/(eeg-web|eeg-web-ble|rppg-web|create-elata-demo)[^\|]*\|[[:space:]]*)[0-9]+\.[0-9]+\.[0-9]+/\1$_sdk_ver/g" <<< "$_before")"
+    if [[ "$_before" != "$_after" ]]; then
+        echo "$_after" > "$_overview"
+        CHANGED+=("sdk/overview.mdx (version → $_sdk_ver)")
+    fi
+fi
+
+# ---------------------------------------------------------------------------
 # Print status to stderr so it doesn't pollute the Claude prompt
 # ---------------------------------------------------------------------------
 
-if [[ ${#CHANGED[@]} -gt 0 ]]; then
-    echo "" >&2
-    echo "Auto-updated:" >&2
-    for f in "${CHANGED[@]}"; do echo "  $f" >&2; done
-else
-    echo "" >&2
-    echo "No file changes (already up to date)." >&2
-fi
-echo "" >&2
+{
+    echo ""
+    if [[ ${#CHANGED[@]} -gt 0 || ${#REMOVED[@]} -gt 0 ]]; then
+        if [[ ${#CHANGED[@]} -gt 0 ]]; then
+            echo "Auto-updated:"
+            for f in "${CHANGED[@]}"; do echo "  $f"; done
+        fi
+        if [[ ${#REMOVED[@]} -gt 0 ]]; then
+            echo "Removed (no longer in SDK):"
+            for f in "${REMOVED[@]}"; do echo "  $f"; done
+        fi
+    else
+        echo "No file changes (already up to date)."
+    fi
+    echo ""
+} >&2
 
 # ---------------------------------------------------------------------------
 # Print Claude prompt to stdout — copy-paste this directly
@@ -124,22 +210,33 @@ REFERENCE_FILES=(
 )
 
 cat <<'PROMPT_HEADER'
-Here is my SDK docs sync report. The script has already copied tutorials, guides, and the create-elata-demo reference page automatically. Please:
+Here is my SDK docs sync report. The script has already copied tutorials, guides, operations pages, and the create-elata-demo reference page automatically. Please:
 
-1. Review the SDK reference files below and merge any updates into the correct sub-pages in this repo (the SDK's single reference file maps to multiple sub-pages here).
-2. Check if any new pages in the SDK's docs.json navigation are missing from this repo's docs.json under the Biometric SDKs tab, and add them if so.
+1. Review any changed SDK reference files below and merge updates into the correct sub-pages in this repo (the SDK's single reference file maps to multiple sub-pages here).
+2. Check the nav gap report at the bottom and add any missing pages to docs.json if needed.
+
+## Mintlify rules — follow these before finishing
+
+This is a Mintlify docs site. Violating these will cause broken pages after deploy:
+
+- **Every page listed in `docs.json` must have a corresponding `.mdx` file on disk.** If you add a page to the nav, create the file. If the file doesn't exist yet, either create a stub or leave it out of the nav.
+- **Every internal link in an `.mdx` file must resolve to a page that exists in `docs.json`.** The SDK source uses paths like `/quickstart`, `/browser-apps`, and `/operations/*` that do not exist in this repo — the sync script rewrites the known ones, but double-check any link that doesn't start with `/sdk/` before saving.
+- **Do not invent new top-level paths.** All SDK content lives under `sdk/`. If a concept from the SDK source has no equivalent page here, link to the closest existing page (e.g. `sdk/overview`) rather than a path that doesn't exist.
+- **File format is `.mdx`, not `.md`.** All files are already `.mdx`; keep it that way.
 
 ---
 
 PROMPT_HEADER
 
-if [[ ${#CHANGED[@]} -gt 0 ]]; then
-    echo "## Files updated automatically by the sync script"
+# Auto-updated/removed section
+if [[ ${#CHANGED[@]} -gt 0 || ${#REMOVED[@]} -gt 0 ]]; then
+    echo "## Files changed automatically by the sync script"
     echo ""
-    for f in "${CHANGED[@]}"; do echo "- $f"; done
+    for f in "${CHANGED[@]+"${CHANGED[@]}"}"; do echo "- updated: \`$f\`"; done
+    for f in "${REMOVED[@]+"${REMOVED[@]}"}"; do echo "- removed: \`$f\`"; done
     echo ""
 else
-    echo "## Files updated automatically"
+    echo "## Files changed automatically"
     echo ""
     echo "_(none — already up to date)_"
     echo ""
@@ -147,9 +244,9 @@ fi
 
 echo "---"
 echo ""
-echo "## SDK reference files that need manual review"
+echo "## SDK reference files"
 echo ""
-echo "These map to multiple sub-pages in this repo, so they were not overwritten automatically."
+echo "These map to multiple sub-pages in this repo and are not overwritten automatically."
 echo ""
 
 for entry in "${REFERENCE_FILES[@]}"; do
@@ -159,20 +256,72 @@ for entry in "${REFERENCE_FILES[@]}"; do
 
     echo "### \`$sdk_rel\` → \`$docs_rel\` (and sibling pages)"
     echo ""
-    if [[ -f "$src" ]]; then
-        echo '```'
-        cat "$src"
-        echo '```'
-    else
-        echo "_(not found in SDK)_"
+
+    if [[ ! -f "$src" ]]; then
+        echo "_(not found in SDK — may have been removed)_"
+        echo ""
+        continue
     fi
+
+    new_hash="$(rewrite_links < "$src" | sha256sum | cut -d' ' -f1)"
+    old_hash="$(get_stored_hash "$sdk_rel")"
+    set_stored_hash "$sdk_rel" "$new_hash"
+
+    if [[ -n "$old_hash" && "$new_hash" == "$old_hash" ]]; then
+        echo "_(unchanged since last sync — no action needed)_"
+        echo ""
+        continue
+    fi
+
+    if [[ -n "$old_hash" ]]; then
+        echo "_Changed since last sync — review and merge updates into sub-pages if needed._"
+    else
+        echo "_First sync — review and merge into sub-pages if needed._"
+    fi
+    echo ""
+    echo '```'
+    rewrite_links < "$src"
+    echo '```'
     echo ""
 done
 
 echo "---"
 echo ""
-echo "## SDK docs.json (check for new pages)"
+echo "## Nav gap report"
 echo ""
-echo '```json'
-cat "$SDK_DOCS/docs.json"
-echo '```'
+echo "SDK nav pages with no equivalent in this repo's Biometric SDKs tab:"
+echo ""
+
+# Extract all page paths from the SDK docs.json using grep.
+# Matches known path patterns; skips maintainers, index, and root-level
+# navigation pages that intentionally have no local equivalent.
+_sdk_pages=$(grep -oE \
+    '"(tutorials|guides|operations|reference)/[^"]*"|"(index|quickstart|browser-apps|package-selection)"' \
+    "$SDK_DOCS/docs.json" | tr -d '"')
+
+_gaps=()
+while IFS= read -r page; do
+    [[ -z "$page" ]] && continue
+
+    # Determine expected local path (empty = skip)
+    case "$page" in
+        tutorials/*)  _local="sdk/$page" ;;
+        guides/*)     _local="sdk/$page" ;;
+        operations/*) _local="sdk/$page" ;;
+        reference/create-elata-demo*) _local="sdk/create-elata-demo" ;;
+        reference/eeg-web-ble*)       _local="sdk/eeg-web-ble/getting-started" ;;
+        reference/eeg-web*)           _local="sdk/eeg-web/getting-started" ;;
+        reference/rppg-web*)          _local="sdk/rppg-web/getting-started" ;;
+        *)            continue ;;  # root-level SDK pages (index, quickstart, etc.) — skip
+    esac
+
+    grep -qF "\"$_local\"" "$DOCS_REPO/docs.json" || _gaps+=("$page → \`$_local\`")
+done <<< "$_sdk_pages"
+
+if [[ ${#_gaps[@]} -gt 0 ]]; then
+    for _gap in "${_gaps[@]}"; do echo "- $_gap"; done
+else
+    echo "_(none — all SDK nav pages are accounted for)_"
+fi
+
+echo ""
