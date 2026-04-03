@@ -13,11 +13,11 @@ import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
 await initEegWasm();
 
 const powers = band_powers(samples, sampleRateHz);
-// powers.delta  — 0.5–4 Hz
-// powers.theta  — 4–8 Hz
-// powers.alpha  — 8–13 Hz
-// powers.beta   — 13–30 Hz
-// powers.gamma  — 30–100 Hz
+// powers.delta  0.5-4 Hz
+// powers.theta  4-8 Hz
+// powers.alpha  8-13 Hz
+// powers.beta   13-30 Hz
+// powers.gamma  30-100 Hz
 ```
 
 `band_powers` returns a `WasmBandPowers` object with named fields for each standard band.
@@ -83,3 +83,16 @@ const channelIndex = 0; // TP9
 const channelSamples = frame.eeg.samples.map(row => row[channelIndex]);
 const powers = band_powers(new Float64Array(channelSamples), frame.eeg.sampleRateHz);
 ```
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Analysis Models" icon="chart-mixed" iconType="light" href="/sdk/eeg-web/models">
+    Alpha bump detection, calmness scoring
+  </Card>
+  <Card title="EEG Getting Started" icon="brain" iconType="light" href="/sdk/eeg-web/getting-started">
+    Install and initialize eeg-web
+  </Card>
+</CardGroup>

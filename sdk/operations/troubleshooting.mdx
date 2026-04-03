@@ -1,6 +1,6 @@
 ---
-title: Troubleshooting
-description: Common setup failures and the fastest checks for Elata SDK integrations.
+title: "Troubleshooting"
+description: "Common setup failures and the fastest checks for Elata SDK integrations."
 ---
 
 ## `pnpm install` Did Not Create `node_modules` In My Scaffolded App
@@ -24,14 +24,18 @@ npm run dev
 
 </CodeGroup>
 
+---
+
 ## Web Bluetooth Is Unavailable
 
 Check the following:
 
-- use Chrome or Edge
-- run on `https://` or `localhost`
-- make sure Bluetooth is enabled on the machine
-- do not expect this workflow to work in Safari or iOS
+- Use Chrome or Edge
+- Run on `https://` or `localhost`
+- Make sure Bluetooth is enabled on the machine
+- Do not expect this workflow to work in Safari or iOS
+
+---
 
 ## `loadWasmBackend()` Returned `null`
 
@@ -40,6 +44,8 @@ Make sure your app is serving the packaged `pkg/rppg_wasm.js` and
 
 If you are unsure, compare your app with the scaffolded `rppg-demo` app.
 
+---
+
 ## `initEegWasm()` Failed
 
 Your app is probably not serving the packaged `wasm/` assets from
@@ -47,8 +53,27 @@ Your app is probably not serving the packaged `wasm/` assets from
 
 Compare your asset layout with the scaffolded `eeg-demo` app.
 
+<Tip>
+  If you are using Vite, the two common fixes are: add `vite-plugin-wasm` and `vite-plugin-top-level-await`, or import the WASM asset URL directly and pass it to `initEegWasm(wasmUrl)`.
+</Tip>
+
+---
+
 ## I Am Not Sure Which Package I Need
 
-Start with [Package Selection](/sdk/overview).
+Start with [Choose The Right Package](/sdk/guides/choose-the-right-package).
 
 If you still just want the fastest path, use `create-elata-demo`.
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Choose A Package" icon="compass" iconType="light" href="/sdk/guides/choose-the-right-package">
+    Package decision guide
+  </Card>
+  <Card title="Compatibility" icon="circle-check" iconType="light" href="/sdk/operations/compatibility">
+    Browser, device, and tooling support
+  </Card>
+</CardGroup>

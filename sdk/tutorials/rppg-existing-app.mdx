@@ -12,7 +12,7 @@ only need the mental model first, use [rPPG In A Browser App](/sdk/guides/rppg-b
 This tutorial shows the recommended app integration path for
 `@elata-biosciences/rppg-web`.
 
-Camera rPPG is the **primary** browser integration for many Elata products—no
+Camera rPPG is the **primary** browser integration for many Elata products. No
 headset required.
 
 The core idea is simple: let `createRppgSession()` own the browser runtime,
@@ -252,8 +252,16 @@ But start with plain `createRppgSession()` first.
 - The session reaches terminal `failed`: recreate the session instead of trying to keep using the same poisoned processor
 - You are trying to debug lower-level generated bindings first: start with `createRppgSession()` unless you are intentionally debugging the SDK itself
 
-## Next Steps
+## Next
 
-- rPPG package reference: [rppg-web](/sdk/rppg-web/getting-started)
-- Shorter integration guide: [rPPG In A Browser App](/sdk/guides/rppg-browser)
-- Best first-time setup path: [Build Your First Elata App](/sdk/tutorials/first-app)
+<CardGroup cols={3}>
+  <Card title="rppg-web Reference" icon="heart-pulse" iconType="light" href="/sdk/rppg-web/getting-started">
+    Package API and exports
+  </Card>
+  <Card title="rPPG In A Browser" icon="book-open" iconType="light" href="/sdk/guides/rppg-browser">
+    Integration overview
+  </Card>
+  <Card title="Build Your First App" icon="rocket" iconType="light" href="/sdk/tutorials/first-app">
+    Best first-time setup path
+  </Card>
+</CardGroup>

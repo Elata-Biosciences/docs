@@ -1,0 +1,68 @@
+---
+title: "Example Applications"
+description: "Open source browser apps built with Elata EEG, Web Bluetooth, and rPPG packages."
+---
+
+<Info>
+  These are full product-shaped integrations with routing, sessions, charts, and game loops. They go beyond the `create-elata-demo` starter templates and show what a complete app looks like.
+</Info>
+
+## Featured Apps
+
+<CardGroup cols={2}>
+  <Card title="Breathwork Trainer" icon="lungs" iconType="light" href="https://github.com/wkyleg/breathwork-trainer">
+    Guided breathing with live EEG and rPPG biometric monitoring.
+  </Card>
+  <Card title="NeuroFlight" icon="plane" iconType="light" href="https://github.com/wkyleg/neuroflight">
+    3D flight simulator with post-session neural analytics.
+  </Card>
+  <Card title="Monkey Mind: Inner Invaders" icon="gamepad" iconType="light" href="https://github.com/wkyleg/monkey-mind">
+    Brain-reactive arcade gameplay that responds to mental state.
+  </Card>
+  <Card title="Neuro Chess" icon="chess" iconType="light" href="https://github.com/wkyleg/neuro-chess">
+    Chess against Stockfish with a neural HUD overlay.
+  </Card>
+  <Card title="Reaction Trainer" icon="bolt" iconType="light" href="https://github.com/wkyleg/reaction-trainer">
+    Stress-modulated reaction game with results tracking.
+  </Card>
+</CardGroup>
+
+---
+
+## What These Apps Demonstrate
+
+Each app is a standalone repository that uses the published `@elata-biosciences` packages:
+
+| Package | Purpose |
+| --- | --- |
+| `@elata-biosciences/eeg-web` | EEG signal processing and models |
+| `@elata-biosciences/eeg-web-ble` | Web Bluetooth headband streaming |
+| `@elata-biosciences/rppg-web` | Camera-based heart rate measurement |
+
+These apps are useful as reference implementations when you need to see how a real product wires up SDK sessions, state management, charts, and cleanup.
+
+---
+
+## When To Use These vs. `create-elata-demo`
+
+| If you want to... | Start here |
+| --- | --- |
+| Get a working app in under a minute | [`create-elata-demo`](/sdk/create-elata-demo) |
+| See a complete product with routing, game loops, or data visualization | One of the example apps above |
+| Compare your integration against a known-good reference | Either path works |
+
+---
+
+## Next
+
+<CardGroup cols={3}>
+  <Card title="Build Your First App" icon="rocket" iconType="light" href="/sdk/tutorials/first-app">
+    Scaffold a starter app
+  </Card>
+  <Card title="Choose A Package" icon="compass" iconType="light" href="/sdk/guides/choose-the-right-package">
+    Package decision guide
+  </Card>
+  <Card title="rPPG In A Browser" icon="heart-pulse" iconType="light" href="/sdk/guides/rppg-browser">
+    Primary browser integration
+  </Card>
+</CardGroup>

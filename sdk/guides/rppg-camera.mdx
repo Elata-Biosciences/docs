@@ -11,8 +11,19 @@ This guide walks through the complete rPPG flow: capture webcam frames, detect a
 
 ## Prerequisites
 
-- `@elata-biosciences/rppg-web` installed
-- Browser with camera access (getUserMedia) and WebAssembly support
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/rppg-web
+```
+
+```bash npm
+npm install @elata-biosciences/rppg-web
+```
+
+</CodeGroup>
+
+- Browser with camera access (`getUserMedia`) and WebAssembly support
 - HTTPS or localhost for development
 
 ---
@@ -127,8 +138,29 @@ flowchart TD
 
 ## Tips
 
-- **Lighting matters** — rPPG works best with even, consistent lighting on the face
-- **Minimize motion** — head movement degrades signal quality
-- **Wait 5-10 seconds** — the processor needs a full window of data before producing reliable estimates
-- **Check quality** — only display BPM when `metrics.quality` exceeds your threshold (e.g., > 0.5)
-- **Use skin masking** — set `useSkinMask: true` in DemoRunner for better signal extraction
+<Tip>
+  Lighting matters. rPPG works best with even, consistent lighting on the face. Minimize head movement for best signal quality.
+</Tip>
+
+- Wait 5-10 seconds for the processor to accumulate a full window of data before producing reliable estimates
+- Only display BPM when `metrics.quality` exceeds your threshold (e.g., > 0.5)
+- Set `useSkinMask: true` in DemoRunner for better signal extraction
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="rPPG Architecture" icon="diagram-project" iconType="light" href="/sdk/guides/architecture-rppg">
+    Pipeline design and components
+  </Card>
+  <Card title="rppg-web Reference" icon="heart-pulse" iconType="light" href="/sdk/rppg-web/getting-started">
+    Package API and exports
+  </Card>
+  <Card title="Calibration and Fusion" icon="bullseye" iconType="light" href="/sdk/rppg-web/calibration">
+    Muse PPG calibration models
+  </Card>
+  <Card title="Frame Sources" icon="camera" iconType="light" href="/sdk/rppg-web/frame-sources">
+    MediaPipe face detection
+  </Card>
+</CardGroup>

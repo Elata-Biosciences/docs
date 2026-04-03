@@ -92,9 +92,9 @@ pnpm run dev
 | Package | Version | Description |
 | --- | --- | --- |
 | [`@elata-biosciences/create-elata-demo`](https://www.npmjs.com/package/@elata-biosciences/create-elata-demo) | 0.1.16 | Demo scaffolder with rPPG, EEG, and EEG BLE templates |
-| [`@elata-biosciences/eeg-web`](https://www.npmjs.com/package/@elata-biosciences/eeg-web) | 0.1.16 | EEG WASM bindings — signal processing, band power, models |
+| [`@elata-biosciences/eeg-web`](https://www.npmjs.com/package/@elata-biosciences/eeg-web) | 0.1.16 | EEG WASM bindings: signal processing, band power, models |
 | [`@elata-biosciences/eeg-web-ble`](https://www.npmjs.com/package/@elata-biosciences/eeg-web-ble) | 0.1.16 | Web Bluetooth transport for EEG headband devices |
-| [`@elata-biosciences/rppg-web`](https://www.npmjs.com/package/@elata-biosciences/rppg-web) | 0.1.16 | rPPG pipeline — heart rate from camera via face detection |
+| [`@elata-biosciences/rppg-web`](https://www.npmjs.com/package/@elata-biosciences/rppg-web) | 0.1.16 | rPPG pipeline: heart rate from camera via face detection |
 
 ### Add packages to an existing app
 
@@ -153,7 +153,7 @@ The SDK is built on Rust crates that compile to WASM and native targets:
 | `rppg-web` | Supported | Supported | Supported (with camera permissions) | `>= 20` for local repo tooling |
 
 <Note>
-  `eeg-web-ble` requires Web Bluetooth and an `https://` origin or `localhost`. Safari and iOS do not support Web Bluetooth for Muse browser workflows — use a native app shell with CoreBluetooth or a companion bridge app streaming frames over WebSocket.
+  `eeg-web-ble` requires Web Bluetooth and an `https://` origin or `localhost`. Safari and iOS do not support Web Bluetooth for Muse browser workflows. Use a native app shell with CoreBluetooth or a companion bridge app streaming frames over WebSocket.
 </Note>
 
 ---
@@ -186,5 +186,19 @@ cd elata-bio-sdk
 
   <Card title="rPPG" icon="heart-pulse" iconType="light" href="/sdk/rppg-web/getting-started">
     Heart rate from camera
+  </Card>
+</CardGroup>
+
+<CardGroup cols={3}>
+  <Card title="Choose A Package" icon="compass" iconType="light" href="/sdk/guides/choose-the-right-package">
+    Package decision guide
+  </Card>
+
+  <Card title="Example Apps" icon="grid-2" iconType="light" href="/sdk/guides/example-apps">
+    Full reference implementations
+  </Card>
+
+  <Card title="Build Your First App" icon="rocket" iconType="light" href="/sdk/tutorials/first-app">
+    Scaffold a starter app
   </Card>
 </CardGroup>
