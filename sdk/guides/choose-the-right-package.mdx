@@ -1,0 +1,98 @@
+---
+title: "Choose The Right Package"
+description: "Pick the right Elata SDK package for your use case and avoid common setup mistakes."
+---
+
+## Recommended Decision Order
+
+1. If you are evaluating the SDK or starting a new app, use [`create-elata-demo`](/sdk/create-elata-demo) first.
+2. If you already have an app and know which capability you need, add the published package for that capability.
+3. Only drop to repo-internal workflows if you are actively modifying the SDK inside the monorepo.
+
+---
+
+## New Project Or Evaluation
+
+<Card title="create-elata-demo" icon="wand-magic-sparkles" iconType="light" href="/sdk/create-elata-demo">
+  The best starting point when you want a working app quickly.
+</Card>
+
+---
+
+## EEG In A Browser App
+
+Use `@elata-biosciences/eeg-web` when you need:
+
+- browser-side EEG WASM APIs
+- signal processing and model functions
+- shared types used by browser integrations
+
+<Card title="EEG Web SDK" icon="brain" iconType="light" href="/sdk/eeg-web/getting-started">
+  Signal processing, band powers, and analysis models
+</Card>
+
+---
+
+## Browser BLE For Muse-Compatible Devices
+
+Use `@elata-biosciences/eeg-web-ble` when you need:
+
+- browser BLE discovery and streaming
+- normalized headband frames
+- a transport layer for Muse-compatible EEG devices
+
+You should generally install `@elata-biosciences/eeg-web` alongside it.
+
+<Card title="EEG BLE Web SDK" icon="bluetooth" iconType="light" href="/sdk/eeg-web-ble/getting-started">
+  Connect to headband devices over Web Bluetooth
+</Card>
+
+---
+
+## Camera-Based rPPG
+
+Use `@elata-biosciences/rppg-web` when you need:
+
+- browser-side rPPG processing
+- packaged WASM backend loading
+- demo helpers for camera-driven prototypes
+
+<Card title="Camera Web SDK" icon="heart-pulse" iconType="light" href="/sdk/rppg-web/getting-started">
+  Heart rate from camera via face detection
+</Card>
+
+---
+
+## Local Repo Development
+
+Use `./run.sh sync-to` only if you are modifying `packages/eeg-web` inside the monorepo and want to link the local package into another app.
+
+Do not use `sync-to` as the normal onboarding path for new SDK consumers.
+
+---
+
+## Paths To Avoid
+
+<Warning>
+  These paths create unnecessary friction for most consumers. Only use them if you have a specific reason.
+</Warning>
+
+- **Avoid starting from `./run.sh sync-to` for new apps.** It is a local `eeg-web` development helper, not a general setup flow.
+- **Avoid treating in-repo dev demos as the normal install path.** They are useful references, but `create-elata-demo` is the cleaner consumer starting point.
+- **Avoid assuming a scaffolded app is broken if `pnpm install` behaves strangely inside another workspace.** Check the `pnpm --ignore-workspace` workflow first.
+
+---
+
+## Next
+
+<CardGroup cols={3}>
+  <Card title="Quickstart" icon="rocket" iconType="light" href="/sdk/tutorials/first-app">
+    Scaffold your first app
+  </Card>
+  <Card title="Example Apps" icon="grid-2" iconType="light" href="/sdk/guides/example-apps">
+    Full reference implementations
+  </Card>
+  <Card title="Compatibility" icon="circle-check" iconType="light" href="/sdk/operations/compatibility">
+    Browser, device, and tooling support
+  </Card>
+</CardGroup>

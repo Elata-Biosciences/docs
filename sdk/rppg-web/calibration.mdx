@@ -5,7 +5,7 @@ description: "Muse PPG calibration and multi-source heart rate fusion"
 
 ## Overview
 
-When a Muse headband with PPG is available alongside camera-based rPPG, the SDK supports **sensor fusion** — using the contact PPG as a reference to calibrate and improve camera-based heart rate estimates.
+When a Muse headband with PPG is available alongside camera-based rPPG, the SDK supports **sensor fusion**, using the contact PPG as a reference to calibrate and improve camera-based heart rate estimates.
 
 ---
 
@@ -117,3 +117,16 @@ flowchart TD
 3. The calibration model learns the camera-to-contact mapping
 4. Once trained, camera-only estimates are corrected using the learned model
 5. The fusion calibrator combines both sources for maximum accuracy
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Frame Sources" icon="camera" iconType="light" href="/sdk/rppg-web/frame-sources">
+    Camera capture and face detection
+  </Card>
+  <Card title="rPPG Camera Integration" icon="video" iconType="light" href="/sdk/guides/rppg-camera">
+    End-to-end webcam pipeline
+  </Card>
+</CardGroup>

@@ -1,6 +1,6 @@
 ---
-title: EEG In A Browser App
-description: Add Elata EEG WASM APIs to an existing browser application.
+title: "EEG In A Browser App"
+description: "Add Elata EEG WASM APIs to an existing browser application."
 ---
 
 Use this page if you want the package model for browser EEG, not a full
@@ -8,7 +8,11 @@ integration walkthrough.
 
 If you want numbered steps for an existing app, use
 [Add EEG To An Existing Browser App](/sdk/tutorials/eeg-existing-app). If you want
-the scaffold path, use [Quickstart](/sdk/tutorials/first-app).
+the scaffold path, use [Build Your First Elata App](/sdk/tutorials/first-app).
+
+<Tip>
+  If you want a running app without manual wiring, scaffold with [create-elata-demo](/sdk/create-elata-demo) first.
+</Tip>
 
 EEG is **optional** in the usual Elata journey: **camera rPPG** is the primary
 browser integration for many apps. Add `eeg-web` when you need brain-signal
@@ -28,6 +32,24 @@ Concrete app examples include:
 - games or creative tools that change difficulty, pacing, or effects based on
   live EEG features
 
+---
+
+## Install
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/eeg-web
+```
+
+```bash npm
+npm install @elata-biosciences/eeg-web
+```
+
+</CodeGroup>
+
+---
+
 ## What `eeg-web` Gives You
 
 `@elata-biosciences/eeg-web` provides:
@@ -39,20 +61,9 @@ Concrete app examples include:
 This package does not handle Bluetooth device connection by itself. Add
 `@elata-biosciences/eeg-web-ble` if you also need browser BLE transport.
 
-## How Apps Usually Use EEG
+---
 
-1. Connect to a compatible headset or load sample buffers.
-2. Initialize the WASM runtime.
-3. Run feature extraction or analysis on incoming samples.
-4. Map those results into app state, scoring, content adaptation, or user
-   feedback.
-
-That "map those results" step is where the product behavior lives. For example,
-an app might slow a meditation guide when focus drops, increase challenge in a
-training simulation when sustained attention improves, or visualize calm vs.
-activation during a neurofeedback session.
-
-## Minimal Shape
+## Minimal Integration
 
 ```ts
 import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
@@ -65,32 +76,59 @@ const powers = band_powers(eegData, 256);
 console.log("alpha", powers.alpha);
 ```
 
-## Typical Flow
+---
+
+## Typical Integration Flow
 
 1. Initialize the packaged WASM runtime with `initEegWasm()`.
 2. Pass browser-side EEG sample buffers into the exported analysis functions.
-3. Add `eeg-web-ble` later if you need live headset transport.
+3. If you later need live device transport, combine this package with `eeg-web-ble`.
+
+---
+
+## When To Use The EEG Template Instead
+
+Prefer the scaffolded `eeg-demo` template when you want:
+
+- a known-good Vite setup
+- a reference for how bundled WASM assets should be served
+- a synthetic-data app that runs without hardware
+
+---
 
 ## Common Gotchas
 
-- `band_powers()` takes a **single-channel** `Float32Array` — not `number[]`.
+- `band_powers()` takes a **single-channel** `Float32Array`, not `number[]`.
   Convert with `new Float32Array(samples[channelIdx])` before passing. Passing
   a plain array will cause a WASM runtime error. For a Muse headband (4
   channels: TP9, AF7, AF8, TP10), use a frontal channel (AF7 = index 1, or
   AF8 = index 2) for cognitive state features, or average across channels.
 - `WasmCalmnessModel.process()` expects **interleaved** samples:
   `[s0_ch0, s0_ch1, s1_ch0, s1_ch1, ...]`. The `frame.eeg.samples` layout is
-  per-channel — convert before passing.
+  per-channel. Convert before passing.
 - `WasmCalmnessModel` needs `channelCount` at construction, but `channelCount`
   only arrives on the first frame. Construct the model inside your first-frame
   handler.
 - If `initEegWasm()` fails, your app may not be loading the packaged `wasm/`
   assets correctly.
 - If you need a live headset connection, `eeg-web` alone is not enough.
+- If you are only evaluating the SDK, the scaffolded app is faster than manual setup.
 
-## Next Steps
+---
 
-- Existing-app walkthrough: [Add EEG To An Existing Browser App](/sdk/tutorials/eeg-existing-app)
-- Browser BLE setup: [Web Bluetooth With Supported Devices](/sdk/guides/web-bluetooth)
-- Package reference: [eeg-web](/sdk/eeg-web/getting-started)
-- General troubleshooting: [Troubleshooting](/sdk/operations/troubleshooting)
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Add EEG To An Existing App" icon="circle-play" iconType="light" href="/sdk/tutorials/eeg-existing-app">
+    Step-by-step integration tutorial
+  </Card>
+  <Card title="Web Bluetooth" icon="bluetooth" iconType="light" href="/sdk/guides/web-bluetooth">
+    Connect a Muse headset
+  </Card>
+  <Card title="eeg-web Reference" icon="brain" iconType="light" href="/sdk/eeg-web/getting-started">
+    Package API and exports
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" iconType="light" href="/sdk/operations/troubleshooting">
+    Common failures and fixes
+  </Card>
+</CardGroup>

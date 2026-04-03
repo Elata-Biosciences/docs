@@ -5,7 +5,7 @@ description: "Camera-based heart rate measurement with @elata-biosciences/rppg-w
 
 ## What is rPPG?
 
-Remote photoplethysmography (rPPG) extracts heart rate from subtle color changes in facial skin captured by a standard camera. No contact sensor is needed — just a webcam.
+Remote photoplethysmography (rPPG) extracts heart rate from subtle color changes in facial skin captured by a standard camera. No contact sensor is needed, just a webcam.
 
 ---
 
@@ -21,9 +21,17 @@ Use `@elata-biosciences/rppg-web` when your app needs:
 
 ## Installation
 
-```bash
+<CodeGroup>
+
+```bash pnpm
 pnpm add @elata-biosciences/rppg-web
 ```
+
+```bash npm
+npm install @elata-biosciences/rppg-web
+```
+
+</CodeGroup>
 
 Requirements: Node.js 20+, browser with camera access and WebAssembly support.
 
@@ -69,7 +77,7 @@ Every session diagnostics payload includes state, issue codes, sampling stats, a
 
 ## Advanced: `RppgProcessor`
 
-For custom orchestration, drop to `RppgProcessor` directly. Only use this when you need something `createRppgSession()` doesn't provide — if you're debugging, compare against `createRppgSession()` first.
+For custom orchestration, drop to `RppgProcessor` directly. Only use this when you need something `createRppgSession()` does not provide. If you are debugging, compare against `createRppgSession()` first.
 
 ```typescript
 import { RppgProcessor } from "@elata-biosciences/rppg-web";
@@ -108,7 +116,7 @@ processor.pushSampleRgbMeta(timestampMs, r, g, b, skinRatio?, motion?, clipRatio
 | Field | Type | Description |
 |-------|------|-------------|
 | `bpm` | `number` | Estimated heart rate in BPM |
-| `quality` | `number` | Signal quality (0–1) |
+| `quality` | `number` | Signal quality (0 to 1) |
 | `spectralBpm` | `number` | Spectral analysis estimate |
 | `acfBpm` | `number` | Autocorrelation estimate |
 | `confidence` | `number` | Overall confidence |

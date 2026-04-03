@@ -5,7 +5,7 @@ description: "Alpha bump detection, alpha peak tracking, and calmness scoring"
 
 ## WasmAlphaBumpDetector
 
-Detects alpha bumps — transient increases in alpha band power that indicate state transitions.
+Detects alpha bumps, which are transient increases in alpha band power that indicate state transitions.
 
 ```typescript
 import { initEegWasm, WasmAlphaBumpDetector } from "@elata-biosciences/eeg-web";
@@ -38,7 +38,7 @@ const peakHz = model.peak_frequency();
 
 ## WasmCalmnessModel
 
-Computes a calmness score based on the ratio of alpha to beta power — higher alpha relative to beta generally indicates a more relaxed state.
+Computes a calmness score based on the ratio of alpha to beta power. Higher alpha relative to beta generally indicates a more relaxed state.
 
 ```typescript
 import { WasmCalmnessModel } from "@elata-biosciences/eeg-web";
@@ -68,7 +68,7 @@ decoder.set_reorder_window_ms(50);
 const output = decoder.decode(rawBytes);
 ```
 
-The Athena decoder is typically not used directly — it's passed as a factory to [`BleTransport`](/sdk/eeg-web-ble/getting-started):
+The Athena decoder is typically not used directly. It is passed as a factory to [`BleTransport`](/sdk/eeg-web-ble/getting-started):
 
 ```typescript
 import { BleTransport } from "@elata-biosciences/eeg-web-ble";
@@ -80,3 +80,16 @@ const transport = new BleTransport({
   },
 });
 ```
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Signal Processing" icon="wave-square" iconType="light" href="/sdk/eeg-web/signal-processing">
+    Band powers, FFT, spectrum analysis
+  </Card>
+  <Card title="Headband Transport" icon="signal-stream" iconType="light" href="/sdk/eeg-web/headband-transport">
+    Frame schema and transport interface
+  </Card>
+</CardGroup>

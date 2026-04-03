@@ -1,17 +1,17 @@
 ---
-title: rPPG In A Browser App
-description: Add browser-based camera rPPG with the supported Elata session helpers.
+title: "rPPG In A Browser App"
+description: "Add browser-based camera rPPG with the supported Elata session helpers."
 ---
 
-Use this page if you want the mental model for browser rPPG, not a full
-install walkthrough.
+Use this page if you want the integration model for browser rPPG.
 
 If you want numbered steps for an existing app, use
 [Add Camera-Based rPPG To An Existing Browser App](/sdk/tutorials/rppg-existing-app).
-If you want the scaffold path, use [Quickstart](/sdk/tutorials/first-app).
+If you want the scaffold path, use [Build Your First Elata App](/sdk/tutorials/first-app).
 
-This is the **primary** browser biosignal path for most products: no headset
-required before you ship meaningful signal UX.
+<Info>
+  This is the **primary** browser biosignal path for most products: no headset required before you ship meaningful signal UX.
+</Info>
 
 rPPG stands for remote photoplethysmography. It estimates pulse-related changes
 from camera video, usually from a face region, without requiring a wearable
@@ -28,99 +28,277 @@ Concrete app examples include:
 - biofeedback-oriented health or wellness apps that want camera-based pulse
   signals without extra hardware
 
-## Recommended Entry Point
+---
 
-`@elata-biosciences/rppg-web` provides `createRppgSession()` as the recommended
-browser integration API.
+## Install
 
-Start there unless you intentionally need lower-level sample ingestion or custom
-runtime orchestration.
+<CodeGroup>
 
-## How Apps Usually Use rPPG
+```bash pnpm
+pnpm add @elata-biosciences/rppg-web
+```
 
-1. Ask for camera access and attach the stream to a `video` element.
-2. Start `createRppgSession()` on that video.
-3. Read metrics and diagnostics from the session.
-4. Show pulse-related feedback, readiness UI, or monitoring outputs in the app.
+```bash npm
+npm install @elata-biosciences/rppg-web
+```
 
-That last step can be as simple as showing a pulse estimate, or as game-like as
-changing dialogue, pressure, or scoring when the user's physiology changes.
+</CodeGroup>
 
-## Minimal Shape
+---
 
-This is the minimal integration shape:
+## Recommended vs. Advanced
+
+<Tip>
+  Use `createRppgSession()` for browser apps. It handles WASM init, frame capture, ROI orchestration, diagnostics, and cleanup.
+</Tip>
+
+**Recommended:**
+
+- Use `createRppgSession()` for browser apps.
+- Use `createManagedRppgSession()` when you want built-in restart behavior after a terminal processor failure.
+- Use `createRppgPipeline()` from `@elata-biosciences/eeg-web` only if you intentionally need low-level sample ingestion.
+
+**Advanced:**
+
+- Use `RppgProcessor`, `DemoRunner`, custom backends, or generated WASM bindings only if you need custom orchestration and understand the runtime lifecycle already.
+- If you are not debugging the SDK itself, do not start with generated WASM exports.
+
+---
+
+## Minimal Integration
 
 ```ts
 import { createRppgSession } from "@elata-biosciences/rppg-web";
 
-// 1. Acquire camera and attach to a video element
-const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-const video = document.createElement("video");
-video.srcObject = stream;
-await video.play();
-
-// 2. Start an rPPG session
 const session = await createRppgSession({
-  video,
+  video: videoEl,
+  sampleRate: 30,
   backend: "auto",
   faceMesh: "off",
+  onDiagnostics: (diagnostics) => {
+    console.log(diagnostics.state.status, diagnostics.faceTrackingMode);
+    console.log(diagnostics.framesSeen, diagnostics.totalSamplesReceived);
+    console.log(diagnostics.issues, diagnostics.processorFailure);
+  },
+  onError: (error) => {
+    console.error(error.code, error.message);
+  },
 });
 
-// 3. Poll for BPM
-const interval = setInterval(() => {
-  // Check backendMode first — if "unavailable", WASM didn't load and BPM
-  // will always be null (looks identical to the normal warmup period).
-  if (session.backendMode === "unavailable") {
-    console.warn("WASM backend not loaded — check that pkg/ assets are served at /pkg/");
-    return;
-  }
-  const metrics = session.getMetrics();
-  if (metrics?.bpm != null) {
-    console.log("BPM:", metrics.bpm.toFixed(1));
-  }
-}, 1000);
-
-// 4. Cleanup
-// clearInterval(interval);
-// await session.stop();
+console.log(session.getMetrics());
 ```
 
-Expect a warmup window before the first BPM estimate appears.
+---
 
-## Typical Flow
+## Typical Integration Flow
 
-1. Acquire a camera stream and attach it to a `video` element.
+1. Acquire a camera stream in the browser and attach it to a `video` element.
 2. Call `createRppgSession({ video, backend: "auto" })`.
 3. Read metrics from `session.getMetrics()`.
-4. Surface diagnostics through `onDiagnostics` or `session.getDiagnostics()`.
+4. Surface diagnostics from `onDiagnostics` or `session.getDiagnostics()`.
 5. Stop the session during cleanup with `await session.stop()`.
 
-## What You Reach For Later
+`createRppgSession()` owns WASM init, FaceMesh loading, frame scheduling, ROI
+selection, diagnostics, and cleanup.
 
-Useful public APIs for app-side diagnostics:
+Use `session.state` or `diagnostics.state` to distinguish:
 
-- `session.getDiagnostics()`
-- `session.getTraceSnapshot()`
-- `computeTraceWaveformDebug()`
-- `normalizeRppgError()`
-- `createRppgAppAdapter()`
-- `createRppgAppMonitor()`
+- normal `running`
+- startup fallback or degraded setup via `degraded`
+- terminal runtime processor failure via `failed`
+
+If you intentionally choose `faceMesh: "off"`, the session stays in supported
+`video_frame` mode and is not reported as a FaceMesh failure by default.
+
+If your app needs explicit asset paths instead of the default `/pkg/*` lookup,
+pass one or more of:
+
+```ts
+const session = await createRppgSession({
+  video: videoEl,
+  wasmJsUrl: "/assets/rppg_wasm.js",
+  wasmBinaryUrl: "/assets/rppg_wasm_bg.wasm",
+});
+```
+
+Advanced apps can also provide `wasmImporter` directly.
+
+---
+
+## Managed Restart Flow
+
+If you want the SDK to own restart timing after terminal processor failures,
+use the managed wrapper:
+
+```ts
+import { createManagedRppgSession } from "@elata-biosciences/rppg-web";
+
+const managed = await createManagedRppgSession({
+  video: videoEl,
+  faceMesh: "off",
+  maxRetries: 3,
+  retryDelayMs: 1500,
+  onStateChange: (state) => {
+    console.log(state.status, state.retryCount, state.lastError?.code);
+  },
+});
+```
+
+The managed wrapper exposes high-level states such as `starting`, `running`,
+`retrying`, and `failed`, while still letting apps drop down to the underlying
+`RppgSession` when needed.
+
+---
+
+## Advanced Helpers
+
+<AccordionGroup>
+  <Accordion title="Trace Snapshots">
+    Use `getTraceSnapshot()` when you need recent waveform or debug points for charts,
+    debug panels, or regression capture:
+
+    ```ts
+    const trace = session.getTraceSnapshot(300);
+
+    console.log(trace.points);
+    console.log(trace.lastSample);
+    console.log(trace.backendFailure);
+    ```
+
+    For peak/threshold waveform debug from the trace data, use `computeTraceWaveformDebug()`:
+
+    ```ts
+    import { computeTraceWaveformDebug } from "@elata-biosciences/rppg-web";
+
+    const waveform = computeTraceWaveformDebug(session.getTraceSnapshot(300));
+    console.log(waveform.peaks);
+    ```
+  </Accordion>
+
+  <Accordion title="Error Normalization">
+    Use `normalizeRppgError()` instead of parsing raw message text in app code:
+
+    ```ts
+    import { normalizeRppgError } from "@elata-biosciences/rppg-web";
+
+    const normalized = normalizeRppgError(session.lastError, session.getDiagnostics());
+
+    console.log(normalized?.code);
+    console.log(normalized?.message);
+    console.log(normalized?.guidance);
+    ```
+
+    This gives apps stable categories such as `wasm_init_failed`,
+    `backend_unavailable`, `camera_not_playing`, and `processor_failed`.
+  </Accordion>
+
+  <Accordion title="App Adapter">
+    If you want a single app-facing snapshot with restart status, publish gating,
+    trace data, and stable messages, use `createRppgAppAdapter()`:
+
+    ```ts
+    import {
+      createManagedRppgSession,
+      createRppgAppAdapter,
+    } from "@elata-biosciences/rppg-web";
+
+    const managed = await createManagedRppgSession({
+      video,
+      faceMesh: "off",
+    });
+
+    const adapter = createRppgAppAdapter();
+    const app = adapter.getSnapshot(managed);
+
+    if (app.canPublish) {
+      console.log(app.publishBpm);
+    }
+
+    console.log(app.status, app.message);
+    ```
+  </Accordion>
+
+  <Accordion title="App Monitor">
+    If you want the SDK to own the recurring snapshot loop too, use
+    `createRppgAppMonitor()`:
+
+    ```ts
+    import {
+      createManagedRppgSession,
+      createRppgAppMonitor,
+    } from "@elata-biosciences/rppg-web";
+
+    const managed = await createManagedRppgSession({
+      video,
+      faceMesh: "off",
+    });
+
+    const monitor = createRppgAppMonitor(managed, { intervalMs: 500 });
+    monitor.subscribe((snapshot) => {
+      console.log(snapshot.status, snapshot.publishBpm);
+    });
+    monitor.start();
+    ```
+  </Accordion>
+
+  <Accordion title="Video Playback Helper">
+    `createRppgSession()` now waits for the video element to start playing by
+    default. If you need to coordinate that step yourself, call `ensureVideoPlaying()` directly:
+
+    ```ts
+    import { ensureVideoPlaying } from "@elata-biosciences/rppg-web";
+
+    await ensureVideoPlaying(video, { timeoutMs: 5000 });
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## When To Use The rPPG Template Instead
+
+Prefer the scaffolded `rppg-demo` template when you want:
+
+- a known-good browser camera app
+- a reference for packaged WASM asset loading
+- a faster comparison point when debugging your own integration
+
+---
 
 ## Common Gotchas
 
-- **BPM is always null but status is `running`** — this looks like warmup but
-  could mean WASM didn't load. Check `session.backendMode` first: if it is
-  `"unavailable"`, the WASM assets are not loading correctly.
-- If `session.state.status` is `failed`, recreate the session instead of
-  continuing to use the same poisoned processor.
-- If camera access fails, verify that the page can call `getUserMedia`.
+- If `session.backendMode` is `unavailable`, your app is probably not serving the packaged `pkg/` assets correctly.
+- If `session.state.status` is `failed`, treat that processor backend as terminal and recreate the session instead of continuing to poll metrics from it.
+- If you see "backend pipeline has no push_sample API", you likely bypassed the safe wrapper path. Start with `createRppgSession()` for browser apps, or `initEegWasm()` plus `createRppgPipeline()` for low-level ingestion.
+- If you hit `wasmrppgpipeline_new`, initialize the WASM module before creating low-level pipelines and avoid calling generated constructors directly.
+- If you see deprecated init warnings, route startup through `initEegWasm()` instead of forwarding raw strings, URLs, or buffers to the generated init exports.
+- If camera access fails, confirm the page has permission to use `getUserMedia`.
+- If `session.lastError` is non-null, use its `code` and `message` to surface the real capture or processor failure instead of retrying blindly.
+- If you are just evaluating the SDK, the scaffolded app is much faster than building the whole browser pipeline yourself.
 
-## Where To Go Next
+---
 
-- Existing-app walkthrough: [Add Camera-Based rPPG To An Existing Browser App](/sdk/tutorials/rppg-existing-app)
-- Package reference: [rppg-web](/sdk/rppg-web/getting-started)
-- Main chooser page: [Build A Browser App](/sdk/overview)
-- If you are just evaluating the SDK, the scaffolded demo is much faster than
-  wiring the whole camera pipeline yourself.
-- Compatibility details: [Compatibility](/sdk/operations/compatibility)
-- Troubleshooting: [Troubleshooting](/sdk/operations/troubleshooting)
+## Version Guidance
+
+<Note>
+  If you install both `@elata-biosciences/rppg-web` and `@elata-biosciences/eeg-web`, prefer matching versions. They are developed and verified together in the same repo.
+</Note>
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Existing App Tutorial" icon="circle-play" iconType="light" href="/sdk/tutorials/rppg-existing-app">
+    Step-by-step rPPG integration
+  </Card>
+  <Card title="rppg-web Reference" icon="heart-pulse" iconType="light" href="/sdk/rppg-web/getting-started">
+    Package API and exports
+  </Card>
+  <Card title="rPPG Architecture" icon="diagram-project" iconType="light" href="/sdk/guides/architecture-rppg">
+    Pipeline design and components
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" iconType="light" href="/sdk/operations/troubleshooting">
+    Common failures and fixes
+  </Card>
+</CardGroup>

@@ -1,6 +1,6 @@
 ---
-title: Web Bluetooth With Supported Devices
-description: Stream Muse-compatible EEG devices from supported Chromium browsers.
+title: "Web Bluetooth With Supported Devices"
+description: "Stream Muse-compatible EEG devices from supported Chromium browsers."
 ---
 
 Use this page if you want the transport model and platform constraints, not a
@@ -8,29 +8,77 @@ full walkthrough.
 
 If you want numbered steps for an existing app, use
 [Stream Muse-Compatible EEG Over Web Bluetooth](/sdk/tutorials/eeg-ble-live-stream).
-If you want the scaffold path, use [Quickstart](/sdk/tutorials/first-app).
+If you want the scaffold path, use [Build Your First Elata App](/sdk/tutorials/first-app).
 
-**Role in the SDK:** camera **rPPG** is the usual first app. **EEG** is optional
-when you need brain signals. **Web Bluetooth** (`eeg-web-ble` with `eeg-web`)
-**enables a live Muse-compatible headset**—it is transport for EEG, not a
-parallel primary product to rPPG.
+<Info>
+  **Role in the SDK:** camera **rPPG** is the usual first app. **EEG** is optional when you need brain signals. **Web Bluetooth** (`eeg-web-ble` with `eeg-web`) enables a live Muse-compatible headset. It is transport for EEG, not a parallel primary product to rPPG.
+</Info>
+
+---
+
+## Start With A Known-Good Scaffolded App
+
+If you want the fastest path to a working browser BLE example, scaffold the EEG
+starter app first:
+
+<CodeGroup>
+
+```bash pnpm
+pnpm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
+cd my-app
+pnpm install
+pnpm run dev
+```
+
+```bash npm
+npm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
+cd my-app
+npm install
+npm run dev
+```
+
+</CodeGroup>
+
+Use the rest of this guide when you want to add the same browser BLE flow to an existing app.
+
+---
 
 ## Requirements
 
-- Chrome or Edge
+- Chrome, Edge, or Bluefy on iOS
 - `https://` or `localhost`
 - Bluetooth enabled on the machine
-- a supported Muse-compatible EEG device
+- A supported Muse-compatible EEG device
 
-Supported device classes in this repo today:
+Supported device classes:
 
 - Muse 2 and Muse S classic BLE devices
 - Muse S Athena protocol v2 devices
-- the synthetic Muse-compatible BLE bridge used for testing
+- The synthetic Muse-compatible BLE bridge used for testing
 
-Safari and iOS do not support this browser BLE workflow.
+<Note>
+  For browser BLE, use Chrome on desktop or Android, or Bluefy on iOS. Do not expect Safari itself to handle this workflow.
+</Note>
 
-## Minimal Shape
+---
+
+## Install
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+```
+
+```bash npm
+npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+```
+
+</CodeGroup>
+
+---
+
+## Minimal Integration
 
 ```ts
 import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
@@ -38,7 +86,6 @@ import { BleTransport } from "@elata-biosciences/eeg-web-ble";
 
 const transport = new BleTransport({
   deviceOptions: {
-    // AthenaWasmDecoder lives in eeg-web but is required here as a peer dep.
     athenaDecoderFactory: () => new AthenaWasmDecoder(),
   },
 });
@@ -51,10 +98,11 @@ transport.onStatus = (status) => {
   console.log(status.state, status.reason);
 };
 
-// startStreaming() calls connect() + start() in one step.
-// If BLE is already connected (e.g. after stop()), it skips re-pairing.
-await transport.startStreaming();
+await transport.connect();
+await transport.start();
 ```
+
+---
 
 ## Typical Flow
 
@@ -62,29 +110,42 @@ await transport.startStreaming();
 2. Construct `BleTransport`.
 3. Provide `athenaDecoderFactory` if you need Athena support.
 4. Subscribe to frame and status callbacks.
-5. Call `startStreaming()` (or `connect()` then `start()` separately).
+5. Call `connect()` and then `start()`.
+
+---
+
+## When To Use The BLE Template Instead
+
+Prefer the scaffolded `eeg-demo` app, or the dedicated `eeg-ble` starter, when you want:
+
+- a quick environment check for browser BLE support
+- a reference for transport startup and status handling
+- a simpler starting point than wiring the callbacks from scratch
+
+---
 
 ## Common Gotchas
 
-- **Use `startStreaming()` for the common case.** It calls `connect()` and
-  `start()` in one step and skips re-pairing if already connected. If you call
-  `connect()` and `start()` separately, both are required — omitting `start()`
-  produces silence with no error.
-- `frame.eeg.samples` is `number[][]` laid out as `[channelIdx][sampleIdx]`.
-  Each inner array is one channel. If you need interleaved format for WASM
-  models, convert manually.
-- If `navigator.bluetooth` is missing, you are likely in an unsupported browser
-  or non-secure context.
-- If the device chooser never appears, confirm Bluetooth is enabled and the page
-  is served from `https://` or `localhost`.
-- If Athena devices fail to decode, make sure you pass an
-  `athenaDecoderFactory` backed by `@elata-biosciences/eeg-web`.
-- If you need Safari or iOS support, plan for a native bridge or hybrid
-  strategy instead of this browser path.
+- If `navigator.bluetooth` is missing, you are likely in an unsupported browser or non-secure context.
+- If the device chooser never appears, confirm Bluetooth is enabled and the page is served from `https://` or `localhost`.
+- If Athena devices fail to decode, make sure you pass an `athenaDecoderFactory` backed by `@elata-biosciences/eeg-web`.
+- If you need a normal iOS browser path, plan for a native bridge or hybrid strategy instead of Safari. The browser BLE guidance here assumes Bluefy on iOS.
 
-## Next Steps
+---
 
-- Existing-app walkthrough: [Stream Muse-Compatible EEG Over Web Bluetooth](/sdk/tutorials/eeg-ble-live-stream)
-- EEG package details: [eeg-web](/sdk/eeg-web/getting-started)
-- BLE package details: [eeg-web-ble](/sdk/eeg-web-ble/getting-started)
-- Platform expectations: [Compatibility](/sdk/operations/compatibility)
+## Next
+
+<CardGroup cols={2}>
+  <Card title="BLE Live Stream Tutorial" icon="circle-play" iconType="light" href="/sdk/tutorials/eeg-ble-live-stream">
+    Step-by-step streaming guide
+  </Card>
+  <Card title="EEG In A Browser" icon="brain" iconType="light" href="/sdk/guides/eeg-browser">
+    Browser EEG package model
+  </Card>
+  <Card title="eeg-web-ble Reference" icon="bluetooth" iconType="light" href="/sdk/eeg-web-ble/getting-started">
+    Transport API and options
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" iconType="light" href="/sdk/operations/troubleshooting">
+    Common failures and fixes
+  </Card>
+</CardGroup>

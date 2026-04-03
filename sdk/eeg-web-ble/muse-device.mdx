@@ -7,7 +7,7 @@ description: "MuseBleDevice internals, protocol details, and compatibility"
 
 `MuseBleDevice` is the low-level Web Bluetooth class that handles device pairing, GATT characteristic subscriptions, and packet decoding. `BleTransport` wraps it to provide the normalized `HeadbandTransport` interface.
 
-You typically don't use `MuseBleDevice` directly — use `BleTransport` instead.
+You typically do not use `MuseBleDevice` directly. Use `BleTransport` instead.
 
 ---
 
@@ -117,3 +117,16 @@ Three strategies for iOS support:
 3. **Hybrid WebView**: `WKWebView` with native message handlers for BLE
 
 In all cases, use the `HeadbandFrameV1` schema as the interface boundary so browser and native transports emit the same frame shape.
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="EEG BLE Getting Started" icon="bluetooth" iconType="light" href="/sdk/eeg-web-ble/getting-started">
+    Transport API and connection guide
+  </Card>
+  <Card title="Headband Transport" icon="signal-stream" iconType="light" href="/sdk/eeg-web/headband-transport">
+    Frame schema and transport interface
+  </Card>
+</CardGroup>
