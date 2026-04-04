@@ -1,0 +1,71 @@
+---
+title: "Builder Overview"
+description: "What the protocol gives you and what you avoid building yourself."
+---
+
+## What You Get
+
+The Elata protocol provides a ready-made launch and fee-routing stack for tokenized applications. As a builder, you deploy your app through the protocol and receive:
+
+- An ERC-20 app token with 10M supply
+- A bonding curve for price discovery
+- Fee routing through FeeRouter and ContributorSplit
+- A staking vault for token holders
+- Team vesting and ecosystem vaults
+- In-app item (NFT) infrastructure
+- Tournament and competition tooling
+
+---
+
+## What You Avoid Building Yourself
+
+| Component | Protocol Handles It |
+| --- | --- |
+| Token creation and distribution | AppFactory deploys with 50/25/25 split |
+| Price discovery | Constant-product bonding curve with graduation |
+| Liquidity provisioning | Automated DEX pair creation and LP lock |
+| Fee collection and routing | FeeRouter splits to treasury and contributors |
+| Revenue distribution | ContributorSplit with pull-based claims |
+
+---
+
+## Protocol Defaults
+
+| Parameter | Value |
+| --- | --- |
+| Launch cost | 110 ELTA (10 fee + 100 seed) |
+| Token supply | 10,000,000 per app |
+| Curve allocation | 50% (5M tokens) |
+| Team vesting | 25% (2.5M tokens) |
+| Ecosystem vault | 25% (2.5M tokens) |
+| Graduation target | 42,000 ELTA in reserves |
+| LP lock duration | 730 days |
+
+---
+
+## Core Contracts
+
+| Contract | Purpose |
+| --- | --- |
+| `AppFactory` | Deploys app token stack |
+| `AppRegistry` | On-chain mapping of appId to ownerSafe, token, curve |
+| `AppToken` | ERC-20 token per app |
+| `AppBondingCurve` | Constant-product price discovery |
+| `FeeRouterV2` | Single routing surface for all fee kinds |
+| `ContributorSplit` | Pull-based payout for app contributors |
+
+---
+
+## Next
+
+<CardGroup cols={3}>
+  <Card title="Launch Requirements" icon="clipboard-check" iconType="light" href="/apps/build/launch-requirements">
+    What you need to launch
+  </Card>
+  <Card title="Launch Your App" icon="rocket" iconType="light" href="/apps/build/launch-your-app">
+    Step-by-step launch flow
+  </Card>
+  <Card title="Fee Flow" icon="route" iconType="light" href="/apps/design/fee-flow">
+    How fees are routed
+  </Card>
+</CardGroup>

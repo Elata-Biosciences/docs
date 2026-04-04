@@ -1,0 +1,80 @@
+---
+title: "Launch Requirements"
+description: "Everything you need before deploying an app on the Elata protocol."
+---
+
+## What You Need
+
+Before launching, make sure you have:
+
+<Steps>
+  <Step title="Safe multisig wallet">
+    Every app is controlled by a Safe. Create one at [safe.global](https://safe.global) with your team members as signers.
+  </Step>
+  <Step title="110 ELTA tokens">
+    10 ELTA for registration + 100 ELTA for the bonding curve seed. Both are paid to the protocol during launch.
+  </Step>
+  <Step title="App metadata prepared">
+    Name, description, logo, social links. See [App Metadata and Listing](/apps/build/app-metadata) for the full spec.
+  </Step>
+  <Step title="Understanding of the two-phase flow">
+    Phase A registers your app (10 ELTA). Phase B deploys the token stack (100 ELTA). See [App Lifecycle](/apps/app-lifecycle) for details.
+  </Step>
+</Steps>
+
+---
+
+## Cost Breakdown
+
+| Item | Cost | What It Does |
+| --- | --- | --- |
+| Registration fee | 10 ELTA | Registers app metadata and Safe in AppRegistry |
+| Bonding curve seed | 100 ELTA | Seeds the initial ELTA reserve for price discovery |
+| **Total** | **110 ELTA** | Full launch |
+
+<Warning>
+  The registration fee is non-refundable. The bonding curve seed becomes part of the trading reserve and is not directly withdrawable.
+</Warning>
+
+---
+
+## Safe Wallet Setup
+
+The Safe multisig is the owner of your app on-chain. It controls:
+
+- Contributor split configuration
+- Team vesting wallet
+- Ecosystem vault
+- App metadata updates
+
+Set up your Safe before starting the launch process. Add all core team members as signers with an appropriate threshold (e.g., 2-of-3 for a small team).
+
+---
+
+## Network Options
+
+| Network | Gas Cost | Use Case |
+| --- | --- | --- |
+| Ethereum Mainnet | ~$260 at 20 gwei | Production |
+| Base | ~$2-5 | Production (lower cost) |
+| Sepolia / Base Sepolia | Free | Testing |
+
+<Tip>
+  Start on a testnet to validate your launch flow before spending real ELTA. Use the faucet to get test tokens.
+</Tip>
+
+---
+
+## Next
+
+<CardGroup cols={3}>
+  <Card title="Launch Your App" icon="rocket" iconType="light" href="/apps/build/launch-your-app">
+    Step-by-step launch flow
+  </Card>
+  <Card title="App Metadata" icon="tag" iconType="light" href="/apps/build/app-metadata">
+    Metadata fields and listing
+  </Card>
+  <Card title="App Lifecycle" icon="circle-nodes" iconType="light" href="/apps/app-lifecycle">
+    Full lifecycle overview
+  </Card>
+</CardGroup>

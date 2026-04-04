@@ -1,0 +1,88 @@
+---
+title: "Items and Unlocks"
+description: "Create ERC-721 items for gating, collectibles, and in-app utility."
+---
+
+## Creating Items
+
+Items are ERC-721 NFTs created through the InAppContent721 contract. Each item has:
+
+| Property | Description |
+| --- | --- |
+| Name | Display name for the item |
+| Price | Cost in app tokens (burned on purchase) |
+| Soulbound | Whether the item is transferable or locked to the buyer |
+| Max supply | Optional cap on total mints |
+
+---
+
+## Item Types
+
+| Type | Purpose | Example |
+| --- | --- | --- |
+| Access Pass | Gate features or content | "Pro Mode" unlock, exclusive dashboard |
+| Cosmetic | Visual customization | Profile borders, badges, themes |
+| Power-up | Temporary or persistent gameplay advantage | Double XP for 24 hours |
+| Collectible | Limited-edition tokens | Launch day commemorative, achievement badges |
+
+---
+
+## Burn Mechanics
+
+All item purchases burn 100% of the app tokens spent. This creates direct deflationary pressure on the app token supply.
+
+When a user buys an item:
+1. App tokens are transferred from the buyer
+2. Tokens are burned (sent to the zero address)
+3. The NFT is minted to the buyer
+
+There is no treasury cut or fee on item purchases. The entire price is removed from circulation.
+
+---
+
+## Feature Gating
+
+Use items to gate app features. Check ownership in your frontend:
+
+```javascript
+const hasAccess = await contract.balanceOf(userAddress) > 0;
+
+if (hasAccess) {
+  // Show premium feature
+} else {
+  // Show purchase prompt
+}
+```
+
+For soulbound items, `balanceOf` is the only check needed since the item cannot be transferred away.
+
+---
+
+## Soulbound vs Transferable
+
+| Property | Soulbound | Transferable |
+| --- | --- | --- |
+| Can be sold or traded | No | Yes |
+| Appears on secondary markets | No | Yes |
+| Best for | Access passes, achievements | Collectibles, cosmetics |
+| Ownership check | Wallet-locked | Can change hands |
+
+<Tip>
+  Use soulbound items for access gates and feature unlocks. Use transferable items for collectibles and cosmetics that users may want to trade.
+</Tip>
+
+---
+
+## Next
+
+<CardGroup cols={3}>
+  <Card title="Tournaments" icon="trophy" iconType="light" href="/apps/operate/tournaments">
+    Run competitive events
+  </Card>
+  <Card title="Grow Your Community" icon="users" iconType="light" href="/apps/operate/grow-your-community">
+    Community growth playbook
+  </Card>
+  <Card title="App Tokens" icon="coins" iconType="light" href="/apps/design/app-tokens">
+    Token design and distribution
+  </Card>
+</CardGroup>

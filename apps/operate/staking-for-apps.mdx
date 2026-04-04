@@ -1,0 +1,72 @@
+---
+title: "Staking for Apps"
+description: "App-level staking as a builder tool for engagement and commitment signals."
+---
+
+## Why App Staking
+
+Staking lets token holders lock their app tokens to signal commitment. For builders, it provides:
+
+- A measure of community conviction
+- Reduced circulating supply (less sell pressure)
+- A tool for tiered access or rewards
+
+---
+
+## Setting Up Staking
+
+Each app receives a staking vault as part of the token launch. To enable staking:
+
+<Steps>
+  <Step title="Deploy the staking module">
+    The staking vault is deployed automatically during Phase B (token launch). No additional deployment is needed.
+  </Step>
+  <Step title="Configure parameters">
+    Use your Safe to set staking parameters: minimum stake duration, reward rates (if applicable), and any access tiers.
+  </Step>
+  <Step title="Announce to your community">
+    Let users know staking is live and what they get for participating.
+  </Step>
+</Steps>
+
+---
+
+## What Users See
+
+From the user perspective, staking is straightforward:
+
+| Action | Description |
+| --- | --- |
+| Stake | Lock app tokens in the vault for a chosen duration |
+| Unstake | Withdraw tokens after the lock period ends |
+| View position | Check locked amount, duration remaining, and any earned rewards |
+
+Stakers appear in holder analytics as committed participants, distinct from short-term traders.
+
+---
+
+## Staking as a Builder Tool
+
+Use staking data to:
+
+- **Gate features** by requiring a minimum staked balance
+- **Weight governance** by giving stakers more influence in app-level decisions
+- **Reward loyalty** with tournament entry, item discounts, or priority access
+- **Track health** by monitoring the ratio of staked to circulating tokens
+
+<Tip>
+  A healthy staking ratio (30-50% of circulating supply) indicates strong community conviction. Track this in your [analytics dashboard](/apps/operate/analytics-and-health).
+</Tip>
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Grow Your Community" icon="users" iconType="light" href="/apps/operate/grow-your-community">
+    Community growth playbook
+  </Card>
+  <Card title="Analytics and Health" icon="chart-mixed" iconType="light" href="/apps/operate/analytics-and-health">
+    Track app health metrics
+  </Card>
+</CardGroup>

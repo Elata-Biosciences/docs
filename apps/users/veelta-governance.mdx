@@ -1,0 +1,90 @@
+---
+title: "veELTA and Governance"
+description: "How ELTA locking translates to voting power and governance participation."
+---
+
+## What veELTA Is
+
+veELTA is the vote-escrow token for Elata protocol governance. You receive veELTA by locking ELTA tokens for a chosen duration.
+
+- Lock ELTA for 7 to 730 days
+- Receive voting power proportional to your lock amount and duration
+- Unlock your principal after the lock period expires
+
+<Note>
+  veELTA is used exclusively for governance. It does not entitle holders to fee yields.
+</Note>
+
+---
+
+## Lock Parameters
+
+| Parameter | Range |
+| --- | --- |
+| Minimum lock | 7 days |
+| Maximum lock | 730 days |
+| Minimum boost | 1x (at 7 days) |
+| Maximum boost | 2x (at 730 days) |
+
+---
+
+## Boost Formula
+
+Voting power scales linearly with lock duration:
+
+```
+boost = 1 + (lockDuration / maxDuration)
+veELTA = lockedAmount * boost
+```
+
+**Example:** Locking 1,000 ELTA for 365 days gives you:
+- boost = 1 + (365 / 730) = 1.5x
+- veELTA = 1,000 * 1.5 = 1,500 veELTA voting power
+
+---
+
+## Position Management
+
+| Action | What It Does |
+| --- | --- |
+| Create | Lock ELTA for a chosen duration |
+| Increase | Add more ELTA to an existing lock |
+| Extend | Increase the lock duration |
+| Unlock | Withdraw principal after lock expires |
+
+---
+
+## When To Lock
+
+Consider locking ELTA when:
+
+- You want to participate in governance proposals
+- You plan to hold ELTA long-term anyway
+- You want to influence protocol direction (fee parameters, graduation thresholds, etc.)
+
+Longer locks give more voting power per ELTA. If you are unsure about duration, start with a shorter lock and extend later.
+
+---
+
+## Governance Participation
+
+veELTA voting power is used for protocol-level governance proposals submitted through the ElataGovernor contract:
+
+- **Parameter changes:** trading fees, transfer tax caps, treasury take percentages
+- **Protocol upgrades:** contract changes, new features
+- **Community decisions:** incentive distributions, partnership approvals
+
+Proposals go through a timelock (ElataTimelock) before execution, giving the community time to review changes.
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Stake and Earn" icon="piggy-bank" iconType="light" href="/apps/users/stake-and-earn">
+    App token staking
+  </Card>
+  <Card title="Community Systems" icon="users" iconType="light" href="/apps/design/community-systems">
+    Governance mechanics in detail
+  </Card>
+</CardGroup>

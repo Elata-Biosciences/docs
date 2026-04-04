@@ -1,0 +1,111 @@
+---
+title: "Bonding Curve Basics"
+description: "How price discovery works on Elata launch curves, from seeding to graduation."
+---
+
+## Core Model
+
+Elata launch curves use constant-product reserves:
+
+```
+k = reserveElta * reserveToken
+```
+
+When someone buys:
+
+```
+newReserveElta = reserveElta + eltaIn
+newReserveToken = k / newReserveElta
+tokensOut = reserveToken - newReserveToken
+```
+
+Price rises as more ELTA enters the reserve. Selling tokens reverses the direction.
+
+---
+
+## Default Constants
+
+| Parameter | Value |
+| --- | --- |
+| Total launch cost | 110 ELTA |
+| Seed ELTA | 100 ELTA |
+| Creation fee | 10 ELTA |
+| App token supply | 10,000,000 |
+| Curve allocation | 5,000,000 (50%) |
+| Graduation target | 42,000 ELTA in reserves |
+| LP lock | 730 days |
+
+---
+
+## Curve Lifecycle
+
+The `AppBondingCurve` contract follows a state machine:
+
+| State | Description |
+| --- | --- |
+| `PENDING` | Deployed, not yet activated |
+| `ACTIVE` | Trading is live |
+| `GRADUATED` | Reserves reached the graduation target |
+| `CANCELLED` | App cancelled before graduation |
+
+Additional behavior:
+- Permissionless activation after a configurable delay
+- Force graduation after deadline
+- Creator-only cancel while in `PENDING` state
+
+---
+
+## Fees On Curve
+
+- Default trading fee: **1%** (from `AppFeeRouter.feeBps`)
+- Fee is paid on top of the buy amount
+- Fees accumulate and are swept into FeeCollector as `TRADING_FEE`
+
+<Tip>
+  The trading fee is configurable by governance. Check current protocol parameters for the active rate.
+</Tip>
+
+---
+
+## Graduation
+
+When the ELTA reserve reaches **42,000 ELTA** (or the deadline triggers force graduation):
+
+<Steps>
+  <Step title="Pair creation">
+    A Uniswap V2 pair is created or loaded for the app token and ELTA.
+  </Step>
+  <Step title="Liquidity addition">
+    Remaining token reserves and ELTA reserves are added as liquidity.
+  </Step>
+  <Step title="LP lock">
+    LP tokens are locked in LpLocker for **730 days**.
+  </Step>
+  <Step title="Curve closes">
+    Bonding curve trading is disabled. All trading moves to the DEX.
+  </Step>
+</Steps>
+
+---
+
+## Early Access Gate
+
+For the first **6 hours** after launch, buyers need **100 XP** to participate on the curve. This prevents sniping by requiring demonstrated protocol participation.
+
+The gate parameters are configurable by governance.
+
+---
+
+## Next
+
+<CardGroup cols={3}>
+  <Card title="App Tokens" icon="coins" iconType="light" href="/apps/design/app-tokens">
+    Token distribution and lifecycle
+  </Card>
+  <Card title="Fee Flow" icon="route" iconType="light" href="/apps/design/fee-flow">
+    How fees are routed
+  </Card>
+  <Card title="App Lifecycle" icon="circle-nodes" iconType="light" href="/apps/app-lifecycle">
+    Full lifecycle overview
+  </Card>
+</CardGroup>

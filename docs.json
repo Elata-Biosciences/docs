@@ -103,46 +103,59 @@
             "tab": "Elata Apps",
             "groups": [
               {
-                "group": "Overview",
+                "group": "Start Here",
                 "pages": [
-                  "home/app-tokens",
-                  "home/build-an-app",
-                  "home/tournaments-intro"
+                  "apps/what-are-elata-apps",
+                  "apps/what-you-can-build",
+                  "apps/app-lifecycle",
+                  "apps/choose-your-path"
                 ]
               },
               {
-                "group": "Build an App",
+                "group": "Build",
                 "pages": [
-                  "builders/introduction",
-                  "builders/getting-started",
-                  "builders/launch-your-app",
-                  "builders/install-and-run"
+                  "apps/build/overview",
+                  "apps/build/launch-requirements",
+                  "apps/build/launch-your-app",
+                  "apps/build/app-metadata",
+                  "apps/build/post-launch-checklist"
                 ]
               },
               {
-                "group": "App Economics",
+                "group": "Design",
                 "pages": [
-                  "builders/bonding-curve-economics",
-                  "builders/fee-pipeline",
-                  "builders/protocol-config",
-                  "builders/grow-your-community"
+                  "apps/design/app-tokens",
+                  "apps/design/bonding-curve-basics",
+                  "apps/design/fee-flow",
+                  "apps/design/incentives-and-access",
+                  "apps/design/community-systems"
                 ]
               },
               {
-                "group": "AI Dev Tools",
+                "group": "Operate",
                 "pages": [
-                  "ai-tools/claude-code",
-                  "ai-tools/cursor",
-                  "ai-tools/windsurf"
+                  "apps/operate/grow-your-community",
+                  "apps/operate/tournaments",
+                  "apps/operate/items-and-unlocks",
+                  "apps/operate/staking-for-apps",
+                  "apps/operate/analytics-and-health"
                 ]
               },
               {
                 "group": "User Guide",
                 "pages": [
-                  "users/explore-apps",
-                  "users/buy-and-trade",
-                  "users/stake-and-earn",
-                  "users/veelta-governance"
+                  "apps/users/explore-apps",
+                  "apps/users/buy-and-trade",
+                  "apps/users/stake-and-earn",
+                  "apps/users/veelta-governance"
+                ]
+              },
+              {
+                "group": "AI Dev Tools",
+                "pages": [
+                  "apps/ai-tools/claude-code",
+                  "apps/ai-tools/cursor",
+                  "apps/ai-tools/windsurf"
                 ]
               }
             ]

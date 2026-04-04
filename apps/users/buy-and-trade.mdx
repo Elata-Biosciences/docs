@@ -1,0 +1,74 @@
+---
+title: "Buy and Trade"
+description: "How buying works during the bonding curve phase and after graduation."
+---
+
+## Two Trading Phases
+
+Every app token goes through two phases:
+
+| Phase | Where You Trade | How Price Works |
+| --- | --- | --- |
+| **Raising** | Bonding curve (in-app) | Constant-product formula: price rises as more ELTA enters |
+| **Live** | DEX (e.g., Uniswap) | Free market with locked liquidity |
+
+---
+
+## Bonding Curve Phase
+
+During the raising phase, you buy tokens directly from the bonding curve using ELTA.
+
+**What to know:**
+- Price is determined by the curve formula (`reserveELTA * reserveToken = k`)
+- Each purchase pushes the price up; each sale pushes it down
+- A 1% trading fee applies to each trade
+- The first 6 hours have an early access gate requiring 100 XP
+
+**How to buy:**
+1. Go to the app's detail page on [app.elata.bio](https://app.elata.bio)
+2. Connect your wallet
+3. Enter the amount of ELTA you want to spend
+4. Confirm the transaction
+
+---
+
+## Graduation
+
+The bonding curve graduates when ELTA reserves reach **42,000 ELTA**. When this happens:
+
+1. Remaining tokens and ELTA reserves are paired on a DEX
+2. LP tokens are locked for **730 days** (2 years)
+3. All trading moves from the bonding curve to the DEX
+
+After graduation, the token trades like any other DEX-listed token with an established liquidity pool.
+
+---
+
+## Transfer Tax
+
+App tokens may have a transfer tax of up to **2%**. The tax applies only on transfers that touch an allowlisted liquidity pool (LP-keyed). Regular wallet-to-wallet transfers are not taxed.
+
+---
+
+## Fee Awareness
+
+When you trade on the bonding curve:
+- **1% trading fee** is collected and routed through the fee pipeline
+- Fees are split between contributors (80%) and protocol treasury (20%)
+
+When you trade on a DEX after graduation:
+- Standard DEX swap fees apply
+- Transfer tax (if configured) applies on LP-involving transfers
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Stake and Earn" icon="piggy-bank" iconType="light" href="/apps/users/stake-and-earn">
+    Lock tokens for rewards
+  </Card>
+  <Card title="Bonding Curve Basics" icon="chart-line" iconType="light" href="/apps/design/bonding-curve-basics">
+    How price discovery works
+  </Card>
+</CardGroup>

@@ -1,0 +1,107 @@
+---
+title: "Building Elata Apps with Cursor"
+description: "Use Cursor to build tokenized apps with the Elata protocol and Biometric SDK."
+icon: "arrow-pointer"
+---
+
+## Overview
+
+Cursor's AI features can accelerate Elata app development. This guide covers project rules setup and key workflows for building with the protocol and SDK.
+
+---
+
+## Setup
+
+1. Install Cursor from [cursor.sh](https://cursor.sh)
+2. Open your Elata project
+3. Create `.cursor/rules.md` with the template below
+
+---
+
+## Cursor Rules Template
+
+Create `.cursor/rules.md` in your project root:
+
+```markdown
+# Elata Development Rules
+
+## Project Context
+This is an Elata app built on the Elata protocol with biometric SDK integration.
+
+## Key References
+- Protocol docs: https://docs.elata.bio/apps/what-are-elata-apps
+- SDK docs: https://docs.elata.bio/sdk/overview
+- App store: https://app.elata.bio
+
+## SDK Packages
+- `@elata-biosciences/rppg-web`: Camera-based heart rate (createRppgSession)
+- `@elata-biosciences/eeg-web`: EEG signal processing (initEegWasm, band_powers)
+- `@elata-biosciences/eeg-web-ble`: Web Bluetooth headband transport (BleTransport)
+- `@elata-biosciences/create-elata-demo`: App scaffolder
+
+## Protocol Architecture
+- AppFactory: deploys app token stacks (10M supply, 50/25/25 split)
+- AppBondingCurve: constant-product price discovery, graduates at 42k ELTA
+- FeeRouterV2: routes fees to treasury (20%) and contributors (80%)
+- ContributorSplit: pull-based payout to named contributors
+
+## Code Standards
+- TypeScript, React, Vite
+- No em-dashes in docs or comments
+- Use createRppgSession for browser rPPG (not raw RppgProcessor)
+- Use BleTransport.startStreaming() for BLE (not separate connect/start)
+- Initialize WASM before using SDK analysis functions
+```
+
+---
+
+## Key Workflows
+
+### Scaffold and Extend
+
+Start with a scaffold, then use Cursor to extend:
+
+```bash
+pnpm create @elata-biosciences/elata-demo my-app -- --template rppg
+cd my-app
+pnpm install
+```
+
+Open in Cursor and ask it to add features on top of the scaffold.
+
+### SDK Integration Patterns
+
+When asking Cursor to integrate the SDK, reference the specific entry points:
+
+- **rPPG:** `createRppgSession({ video, backend: "auto", faceMesh: "off" })`
+- **EEG:** `initEegWasm()` then `band_powers(samples, sampleRate)`
+- **BLE:** `new BleTransport({ deviceOptions: { athenaDecoderFactory } })`
+
+### Contract Interaction
+
+Ask Cursor to generate contract interaction code by providing the contract name and method:
+
+- Read bonding curve state: `AppBondingCurve.getReserves()`
+- Check app status: `AppRegistry.getApp(appId)`
+- Join tournament: `Tournament.join(entryFee)`
+
+---
+
+## Tips
+
+<Tip>
+  Add the Elata SDK docs and protocol docs as documentation sources in Cursor's settings. This improves code generation quality for SDK-specific patterns.
+</Tip>
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Builder Overview" icon="hammer" iconType="light" href="/apps/build/overview">
+    What the protocol gives builders
+  </Card>
+  <Card title="SDK Overview" icon="brain" iconType="light" href="/sdk/overview">
+    Biometric SDK packages
+  </Card>
+</CardGroup>
