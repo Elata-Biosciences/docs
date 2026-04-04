@@ -497,8 +497,8 @@
   "navbar": {
     "links": [
       {
-        "label": "Apps Ecosystem",
-        "href": "https://app.elata.bio"
+        "label": "Start Building",
+        "href": "https://app.elata.bio/launch"
       }
     ],
     "primary": {
@@ -527,12 +527,19 @@
     }
   },
   "fonts": {
-    "family": "Inter"
+    "family": "Inter",
+    "format": "woff",
+    "body": {
+      "family": "Inter"
+    }
   },
   "styling": {
     "latex": true
   },
   "icons": {
     "library": "lucide"
+  },
+  "search": {
+    "prompt": "Search or ask..."
   }
 }

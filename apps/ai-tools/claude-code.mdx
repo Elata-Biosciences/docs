@@ -1,7 +1,6 @@
 ---
 title: "Building Elata Apps with Claude Code"
 description: "Use Claude Code to build tokenized apps with the Elata protocol and Biometric SDK."
-icon: "asterisk"
 ---
 
 ## Overview
@@ -75,27 +74,27 @@ This is an Elata app built on the Elata protocol.
 
 Ask Claude Code to scaffold using the Elata CLI:
 
-```
+```text
 > Scaffold a new rPPG app using create-elata-demo
 ```
 
 ### Integrate the Biometric SDK
 
-```
+```text
 > Add camera-based heart rate to my app using @elata-biosciences/rppg-web.
 > Use createRppgSession with auto backend and diagnostics.
 ```
 
 ### Connect to Protocol Contracts
 
-```
+```text
 > Add a component that reads the current bonding curve price for my app token.
 > Use ethers.js to call AppBondingCurve.getPrice().
 ```
 
 ### Build Tournament UI
 
-```
+```text
 > Create a tournament listing page that shows active tournaments from the
 > TournamentFactory contract and lets users join with their app tokens.
 ```
@@ -120,6 +119,7 @@ Ask Claude Code to scaffold using the Elata CLI:
   <Card title="Builder Overview" icon="hammer" iconType="light" href="/apps/build/overview">
     What the protocol gives builders
   </Card>
+
   <Card title="SDK Overview" icon="brain" iconType="light" href="/sdk/overview">
     Biometric SDK packages
   </Card>
