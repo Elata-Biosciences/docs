@@ -381,17 +381,14 @@
                 "group": "概览",
                 "pages": [
                   "cn/home/app-tokens",
-                  "cn/home/build-an-app",
-                  "cn/home/tournaments-intro"
+                  "cn/home/build-an-app"
                 ]
               },
               {
                 "group": "构建应用",
                 "pages": [
-                  "cn/builders/introduction",
                   "cn/builders/getting-started",
-                  "cn/builders/launch-your-app",
-                  "cn/builders/install-and-run"
+                  "cn/builders/launch-your-app"
                 ]
               },
               {
@@ -401,14 +398,6 @@
                   "cn/builders/fee-pipeline",
                   "cn/builders/protocol-config",
                   "cn/builders/grow-your-community"
-                ]
-              },
-              {
-                "group": "AI开发工具",
-                "pages": [
-                  "cn/ai-tools/claude-code",
-                  "cn/ai-tools/cursor",
-                  "cn/ai-tools/windsurf"
                 ]
               },
               {
