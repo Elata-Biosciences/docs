@@ -214,9 +214,6 @@ Use this checklist before debugging the pipeline:
   <Card title="rPPG Web getting started" href="/sdk/rppg-web/getting-started">
     Learn the package surface and the higher-level browser session API.
   </Card>
-<Tip>
-  Lighting matters. rPPG works best with even, consistent lighting on the face. Minimize head movement for best signal quality.
-</Tip>
 
   <Card title="Frame sources" href="/sdk/rppg-web/frame-sources">
     Understand the camera and face-detection primitives in more detail.
@@ -230,25 +227,3 @@ Use this checklist before debugging the pipeline:
     Start from a working reference app if you want a faster onboarding path.
   </Card>
 </Columns>
-- Wait 5-10 seconds for the processor to accumulate a full window of data before producing reliable estimates
-- Only display BPM when `metrics.quality` exceeds your threshold (e.g., > 0.5)
-- Set `useSkinMask: true` in DemoRunner for better signal extraction
-
----
-
-## Next
-
-<CardGroup cols={2}>
-  <Card title="rPPG Architecture" icon="diagram-project" iconType="light" href="/sdk/guides/architecture-rppg">
-    Pipeline design and components
-  </Card>
-  <Card title="rppg-web Reference" icon="heart-pulse" iconType="light" href="/sdk/rppg-web/getting-started">
-    Package API and exports
-  </Card>
-  <Card title="Calibration and Fusion" icon="bullseye" iconType="light" href="/sdk/rppg-web/calibration">
-    Muse PPG calibration models
-  </Card>
-  <Card title="Frame Sources" icon="camera" iconType="light" href="/sdk/rppg-web/frame-sources">
-    MediaPipe face detection
-  </Card>
-</CardGroup>
