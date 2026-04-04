@@ -1,5 +1,161 @@
 ---
-title: "ElataXP"
+title: "Elata Points"
+description: "Earned, non-transferable participation points that unlock early access to app launches and track real contribution across Elata."
 ---
 
----
+<Tip>
+This page reflects the current `dev` branch of `elata-protocol`.
+</Tip>
+
+<Note>
+Some internal files and parameters still use `XP` naming. On this page, **Points** and **XP** refer to the same participation primitive.
+</Note>
+
+Elata Points are Elata's onchain participation primitive. They are earned, not bought, and they stay bound to the wallet that earned them.
+
+At the contract level, `ElataPoints` is a non-transferable token with voting checkpoints. Transfers between wallets are disabled, while authorized operators can award, revoke, or publish claimable Merkle distributions.
+
+## Why Points exist
+
+<CardGroup cols={2}>
+  <Card title="Early launch access">
+    New app curves can reserve the first part of a launch for wallets that hold enough points.
+  </Card>
+
+  <Card title="Earned reputation">
+    Points show real participation because they cannot be traded or transferred.
+  </Card>
+
+  <Card title="Checkpointed weight">
+    Points are checkpointed for governance-style voting and historical balance lookups.
+  </Card>
+
+  <Card title="Contribution over capital">
+    The system favors real participation over simple buying power.
+  </Card>
+</CardGroup>
+
+## Core rules
+
+| Property | Current behavior |
+| --- | --- |
+| Contract | `src/experience/ElataPoints.sol` |
+| Name / symbol | `Elata Points` / `POINTS` |
+| Transferable | No |
+| Tradeable | No |
+| Decimals | 18 |
+| Minting paths | Operator award, signed update, Merkle claim |
+| Revocable | Yes, by authorized operators |
+| Checkpointed | Yes |
+
+<Warning>
+Points are soulbound, but they are not irreversible. They cannot be transferred, but they **can** be revoked by an authorized operator to correct bad data, fraudulent awards, or an incorrect distribution.
+</Warning>
+
+## How points are issued
+
+### 1. Direct operator awards
+
+Authorized operators can mint points directly to a wallet.
+
+Use this when the protocol already knows a wallet earned points and wants to credit it immediately.
+
+### 2. Signed awards
+
+The contract also supports signed point updates.
+
+This lets an authorized operator approve an award offchain, while the user or frontend submits the claim onchain later.
+
+### 3. Merkle distributions
+
+For larger batches, operators can publish a Merkle root for a distribution.
+
+Users then claim their allocation by submitting the distribution ID, amount, and Merkle proof.
+
+This is the cleanest path for epoch-based distributions because it keeps onchain storage small while still letting each user verify and claim their own allocation.
+
+## Early access on app launches
+
+Points matter most during the first phase of a new app token launch.
+
+By default, each bonding curve uses:
+
+- **100 points minimum**
+- **6 hour early-access window**
+
+During that window, the bonding curve checks the buyer's points balance. If the wallet is below the threshold, the purchase fails.
+
+After the window ends, the curve is open to everyone.
+
+<Note>
+The launch gate is configurable through governance, so the minimum points threshold and early-access duration can change over time.
+</Note>
+
+## Claim flow
+
+1. The protocol calculates a new points distribution offchain.
+2. An authorized operator generates the canonical Merkle JSON and publishes a root onchain.
+3. The frontend loads the matching distribution file and verifies it against the onchain distribution metadata.
+4. The user submits a claim with their proof.
+5. The contract marks the claim as used, mints the points, and auto-delegates to self if the wallet has not delegated before.
+
+## What points are not
+
+- Points are **not** ELTA
+- Points are **not** veELTA
+- Points are **not** transferable rewards
+- Points are **not** a market asset
+
+Think of them as earned access and participation weight, not money.
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="Can I buy points?">
+    No. Points are earned or claimed through protocol-defined distribution paths. They are not designed to be bought on a market.
+  </Accordion>
+
+  <Accordion title="Can I send points to another wallet?">
+    No. Transfers are disabled at the contract level.
+  </Accordion>
+
+  <Accordion title="Can points ever go down?">
+    Yes, in limited cases. Authorized operators can revoke points to correct bad awards or a faulty distribution.
+  </Accordion>
+
+  <Accordion title="Do I need points to use Elata?">
+    Not for basic participation. Points mainly matter during gated launch windows and in any reputation-weighted flows built on top of the points contract.
+  </Accordion>
+
+  <Accordion title="What happens if I lose my wallet?">
+    Points stay attached to the wallet address that earned them. Losing access to that wallet means losing access to those points.
+  </Accordion>
+</AccordionGroup>
+
+## Security model
+
+- Transfers are disabled in the token contract itself
+- Only authorized operator addresses can award, revoke, or publish Merkle roots
+- Distribution claims are one-time per wallet per distribution
+- Published distribution metadata can be matched against the onchain data hash
+- Points auto-delegate on first mint or claim so checkpoint tracking works without extra user steps
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Tokenomics" href="/tokenomics">
+    ELTA supply, app launch costs, and fee routing.
+  </Card>
+
+  <Card title="How Elata Works" href="/how-elata-works">
+    The full protocol lifecycle from app launch to fee flow.
+  </Card>
+
+  <Card title="Development" href="/development">
+    Local setup and contract-level development docs.
+  </Card>
+
+  <Card title="Quickstart" href="/quickstart">
+    Get a local environment running and explore the protocol.
+  </Card>
+</CardGroup>

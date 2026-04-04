@@ -1,15 +1,24 @@
 ---
-title: "rPPG Camera Integration"
-description: "End-to-end guide: webcam capture, face detection, and heart rate measurement"
+title: Camera Integration
+description: Add camera-based heart rate to a browser app with the Elata rPPG Web SDK.
+sidebarTitle: Camera Integration
 ---
 
-## Overview
+<Note>
+Use this guide when you want live camera-based heart rate in a browser app. Start with the quick path first. Move to the manual pipeline only if you need lower-level control.
+</Note>
 
-This guide walks through the complete rPPG flow: capture webcam frames, detect a face with MediaPipe, extract the green channel from the face ROI, and produce a real-time heart rate estimate.
+## What this guide covers
 
----
+This guide shows how to:
 
-## Prerequisites
+- capture webcam frames in the browser
+- detect a face and extract a face region
+- feed samples into the rPPG processor
+- read live BPM and signal quality
+- improve estimates with Muse PPG when available
+
+## Before you start
 
 <CodeGroup>
 
@@ -23,16 +32,62 @@ npm install @elata-biosciences/rppg-web
 
 </CodeGroup>
 
+- `@elata-biosciences/rppg-web` installed
 - Browser with camera access (`getUserMedia`) and WebAssembly support
 - HTTPS or localhost for development
 
----
+You need:
 
-## Quick Start with DemoRunner
+- `@elata-biosciences/rppg-web`
+- a browser with camera access and WebAssembly support
+- `https://` or `localhost`
 
-The fastest path uses `DemoRunner` which handles frame capture, face detection, ROI extraction, and processing:
+<Info>
+rPPG works best when the face is well lit, mostly still, and fully visible in frame.
+</Info>
 
-```typescript
+## Choose a starting point
+
+<Columns cols={2}>
+  <Card title="Start from a demo" href="/sdk/create-elata-demo">
+    Scaffold a working browser app if you want the fastest path to a reference implementation.
+  </Card>
+
+  <Card title="rPPG Web getting started" href="/sdk/rppg-web/getting-started">
+    Learn the package entry points and the higher-level browser API.
+  </Card>
+
+  <Card title="Frame sources" href="/sdk/rppg-web/frame-sources">
+    See the lower-level camera and face-detection primitives used in this guide.
+  </Card>
+
+  <Card title="Calibration and fusion" href="/sdk/rppg-web/calibration">
+    Add Muse-based calibration when you want stronger estimates.
+  </Card>
+</Columns>
+
+## Quick integration
+
+For most apps, use `DemoRunner`. It handles frame capture, face detection, ROI extraction, and processing in one flow.
+
+<Tabs>
+  <Tab title="pnpm">
+
+  ```bash
+  pnpm add @elata-biosciences/rppg-web
+  ```
+
+  </Tab>
+  <Tab title="npm">
+
+  ```bash
+  npm install @elata-biosciences/rppg-web
+  ```
+
+  </Tab>
+</Tabs>
+
+```ts
 import {
   RppgProcessor,
   MediaPipeFrameSource,
@@ -44,104 +99,137 @@ const processor = new RppgProcessor("wasm", 30);
 
 const runner = new DemoRunner(source, processor, {
   useSkinMask: true,
-  onStats: (stats) => {
-    document.getElementById("bpm").textContent =
-      processor.getMetrics().bpm?.toFixed(0) || "--";
-    document.getElementById("quality").textContent =
-      (processor.getMetrics().quality * 100).toFixed(0) + "%";
+  onStats: () => {
+    const metrics = processor.getMetrics();
+
+    document.getElementById("bpm")!.textContent =
+      metrics.bpm?.toFixed(0) ?? "--";
+
+    document.getElementById("quality")!.textContent =
+      `${((metrics.quality ?? 0) * 100).toFixed(0)}%`;
   },
 });
 
 await runner.start();
 ```
 
----
+<Tip>
+Show BPM only when signal quality is above your app's threshold. A threshold around `0.5` is a practical starting point.
+</Tip>
 
-## Manual Integration
+## Manual pipeline
 
-For full control over the pipeline:
+Use the manual path when you want tighter control over face tracking, sampling, or how your app renders intermediate results.
 
-```typescript
-import {
-  RppgProcessor,
-  MediaPipeFaceFrameSource,
-  loadFaceMesh,
-  averageGreenInROI,
-} from "@elata-biosciences/rppg-web";
+<Steps>
+  <Step title="Load the face model and create a frame source">
 
-// Step 1: Load face mesh model
-const faceMesh = await loadFaceMesh();
+  ```ts
+  import {
+    MediaPipeFaceFrameSource,
+    loadFaceMesh,
+  } from "@elata-biosciences/rppg-web";
 
-// Step 2: Create frame source with face mesh
-const source = new MediaPipeFaceFrameSource(faceMesh);
+  const faceMesh = await loadFaceMesh();
+  const source = new MediaPipeFaceFrameSource(faceMesh);
+  ```
 
-// Step 3: Create processor
-const processor = new RppgProcessor("wasm", 30, 10); // 10s window
+  </Step>
 
-// Step 4: Process each frame
-source.onFrame = (frame) => {
-  if (!frame.roi) return; // no face detected
+  <Step title="Create the processor">
 
-  const { x, y, w, h } = frame.roi;
-  const green = averageGreenInROI(frame, x, y, w, h);
+  ```ts
+  import { RppgProcessor } from "@elata-biosciences/rppg-web";
 
-  processor.pushSample(frame.timestampMs ?? performance.now(), green);
-};
+  const processor = new RppgProcessor("wasm", 30, 10);
+  ```
 
-// Step 5: Start camera
-await source.start();
+  The third argument sets a 10-second analysis window.
 
-// Step 6: Poll metrics
-setInterval(() => {
-  const metrics = processor.getMetrics();
-  console.log(`BPM: ${metrics.bpm?.toFixed(1)} (quality: ${metrics.quality?.toFixed(2)})`);
-}, 1000);
-```
+  </Step>
 
----
+  <Step title="Push samples from the face ROI">
 
-## With Muse PPG Fusion
+  ```ts
+  import { averageGreenInROI } from "@elata-biosciences/rppg-web";
 
-If a Muse headband is connected, use its PPG as ground truth to calibrate camera estimates:
+  source.onFrame = (frame) => {
+    if (!frame.roi) return;
 
-```typescript
+    const { x, y, w, h } = frame.roi;
+    const green = averageGreenInROI(frame, x, y, w, h);
+
+    processor.pushSample(
+      frame.timestampMs ?? performance.now(),
+      green,
+    );
+  };
+  ```
+
+  </Step>
+
+  <Step title="Start the camera and read metrics">
+
+  ```ts
+  await source.start();
+
+  setInterval(() => {
+    const metrics = processor.getMetrics();
+    console.log("BPM:", metrics.bpm, "quality:", metrics.quality);
+  }, 1000);
+  ```
+
+  </Step>
+</Steps>
+
+## Add Muse calibration
+
+If a Muse device is available, you can use its PPG as a reference signal to improve camera-based estimates.
+
+```ts
 import { RppgProcessor } from "@elata-biosciences/rppg-web";
-import { BleTransport } from "@elata-biosciences/eeg-web-ble";
 
 const processor = new RppgProcessor("wasm", 30);
-const transport = new BleTransport();
 
-// Feed Muse PPG data to the processor
-transport.onFrame = (frame) => {
-  if (frame.ppgRaw) {
-    // Extract PPG data and compute BPM from Muse
-    const museBpm = /* ... compute from PPG samples ... */;
-    processor.updateMuseMetrics(museBpm, 0.9, performance.now());
-  }
-};
+processor.updateMuseMetrics(museBpm, 0.9, performance.now());
 ```
 
----
+<Info>
+For a fuller fusion workflow, including `MuseFusionCalibrator` and calibration models, continue to [/sdk/rppg-web/calibration](/sdk/rppg-web/calibration).
+</Info>
 
-## Architecture
+## Quality checklist
 
-```mermaid
-flowchart TD
-    CAM["Webcam"] -->|"getUserMedia"| FS["MediaPipeFrameSource"]
-    FS -->|"face ROI"| ROI["averageGreenInROI()"]
-    ROI -->|"green intensity"| PROC["RppgProcessor"]
-    PROC -->|"spectral + ACF"| BPM["BPM Estimate"]
-    MUS["Muse PPG (optional)"] -->|"updateMuseMetrics"| PROC
-```
+Use this checklist before debugging the pipeline:
 
----
+- keep lighting even across the face
+- reduce head movement
+- wait 5 to 10 seconds before trusting early BPM output
+- make sure a face ROI is actually being detected
+- enable `useSkinMask` when you use `DemoRunner`
 
-## Tips
+## Where to go next
 
+<Columns cols={2}>
+  <Card title="rPPG Web getting started" href="/sdk/rppg-web/getting-started">
+    Learn the package surface and the higher-level browser session API.
+  </Card>
 <Tip>
   Lighting matters. rPPG works best with even, consistent lighting on the face. Minimize head movement for best signal quality.
 </Tip>
 
+  <Card title="Frame sources" href="/sdk/rppg-web/frame-sources">
+    Understand the camera and face-detection primitives in more detail.
+  </Card>
+
+  <Card title="Calibration and fusion" href="/sdk/rppg-web/calibration">
+    Improve estimates with Muse-based calibration and multi-source fusion.
+  </Card>
+
+  <Card title="create-elata-demo" href="/sdk/create-elata-demo">
+    Start from a working reference app if you want a faster onboarding path.
+  </Card>
+</Columns>
 - Wait 5-10 seconds for the processor to accumulate a full window of data before producing reliable estimates
 - Only display BPM when `metrics.quality` exceeds your threshold (e.g., > 0.5)
 - Set `useSkinMask: true` in DemoRunner for better signal extraction

@@ -1,16 +1,24 @@
 ---
-title: "EEG + BLE Integration"
-description: "End-to-end guide: connect a headband, stream EEG, and compute band powers"
+title: EEG + BLE Integration
+description: Connect a Muse-compatible headband in the browser, stream EEG frames, and compute band powers with the Elata SDK.
+sidebarTitle: EEG + BLE Integration
 ---
 
-## Overview
+<Note>
+Use this guide when you want the full browser EEG flow in one place. You will initialize the EEG WASM layer, connect over Web Bluetooth, stream frames, and turn those frames into app-ready metrics.
+</Note>
 
-This guide walks through the complete flow: initialize WASM, connect to a Muse headband over Web Bluetooth, stream EEG frames, and compute real-time band powers.
+## What this guide covers
 
----
+This guide shows how to combine `@elata-biosciences/eeg-web` and `@elata-biosciences/eeg-web-ble` into a single browser flow.
 
-## Prerequisites
+By the end, you will be able to:
 
+- initialize the EEG WASM runtime
+- connect to a Muse-compatible headband from a browser
+- receive normalized `HeadbandFrameV1` frames
+- compute real-time band powers from incoming EEG samples
+- stop cleanly and recover from disconnects
 <CodeGroup>
 
 ```bash pnpm
@@ -27,19 +35,176 @@ npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
 - A Muse 2 or Muse S headband
 - HTTPS or localhost for development
 
----
+## Before you start
 
-## Full Example
+You need:
 
-```typescript
-import { initEegWasm, band_powers, AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+- `@elata-biosciences/eeg-web`
+- `@elata-biosciences/eeg-web-ble`
+- Chrome or Edge with Web Bluetooth support
+- `https://` or `localhost`
+- a Muse 2 or Muse S headband
+
+<Warning>
+Safari and iOS do not support this browser BLE workflow. For those platforms, use a native BLE shell, a bridge app, or another transport layer and keep `@elata-biosciences/eeg-web` as your processing boundary.
+</Warning>
+
+## Choose the right starting point
+
+<Columns cols={2}>
+  <Card title="Start from a working demo" href="/sdk/create-elata-demo">
+    Scaffold an EEG BLE demo if you want the fastest path to a reference app.
+  </Card>
+
+  <Card title="EEG Web getting started" href="/sdk/eeg-web/getting-started">
+    Learn the browser EEG processing package before adding device transport.
+  </Card>
+
+  <Card title="EEG Web BLE getting started" href="/sdk/eeg-web-ble/getting-started">
+    Review the transport package, lifecycle methods, and platform constraints.
+  </Card>
+
+  <Card title="Live stream tutorial" href="/sdk/tutorials/eeg-ble-live-stream">
+    Follow the step-by-step version if you want a tutorial before this end-to-end guide.
+  </Card>
+</Columns>
+
+## Install the packages
+
+<Tabs>
+  <Tab title="pnpm">
+
+  ```bash
+  pnpm add @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+  ```
+
+  </Tab>
+  <Tab title="npm">
+
+  ```bash
+  npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+  ```
+
+  </Tab>
+</Tabs>
+
+<Info>
+`@elata-biosciences/eeg-web-ble` depends on `@elata-biosciences/eeg-web` for shared frame types and the EEG WASM layer.
+</Info>
+
+## Integration flow
+
+<Steps>
+  <Step title="Initialize EEG WASM">
+
+  Initialize the EEG WASM module before you create a transport or call analysis helpers.
+
+  ```ts
+  import { initEegWasm } from "@elata-biosciences/eeg-web";
+
+  await initEegWasm();
+  ```
+
+  </Step>
+
+  <Step title="Create a BLE transport">
+
+  Include an Athena decoder up front so both classic and Athena-compatible headbands work through the same setup.
+
+  ```ts
+  import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+  import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+
+  const transport = new BleTransport({
+    sourceName: "my-app",
+    deviceOptions: {
+      athenaDecoderFactory: () => new AthenaWasmDecoder(),
+      logger: (msg) => console.debug("[BLE]", msg),
+    },
+  });
+  ```
+
+  </Step>
+
+  <Step title="Subscribe to transport status and frames">
+
+  Use `onStatus` for UI state and `onFrame` for EEG data.
+
+  ```ts
+  import type { HeadbandFrameV1 } from "@elata-biosciences/eeg-web";
+
+  transport.onStatus = (status) => {
+    const el = document.getElementById("status");
+    if (el) el.textContent = status.state;
+  };
+
+  transport.onFrame = (frame: HeadbandFrameV1) => {
+    console.log("channels", frame.eeg.channelNames);
+    console.log("rows", frame.eeg.samples.length);
+  };
+  ```
+
+  </Step>
+
+  <Step title="Connect from a user action and start streaming">
+
+  Browser BLE flows usually need a click or another user gesture to open the device picker.
+
+  ```ts
+  async function connectHeadband() {
+    try {
+      await transport.connect();
+      await transport.start();
+    } catch (err) {
+      console.error("Connection failed:", err);
+    }
+  }
+  ```
+
+  In simpler app flows, `startStreaming()` is often the safest default because it combines `connect()` and `start()` in one call.
+
+  </Step>
+
+  <Step title="Turn incoming frames into metrics">
+
+  Compute band powers per channel as frames arrive.
+
+  ```ts
+  import { band_powers } from "@elata-biosciences/eeg-web";
+
+  transport.onFrame = (frame: HeadbandFrameV1) => {
+    const { eeg } = frame;
+
+    for (let ch = 0; ch < eeg.channelCount; ch++) {
+      const channelSamples = eeg.samples.map((row) => row[ch]);
+      const powers = band_powers(
+        new Float64Array(channelSamples),
+        eeg.sampleRateHz,
+      );
+
+      console.log(
+        `${eeg.channelNames[ch]}: alpha=${powers.alpha.toFixed(2)} beta=${powers.beta.toFixed(2)}`,
+      );
+    }
+  };
+  ```
+
+  </Step>
+</Steps>
+
+## Full example
+
+```ts
+import {
+  initEegWasm,
+  band_powers,
+  AthenaWasmDecoder,
+} from "@elata-biosciences/eeg-web";
 import type { HeadbandFrameV1 } from "@elata-biosciences/eeg-web";
 import { BleTransport } from "@elata-biosciences/eeg-web-ble";
 
-// Step 1: Initialize WASM
 await initEegWasm();
 
-// Step 2: Create transport with Athena support
 const transport = new BleTransport({
   sourceName: "my-app",
   deviceOptions: {
@@ -48,39 +213,40 @@ const transport = new BleTransport({
   },
 });
 
-// Step 3: Handle status changes
 transport.onStatus = (status) => {
   const el = document.getElementById("status");
   if (el) el.textContent = status.state;
 };
 
-// Step 4: Process incoming frames
 transport.onFrame = (frame: HeadbandFrameV1) => {
   const { eeg } = frame;
 
-  // Process each channel
   for (let ch = 0; ch < eeg.channelCount; ch++) {
-    const channelSamples = eeg.samples.map(row => row[ch]);
-    const powers = band_powers(new Float64Array(channelSamples), eeg.sampleRateHz);
+    const channelSamples = eeg.samples.map((row) => row[ch]);
+    const powers = band_powers(
+      new Float64Array(channelSamples),
+      eeg.sampleRateHz,
+    );
 
-    console.log(`${eeg.channelNames[ch]}: α=${powers.alpha.toFixed(2)} β=${powers.beta.toFixed(2)}`);
+    console.log(
+      `${eeg.channelNames[ch]}: alpha=${powers.alpha.toFixed(2)} beta=${powers.beta.toFixed(2)}`,
+    );
   }
 };
 
-// Step 5: Connect and stream
 try {
-  await transport.connect();  // opens Bluetooth picker
-  await transport.start();    // begins streaming
+  await transport.connect();
+  await transport.start();
 } catch (err) {
   console.error("Connection failed:", err);
 }
 ```
 
----
+## Clean shutdown
 
-## Graceful Shutdown
+Stop the stream and release the Bluetooth session when the user leaves the view or closes the page.
 
-```typescript
+```ts
 async function shutdown() {
   await transport.stop();
   await transport.disconnect();
@@ -89,51 +255,125 @@ async function shutdown() {
 window.addEventListener("beforeunload", shutdown);
 ```
 
----
+## Handle reconnection
 
-## Handling Reconnection
+If a disconnect is recoverable, try to reconnect and restart the stream.
 
-```typescript
+```ts
 transport.onStatus = (status) => {
   if (status.state === "disconnected" && status.recoverable) {
     console.log("Attempting reconnect...");
+
     setTimeout(async () => {
       try {
         await transport.connect();
         await transport.start();
-      } catch (e) {
-        console.error("Reconnect failed:", e);
+      } catch (error) {
+        console.error("Reconnect failed:", error);
       }
     }, 2000);
   }
 };
 ```
 
----
+## Understand the transport lifecycle
 
-## Architecture
+| Method | What it does |
+| --- | --- |
+| `startStreaming()` | Connects and starts the stream in one call |
+| `connect()` | Opens the Bluetooth picker and prepares the session |
+| `start()` | Begins the EEG stream and triggers `onFrame` |
+| `stop()` | Stops the stream but keeps the Bluetooth session open |
+| `disconnect()` | Releases the Bluetooth session |
 
-```mermaid
-flowchart LR
-    HD["Muse Headband"] -->|"BLE GATT"| WB["Web Bluetooth API"]
-    WB --> MD["MuseBleDevice"]
-    MD --> BT["BleTransport"]
-    BT -->|"HeadbandFrameV1"| APP["Your App"]
-    APP -->|"channel samples"| BP["band_powers()"]
-    APP -->|"channel samples"| MOD["WasmCalmnessModel"]
+## Device notes
+
+<Tabs>
+  <Tab title="Classic Muse">
+
+  Works with the standard browser BLE flow.
+
+  </Tab>
+  <Tab title="Athena firmware">
+
+  Use `athenaDecoderFactory` during transport creation. Athena devices expose richer frame content, including 8 EEG channels plus additional sensor data.
+
+  </Tab>
+</Tabs>
+
+You can also inspect metadata after connecting:
+
+```ts
+await transport.connect();
+
+const isAthena = transport.getIsAthena();
+const boardInfo = transport.getBoardInfo();
+const channelNames = transport.getEegNames();
 ```
 
----
+<Tip>
+If you are testing across Muse variants, keep the Athena decoder factory enabled from day one so you do not need a separate transport setup later.
+</Tip>
 
-## Tips
+## Architecture at a glance
 
+The browser EEG BLE flow usually looks like this:
 <Tip>
   Buffer frames for smoother analysis. `band_powers` works best with 1-2 seconds of data (256-512 samples at 256 Hz).
 </Tip>
+- **Use `Float64Array`** for best WASM interop performance
+- **Handle the Bluetooth picker** — `connect()` triggers a browser-native device picker that the user must interact with
+- **Test with synthetic data** first during development if no headband is available
 
+1. initialize `@elata-biosciences/eeg-web`
+2. create a `BleTransport`
+3. connect from a user gesture
+4. receive `HeadbandFrameV1` frames
+5. compute app metrics such as band powers, scores, or state transitions
+6. render charts, scores, or adaptive UI in your app
+
+## Integration tips
+
+- buffer frames before analysis for more stable results
+- use `Float64Array` when calling `band_powers`
+- keep BLE connection logic behind explicit user actions
+- move frame handling into app state instead of leaving it in `console.log`
+- start with a demo app if you need a working reference project first
 - Use `Float64Array` for best WASM interop performance
 - `connect()` triggers a browser-native device picker that the user must interact with
 - Test with synthetic data first during development if no headband is available
+
+<Info>
+`band_powers` is most useful with roughly 1 to 2 seconds of data. At 256 Hz, that is about 256 to 512 samples.
+</Info>
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="Muse device details" href="/sdk/eeg-web-ble/muse-device">
+    Review device behavior, protocol details, and compatibility notes.
+  </Card>
+
+  <Card title="EEG Web BLE getting started" href="/sdk/eeg-web-ble/getting-started">
+    See the transport package API and platform caveats in more detail.
+  </Card>
+
+  <Card title="Stream EEG over Web Bluetooth" href="/sdk/tutorials/eeg-ble-live-stream">
+    Follow the tutorial version of this workflow with app-oriented steps.
+  </Card>
+
+  <Card title="Add EEG to an existing browser app" href="/sdk/tutorials/eeg-existing-app">
+    Integrate browser EEG processing into an app before adding BLE transport.
+  </Card>
+
+  <Card title="Headband transport" href="/sdk/eeg-web/headband-transport">
+    Learn the frame schema and transport boundary used by EEG flows.
+  </Card>
+
+  <Card title="rPPG camera integration" href="/sdk/guides/rppg-camera">
+    Pair this EEG workflow with the browser camera pipeline when you need multimodal biometrics.
+  </Card>
+</Columns>
 
 ---
 

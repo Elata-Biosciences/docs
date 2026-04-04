@@ -1,0 +1,173 @@
+---
+title: Elata Apps
+description: How apps launch on Elata, how app tokens work, and where builders and users should start.
+---
+
+Elata Apps are consumer apps launched through the Elata protocol. Each app can have its own token, its own community, and its own set of economic and engagement mechanics.
+
+<CardGroup cols={2}>
+  <Card title="Build an app" icon="hammer" href="/builders/introduction">
+    Learn what ships with the protocol and how to launch.
+  </Card>
+  <Card title="Explore apps" icon="grid-2x2" href="/users/explore-apps">
+    Browse live apps, app pages, trading, and community activity.
+  </Card>
+</CardGroup>
+
+## What an Elata app includes
+
+Launching on Elata gives an app a shared protocol foundation from day one:
+
+- **App registration and ownership** so the app can be discovered and managed through the protocol
+- **An app token** with protocol defaults for supply, distribution, and launch cost
+- **A bonding curve launch** for early distribution and price discovery
+- **A shared fee pipeline** for launch fees, trading fees, and app-level fee routing
+- **A path to graduation** into DEX liquidity with LP locking once the curve target is reached
+
+<Note>
+Elata handles the launch and economic plumbing. Your app still defines the actual product experience, scoring logic, and frontend.
+</Note>
+
+## Default launch settings
+
+These are the current defaults described across the Elata Apps docs:
+
+| Parameter | Default |
+| --- | --- |
+| Total launch cost | `110 ELTA` |
+| Creation fee | `10 ELTA` |
+| Curve seed | `100 ELTA` |
+| App token supply | `10,000,000` |
+| Initial allocation | `50%` curve, `25%` vesting, `25%` ecosystem |
+| Graduation target | `42,000 ELTA` |
+| LP lock | `2 years` |
+
+<Info>
+These values are protocol defaults, not permanent constants. Governance-configurable parameters are documented in <a href="/builders/protocol-config">Protocol Configuration</a>.
+</Info>
+
+## App lifecycle
+
+<Steps>
+  <Step title="Register the app">
+    Create the app record and define ownership, metadata, and contributors.
+  </Step>
+  <Step title="Launch the token">
+    Deploy the app token and initialize the launch using the protocol defaults.
+  </Step>
+  <Step title="Enter the raising phase">
+    Users buy on the bonding curve during the initial distribution phase.
+  </Step>
+  <Step title="Graduate to live trading">
+    Once the graduation target is reached, liquidity is added to a DEX pair and LP is locked.
+  </Step>
+  <Step title="Grow the app ecosystem">
+    Builders can add community mechanics such as staking, tournaments, and app modules.
+  </Step>
+</Steps>
+
+## How app tokens work
+
+App tokens are the economic layer for each app. They are used to:
+
+- bootstrap early distribution through an ELTA bonding curve
+- support app-level incentives and participation
+- connect launch, trading, and app-level fees to a common protocol pipeline
+
+For a user, this usually shows up as a simple flow:
+
+1. discover an app
+2. buy or support the token
+3. use the app
+4. participate in the app community
+5. hold, trade, stake, or earn based on the app’s design
+
+## How value flows
+
+There are three core ideas to understand:
+
+### 1. Launch phase
+
+New app tokens begin in a bonding curve phase. This is where early distribution happens and where price discovery starts.
+
+### 2. Fee routing
+
+The protocol uses a shared fee pipeline. Launch fees route to treasury, while app-revenue fee kinds can be split between contributors and treasury depending on the configured fee kind.
+
+### 3. Post-launch growth
+
+After launch, apps can layer on engagement systems such as tournaments, staking, and items or passes. These systems help turn a token into a real app economy instead of a one-time launch.
+
+<CardGroup cols={3}>
+  <Card title="Bonding Curve Economics" icon="chart-line" href="/builders/bonding-curve-economics">
+    Understand launch mechanics, graduation, and early access.
+  </Card>
+  <Card title="Fee Pipeline" icon="coins" href="/builders/fee-pipeline">
+    See how protocol and app fees are routed.
+  </Card>
+  <Card title="Grow Your Community" icon="users" href="/builders/grow-your-community">
+    Add staking, tournaments, and post-launch engagement.
+  </Card>
+</CardGroup>
+
+## Build on Elata
+
+Use these pages if you are launching an app:
+
+<CardGroup cols={2}>
+  <Card title="Why Elata?" icon="sparkles" href="/builders/introduction">
+    Start with the builder overview and what the protocol saves you from building yourself.
+  </Card>
+  <Card title="Getting Started" icon="rocket" href="/builders/getting-started">
+    Review the default launch stack and core contracts.
+  </Card>
+  <Card title="Launch Your App" icon="arrow-up-right" href="/builders/launch-your-app">
+    Follow the current launch flow step by step.
+  </Card>
+  <Card title="Protocol Configuration" icon="sliders-horizontal" href="/builders/protocol-config">
+    Review governance-controlled parameters and bounds.
+  </Card>
+</CardGroup>
+
+## Use Elata Apps
+
+Use these pages if you want to participate in apps as a user:
+
+<CardGroup cols={2}>
+  <Card title="Explore Apps" icon="compass" href="/users/explore-apps">
+    Browse the app store, app pages, and app statuses.
+  </Card>
+  <Card title="Buy & Trade" icon="badge-dollar-sign" href="/users/buy-and-trade">
+    Understand the raising phase, graduation, and post-graduation trading.
+  </Card>
+  <Card title="Stake & Earn" icon="shield-check" href="/users/stake-and-earn">
+    Review how staking and fee routing fit into the current docs.
+  </Card>
+  <Card title="veELTA & Governance" icon="vote" href="/users/veelta-governance">
+    Learn how ELTA locking translates into governance weight.
+  </Card>
+</CardGroup>
+
+## Related mechanics
+
+Not every app needs every mechanic, but these are the main systems builders can use after launch:
+
+- **Tournaments** for time-boxed competitions and prize pools
+- **Staking** for stronger holder commitment and app-level incentives
+- **Items and passes** for access control, feature gating, and seasonal rewards
+
+For a deeper look at tournament mechanics, go to <a href="/home/tournaments-intro">Tournaments</a>.
+
+## Next steps
+
+<Tabs>
+  <Tab title="I am a builder">
+    Start with <a href="/builders/introduction">Why Elata?</a>, then move to <a href="/builders/getting-started">Getting Started</a> and <a href="/builders/launch-your-app">Launch Your App</a>.
+  </Tab>
+  <Tab title="I am a user">
+    Start with <a href="/users/explore-apps">Explore Apps</a>, then review <a href="/users/buy-and-trade">Buy & Trade</a> before interacting with a token.
+  </Tab>
+  <Tab title="I want the economics">
+    Read <a href="/builders/bonding-curve-economics">Bonding Curve Economics</a>, <a href="/builders/fee-pipeline">Fee Pipeline</a>, and <a href="/builders/protocol-config">Protocol Configuration</a>.
+  </Tab>
+</Tabs>
