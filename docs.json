@@ -339,15 +339,6 @@
                 ]
               },
               {
-                "group": "核心协议",
-                "pages": [
-                  "cn/elata-points",
-                  "cn/elata-eco-points",
-                  "cn/onchain-build",
-                  "cn/development"
-                ]
-              },
-              {
                 "group": "$ELTA代币",
                 "pages": [
                   "cn/home/elta-token/elta-overview",
@@ -454,53 +445,6 @@
             ]
           },
           {
-            "tab": "API参考",
-            "groups": [
-              {
-                "group": "概览",
-                "pages": [
-                  "cn/api-reference/overview"
-                ]
-              },
-              {
-                "group": "应用管理",
-                "pages": [
-                  "cn/api-reference/app-registry",
-                  "cn/api-reference/contributor-split"
-                ]
-              },
-              {
-                "group": "费用",
-                "pages": [
-                  "cn/api-reference/app-fee-router",
-                  "cn/api-reference/fee-swapper",
-                  "cn/api-reference/fee-manager"
-                ]
-              },
-              {
-                "group": "奖励",
-                "pages": [
-                  "cn/api-reference/rewards-distributor",
-                  "cn/api-reference/app-rewards-distributor"
-                ]
-              },
-              {
-                "group": "治理",
-                "pages": [
-                  "cn/api-reference/veelta-votes",
-                  "cn/api-reference/stake-vault-votes",
-                  "cn/api-reference/elata-points"
-                ]
-              },
-              {
-                "group": "国库",
-                "pages": [
-                  "cn/api-reference/treasury-usdc-vault"
-                ]
-              }
-            ]
-          },
-          {
             "tab": "资源",
             "groups": [
               {
@@ -517,13 +461,6 @@
                 "pages": [
                   "cn/open-source/newsreader/overview",
                   "cn/open-source/newsreader/architecture"
-                ]
-              },
-              {
-                "group": "Zorp协议",
-                "pages": [
-                  "cn/zorp-protocol/zorp-intro",
-                  "cn/zorp-protocol/zorp-function"
                 ]
               },
               {
