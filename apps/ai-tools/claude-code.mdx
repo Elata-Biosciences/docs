@@ -1,0 +1,126 @@
+---
+title: "Building Elata Apps with Claude Code"
+description: "Use Claude Code to build tokenized apps with the Elata protocol and Biometric SDK."
+icon: "asterisk"
+---
+
+## Overview
+
+Claude Code can help you build Elata apps by generating frontend code, integrating SDK packages, and interacting with protocol contracts. This guide covers setup and key workflows.
+
+---
+
+## Setup
+
+1. Install Claude Code globally:
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+2. Navigate to your project directory and run:
+
+```bash
+claude
+```
+
+3. Create a `CLAUDE.md` file in your project root with the context below.
+
+---
+
+## CLAUDE.md Template
+
+Create this file at the root of your project to give Claude Code context about Elata development:
+
+```markdown
+# Project Context
+
+This is an Elata app built on the Elata protocol.
+
+## Key References
+- Protocol docs: https://docs.elata.bio/apps/what-are-elata-apps
+- SDK docs: https://docs.elata.bio/sdk/overview
+- App store: https://app.elata.bio
+
+## SDK Packages
+- `@elata-biosciences/rppg-web` - Camera-based heart rate (primary integration)
+- `@elata-biosciences/eeg-web` - EEG signal processing
+- `@elata-biosciences/eeg-web-ble` - Web Bluetooth for Muse headsets
+- `@elata-biosciences/create-elata-demo` - App scaffolder
+
+## Protocol Contracts
+- AppFactory: deploys app token stacks
+- AppRegistry: on-chain app metadata
+- AppBondingCurve: constant-product price discovery
+- FeeRouterV2: fee routing to treasury and contributors
+- ContributorSplit: pull-based contributor payouts
+
+## Stack
+- Frontend: React + Vite
+- Biosignals: Elata SDK (WASM)
+- Contracts: Solidity (Foundry)
+- Chain: Ethereum / Base
+
+## Writing Standards
+- No em-dashes
+- Practical, concise code
+- Use TypeScript
+```
+
+---
+
+## Key Workflows
+
+### Scaffold a New App
+
+Ask Claude Code to scaffold using the Elata CLI:
+
+```
+> Scaffold a new rPPG app using create-elata-demo
+```
+
+### Integrate the Biometric SDK
+
+```
+> Add camera-based heart rate to my app using @elata-biosciences/rppg-web.
+> Use createRppgSession with auto backend and diagnostics.
+```
+
+### Connect to Protocol Contracts
+
+```
+> Add a component that reads the current bonding curve price for my app token.
+> Use ethers.js to call AppBondingCurve.getPrice().
+```
+
+### Build Tournament UI
+
+```
+> Create a tournament listing page that shows active tournaments from the
+> TournamentFactory contract and lets users join with their app tokens.
+```
+
+---
+
+## Tips
+
+<Tip>
+  Point Claude Code at the SDK docs (`docs.elata.bio/sdk/overview`) and protocol docs (`docs.elata.bio/apps/build/overview`) when asking it to generate integration code. It produces better results with explicit documentation references.
+</Tip>
+
+- Start with `create-elata-demo` to get a working scaffold, then iterate with Claude Code
+- Ask Claude Code to explain SDK code before modifying it
+- Use the `--template rppg` flag for camera apps, `--template eeg` for EEG apps
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Builder Overview" icon="hammer" iconType="light" href="/apps/build/overview">
+    What the protocol gives builders
+  </Card>
+  <Card title="SDK Overview" icon="brain" iconType="light" href="/sdk/overview">
+    Biometric SDK packages
+  </Card>
+</CardGroup>

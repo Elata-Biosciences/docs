@@ -1,0 +1,97 @@
+---
+title: "Building Elata Apps with Windsurf"
+description: "Use Windsurf to build tokenized apps with the Elata protocol and Biometric SDK."
+icon: "water"
+---
+
+## Overview
+
+Windsurf's AI coding features work well for building Elata apps. This guide covers workspace rules setup and key workflows.
+
+---
+
+## Setup
+
+1. Install Windsurf from [windsurf.ai](https://windsurf.ai)
+2. Open your Elata project
+3. Create `.windsurf/rules.md` with the template below
+
+---
+
+## Windsurf Rules Template
+
+Create `.windsurf/rules.md` in your project root:
+
+```markdown
+# Elata Development Rules
+
+## Project Context
+This is an Elata app built on the Elata protocol with biometric SDK integration.
+
+## Key References
+- Protocol docs: https://docs.elata.bio/apps/what-are-elata-apps
+- SDK docs: https://docs.elata.bio/sdk/overview
+
+## SDK Packages
+- `@elata-biosciences/rppg-web`: Camera-based rPPG (createRppgSession)
+- `@elata-biosciences/eeg-web`: EEG processing (initEegWasm, band_powers)
+- `@elata-biosciences/eeg-web-ble`: Web Bluetooth (BleTransport)
+
+## Protocol Contracts
+- AppFactory: deploys token stacks
+- AppBondingCurve: constant-product price discovery
+- FeeRouterV2: fee routing (80% contributors, 20% treasury)
+- ContributorSplit: pull-based contributor payouts
+
+## Standards
+- TypeScript, React, Vite
+- Use createRppgSession for rPPG (not raw processor)
+- Use BleTransport.startStreaming() for BLE
+- No em-dashes
+```
+
+---
+
+## Key Workflows
+
+### Getting Started
+
+Scaffold an app first, then open in Windsurf:
+
+```bash
+pnpm create @elata-biosciences/elata-demo my-app -- --template rppg
+cd my-app && pnpm install
+```
+
+### Common Prompts
+
+**Add biometric features:**
+- "Add camera heart rate monitoring using createRppgSession from rppg-web"
+- "Add EEG band power visualization using eeg-web"
+- "Connect to a Muse headset using BleTransport from eeg-web-ble"
+
+**Add protocol features:**
+- "Show the current bonding curve price from AppBondingCurve"
+- "Create a tournament join button that calls Tournament.join()"
+- "Display the user's staking position from the StakingVault"
+
+---
+
+## Tips
+
+<Tip>
+  Reference the SDK docs at `docs.elata.bio/sdk/overview` in your prompts when asking Windsurf to generate integration code.
+</Tip>
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Builder Overview" icon="hammer" iconType="light" href="/apps/build/overview">
+    What the protocol gives builders
+  </Card>
+  <Card title="SDK Overview" icon="brain" iconType="light" href="/sdk/overview">
+    Biometric SDK packages
+  </Card>
+</CardGroup>

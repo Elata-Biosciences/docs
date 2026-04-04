@@ -1,0 +1,96 @@
+---
+title: "Tournaments"
+description: "Time-boxed competitions with smart contract payouts for Elata apps."
+---
+
+## What Is A Tournament?
+
+A tournament is a time-boxed competition that runs inside an Elata app. Entry fees build a prize pool, winners are determined by app-defined rules, and payouts happen automatically through smart contracts.
+
+Each tournament is:
+- A single-use event with a clear start and end time
+- Funded by entry fees in the app's token
+- Governed by transparent, on-chain fee splits
+
+---
+
+## How Tournaments Work
+
+<Steps>
+  <Step title="Creation">
+    The app builder creates a tournament through the TournamentFactory contract. This deploys a fresh Tournament contract, registers it under the app, and applies fee settings.
+  </Step>
+  <Step title="Joining">
+    During the entry window, players pay an entry fee in the app's token. The contract collects fees and builds the prize pool.
+  </Step>
+  <Step title="Competing">
+    Players compete under the app's rules. Scoring and results are determined by the app's logic.
+  </Step>
+  <Step title="Finalization">
+    The tournament creator (or an authorized address) finalizes results. The contract calculates prize allocations based on the final standings.
+  </Step>
+  <Step title="Claiming rewards">
+    Winners claim their share of the prize pool. Unclaimed rewards remain in the contract until withdrawn.
+  </Step>
+</Steps>
+
+---
+
+## Tournament Economics
+
+| Recipient | Share |
+| --- | --- |
+| Winners | 96.5% |
+| Protocol | 2.5% |
+| Token burn | 1% |
+
+These defaults are configurable per tournament.
+
+---
+
+## Example Use Cases
+
+<Tabs>
+  <Tab title="Gaming">
+    Weekly leaderboard competitions with escalating prize pools. Players compete for high scores, and the top 10% split the pot.
+  </Tab>
+  <Tab title="Wellness">
+    30-day meditation challenges tracked through EEG or rPPG. Participants who meet daily targets share the reward pool.
+  </Tab>
+  <Tab title="Productivity">
+    Focus sprints where participants compete on sustained attention metrics. Best performers earn from the prize pool.
+  </Tab>
+  <Tab title="Research">
+    Data collection campaigns where participants contribute quality biosignal data. Compensation is proportional to data quality and quantity.
+  </Tab>
+</Tabs>
+
+---
+
+## Why Tournaments Matter
+
+| For | Benefit |
+| --- | --- |
+| Users | Earn rewards, competitive engagement, community connection |
+| Builders | Drive trading volume, create engagement loops, attract new users |
+| Token holders | Tournament fees route through the fee pipeline, activity increases token utility |
+
+<Warning>
+  As a builder, you are responsible for tournament integrity. Set clear rules, use fair scoring, and finalize results promptly.
+</Warning>
+
+---
+
+## Next
+
+<CardGroup cols={3}>
+  <Card title="Grow Your Community" icon="users" iconType="light" href="/apps/operate/grow-your-community">
+    Community growth playbook
+  </Card>
+  <Card title="Items and Unlocks" icon="gem" iconType="light" href="/apps/operate/items-and-unlocks">
+    Create in-app items
+  </Card>
+  <Card title="Fee Flow" icon="route" iconType="light" href="/apps/design/fee-flow">
+    How fees are routed
+  </Card>
+</CardGroup>

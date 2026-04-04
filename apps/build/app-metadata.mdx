@@ -1,0 +1,89 @@
+---
+title: "App Metadata and Listing"
+description: "How your app appears in the store, metadata standards, and image requirements."
+---
+
+## Store Listing Fields
+
+When you register an app, you provide metadata that appears in the app store:
+
+| Field | Required | Description |
+| --- | --- | --- |
+| Name | Yes | Display name for your app |
+| Description | Yes | Short summary shown on the store card |
+| Logo | Yes | Square image for the app icon |
+| Category | Yes | Focus, Gaming, Wellness, or Research |
+| Website | No | External link to your app |
+| Social links | No | Twitter, Discord, GitHub, etc. |
+| Team members | No | Public team display |
+
+---
+
+## NFT Metadata Standard
+
+App tokens and in-app items follow ERC-721 with ERC-4906 metadata update signaling. This means metadata changes emit on-chain events that marketplaces can listen to for auto-refresh.
+
+Example metadata JSON:
+
+```json
+{
+  "name": "My Elata App Token",
+  "description": "Access token for the My App ecosystem",
+  "image": "ipfs://QmExample.../logo.png",
+  "external_url": "https://myapp.example.com",
+  "attributes": [
+    { "trait_type": "Category", "value": "Gaming" },
+    { "trait_type": "Version", "value": "1.0" }
+  ]
+}
+```
+
+---
+
+## Image Requirements
+
+| Asset | Recommended Size | Format |
+| --- | --- | --- |
+| App logo | 500x500px | PNG or SVG |
+| Token image | 1000x1000px | PNG |
+| Store banner | 1200x630px | PNG or WebP |
+
+<Tip>
+  Use square images for logos and token images. Non-square images will be cropped in the store.
+</Tip>
+
+---
+
+## Storage Options
+
+| Option | Best For | Notes |
+| --- | --- | --- |
+| IPFS (Pinata, NFT.Storage) | Production | Recommended. Decentralized and permanent. |
+| Arweave | Production | Alternative permanent storage. |
+| Centralized HTTP | Development | Fine for testing. Do not use for production tokens. |
+
+<Note>
+  Once metadata is referenced on-chain, changing the underlying content at the same URI does not trigger an ERC-4906 update. Use `setTokenURI` to point to new content and emit the update event.
+</Note>
+
+---
+
+## Updating Metadata
+
+After launch, your Safe can update app metadata by calling the appropriate registry function. Token metadata updates follow the ERC-4906 pattern: set a new URI and emit the `MetadataUpdate` event so marketplaces and indexers refresh.
+
+---
+
+## Next
+
+<CardGroup cols={3}>
+  <Card title="Launch Your App" icon="rocket" iconType="light" href="/apps/build/launch-your-app">
+    Deploy your app on-chain
+  </Card>
+  <Card title="Post-Launch Checklist" icon="list-check" iconType="light" href="/apps/build/post-launch-checklist">
+    What to do after launch
+  </Card>
+  <Card title="Items and Unlocks" icon="gem" iconType="light" href="/apps/operate/items-and-unlocks">
+    Create in-app items
+  </Card>
+</CardGroup>

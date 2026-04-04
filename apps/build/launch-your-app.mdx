@@ -1,0 +1,78 @@
+---
+title: "Launch Your App"
+description: "Step-by-step launch flow using current protocol contracts."
+---
+
+## Overview
+
+Launching an Elata app is a two-phase process. Phase A registers your app. Phase B deploys the full token stack.
+
+**Total cost:** 110 ELTA (10 ELTA registration + 100 ELTA bonding curve seed).
+
+---
+
+## Phase A: Register (10 ELTA)
+
+Register your app metadata and Safe wallet address through the AppFactory.
+
+1. Prepare your Safe multisig wallet
+2. Approve 10 ELTA for the AppFactory contract
+3. Call `registerApp()` with metadata and your Safe address
+4. Your app appears in the store immediately (no token yet)
+
+---
+
+## Phase B: Deploy Token Stack (100 ELTA)
+
+Deploy the full token infrastructure by seeding the bonding curve.
+
+1. Approve 100 ELTA for the AppFactory contract
+2. Call `deployToken()` from your Safe
+3. The protocol deploys: App Token, Bonding Curve, Staking Vault, Vesting Wallet, Ecosystem Vault
+
+**What gets deployed:**
+
+| Contract | Purpose |
+| --- | --- |
+| App Token | ERC-20 with 10M supply |
+| Bonding Curve | Constant-product price discovery |
+| Staking Vault | Token holder staking |
+| Vesting Wallet | 25% team allocation with vesting schedule |
+| Ecosystem Vault | 25% ecosystem reserves |
+| Contributor Split | Revenue distribution to contributors |
+
+---
+
+## Post-Launch State
+
+After Phase B, your bonding curve is in `PENDING` state. Activate it to begin trading.
+
+The curve moves through: `PENDING` to `ACTIVE` to `GRADUATED` (or `CANCELLED`).
+
+<Note>
+  Creator allocation (team vesting) is subject to vesting schedules. Tokens vest linearly over the configured period.
+</Note>
+
+---
+
+## Important
+
+- Transfer tax (up to 2%) applies to token transfers that touch allowlisted LPs
+- Fee routing begins immediately when trading starts
+- The 100 ELTA seed becomes part of the bonding curve reserve and is not directly withdrawable
+
+---
+
+## Next
+
+<CardGroup cols={3}>
+  <Card title="App Metadata" icon="tag" iconType="light" href="/apps/build/app-metadata">
+    Store listing and metadata
+  </Card>
+  <Card title="Post-Launch Checklist" icon="list-check" iconType="light" href="/apps/build/post-launch-checklist">
+    What to do after launch
+  </Card>
+  <Card title="Bonding Curve Basics" icon="chart-line" iconType="light" href="/apps/design/bonding-curve-basics">
+    How price discovery works
+  </Card>
+</CardGroup>

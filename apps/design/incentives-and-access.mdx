@@ -1,0 +1,62 @@
+---
+title: "Incentives and Access"
+description: "XP system, early access gating, and how protocol incentives work."
+---
+
+## XP System
+
+XP is a non-transferable ERC20Votes token used for governance weight and protocol access. It cannot be bought or sold.
+
+XP is distributed through Merkle-tree-based epochs. Each epoch adds XP to qualifying addresses. Reductions only happen through operator revocation, not natural decay.
+
+<Note>
+  XP is additive only. Once earned, it stays unless explicitly revoked by an operator.
+</Note>
+
+---
+
+## How XP Is Earned
+
+| Activity | Description |
+| --- | --- |
+| Launching an app | Builders who deploy through the protocol earn XP |
+| Staking ELTA | Long-term ELTA stakers receive XP based on duration |
+| Governance participation | Voting on proposals earns XP |
+| Protocol activity | Active trading, tournament participation, and community engagement |
+
+XP distribution is managed by addresses with the `XP_OPERATOR_ROLE`. Operators publish epochs and manage distributions. Each distribution ID is tracked to prevent double-issuance.
+
+---
+
+## Early Access Gate
+
+New app launches include a **6-hour early access window**. During this period, only users with at least **100 XP** can buy tokens on the bonding curve.
+
+<Warning>
+  If you do not have 100 XP, you cannot participate in the first 6 hours of a new app's bonding curve. After the window closes, anyone can trade.
+</Warning>
+
+This mechanism prevents sniping by requiring demonstrated protocol participation before early access.
+
+---
+
+## What XP Unlocks
+
+- **Early access** to new app token launches (100 XP minimum)
+- **Governance weight** in protocol-level decisions via ERC20Votes
+- **Future incentive eligibility** as the protocol expands reward mechanisms
+
+XP is not a financial instrument. It represents participation and is not designed to have monetary value.
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Community Systems" icon="users" iconType="light" href="/apps/design/community-systems">
+    Governance and contributor splits
+  </Card>
+  <Card title="App Tokens" icon="coins" iconType="light" href="/apps/design/app-tokens">
+    Token design and distribution
+  </Card>
+</CardGroup>
