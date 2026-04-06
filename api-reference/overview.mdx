@@ -1,88 +1,98 @@
 ---
-title: "API Reference Overview"
-description: "Smart contract interfaces for the Elata protocol"
+title: "API Reference"
+description: "REST API for the Elata App Store at app.elata.bio."
 ---
 
-## Overview
+The Elata App Store exposes a REST API at `https://app.elata.bio/api`. This tab is the source of truth for that surface — every page is generated from a single OpenAPI 3.1 spec at [`api-reference/openapi.yaml`](https://github.com/elata-biosciences/docs/blob/main/api-reference/openapi.yaml).
 
-The Elata protocol is composed of modular smart contracts deployed on Base. This reference documents the public interfaces for each contract in the vNext stack.
+It is the API surface third-party builders need to discover apps, run launch preflight, render market widgets, show user portfolios, surface claimable rewards, and bootstrap SDKs against the right contracts.
 
----
-
-## Contract Map
-
-| Contract | Purpose | Category |
-|---|---|---|
-| **AppRegistry** | Canonical app ownership and contributor-split mapping | Core |
-| **ContributorSplit** | Pull-based contributor payout accounting | Core |
-| **AppFeeRouter** | Routes fees from apps to protocol destinations | Fees |
-| **FeeSwapper** | Swaps collected fee tokens before distribution | Fees |
-| **FeeManager** | Fee accounting buckets by app, kind, and asset | Fees |
-| **RewardsDistributor** | Protocol-level reward distribution to stakers | Rewards |
-| **AppRewardsDistributor** | Per-app reward distribution to token holders | Rewards |
-| **VeELTA Votes** | Vote-escrowed ELTA governance power | Governance |
-| **StakeVault Votes** | Staking vault voting weight | Governance |
-| **ElataPoints** | Non-transferable participation reputation | Reputation |
-| **TreasuryUSDCVault** | USDC treasury custody | Treasury |
+For the higher-level integration narrative (iframe embedding, on-chain reads, transaction patterns), see [Builders → API Overview](/builders/api-overview).
 
 ---
 
-## Architecture
+## Status legend
 
-```mermaid
-graph TB
-    subgraph "App Layer"
-        AR[AppRegistry]
-        CS[ContributorSplit]
-    end
+Every operation in this reference carries an `x-elata-status`:
 
-    subgraph "Fee Pipeline"
-        AFR[AppFeeRouter]
-        FS[FeeSwapper]
-        FM[FeeManager]
-    end
+| Status | Meaning |
+| --- | --- |
+| **stable** | Implemented today on `app.elata.bio/api`. Safe to depend on. |
+| **proposed** | Designed in the spec but **not yet implemented**. The spec is the contract the backend will build against. Subject to change. |
+| **planned** | Acknowledged but not yet designed. Reserved namespace. |
 
-    subgraph "Rewards"
-        RD[RewardsDistributor]
-        ARD[AppRewardsDistributor]
-    end
+The currently `stable` operations are:
 
-    subgraph "Governance"
-        VE[VeELTA Votes]
-        SV[StakeVault Votes]
-    end
+- `GET /apps`
+- `GET /apps/{tokenAddress}`
+- `GET /prices`
 
-    subgraph "Other"
-        EP[ElataPoints]
-        TV[TreasuryUSDCVault]
-    end
+Everything else in this tab is `proposed`.
 
-    AR --> AFR
-    AFR --> FS
-    FS --> FM
-    FM --> RD
-    FM --> ARD
-    FM --> TV
-    AR --> CS
-    VE --> RD
-    SV --> RD
+---
+
+## Base URL
+
+```
+https://app.elata.bio/api
 ```
 
 ---
 
-## Networks
+## Authentication
 
-| Network | Status |
-|---|---|
-| Base Mainnet | Production |
-| Base Sepolia | Testnet |
+Most reads are public. Personalized endpoints under **Portfolio** and **Rewards** require a SIWE-issued JWT bearer token.
 
-For deployed addresses, see [Resources → Smart Contracts](/resources/smart-contracts).
+```http
+Authorization: Bearer <siwe-jwt>
+```
+
+The token is obtained via [Sign-In With Ethereum](https://eips.ethereum.org/EIPS/eip-4361) against `app.elata.bio`. The JWT's `sub` claim is the wallet address; requests whose path `{address}` does not match the `sub` are rejected.
 
 ---
 
-## Source Code
+## Rate limits
 
-All contracts are open source:
+| Endpoint class | Limit |
+| --- | --- |
+| Read endpoints | 100 req/min |
+| Heavy queries | 10 req/min |
+
+For heavy on-chain reads, bring your own RPC provider in production (Alchemy, Infura, QuickNode).
+
+---
+
+## Sections
+
+<CardGroup cols={2}>
+  <Card title="Apps" href="/api-reference/apps/list">
+    Discovery, detail, search, holders, activity.
+  </Card>
+  <Card title="Preflight" href="/api-reference/preflight/launch">
+    Validate a launch before sending a transaction.
+  </Card>
+  <Card title="Market" href="/api-reference/market/elta">
+    Prices, candles, bonding-curve state, leaderboards.
+  </Card>
+  <Card title="Portfolio" href="/api-reference/portfolio/get">
+    Per-wallet holdings, history, P&L.
+  </Card>
+  <Card title="Rewards" href="/api-reference/rewards/get">
+    Claimable rewards, programs, claim payloads.
+  </Card>
+  <Card title="Config" href="/api-reference/config/get">
+    Runtime config for SDKs and AI agents.
+  </Card>
+</CardGroup>
+
+---
+
+{/* TODO: The legacy Solidity contract reference pages (AppRegistry, ContributorSplit, AppFeeRouter, FeeSwapper, FeeManager, RewardsDistributor, AppRewardsDistributor, VeELTA Votes, StakeVault Votes, ElataPoints, TreasuryUSDCVault) have been removed from this tab's navigation and de-indexed from search. They remain accessible by direct URL until they are relocated into a dedicated Protocol Reference section. Track the migration in a follow-up issue. Builders who need on-chain interface details should use the source repos linked below. */}
+
+## On-chain interfaces
+
+For Solidity contract interfaces, ABIs, and deployed addresses:
 
 - [elata-protocol](https://github.com/elata-biosciences/elata-protocol) — Solidity source and deployment scripts
+- [elata-appstore](https://github.com/elata-biosciences/elata-appstore) — Frontend reference, including ABIs in `src/abi/`
+- [Resources → Smart Contracts](/resources/smart-contracts) — current deployed addresses

@@ -1,0 +1,1039 @@
+openapi: 3.1.0
+info:
+  title: Elata App Store API
+  version: 0.1.0
+  description: |
+    REST API for the Elata App Store at `app.elata.bio`.
+
+    This spec is the source of truth for the public HTTP surface that powers
+    third-party app discovery, launch flows, market widgets, user portfolio
+    views, rewards claims, and runtime config.
+
+    ### Status legend
+
+    Every operation in this spec carries an `x-elata-status` extension:
+
+    - `stable` — implemented today on `app.elata.bio/api`. Safe to depend on.
+    - `proposed` — designed here, **not yet implemented**. Spec is the contract
+      the backend should build against. Subject to change.
+    - `planned` — acknowledged but not yet designed. Reserved namespace.
+
+    ### Rate limits
+
+    | Endpoint class | Limit       |
+    | -------------- | ----------- |
+    | Read endpoints | 100 req/min |
+    | Heavy queries  | 10 req/min  |
+
+    Production builds should bring their own RPC provider for direct
+    on-chain reads (Alchemy, Infura, QuickNode).
+  contact:
+    name: Elata Biosciences
+    url: https://github.com/elata-biosciences
+servers:
+  - url: https://app.elata.bio/api
+    description: Production
+tags:
+  - name: Apps
+    description: App discovery and detail.
+  - name: Preflight
+    description: Pre-launch validation for builders before sending transactions.
+  - name: Market
+    description: Token prices, candles, bonding-curve state, leaderboards.
+  - name: Portfolio
+    description: Per-wallet holdings, history, and P&L.
+  - name: Rewards
+    description: Claimable rewards across protocol and per-app distributors.
+  - name: Config
+    description: Runtime configuration for SDKs and AI agents.
+security:
+  - {}
+  - siweBearer: []
+paths:
+  /apps:
+    get:
+      tags: [Apps]
+      summary: List apps
+      operationId: listApps
+      x-elata-status: stable
+      description: Returns all apps with metadata. Supports filtering and cursor pagination.
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [raising, live]
+          description: Filter by lifecycle status.
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [createdAt, marketCap, volume24h]
+            default: createdAt
+      responses:
+        '200':
+          description: A page of apps.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [apps]
+                properties:
+                  apps:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/App'
+                  nextCursor:
+                    type: string
+                    nullable: true
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /apps/{tokenAddress}:
+    get:
+      tags: [Apps]
+      summary: Get app
+      operationId: getApp
+      x-elata-status: stable
+      description: Returns detailed information for a single app, including social links, team, and artifacts.
+      parameters:
+        - $ref: '#/components/parameters/TokenAddress'
+      responses:
+        '200':
+          description: App detail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /apps/search:
+    get:
+      tags: [Apps]
+      summary: Search apps
+      operationId: searchApps
+      x-elata-status: proposed
+      description: Full-text search across name, symbol, and description.
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema: { type: string, minLength: 1 }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Matching apps.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apps:
+                    type: array
+                    items: { $ref: '#/components/schemas/App' }
+                  nextCursor: { type: string, nullable: true }
+  /apps/{tokenAddress}/holders:
+    get:
+      tags: [Apps]
+      summary: List app token holders
+      operationId: listAppHolders
+      x-elata-status: proposed
+      parameters:
+        - $ref: '#/components/parameters/TokenAddress'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Holders ranked by balance.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  holders:
+                    type: array
+                    items: { $ref: '#/components/schemas/Holder' }
+                  nextCursor: { type: string, nullable: true }
+  /apps/{tokenAddress}/activity:
+    get:
+      tags: [Apps]
+      summary: List app activity
+      operationId: listAppActivity
+      x-elata-status: proposed
+      description: Buys, sells, and lifecycle events for an app, newest first.
+      parameters:
+        - $ref: '#/components/parameters/TokenAddress'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+        - in: query
+          name: kind
+          schema:
+            type: string
+            enum: [buy, sell, launch, graduation]
+      responses:
+        '200':
+          description: Activity events.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: array
+                    items: { $ref: '#/components/schemas/ActivityEvent' }
+                  nextCursor: { type: string, nullable: true }
+
+  /preflight/launch:
+    post:
+      tags: [Preflight]
+      summary: Validate a candidate app launch
+      operationId: preflightLaunch
+      x-elata-status: proposed
+      description: |
+        Validates a candidate app payload against current launch requirements
+        before any transaction is sent. Returns blocking errors, non-blocking
+        warnings, and the estimated ELTA cost of launch.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LaunchCandidate'
+      responses:
+        '200':
+          description: Preflight result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreflightResult'
+  /preflight/name-available:
+    get:
+      tags: [Preflight]
+      summary: Check app name availability
+      operationId: preflightNameAvailable
+      x-elata-status: proposed
+      parameters:
+        - in: query
+          name: name
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Availability result.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [available]
+                properties:
+                  available: { type: boolean }
+                  reason: { type: string, nullable: true }
+  /preflight/symbol-available:
+    get:
+      tags: [Preflight]
+      summary: Check app symbol availability
+      operationId: preflightSymbolAvailable
+      x-elata-status: proposed
+      parameters:
+        - in: query
+          name: symbol
+          required: true
+          schema: { type: string, pattern: '^[A-Z0-9]{2,10}$' }
+      responses:
+        '200':
+          description: Availability result.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [available]
+                properties:
+                  available: { type: boolean }
+                  reason: { type: string, nullable: true }
+  /preflight/requirements:
+    get:
+      tags: [Preflight]
+      summary: Get current launch requirements
+      operationId: getLaunchRequirements
+      x-elata-status: proposed
+      description: |
+        Returns the current launch requirements (minimum ELTA, fee schedule,
+        image dimensions, metadata schema). Mirrors the human docs at
+        `/apps/build/launch-requirements` so the live UI and the docs share a
+        single source of truth.
+      responses:
+        '200':
+          description: Launch requirements.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaunchRequirements'
+
+  /prices:
+    get:
+      tags: [Market]
+      summary: Get ELTA price (legacy)
+      operationId: getPrices
+      x-elata-status: stable
+      description: Current ELTA price data used by the App Store UI.
+      responses:
+        '200':
+          description: Prices payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prices'
+  /market/elta:
+    get:
+      tags: [Market]
+      summary: Get ELTA market snapshot
+      operationId: getEltaMarket
+      x-elata-status: proposed
+      description: Extended ELTA price snapshot with 24h change and source attribution.
+      responses:
+        '200':
+          description: Market snapshot.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EltaMarket'
+  /market/apps/{tokenAddress}:
+    get:
+      tags: [Market]
+      summary: Get app token market snapshot
+      operationId: getAppMarket
+      x-elata-status: proposed
+      parameters:
+        - $ref: '#/components/parameters/TokenAddress'
+      responses:
+        '200':
+          description: Market snapshot for a single app token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMarket'
+  /market/apps/{tokenAddress}/candles:
+    get:
+      tags: [Market]
+      summary: Get OHLCV candles for an app token
+      operationId: getAppCandles
+      x-elata-status: proposed
+      parameters:
+        - $ref: '#/components/parameters/TokenAddress'
+        - in: query
+          name: interval
+          required: true
+          schema:
+            type: string
+            enum: [1m, 5m, 15m, 1h, 4h, 1d]
+        - in: query
+          name: from
+          schema: { type: string, format: date-time }
+        - in: query
+          name: to
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: Candle series.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  interval: { type: string }
+                  candles:
+                    type: array
+                    items: { $ref: '#/components/schemas/Candle' }
+  /market/apps/{tokenAddress}/curve:
+    get:
+      tags: [Market]
+      summary: Get bonding curve state
+      operationId: getAppCurve
+      x-elata-status: proposed
+      parameters:
+        - $ref: '#/components/parameters/TokenAddress'
+      responses:
+        '200':
+          description: Bonding curve state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurveState'
+  /market/leaderboard:
+    get:
+      tags: [Market]
+      summary: Get app leaderboard
+      operationId: getLeaderboard
+      x-elata-status: proposed
+      parameters:
+        - in: query
+          name: metric
+          schema:
+            type: string
+            enum: [volume24h, marketCap, holderGrowth24h]
+            default: volume24h
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Leaderboard rows.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metric: { type: string }
+                  rows:
+                    type: array
+                    items: { $ref: '#/components/schemas/LeaderboardRow' }
+
+  /portfolio/{address}:
+    get:
+      tags: [Portfolio]
+      summary: Get aggregated portfolio
+      operationId: getPortfolio
+      x-elata-status: proposed
+      security:
+        - siweBearer: []
+      parameters:
+        - $ref: '#/components/parameters/Address'
+      responses:
+        '200':
+          description: Aggregate portfolio.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Portfolio'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /portfolio/{address}/positions:
+    get:
+      tags: [Portfolio]
+      summary: List per-app positions
+      operationId: listPortfolioPositions
+      x-elata-status: proposed
+      security:
+        - siweBearer: []
+      parameters:
+        - $ref: '#/components/parameters/Address'
+      responses:
+        '200':
+          description: Positions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  positions:
+                    type: array
+                    items: { $ref: '#/components/schemas/Position' }
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /portfolio/{address}/history:
+    get:
+      tags: [Portfolio]
+      summary: List portfolio history
+      operationId: listPortfolioHistory
+      x-elata-status: proposed
+      security:
+        - siweBearer: []
+      parameters:
+        - $ref: '#/components/parameters/Address'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Trade and transfer history.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: array
+                    items: { $ref: '#/components/schemas/PortfolioEvent' }
+                  nextCursor: { type: string, nullable: true }
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /portfolio/{address}/pnl:
+    get:
+      tags: [Portfolio]
+      summary: Get portfolio P&L
+      operationId: getPortfolioPnl
+      x-elata-status: proposed
+      security:
+        - siweBearer: []
+      parameters:
+        - $ref: '#/components/parameters/Address'
+      responses:
+        '200':
+          description: Realized and unrealized P&L.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pnl'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /rewards/{address}:
+    get:
+      tags: [Rewards]
+      summary: Get claimable rewards
+      operationId: getRewards
+      x-elata-status: proposed
+      security:
+        - siweBearer: []
+      parameters:
+        - $ref: '#/components/parameters/Address'
+      responses:
+        '200':
+          description: Claimable across protocol and per-app distributors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RewardsSummary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /rewards/{address}/history:
+    get:
+      tags: [Rewards]
+      summary: List past reward claims
+      operationId: listRewardHistory
+      x-elata-status: proposed
+      security:
+        - siweBearer: []
+      parameters:
+        - $ref: '#/components/parameters/Address'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Past claims.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  claims:
+                    type: array
+                    items: { $ref: '#/components/schemas/RewardClaim' }
+                  nextCursor: { type: string, nullable: true }
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /rewards/programs:
+    get:
+      tags: [Rewards]
+      summary: List active reward programs
+      operationId: listRewardPrograms
+      x-elata-status: proposed
+      responses:
+        '200':
+          description: Active programs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  programs:
+                    type: array
+                    items: { $ref: '#/components/schemas/RewardProgram' }
+  /rewards/programs/{id}:
+    get:
+      tags: [Rewards]
+      summary: Get reward program detail
+      operationId: getRewardProgram
+      x-elata-status: proposed
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Program detail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RewardProgram'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /rewards/{address}/claim-payload:
+    post:
+      tags: [Rewards]
+      summary: Build a claim transaction payload
+      operationId: buildClaimPayload
+      x-elata-status: proposed
+      security:
+        - siweBearer: []
+      description: |
+        Returns the calldata and (where applicable) merkle proof a frontend
+        needs to submit a claim transaction. **Does not** custody funds — the
+        user still signs and sends the transaction themselves.
+      parameters:
+        - $ref: '#/components/parameters/Address'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [programIds]
+              properties:
+                programIds:
+                  type: array
+                  items: { type: string }
+      responses:
+        '200':
+          description: Claim payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClaimPayload'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /config:
+    get:
+      tags: [Config]
+      summary: Get runtime config
+      operationId: getConfig
+      x-elata-status: proposed
+      description: |
+        Returns network info, chain id, contract addresses, supported features,
+        the current fee schedule, and links to docs and source repos. Designed
+        as the bootstrap call for SDKs (`@elata-biosciences/create-elata-demo`)
+        and AI agents so they don't hardcode addresses or chain ids.
+      responses:
+        '200':
+          description: Runtime config.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+  /config/contracts:
+    get:
+      tags: [Config]
+      summary: Get contract address book
+      operationId: getContractAddresses
+      x-elata-status: proposed
+      responses:
+        '200':
+          description: Address book keyed by contract name.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+                  pattern: '^0x[a-fA-F0-9]{40}$'
+  /config/chains:
+    get:
+      tags: [Config]
+      summary: Get supported chains
+      operationId: getChains
+      x-elata-status: proposed
+      responses:
+        '200':
+          description: Supported chains.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chains:
+                    type: array
+                    items: { $ref: '#/components/schemas/Chain' }
+  /config/features:
+    get:
+      tags: [Config]
+      summary: Get feature flags
+      operationId: getFeatureFlags
+      x-elata-status: proposed
+      responses:
+        '200':
+          description: Feature flag map.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: { type: boolean }
+
+components:
+  securitySchemes:
+    siweBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        SIWE-issued JWT, scoped to a wallet address. Obtain via Sign-In With
+        Ethereum (EIP-4361) against `app.elata.bio`. Required for personalized
+        Portfolio and Rewards endpoints. The `sub` claim is the wallet address;
+        a request whose path `{address}` does not match the `sub` is rejected.
+  parameters:
+    Cursor:
+      in: query
+      name: cursor
+      schema: { type: string }
+      description: Opaque pagination cursor returned by the previous page.
+    Limit:
+      in: query
+      name: limit
+      schema: { type: integer, minimum: 1, maximum: 100, default: 25 }
+    TokenAddress:
+      in: path
+      name: tokenAddress
+      required: true
+      schema:
+        type: string
+        pattern: '^0x[a-fA-F0-9]{40}$'
+      description: ERC-20 address of the app token.
+    Address:
+      in: path
+      name: address
+      required: true
+      schema:
+        type: string
+        pattern: '^0x[a-fA-F0-9]{40}$'
+      description: Wallet address.
+  responses:
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Missing or invalid SIWE bearer token.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    RateLimited:
+      description: Rate limit exceeded.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string, example: not_found }
+            message: { type: string }
+            details: { type: object, additionalProperties: true }
+    App:
+      type: object
+      required: [id, tokenAddress, name, symbol, creator, status, createdAt]
+      properties:
+        id: { type: string }
+        tokenAddress: { type: string, pattern: '^0x[a-fA-F0-9]{40}$' }
+        name: { type: string }
+        symbol: { type: string }
+        description: { type: string }
+        imageUrl: { type: string, format: uri }
+        creator: { type: string, pattern: '^0x[a-fA-F0-9]{40}$' }
+        status:
+          type: string
+          enum: [raising, live]
+        createdAt: { type: string, format: date-time }
+    AppDetail:
+      allOf:
+        - $ref: '#/components/schemas/App'
+        - type: object
+          properties:
+            website: { type: string, format: uri }
+            social:
+              type: object
+              additionalProperties: { type: string }
+              description: Map of platform → URL (twitter, discord, github, ...).
+            team:
+              type: array
+              items:
+                type: object
+                properties:
+                  address: { type: string }
+                  name: { type: string }
+                  role: { type: string }
+            artifacts:
+              type: array
+              items:
+                type: object
+                properties:
+                  kind: { type: string, example: build }
+                  url: { type: string, format: uri }
+                  sha256: { type: string }
+    Holder:
+      type: object
+      properties:
+        address: { type: string }
+        balance: { type: string, description: Raw uint256 token balance as a decimal string. }
+        sharePct: { type: number, format: float }
+    ActivityEvent:
+      type: object
+      required: [kind, txHash, blockNumber, timestamp]
+      properties:
+        kind:
+          type: string
+          enum: [buy, sell, launch, graduation]
+        txHash: { type: string }
+        blockNumber: { type: integer }
+        timestamp: { type: string, format: date-time }
+        actor: { type: string, nullable: true }
+        eltaIn: { type: string, nullable: true }
+        tokensOut: { type: string, nullable: true }
+
+    LaunchCandidate:
+      type: object
+      required: [name, symbol, creator]
+      properties:
+        name: { type: string }
+        symbol: { type: string, pattern: '^[A-Z0-9]{2,10}$' }
+        description: { type: string }
+        imageUrl: { type: string, format: uri }
+        website: { type: string, format: uri }
+        creator: { type: string, pattern: '^0x[a-fA-F0-9]{40}$' }
+    PreflightResult:
+      type: object
+      required: [ok, errors, warnings]
+      properties:
+        ok: { type: boolean }
+        errors:
+          type: array
+          items: { $ref: '#/components/schemas/PreflightIssue' }
+        warnings:
+          type: array
+          items: { $ref: '#/components/schemas/PreflightIssue' }
+        nameAvailable: { type: boolean }
+        symbolAvailable: { type: boolean }
+        estimatedEltaCost:
+          type: string
+          description: Estimated total ELTA the creator must approve, as a decimal string in wei.
+    PreflightIssue:
+      type: object
+      required: [code, field, message]
+      properties:
+        code: { type: string }
+        field: { type: string }
+        message: { type: string }
+    LaunchRequirements:
+      type: object
+      properties:
+        minCreatorElta: { type: string }
+        launchFeeElta: { type: string }
+        image:
+          type: object
+          properties:
+            minWidth: { type: integer }
+            minHeight: { type: integer }
+            allowedMimeTypes:
+              type: array
+              items: { type: string }
+        symbol:
+          type: object
+          properties:
+            pattern: { type: string }
+            minLength: { type: integer }
+            maxLength: { type: integer }
+        nameMaxLength: { type: integer }
+        descriptionMaxLength: { type: integer }
+
+    Prices:
+      type: object
+      description: Stable legacy shape returned by `GET /prices`.
+      properties:
+        elta:
+          type: object
+          properties:
+            usd: { type: number }
+            updatedAt: { type: string, format: date-time }
+    EltaMarket:
+      type: object
+      properties:
+        usd: { type: number }
+        change24hPct: { type: number }
+        volume24hUsd: { type: number }
+        sources:
+          type: array
+          items: { type: string }
+        updatedAt: { type: string, format: date-time }
+    AppMarket:
+      type: object
+      properties:
+        tokenAddress: { type: string }
+        priceElta: { type: number }
+        priceUsd: { type: number }
+        marketCapUsd: { type: number }
+        fdvUsd: { type: number }
+        volume24hUsd: { type: number }
+        holders: { type: integer }
+        curveProgressPct: { type: number, format: float }
+        updatedAt: { type: string, format: date-time }
+    Candle:
+      type: object
+      required: [t, o, h, l, c, v]
+      properties:
+        t: { type: string, format: date-time }
+        o: { type: number }
+        h: { type: number }
+        l: { type: number }
+        c: { type: number }
+        v: { type: number }
+    CurveState:
+      type: object
+      properties:
+        reservesElta: { type: string }
+        reservesToken: { type: string }
+        currentPriceElta: { type: number }
+        slope: { type: number }
+        graduationThresholdElta: { type: string }
+        graduated: { type: boolean }
+    LeaderboardRow:
+      type: object
+      properties:
+        rank: { type: integer }
+        tokenAddress: { type: string }
+        name: { type: string }
+        symbol: { type: string }
+        value: { type: number }
+
+    Portfolio:
+      type: object
+      properties:
+        address: { type: string }
+        totalValueUsd: { type: number }
+        elta:
+          type: object
+          properties:
+            balance: { type: string }
+            valueUsd: { type: number }
+        veElta:
+          type: object
+          properties:
+            balance: { type: string }
+            unlockTime: { type: string, format: date-time, nullable: true }
+        appHoldings:
+          type: array
+          items: { $ref: '#/components/schemas/Position' }
+        unrealizedPnlUsd: { type: number }
+        updatedAt: { type: string, format: date-time }
+    Position:
+      type: object
+      properties:
+        tokenAddress: { type: string }
+        symbol: { type: string }
+        balance: { type: string }
+        valueUsd: { type: number }
+        avgEntryPriceUsd: { type: number, nullable: true }
+        unrealizedPnlUsd: { type: number, nullable: true }
+    PortfolioEvent:
+      type: object
+      properties:
+        kind:
+          type: string
+          enum: [buy, sell, transferIn, transferOut, claim, lock, unlock]
+        tokenAddress: { type: string, nullable: true }
+        amount: { type: string }
+        valueUsdAtTime: { type: number, nullable: true }
+        txHash: { type: string }
+        timestamp: { type: string, format: date-time }
+    Pnl:
+      type: object
+      properties:
+        realizedUsd: { type: number }
+        unrealizedUsd: { type: number }
+        byApp:
+          type: array
+          items:
+            type: object
+            properties:
+              tokenAddress: { type: string }
+              symbol: { type: string }
+              realizedUsd: { type: number }
+              unrealizedUsd: { type: number }
+
+    RewardsSummary:
+      type: object
+      properties:
+        address: { type: string }
+        totalClaimableUsd: { type: number }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/RewardItem' }
+    RewardItem:
+      type: object
+      properties:
+        programId: { type: string }
+        source:
+          type: string
+          enum: [protocol, app]
+        tokenAddress: { type: string }
+        symbol: { type: string }
+        claimable: { type: string }
+        claimableUsd: { type: number }
+    RewardProgram:
+      type: object
+      properties:
+        id: { type: string }
+        source:
+          type: string
+          enum: [protocol, app]
+        name: { type: string }
+        rewardToken: { type: string }
+        emissionsPerDay: { type: string }
+        startsAt: { type: string, format: date-time }
+        endsAt: { type: string, format: date-time, nullable: true }
+        eligibility: { type: string }
+    RewardClaim:
+      type: object
+      properties:
+        programId: { type: string }
+        amount: { type: string }
+        txHash: { type: string }
+        timestamp: { type: string, format: date-time }
+    ClaimPayload:
+      type: object
+      properties:
+        to: { type: string, description: Contract address the user must call. }
+        data: { type: string, description: ABI-encoded calldata. }
+        value: { type: string, description: ETH value to send (wei). Usually "0". }
+        chainId: { type: integer }
+        merkleProofs:
+          type: array
+          items:
+            type: object
+            properties:
+              programId: { type: string }
+              proof:
+                type: array
+                items: { type: string }
+
+    Config:
+      type: object
+      properties:
+        network: { type: string, example: base }
+        chainId: { type: integer }
+        contracts:
+          type: object
+          additionalProperties: { type: string }
+        features:
+          type: object
+          additionalProperties: { type: boolean }
+        feeSchedule:
+          type: object
+          additionalProperties: { type: string }
+        docsUrl: { type: string, format: uri }
+        repos:
+          type: object
+          additionalProperties: { type: string, format: uri }
+    Chain:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        rpcHints:
+          type: array
+          items: { type: string, format: uri }
+        explorerUrl: { type: string, format: uri }

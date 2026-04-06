@@ -228,6 +228,7 @@
           },
           {
             "tab": "API Reference",
+            "openapi": "/api-reference/openapi.yaml",
             "groups": [
               {
                 "group": "Overview",
@@ -236,39 +237,61 @@
                 ]
               },
               {
-                "group": "App Management",
+                "group": "Apps",
                 "pages": [
-                  "api-reference/app-registry",
-                  "api-reference/contributor-split"
+                  "api-reference/apps/list",
+                  "api-reference/apps/get",
+                  "api-reference/apps/search",
+                  "api-reference/apps/holders",
+                  "api-reference/apps/activity"
                 ]
               },
               {
-                "group": "Fees",
+                "group": "Preflight",
                 "pages": [
-                  "api-reference/app-fee-router",
-                  "api-reference/fee-swapper",
-                  "api-reference/fee-manager"
+                  "api-reference/preflight/launch",
+                  "api-reference/preflight/name-available",
+                  "api-reference/preflight/symbol-available",
+                  "api-reference/preflight/requirements"
+                ]
+              },
+              {
+                "group": "Market",
+                "pages": [
+                  "api-reference/market/prices",
+                  "api-reference/market/elta",
+                  "api-reference/market/app",
+                  "api-reference/market/candles",
+                  "api-reference/market/curve",
+                  "api-reference/market/leaderboard"
+                ]
+              },
+              {
+                "group": "Portfolio",
+                "pages": [
+                  "api-reference/portfolio/get",
+                  "api-reference/portfolio/positions",
+                  "api-reference/portfolio/history",
+                  "api-reference/portfolio/pnl"
                 ]
               },
               {
                 "group": "Rewards",
                 "pages": [
-                  "api-reference/rewards-distributor",
-                  "api-reference/app-rewards-distributor"
+                  "api-reference/rewards/get",
+                  "api-reference/rewards/history",
+                  "api-reference/rewards/programs",
+                  "api-reference/rewards/program-detail",
+                  "api-reference/rewards/claim-payload"
                 ]
               },
               {
-                "group": "Governance",
+                "group": "Config",
                 "pages": [
-                  "api-reference/veelta-votes",
-                  "api-reference/stake-vault-votes",
-                  "api-reference/elata-points"
-                ]
-              },
-              {
-                "group": "Treasury",
-                "pages": [
-                  "api-reference/treasury-usdc-vault"
+                  "api-reference/config/get",
+                  "api-reference/config/contracts",
+                  "api-reference/config/chains",
+                  "api-reference/config/features"
                 ]
               }
             ]
