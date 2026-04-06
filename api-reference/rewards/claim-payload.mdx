@@ -1,0 +1,7 @@
+---
+title: "Build claim payload"
+description: "Returns calldata and merkle proofs a frontend needs to submit a claim transaction. The user still signs and sends the transaction."
+openapi: "/api-reference/openapi.yaml POST /rewards/{address}/claim-payload"
+---
+
+<Note>**Status: proposed.** Requires a SIWE-issued bearer token whose `sub` matches `{address}`. The endpoint never custodies funds — it only returns the data the user's wallet needs to send a claim transaction itself.</Note>

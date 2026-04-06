@@ -44,62 +44,21 @@ graph TB
 
 ## App Store API
 
-The App Store provides REST endpoints for reading data.
+The App Store provides REST endpoints at `https://app.elata.bio/api`.
 
-### Base URL
+The full operation reference, request/response schemas, and status of each endpoint (`stable` vs `proposed`) live in the [API Reference tab](/api-reference/overview), which is generated from a single OpenAPI 3.1 spec at [`api-reference/openapi.yaml`](https://github.com/elata-biosciences/docs/blob/main/api-reference/openapi.yaml).
 
-```
-https://app.elata.bio/api
-```
+### Currently stable endpoints
 
-### Endpoints
+| Method | Path | Reference |
+| --- | --- | --- |
+| GET | `/apps` | [List apps](/api-reference/apps/list) |
+| GET | `/apps/{tokenAddress}` | [Get app](/api-reference/apps/get) |
+| GET | `/prices` | [Get prices](/api-reference/market/prices) |
 
-#### Get All Apps
+### Proposed builder endpoints
 
-```bash
-GET /api/apps
-```
-
-Returns list of all apps with metadata:
-
-```json
-{
-  "apps": [
-    {
-      "id": "...",
-      "tokenAddress": "0x...",
-      "name": "NeuroPong",
-      "symbol": "NPONG",
-      "description": "...",
-      "imageUrl": "...",
-      "creator": "0x...",
-      "status": "raising" | "live",
-      "createdAt": "2024-01-01T00:00:00Z"
-    }
-  ]
-}
-```
-
-#### Get Single App
-
-```bash
-GET /api/apps/{tokenAddress}
-```
-
-Returns detailed app information including:
-
-- Basic metadata
-- Social links
-- Team members
-- Artifacts (game files)
-
-#### Get Prices
-
-```bash
-GET /api/prices
-```
-
-Returns current ELTA price data for UI display.
+The OpenAPI spec also defines `proposed` endpoints for app discovery (search, holders, activity), launch preflight, market data (snapshots, candles, curves, leaderboards), portfolio (holdings, history, P&L), rewards (claimable, programs, claim payloads), and runtime config (contracts, chains, feature flags). See the [API Reference tab](/api-reference/overview) for the full list and the status legend.
 
 ---
 
