@@ -151,7 +151,7 @@
                 ]
               },
               {
-                "group": "AI Dev Tools",
+                "group": "AI Guide",
                 "pages": [
                   "apps/ai-tools/claude-code",
                   "apps/ai-tools/cursor",

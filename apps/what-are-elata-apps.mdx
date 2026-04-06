@@ -5,7 +5,13 @@ description: "Tokenized applications on the Elata protocol with built-in economi
 
 ## The Idea
 
-An Elata app is a tokenized application deployed on the Elata protocol. Each app gets its own ERC-20 token, a bonding curve for price discovery, a staking vault, contributor splits, and governance hooks.
+![Elata SDK (4)](/images/Elata-SDK-\(4\).png)
+
+<Info>
+  Leading to our iOS/Android launch, we will implement an abstracted version of the user interface, running all economic features under the hood. Transfers, fees, and other economic variables will get routed under the hood and be out-of-sight from end users.
+</Info>
+
+Under the hood, an Elata app is a tokenized application deployed on the Elata protocol. Each app gets its own ERC-20 token, a bonding curve for price discovery, a staking vault, contributor splits, and governance hooks.
 
 You build the product. The protocol handles token launch, fee routing, liquidity, and community infrastructure.
 
@@ -25,7 +31,7 @@ Every app deployed through the protocol receives:
 | **Contributor Split** | Pull-based payout system for up to 150-200 contributors |
 
 <Info>
-  Total launch cost: **110 ELTA** (10 ELTA registration fee + 100 ELTA bonding curve seed). ELTA is the protocol's native token with a fixed 77M supply.
+  Total launch cost: **110 ELTA** (10 ELTA registration fee \+ 100 ELTA bonding curve seed). ELTA is the protocol's native token with a fixed 77M supply.
 </Info>
 
 ---
@@ -53,12 +59,14 @@ The full sequence is covered in [App Lifecycle](/apps/app-lifecycle).
 ## Next
 
 <CardGroup cols={3}>
-  <Card title="Choose Your Path" icon="signs-post" iconType="light" href="/apps/choose-your-path">
+  <Card title="Choose Your Path" icon="compass" iconType="light" href="/apps/choose-your-path">
     Builder or user?
   </Card>
-  <Card title="App Lifecycle" icon="circle-nodes" iconType="light" href="/apps/app-lifecycle">
+
+  <Card title="App Lifecycle" icon="recycle" iconType="light" href="/apps/app-lifecycle">
     Full launch-to-graduation arc
   </Card>
+
   <Card title="Builder Overview" icon="hammer" iconType="light" href="/apps/build/overview">
     Start building
   </Card>

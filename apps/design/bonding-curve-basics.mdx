@@ -7,13 +7,13 @@ description: "How price discovery works on Elata launch curves, from seeding to 
 
 Elata launch curves use constant-product reserves:
 
-```
+```text
 k = reserveElta * reserveToken
 ```
 
 When someone buys:
 
-```
+```text
 newReserveElta = reserveElta + eltaIn
 newReserveToken = k / newReserveElta
 tokensOut = reserveToken - newReserveToken
@@ -49,6 +49,7 @@ The `AppBondingCurve` contract follows a state machine:
 | `CANCELLED` | App cancelled before graduation |
 
 Additional behavior:
+
 - Permissionless activation after a configurable delay
 - Force graduation after deadline
 - Creator-only cancel while in `PENDING` state
@@ -102,10 +103,12 @@ The gate parameters are configurable by governance.
   <Card title="App Tokens" icon="coins" iconType="light" href="/apps/design/app-tokens">
     Token distribution and lifecycle
   </Card>
+
   <Card title="Fee Flow" icon="route" iconType="light" href="/apps/design/fee-flow">
     How fees are routed
   </Card>
-  <Card title="App Lifecycle" icon="circle-nodes" iconType="light" href="/apps/app-lifecycle">
+
+  <Card title="App Lifecycle" icon="recycle" iconType="light" href="/apps/app-lifecycle">
     Full lifecycle overview
   </Card>
 </CardGroup>

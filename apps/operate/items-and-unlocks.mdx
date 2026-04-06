@@ -5,7 +5,7 @@ description: "Create ERC-721 items for gating, collectibles, and in-app utility.
 
 ## Creating Items
 
-Items are ERC-721 NFTs created through the InAppContent721 contract. Each item has:
+Items adhere to the ERC-721 standard, and are created through the InAppContent721 contract. Each item has:
 
 | Property | Description |
 | --- | --- |
@@ -32,9 +32,10 @@ Items are ERC-721 NFTs created through the InAppContent721 contract. Each item h
 All item purchases burn 100% of the app tokens spent. This creates direct deflationary pressure on the app token supply.
 
 When a user buys an item:
+
 1. App tokens are transferred from the buyer
 2. Tokens are burned (sent to the zero address)
-3. The NFT is minted to the buyer
+3. The item is minted to the buyer
 
 There is no treasury cut or fee on item purchases. The entire price is removed from circulation.
 
@@ -79,9 +80,11 @@ For soulbound items, `balanceOf` is the only check needed since the item cannot 
   <Card title="Tournaments" icon="trophy" iconType="light" href="/apps/operate/tournaments">
     Run competitive events
   </Card>
+
   <Card title="Grow Your Community" icon="users" iconType="light" href="/apps/operate/grow-your-community">
     Community growth playbook
   </Card>
+
   <Card title="App Tokens" icon="coins" iconType="light" href="/apps/design/app-tokens">
     Token design and distribution
   </Card>

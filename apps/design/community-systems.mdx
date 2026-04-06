@@ -18,6 +18,7 @@ flowchart LR
 ```
 
 **Key properties:**
+
 - Pull-based: contributors claim their share, the protocol does not push payments
 - Managed exclusively by the app's Safe (add, remove, or adjust share percentages)
 - Supports up to 150-200 contributors per app
@@ -41,7 +42,7 @@ veELTA is the vote-escrow mechanism for protocol governance. Users lock ELTA tok
 
 **Boost formula:**
 
-```
+```text
 boost = 1 + (lockDuration / maxDuration)
 veELTA = lockedAmount * boost
 ```
@@ -74,7 +75,8 @@ Key parameters controlled by governance:
   <Card title="Fee Flow for Apps" icon="route" iconType="light" href="/apps/design/fee-flow">
     How fees are routed
   </Card>
-  <Card title="veELTA and Governance" icon="scale-balanced" iconType="light" href="/apps/users/veelta-governance">
+
+  <Card title="veELTA and Governance" icon="vote" iconType="light" href="/apps/users/veelta-governance">
     User guide for locking ELTA
   </Card>
 </CardGroup>
