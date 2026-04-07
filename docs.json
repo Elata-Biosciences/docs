@@ -173,10 +173,11 @@
                     "pages": [
                       "integrate",
                       "integration-paths",
+                      "transport-contract",
                       "protocol-requirements",
-                      "submission-and-support",
+                      "adapter-implementation",
                       "testing-and-validation",
-                      "transport-contract"
+                      "submission-and-support"
                     ]
                   },
                   {

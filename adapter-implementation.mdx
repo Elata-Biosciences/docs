@@ -1,0 +1,146 @@
+---
+title: Adapter Implementation
+description: Build a device adapter that plugs into BleTransport and emits stable headband frames.
+---
+
+Once your protocol inventory is complete, build the adapter.
+
+The goal is to isolate device-specific BLE and packet logic while preserving the
+shared Elata transport contract for apps.
+
+## Recommended Shape
+
+For browser BLE integrations, the adapter should satisfy the `BleDeviceLike`
+shape expected by `@elata-biosciences/eeg-web-ble`.
+
+That means the device layer handles discovery, session setup, subscription, and
+packet decoding, while `BleTransport` handles the app-facing transport surface.
+
+## Implementation Order
+
+<Steps>
+  <Step title="Implement discovery">
+    Define the `requestDevice` filters and any optional services required to find
+    the device cleanly in the browser picker.
+  </Step>
+  <Step title="Prepare the session">
+    Connect to GATT, resolve characteristics, and do any startup writes that are
+    required before streaming can begin.
+  </Step>
+  <Step title="Decode packets into EEG rows">
+    Turn vendor packets into `number[][]` where each row is one time step and
+    the row width matches `numEegChannels`.
+  </Step>
+  <Step title="Emit stable metadata">
+    Expose `samplingRate`, `eegNames`, `numEegChannels`, and related device
+    metadata accurately.
+  </Step>
+  <Step title="Handle stop and release cleanly">
+    Unsubscribe, stop the stream safely, and release the session without leaking
+    resources.
+  </Step>
+</Steps>
+
+## Minimal Adapter Skeleton
+
+```ts
+import type { BleDeviceLike } from "@elata-biosciences/eeg-web-ble";
+
+export class VendorBleDevice implements BleDeviceLike {
+  isAthena = false;
+  samplingRate = 250;
+  eegNames = ["CH1", "CH2"];
+  numEegChannels = 2;
+  opticsChannelCount = 0;
+
+  getBoardInfo() {
+    return { device_name: "VENDOR_DEVICE" };
+  }
+
+  getCharacteristicInfo() {
+    return { characteristics: [] };
+  }
+
+  async prepareSession() {
+    // Connect to GATT, resolve characteristics, and initialize streaming state
+  }
+
+  async releaseSession() {
+    // Tear down subscriptions and release the browser session
+  }
+
+  async startStream(eegCb, _ppgCb) {
+    // Subscribe to notifications and emit decoded EEG rows
+    eegCb([[0, 0]]);
+  }
+
+  async stopStream() {
+    // Stop device streaming and unsubscribe
+  }
+}
+```
+
+## What the Adapter Must Own
+
+| Responsibility | Adapter owns it? |
+| --- | --- |
+| Device discovery | yes |
+| GATT connection and characteristic setup | yes |
+| Packet decoding | yes |
+| Accurate metadata | yes |
+| App-facing transport lifecycle | usually through `BleTransport` |
+| Normalized frame delivery to apps | through the shared transport contract |
+
+## Packet Decoding Rules
+
+Keep the decoder boring and deterministic.
+
+| Rule | Why it matters |
+| --- | --- |
+| Reject malformed packets early | Prevents bad rows from reaching apps |
+| Preserve channel order | Keeps downstream features and models consistent |
+| Batch rows only when needed | Avoids hidden latency and timestamp confusion |
+| Track packet counters when available | Helps detect drops or corruption |
+| Separate EEG from aux logic cleanly | Makes debugging and testing easier |
+
+## Session Lifecycle Rules
+
+Your adapter should make these transitions unsurprising:
+
+| Stage | Good behavior |
+| --- | --- |
+| Discover | only matching devices are shown |
+| Connect | required services and characteristics resolve clearly |
+| Start | stream begins once, without duplicate subscriptions |
+| Stop | notifications stop cleanly |
+| Release | the session can be started again later |
+
+## Reliability Notes
+
+<Info>
+  `startStreaming()` is the safest default for app consumers because it combines
+  connect and start. Your adapter should still make the underlying `connect()`
+  and `start()` steps reliable on their own.
+</Info>
+
+If the device exposes auxiliary signals such as PPG, optics, IMU, or battery,
+map them only when the semantics are clear. Do not force Muse-specific
+assumptions onto non-Muse hardware.
+
+## Related Docs
+
+- [EEG BLE Getting Started](/sdk/eeg-web-ble/getting-started)
+- [Transport Contract](./transport-contract)
+- [Testing and Validation](./testing-and-validation)
+- [Muse Device](/sdk/eeg-web-ble/muse-device)
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Validate the integration" icon="arrow-right" href="./testing-and-validation">
+    Turn the adapter into a reliable transport under real failure conditions.
+  </Card>
+  <Card title="Prepare the handoff" icon="arrow-right" href="./submission-and-support">
+    Package the integration with the docs and caveats other teams need.
+  </Card>
+</CardGroup>
