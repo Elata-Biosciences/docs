@@ -1,36 +1,26 @@
 ---
-title: "EEG In A Browser App"
+title: "EEG in a browser App"
 description: "Add Elata EEG WASM APIs to an existing browser application."
 ---
 
-Use this page if you want the package model for browser EEG, not a full
-integration walkthrough.
+Use this page if you want the package model for browser EEG, not a full integration walkthrough.
 
-If you want numbered steps for an existing app, use
-[Add EEG To An Existing Browser App](/sdk/tutorials/eeg-existing-app). If you want
-the scaffold path, use [Build Your First Elata App](/sdk/tutorials/first-app).
+If you want numbered steps for an existing app, use [Add EEG To An Existing Browser App](/sdk/tutorials/eeg-existing-app). If you want the scaffold path, use [Build Your First Elata App](/sdk/tutorials/first-app).
 
 <Tip>
   If you want a running app without manual wiring, scaffold with [create-elata-demo](/sdk/create-elata-demo) first.
 </Tip>
 
-EEG is **optional** in the usual Elata journey: **camera rPPG** is the primary
-browser integration for many apps. Add `eeg-web` when you need brain-signal
-analysis; add **`eeg-web-ble`** alongside it when you need **Web Bluetooth** for a
-Muse-compatible headset.
+EEG is **optional** in the usual Elata journey: **camera rPPG** is the primary browser integration for many apps. Add `eeg-web` when you need brain-signal analysis; add **`eeg-web-ble`** alongside it when you need **Web Bluetooth** for a Muse-compatible headset.
 
-EEG measures electrical activity from the brain using a wearable headset.
-In browser apps, developers usually use EEG to stream headset samples, compute
-features such as band powers, and drive feedback, dashboards, adaptive UX, or
-interactive experiences.
+EEG measures electrical activity from the brain using a wearable headset. In browser apps, developers usually use EEG to stream headset samples, compute features such as band powers, and drive feedback, dashboards, adaptive UX, or interactive experiences.
 
 Concrete app examples include:
 
 - meditation or breath-training apps that adapt guidance to focus or calmness
 - neurofeedback experiences that reward attention or steadiness
 - simulated athletic-performance or training apps that react to mental state
-- games or creative tools that change difficulty, pacing, or effects based on
-  live EEG features
+- games or creative tools that change difficulty, pacing, or effects based on live EEG features
 
 ---
 
@@ -58,8 +48,7 @@ npm install @elata-biosciences/eeg-web
 - signal-processing and model exports such as `band_powers`
 - shared types and contracts used by higher-level browser integrations
 
-This package does not handle Bluetooth device connection by itself. Add
-`@elata-biosciences/eeg-web-ble` if you also need browser BLE transport.
+This package does not handle Bluetooth device connection by itself. Add `@elata-biosciences/eeg-web-ble` if you also need browser BLE transport.
 
 ---
 
@@ -98,19 +87,10 @@ Prefer the scaffolded `eeg-demo` template when you want:
 
 ## Common Gotchas
 
-- `band_powers()` takes a **single-channel** `Float32Array`, not `number[]`.
-  Convert with `new Float32Array(samples[channelIdx])` before passing. Passing
-  a plain array will cause a WASM runtime error. For a Muse headband (4
-  channels: TP9, AF7, AF8, TP10), use a frontal channel (AF7 = index 1, or
-  AF8 = index 2) for cognitive state features, or average across channels.
-- `WasmCalmnessModel.process()` expects **interleaved** samples:
-  `[s0_ch0, s0_ch1, s1_ch0, s1_ch1, ...]`. The `frame.eeg.samples` layout is
-  per-channel. Convert before passing.
-- `WasmCalmnessModel` needs `channelCount` at construction, but `channelCount`
-  only arrives on the first frame. Construct the model inside your first-frame
-  handler.
-- If `initEegWasm()` fails, your app may not be loading the packaged `wasm/`
-  assets correctly.
+- `band_powers()` takes a **single-channel** `Float32Array`, not `number[]`. Convert with `new Float32Array(samples[channelIdx])` before passing. Passing a plain array will cause a WASM runtime error. For a Muse headband (4 channels: TP9, AF7, AF8, TP10), use a frontal channel (AF7 = index 1, or AF8 = index 2) for cognitive state features, or average across channels.
+- `WasmCalmnessModel.process()` expects **interleaved** samples: `[s0_ch0, s0_ch1, s1_ch0, s1_ch1, ...]`. The `frame.eeg.samples` layout is per-channel. Convert before passing.
+- `WasmCalmnessModel` needs `channelCount` at construction, but `channelCount` only arrives on the first frame. Construct the model inside your first-frame handler.
+- If `initEegWasm()` fails, your app may not be loading the packaged `wasm/` assets correctly.
 - If you need a live headset connection, `eeg-web` alone is not enough.
 - If you are only evaluating the SDK, the scaffolded app is faster than manual setup.
 
@@ -122,12 +102,15 @@ Prefer the scaffolded `eeg-demo` template when you want:
   <Card title="Add EEG To An Existing App" icon="circle-play" iconType="light" href="/sdk/tutorials/eeg-existing-app">
     Step-by-step integration tutorial
   </Card>
+
   <Card title="Web Bluetooth" icon="bluetooth" iconType="light" href="/sdk/guides/web-bluetooth">
     Connect a Muse headset
   </Card>
+
   <Card title="eeg-web Reference" icon="brain" iconType="light" href="/sdk/eeg-web/getting-started">
     Package API and exports
   </Card>
+
   <Card title="Troubleshooting" icon="wrench" iconType="light" href="/sdk/operations/troubleshooting">
     Common failures and fixes
   </Card>

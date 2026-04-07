@@ -1,5 +1,5 @@
 ---
-title: "create-elata-demo"
+title: "Create Elata Demo"
 description: "Scaffold Elata starter apps from published templates."
 ---
 
@@ -19,8 +19,7 @@ Use this package when you want:
 - a reference project that matches the published package surface
 - a known-good baseline before integrating packages into an existing app
 
-Do not start with repo-internal demos when this package already covers your use
-case.
+Do not start with repo-internal demos when this package already covers your use case.
 
 ---
 
@@ -30,8 +29,8 @@ The scaffolder exposes three user-facing app starters:
 
 | Template | Description |
 | --- | --- |
-| `rppg-demo` | React + Vite rPPG starter app |
-| `eeg-demo` | React + Vite EEG starter app with synthetic data and browser EEG wiring |
+| `rppg-demo` | React \+ Vite rPPG starter app |
+| `eeg-demo` | React \+ Vite EEG starter app with synthetic data and browser EEG wiring |
 | `eeg-ble` | Muse-compatible EEG starter with Chrome or Bluefy-on-iOS Web Bluetooth guidance |
 
 Short aliases are also supported:
@@ -127,8 +126,7 @@ npm create @elata-biosciences/elata-demo my-app -- --template ble
 
 </CodeGroup>
 
-When the CLI is run interactively without `--template`, it prompts you to pick
-a template. In non-interactive runs, it falls back to `rppg-demo`.
+When the CLI is run interactively without `--template`, it prompts you to pick a template. In non-interactive runs, it falls back to `rppg-demo`.
 
 If you omit the project directory, the CLI also prompts for the project name.
 
@@ -138,7 +136,7 @@ If you omit the project directory, the CLI also prompts for the project name.
 
 Each generated app includes:
 
-- a minimal Vite + React app shell
+- a minimal Vite \+ React app shell
 - Elata packages pinned to a compatible set of versions
 - a template-specific `README.md`
 - a `build` script that type-checks and runs `vite build`
@@ -178,8 +176,7 @@ The scaffolder binary:
 
 ## Workspace Caveat
 
-If you scaffold a new app inside another `pnpm` workspace and that app is not
-added to the workspace globs, run this from the parent directory:
+If you scaffold a new app inside another `pnpm` workspace and that app is not added to the workspace globs, run this from the parent directory:
 
 <CodeGroup>
 
@@ -207,8 +204,7 @@ pnpm --dir packages/create-elata-demo test
 ./run.sh test create-elata-demo
 ```
 
-The second command also smoke-tests each template by scaffolding, installing
-dependencies, and running a build.
+The second command also smoke-tests each template by scaffolding, installing dependencies, and running a build.
 
 ---
 
@@ -228,9 +224,11 @@ dependencies, and running a build.
   <Card title="Build Your First App" icon="rocket" iconType="light" href="/sdk/tutorials/first-app">
     Scaffold and run a starter app
   </Card>
+
   <Card title="Choose A Package" icon="compass" iconType="light" href="/sdk/guides/choose-the-right-package">
     Package decision guide
   </Card>
+
   <Card title="Example Apps" icon="grid-2" iconType="light" href="/sdk/guides/example-apps">
     Full reference implementations
   </Card>

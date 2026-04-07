@@ -1,28 +1,19 @@
 ---
-title: Add Camera-Based rPPG To An Existing Browser App
-description: Build a working browser rPPG flow with createRppgSession, diagnostics, and cleanup.
+title: "Add camera-based rPPG to an existing browser App"
+description: "Build a working browser rPPG flow with createRppgSession, diagnostics, and cleanup."
 ---
 
-Use this page if you already have a browser app and want the recommended
-existing-app integration path.
+Use this page if you already have a browser app and want the recommended existing-app integration path.
 
-If you want the scaffold path instead, use [Quickstart](/sdk/tutorials/first-app). If you
-only need the mental model first, use [rPPG In A Browser App](/sdk/guides/rppg-browser).
+If you want the scaffold path instead, use [Quickstart](/sdk/tutorials/first-app). If you only need the mental model first, use [rPPG In A Browser App](/sdk/guides/rppg-browser).
 
-This tutorial shows the recommended app integration path for
-`@elata-biosciences/rppg-web`.
+This tutorial shows the recommended app integration path for `@elata-biosciences/rppg-web`.
 
-Camera rPPG is the **primary** browser integration for many Elata products. No
-headset required.
+Camera rPPG is the **primary** browser integration for many Elata products. No headset required.
 
-The core idea is simple: let `createRppgSession()` own the browser runtime,
-video processing loop, and diagnostics while your app owns the UI.
+The core idea is simple: let `createRppgSession()` own the browser runtime, video processing loop, and diagnostics while your app owns the UI.
 
-This is the usual **next tutorial** after
-[Build Your First Elata App](/sdk/tutorials/first-app) when you choose the
-**existing app** branch for camera rPPG. If you are **extending the scaffold**
-instead, stay on `rppg-demo` and use
-[rPPG In A Browser App](/sdk/guides/rppg-browser) plus [rppg-web](/sdk/rppg-web/getting-started).
+This is the usual **next tutorial** after [Build Your First Elata App](/sdk/tutorials/first-app) when you choose the **existing app** branch for camera rPPG. If you are **extending the scaffold** instead, stay on `rppg-demo` and use [rPPG In A Browser App](/sdk/guides/rppg-browser) plus [rppg-web](/sdk/rppg-web/getting-started).
 
 ## What You Will Build
 
@@ -118,13 +109,11 @@ const metrics = session.getMetrics();
 console.log(metrics);
 ```
 
-In a real app you would poll or subscribe through your own UI state layer and
-show the values that matter to your product.
+In a real app you would poll or subscribe through your own UI state layer and show the values that matter to your product.
 
 ## Step 6: Clean Up Correctly
 
-When the component, route, or page is leaving, stop the session and release the
-camera stream. Run these in order (same `session` and `stream` as above):
+When the component, route, or page is leaving, stop the session and release the camera stream. Run these in order (same `session` and `stream` as above):
 
 ```ts
 await session.stop();
@@ -136,14 +125,11 @@ for (const track of stream.getTracks()) {
 }
 ```
 
-This matters more than it looks. It keeps later sessions from inheriting stale
-camera or runtime state.
+This matters more than it looks. It keeps later sessions from inheriting stale camera or runtime state.
 
 ## Full example (single paste)
 
-Use this when you want one file to drop into a Vite + React app (for example
-replace the contents of `src/App.tsx`). It includes camera setup, session start,
-and cleanup on unmount.
+Use this when you want one file to drop into a Vite \+ React app (for example replace the contents of `src/App.tsx`). It includes camera setup, session start, and cleanup on unmount.
 
 ```tsx App.tsx
 import { useEffect, useRef, useState } from "react";
@@ -258,9 +244,11 @@ But start with plain `createRppgSession()` first.
   <Card title="rppg-web Reference" icon="heart-pulse" iconType="light" href="/sdk/rppg-web/getting-started">
     Package API and exports
   </Card>
+
   <Card title="rPPG In A Browser" icon="book-open" iconType="light" href="/sdk/guides/rppg-browser">
     Integration overview
   </Card>
+
   <Card title="Build Your First App" icon="rocket" iconType="light" href="/sdk/tutorials/first-app">
     Best first-time setup path
   </Card>

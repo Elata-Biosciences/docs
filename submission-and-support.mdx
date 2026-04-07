@@ -1,0 +1,119 @@
+---
+title: Submission and Support
+description: Package a device integration with the docs, caveats, and support details needed for a clean handoff.
+---
+
+Use this page when the integration is working and you are ready to hand it off
+for review, publication, or partner support.
+
+## What a Clean Handoff Includes
+
+| Item | What to include |
+| --- | --- |
+| Device scope | exact models and firmware versions tested |
+| Platform scope | browsers, OS targets, and any unsupported surfaces |
+| Transport notes | Web Bluetooth, bridge, or native helper requirements |
+| Known limitations | disconnect caveats, unsupported signals, setup edge cases |
+| Ownership | who maintains the integration going forward |
+
+## Required Documentation
+
+A usable integration should ship with a short public-facing note set.
+
+| Doc | Why it matters |
+| --- | --- |
+| Install and setup notes | tells teams how to get started quickly |
+| Platform caveats | prevents unsupported browser rollouts |
+| Device support matrix | clarifies model and firmware coverage |
+| Known limitations | sets realistic expectations |
+| Troubleshooting notes | shortens support loops |
+
+## Suggested Submission Template
+
+```md
+## Device integration summary
+- Device model(s):
+- Firmware tested:
+- Transport path: upstream / separate package / app-local
+- Browser matrix tested:
+- Platform limitations:
+
+## Protocol summary
+- Primary service UUIDs:
+- Streaming characteristics:
+- EEG channel map:
+- Sample rate:
+- Timestamp source: device / local
+
+## Reliability notes
+- Reconnect behavior:
+- Known limitations:
+- Open issues:
+```
+
+## If the Integration Is Contributed Upstream
+
+Include these items in the same change set:
+
+1. adapter code
+2. mocked tests and packet fixtures
+3. consumer-facing docs updates
+4. support notes for the device and firmware versions covered
+
+If the integration changes a published package, include the release metadata your
+team uses for package publication.
+
+## If the Integration Stays Vendor-Owned
+
+Keep the partner handoff simple:
+
+| Deliverable | Why it matters |
+| --- | --- |
+| package or adapter entry point | gives app teams one clear integration surface |
+| versioned support statement | avoids confusion across firmware lines |
+| contact path for issues | reduces dead-end support loops |
+| changelog or release notes | makes regressions easier to track |
+
+## Support Expectations
+
+A good support model answers these questions up front:
+
+| Question | Example answer |
+| --- | --- |
+| Who fixes protocol regressions? | vendor partner owns device-specific decoder changes |
+| Who fixes app contract regressions? | SDK maintainers own shared transport expectations |
+| How are firmware changes tracked? | each supported firmware line is documented explicitly |
+| How do consumers escalate issues? | one issue path and one owner per release line |
+
+<Info>
+  The best partner docs are short, accurate, and versioned. Do not overload the
+  handoff with internal process detail that app teams do not need.
+</Info>
+
+## Final Review Questions
+
+Before release or handoff, confirm:
+
+1. does the integration use the shared transport contract correctly
+2. are the supported models and firmware lines explicit
+3. are browser and platform caveats stated clearly
+4. can another team reproduce setup without private context
+5. is the maintenance owner obvious
+
+## Related Docs
+
+- [Testing and Validation](./testing-and-validation)
+- [Compatibility](/sdk/operations/compatibility)
+- [Troubleshooting](/sdk/operations/troubleshooting)
+- [Device Integration](/sdk/eeg-web-ble/device-integration)
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Return to Device Integration" icon="arrow-right" href="/sdk/eeg-web-ble/device-integration">
+    Review the full integration flow from the start.
+  </Card>
+  <Card title="EEG BLE Getting Started" icon="arrow-right" href="/sdk/eeg-web-ble/getting-started">
+    Compare your device path with the current BLE flow.
+  </Card>
+</CardGroup>

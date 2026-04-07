@@ -1,0 +1,121 @@
+---
+title: Integration Paths
+description: Choose the right packaging and ownership model for a device integration.
+---
+
+Use this page before you write adapter code.
+
+The right path depends on whether the integration is broadly useful, whether it
+needs vendor SDKs or native bridges, and whether it will be maintained as a
+public SDK surface.
+
+## Recommended Default
+
+If the device is likely to be useful to the wider Elata SDK audience, put it
+upstream in `@elata-biosciences/eeg-web-ble`.
+
+That keeps transport behavior centralized and avoids parallel adapters across
+multiple apps.
+
+## Choose By Outcome
+
+| Path | Best when | Why |
+| --- | --- | --- |
+| Upstream device module in `eeg-web-ble` | The device is broadly useful and works through browser BLE | Best default for public SDK support |
+| Separate package under `packages/` | You need a vendor SDK, a license gate, or a localhost/native bridge | Keeps heavier integrations isolated |
+| App-local adapter | You are proving a concept or shipping a private integration | Fastest path when no shared package is needed |
+
+## Path 1: Upstream in `eeg-web-ble`
+
+Choose this when:
+
+- the device can work through Web Bluetooth in a browser
+- the integration is likely to be reused by more than one app
+- you want one shared implementation of transport behavior
+
+This path usually means:
+
+1. add a device module under the BLE package
+2. reuse `BleTransport`
+3. add mocked tests
+4. update consumer docs and device notes
+
+<Check>
+  This is the best path for a public, durable integration that should feel like
+  a first-class part of the SDK.
+</Check>
+
+## Path 2: Separate Package
+
+Choose this when the device needs more than a clean browser BLE flow.
+
+Typical reasons:
+
+| Situation | Why a separate package helps |
+| --- | --- |
+| Licensed or heavy vendor SDK | Keeps extra dependencies out of the main BLE package |
+| Localhost helper or native bridge | Lets you ship a bridge-specific transport cleanly |
+| Independent release cadence | Lets the vendor or partner own versioning and support |
+
+The package should still expose a `HeadbandTransport`, or a thin wrapper around
+one, so app code stays consistent with the rest of the Elata stack.
+
+## Path 3: App-Local Adapter
+
+Choose this when speed matters more than reuse.
+
+This is a good fit for:
+
+- a private customer deployment
+- a fast proof of concept
+- evaluation work before a public package exists
+
+Keep the contract the same even if the code stays private. That makes it easier
+to move upstream later.
+
+## Decision Order
+
+<Steps>
+  <Step title="Ask whether the integration should be reusable">
+    If multiple apps would benefit, start by assuming an upstream path.
+  </Step>
+  <Step title="Check for browser BLE blockers">
+    If Web Bluetooth will not work, or if a native bridge is required, move to a
+    separate package.
+  </Step>
+  <Step title="Decide who owns long-term support">
+    Shared support usually belongs upstream. Vendor-owned release lines often fit
+    better in a separate package.
+  </Step>
+  <Step title="Keep the app contract stable">
+    No matter where the code lives, the app-facing contract should still be
+    `HeadbandTransport` and `HeadbandFrameV1`.
+  </Step>
+</Steps>
+
+## Paths to Avoid
+
+Do not choose an app-local adapter just because it is easy in the first hour.
+
+That usually creates extra work later if the integration becomes public.
+
+Do not push a heavy, bridge-based, or licensed integration into the shared BLE
+package either. Keep the public package lean.
+
+## Related Docs
+
+- [Device Integration](/sdk/eeg-web-ble/device-integration)
+- [Transport Contract](./transport-contract)
+- [Adapter Implementation](./adapter-implementation)
+- [Compatibility](/sdk/operations/compatibility)
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Transport Contract" icon="arrow-right" href="./transport-contract">
+    Review the shared interfaces your chosen path must still satisfy.
+  </Card>
+  <Card title="Protocol Requirements" icon="arrow-right" href="./protocol-requirements">
+    Gather the protocol details you need before implementation begins.
+  </Card>
+</CardGroup>

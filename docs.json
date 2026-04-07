@@ -169,6 +169,17 @@
                   "sdk/overview",
                   "sdk/create-elata-demo",
                   {
+                    "group": "Device Integration",
+                    "pages": [
+                      "index",
+                      "integration-paths",
+                      "protocol-requirements",
+                      "submission-and-support",
+                      "testing-and-validation",
+                      "transport-contract"
+                    ]
+                  },
+                  {
                     "group": "Guides",
                     "pages": [
                       "sdk/guides/choose-the-right-package",
@@ -564,5 +575,10 @@
   },
   "search": {
     "prompt": "Search or ask..."
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    }
   }
 }

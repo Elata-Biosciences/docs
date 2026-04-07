@@ -1,0 +1,127 @@
+---
+title: Testing and Validation
+description: Validate frame correctness, lifecycle behavior, and failure handling before shipping a device integration.
+---
+
+Reliability is the main goal of this page.
+
+A device integration should survive real-world conditions, not just a clean demo
+session.
+
+## Definition of Done
+
+The integration is ready when all of the following are true:
+
+| Check | What to verify |
+| --- | --- |
+| Frame width | Every row width matches `numEegChannels` |
+| Channel order | The order is stable and documented |
+| Sample rate | Matches the real device output |
+| Status transitions | Connect, start, stop, disconnect, and failures are surfaced cleanly |
+| Packet handling | Malformed or short packets are rejected safely |
+| Reconnect behavior | The session can recover or fail clearly |
+
+## Minimum Test Set
+
+<Steps>
+  <Step title="Happy path">
+    Verify `connect -> start -> frames -> stop -> disconnect` with mocked BLE or
+    bridge fixtures.
+  </Step>
+  <Step title="Malformed packet handling">
+    Feed short, corrupt, or partial packets into the decoder and confirm that
+    they are rejected safely.
+  </Step>
+  <Step title="Disconnect and reconnect behavior">
+    Simulate device loss, browser disconnects, and retry behavior.
+  </Step>
+  <Step title="Firmware variants">
+    Add fixtures for known protocol differences across supported firmware lines.
+  </Step>
+  <Step title="Metadata verification">
+    Confirm channel names, count, sample rate, and timestamp handling.
+  </Step>
+</Steps>
+
+## What to Test First
+
+| Area | Why it usually fails first |
+| --- | --- |
+| Discovery filters | Wrong filters hide the device or expose unrelated devices |
+| Characteristic setup | One bad UUID or missing notify step blocks streaming |
+| Decoder assumptions | Endianness, packet size, or scaling errors corrupt rows |
+| Session teardown | Orphaned subscriptions make reconnects flaky |
+| Timestamp logic | Good-looking samples can still arrive with bad timing metadata |
+
+## CI Guidance
+
+Real hardware is not required for CI.
+
+Use mocked Bluetooth or bridge I/O and stable packet fixtures so the tests are
+repeatable and easy to maintain.
+
+<Check>
+  A good fixture set is more valuable than one manual test pass on a real
+  headset.
+</Check>
+
+## Manual Validation Pass
+
+After automated tests are green, do one real device pass for each supported
+firmware line.
+
+| Manual check | What to confirm |
+| --- | --- |
+| Initial pairing | the browser can discover and connect cleanly |
+| Streaming start | frames begin without duplicate subscriptions |
+| Session length | the stream stays stable over time |
+| Interruptions | transient disconnects behave predictably |
+| Recovery | the device can be stopped and started again |
+
+## Common Failure Patterns
+
+<AccordionGroup>
+  <Accordion title="Frames look valid but downstream features are wrong">
+    Check channel order, scaling, and sample rate before looking at models.
+  </Accordion>
+  <Accordion title="The first stream works but reconnects fail">
+    Review teardown. Most reconnect bugs come from stale subscriptions or an
+    incomplete session release.
+  </Accordion>
+  <Accordion title="Streaming starts but timing is inconsistent">
+    Revisit timestamp behavior and packet batching. Sample values can look fine
+    while timing metadata is still wrong.
+  </Accordion>
+  <Accordion title="The integration works on one firmware only">
+    Separate version-specific packet handling and add fixtures for each supported
+    firmware branch.
+  </Accordion>
+</AccordionGroup>
+
+## Release Readiness Checklist
+
+Before you hand off the integration, make sure you can answer these clearly:
+
+1. which devices and firmware versions were tested
+2. which browsers and platforms were tested
+3. what known limitations still exist
+4. what recovery behavior apps should expect
+5. who owns future maintenance
+
+## Related Docs
+
+- [Transport Contract](./transport-contract)
+- [Protocol Requirements](./protocol-requirements)
+- [Submission and Support](./submission-and-support)
+- [Troubleshooting](/sdk/operations/troubleshooting)
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Prepare the handoff" icon="arrow-right" href="./submission-and-support">
+    Package the tested integration for review or partner delivery.
+  </Card>
+  <Card title="Return to the guide index" icon="arrow-right" href="/sdk/eeg-web-ble/device-integration">
+    Review the full integration flow.
+  </Card>
+</CardGroup>

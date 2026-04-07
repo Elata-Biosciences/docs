@@ -1,0 +1,132 @@
+---
+title: Protocol Requirements
+description: Collect the protocol, BLE, and metadata details needed before coding a device adapter.
+---
+
+Do this work before implementation starts.
+
+A clean protocol inventory prevents most integration delays and avoids the
+common failure mode where the adapter works only for one test session or one
+firmware version.
+
+## Required Handoff
+
+Collect this information for every device and firmware line you plan to support.
+
+| Area | What to capture |
+| --- | --- |
+| Discovery | device name patterns, service UUIDs, filters |
+| GATT layout | characteristics, direction, notification/read/write behavior |
+| Packet format | framing, byte order, headers, counters, checksums |
+| EEG payload | channel names, channel count, sample rate, units, scaling |
+| Timing | device timestamps, local timestamps, sequence behavior |
+| Session control | any commands required to start or stop streaming |
+| Failure modes | disconnect behavior, low battery behavior, firmware quirks |
+
+## BLE Inventory Template
+
+Use this as the minimum intake format:
+
+```md
+## Device
+- Model:
+- Firmware:
+- Transport: Web Bluetooth / bridge / native helper
+
+## Discovery
+- Device name prefix:
+- Primary service UUIDs:
+- Required optional services:
+
+## Characteristics
+- UUID:
+  - purpose:
+  - read / write / notify:
+  - notes:
+
+## EEG payload
+- channel names:
+- channel count:
+- sample rate:
+- units and scaling:
+- timestamp source:
+
+## Session control
+- how streaming starts:
+- how streaming stops:
+- reconnect notes:
+```
+
+## Packet Questions You Should Answer Early
+
+| Question | Why it matters |
+| --- | --- |
+| How does a packet start and end? | The decoder needs a deterministic framing rule. |
+| Is there a packet counter or sequence field? | This helps detect drops, reordering, and corruption. |
+| Is there a checksum or CRC? | This helps reject bad packets safely. |
+| How are samples packed? | The decoder needs the exact byte layout and endianness. |
+| Can multiple time steps arrive in one packet? | This affects row batching and timestamp handling. |
+| What changes across firmware versions? | You need predictable version gating and test coverage. |
+
+## Metadata Rules
+
+Your adapter should never guess the basics.
+
+| Metadata | Rule |
+| --- | --- |
+| Channel names | Use a documented, stable order |
+| Channel count | Match the emitted EEG rows exactly |
+| Sample rate | Use the true output rate for the active mode |
+| Units | Document whether values are raw, scaled, or converted |
+| Clock source | Clearly state `device` or `local` |
+
+<Warning>
+  Do not tune models or downstream app logic until this metadata is verified.
+  Most reliability issues start here.
+</Warning>
+
+## Browser and Platform Questions
+
+This guide focuses on device integration, but platform constraints still matter.
+
+Confirm these before planning a browser BLE rollout:
+
+| Question | What to confirm |
+| --- | --- |
+| Does the device work over Web Bluetooth? | Chromium browsers only for this workflow |
+| Does it require a secure context? | `https://` or `localhost` |
+| Does it need a native helper? | If yes, use a separate package or bridge path |
+| Does Safari or iOS matter? | Browser Web Bluetooth is not available there |
+
+See [Compatibility](/sdk/operations/compatibility) for the current platform
+expectations.
+
+## Definition of Ready
+
+You are ready to implement when you can answer all of the following without
+guessing:
+
+1. which transport path you are taking
+2. how the browser discovers the device
+3. how the session starts and stops
+4. how packet bytes become EEG rows
+5. how timestamps and channel metadata should be emitted
+6. what caveats apply by firmware, browser, or platform
+
+## Related Docs
+
+- [Integration Paths](./integration-paths)
+- [Transport Contract](./transport-contract)
+- [Compatibility](/sdk/operations/compatibility)
+- [Troubleshooting](/sdk/operations/troubleshooting)
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Build the adapter" icon="arrow-right" href="./adapter-implementation">
+    Use the protocol inventory to implement a clean device layer.
+  </Card>
+  <Card title="Validate reliability" icon="arrow-right" href="./testing-and-validation">
+    Turn protocol assumptions into repeatable tests.
+  </Card>
+</CardGroup>

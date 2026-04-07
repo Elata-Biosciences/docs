@@ -1,0 +1,133 @@
+---
+title: "Integrate your device with the Elata SDK"
+description: Integrate a headset or biosignal device into the Elata EEG BLE stack with a simple, reliable path.
+---
+
+This guide is for device companies that want their hardware to work with the
+Elata SDK.
+
+The target is simple: your device should plug into the shared Elata transport
+boundary and emit stable frames that apps can trust.
+
+<CardGroup cols={2}>
+  <Card title="Start with the contract" icon="plug" href="/sdk/eeg-web/headband-transport">
+    Review the shared frame and transport types before writing adapter code.
+  </Card>
+  <Card title="Check browser support" icon="monitor-smartphone" href="/sdk/operations/compatibility">
+    Confirm Web Bluetooth, browser, and platform constraints first.
+  </Card>
+</CardGroup>
+
+## What You Are Building
+
+A production-ready integration should do three things well:
+
+1. connect reliably
+2. stream frames in a stable, predictable format
+3. recover cleanly when the device, browser, or radio link misbehaves
+
+In Elata terms, that means converging on `HeadbandTransport` and
+`HeadbandFrameV1` instead of exposing vendor-specific packet layouts directly.
+
+<Info>
+  Apps should depend on the shared Elata transport contract, not on raw vendor
+  packets. That keeps downstream integrations simple and makes device support
+  easier to maintain.
+</Info>
+
+## The Fast Path
+
+<Steps>
+  <Step title="Choose an integration path">
+    Decide whether your device belongs upstream in `eeg-web-ble`, in a separate
+    package, or in an app-local adapter. Use
+    [Integration Paths](./integration-paths) to make that decision early.
+  </Step>
+  <Step title="Capture the protocol inventory">
+    Gather your GATT services, characteristics, packet format, sample rate,
+    channel names, timestamp behavior, and known firmware quirks. See
+    [Protocol Requirements](./protocol-requirements).
+  </Step>
+  <Step title="Implement the adapter">
+    Build the device layer that handles discovery, session setup, packet
+    decoding, and frame emission. Start from
+    [Adapter Implementation](./adapter-implementation).
+  </Step>
+  <Step title="Validate for reliability">
+    Test connect, start, stop, disconnect, malformed packets, reconnects, and
+    frame correctness before tuning anything downstream. Use
+    [Testing and Validation](./testing-and-validation).
+  </Step>
+  <Step title="Prepare the handoff">
+    Package the integration with platform notes, tested firmware versions, and
+    support expectations. See [Submission and Support](./submission-and-support).
+  </Step>
+</Steps>
+
+## What You Need Before You Start
+
+| Requirement | Why it matters |
+| --- | --- |
+| Device protocol details | You need a complete byte-level picture before implementation starts. |
+| A supported browser path | Web Bluetooth requires Chrome or Edge in a secure context. |
+| Stable channel metadata | Apps need consistent channel order, names, and sample rates. |
+| A clear ownership model | Decide early whether this will live upstream, in a vendor package, or privately. |
+
+If you have not reviewed the current BLE flow yet, read
+[EEG BLE Getting Started](/sdk/eeg-web-ble/getting-started) first.
+
+## Guide Map
+
+<CardGroup cols={2}>
+  <Card title="Integration Paths" icon="git-branch" href="./integration-paths">
+    Choose where the integration should live and how it should be owned.
+  </Card>
+  <Card title="Transport Contract" icon="file-code-2" href="./transport-contract">
+    The shared interfaces your device must satisfy.
+  </Card>
+  <Card title="Protocol Requirements" icon="binary" href="./protocol-requirements">
+    The protocol and metadata inventory to collect before coding.
+  </Card>
+  <Card title="Adapter Implementation" icon="cpu" href="./adapter-implementation">
+    Build the device adapter and connect it to `BleTransport`.
+  </Card>
+  <Card title="Testing and Validation" icon="shield-check" href="./testing-and-validation">
+    Make the integration reliable under normal and failure conditions.
+  </Card>
+  <Card title="Submission and Support" icon="send" href="./submission-and-support">
+    Hand off the integration with the docs and caveats partners need.
+  </Card>
+</CardGroup>
+
+## Reliability First
+
+A device integration is not done when it streams once on a happy path.
+
+It is done when:
+
+| Done means | Notes |
+| --- | --- |
+| `connect()` is predictable | discovery and session setup succeed or fail clearly |
+| `start()` produces stable frames | row width, channel order, and sample rate stay correct |
+| `stop()` is clean | the session stops without leaving the device in a bad state |
+| `disconnect()` is clean | the browser session releases resources correctly |
+| failures are surfaced clearly | apps can react to disconnects, retries, and unsupported states |
+
+## Related Docs
+
+- [Headband Transport](/sdk/eeg-web/headband-transport)
+- [EEG BLE Getting Started](/sdk/eeg-web-ble/getting-started)
+- [Muse Device](/sdk/eeg-web-ble/muse-device)
+- [Compatibility](/sdk/operations/compatibility)
+- [Troubleshooting](/sdk/operations/troubleshooting)
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Choose an integration path" icon="arrow-right" href="./integration-paths">
+    Pick the right ownership and packaging model before coding.
+  </Card>
+  <Card title="Review the transport contract" icon="arrow-right" href="./transport-contract">
+    Confirm the frame and lifecycle expectations your adapter must satisfy.
+  </Card>
+</CardGroup>

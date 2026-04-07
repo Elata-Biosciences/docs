@@ -1,11 +1,11 @@
 ---
-title: EEG + BLE Integration
-description: Connect a Muse-compatible headband in the browser, stream EEG frames, and compute band powers with the Elata SDK.
-sidebarTitle: EEG + BLE Integration
+title: "EEG + BLE integration"
+description: "Connect a Muse-compatible headband in the browser, stream EEG frames, and compute band powers with the Elata SDK."
+sidebarTitle: "EEG + BLE Integration"
 ---
 
 <Note>
-Use this guide when you want the full browser EEG flow in one place. You will initialize the EEG WASM layer, connect over Web Bluetooth, stream frames, and turn those frames into app-ready metrics.
+  Use this guide when you want the full browser EEG flow in one place. You will initialize the EEG WASM layer, connect over Web Bluetooth, stream frames, and turn those frames into app-ready metrics.
 </Note>
 
 ## What this guide covers
@@ -31,7 +31,7 @@ You need:
 - a Muse 2 or Muse S headband
 
 <Warning>
-Safari and iOS do not support this browser BLE workflow. For those platforms, use a native BLE shell, a bridge app, or another transport layer and keep `@elata-biosciences/eeg-web` as your processing boundary.
+  Safari and iOS do not support this browser BLE workflow. For those platforms, use a native BLE shell, a bridge app, or another transport layer and keep `@elata-biosciences/eeg-web` as your processing boundary.
 </Warning>
 
 ## Choose the right starting point
@@ -58,122 +58,104 @@ Safari and iOS do not support this browser BLE workflow. For those platforms, us
 
 <Tabs>
   <Tab title="pnpm">
-
-  ```bash
-  pnpm add @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
-  ```
-
+    ```bash
+    pnpm add @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+    ```
   </Tab>
   <Tab title="npm">
-
-  ```bash
-  npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
-  ```
-
+    ```bash
+    npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+    ```
   </Tab>
 </Tabs>
 
 <Info>
-`@elata-biosciences/eeg-web-ble` depends on `@elata-biosciences/eeg-web` for shared frame types and the EEG WASM layer.
+  `@elata-biosciences/eeg-web-ble` depends on `@elata-biosciences/eeg-web` for shared frame types and the EEG WASM layer.
 </Info>
 
 ## Integration flow
 
 <Steps>
   <Step title="Initialize EEG WASM">
+    Initialize the EEG WASM module before you create a transport or call analysis helpers.
 
-  Initialize the EEG WASM module before you create a transport or call analysis helpers.
-
-  ```ts
-  import { initEegWasm } from "@elata-biosciences/eeg-web";
-
-  await initEegWasm();
-  ```
-
+    ```ts
+    import { initEegWasm } from "@elata-biosciences/eeg-web";
+    
+    await initEegWasm();
+    ```
   </Step>
-
   <Step title="Create a BLE transport">
+    Include an Athena decoder up front so both classic and Athena-compatible headbands work through the same setup.
 
-  Include an Athena decoder up front so both classic and Athena-compatible headbands work through the same setup.
-
-  ```ts
-  import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
-  import { BleTransport } from "@elata-biosciences/eeg-web-ble";
-
-  const transport = new BleTransport({
-    sourceName: "my-app",
-    deviceOptions: {
-      athenaDecoderFactory: () => new AthenaWasmDecoder(),
-      logger: (msg) => console.debug("[BLE]", msg),
-    },
-  });
-  ```
-
+    ```ts
+    import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+    import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+    
+    const transport = new BleTransport({
+      sourceName: "my-app",
+      deviceOptions: {
+        athenaDecoderFactory: () => new AthenaWasmDecoder(),
+        logger: (msg) => console.debug("[BLE]", msg),
+      },
+    });
+    ```
   </Step>
-
   <Step title="Subscribe to transport status and frames">
+    Use `onStatus` for UI state and `onFrame` for EEG data.
 
-  Use `onStatus` for UI state and `onFrame` for EEG data.
-
-  ```ts
-  import type { HeadbandFrameV1 } from "@elata-biosciences/eeg-web";
-
-  transport.onStatus = (status) => {
-    const el = document.getElementById("status");
-    if (el) el.textContent = status.state;
-  };
-
-  transport.onFrame = (frame: HeadbandFrameV1) => {
-    console.log("channels", frame.eeg.channelNames);
-    console.log("rows", frame.eeg.samples.length);
-  };
-  ```
-
+    ```ts
+    import type { HeadbandFrameV1 } from "@elata-biosciences/eeg-web";
+    
+    transport.onStatus = (status) => {
+      const el = document.getElementById("status");
+      if (el) el.textContent = status.state;
+    };
+    
+    transport.onFrame = (frame: HeadbandFrameV1) => {
+      console.log("channels", frame.eeg.channelNames);
+      console.log("rows", frame.eeg.samples.length);
+    };
+    ```
   </Step>
-
   <Step title="Connect from a user action and start streaming">
+    Browser BLE flows usually need a click or another user gesture to open the device picker.
 
-  Browser BLE flows usually need a click or another user gesture to open the device picker.
-
-  ```ts
-  async function connectHeadband() {
-    try {
-      await transport.connect();
-      await transport.start();
-    } catch (err) {
-      console.error("Connection failed:", err);
+    ```ts
+    async function connectHeadband() {
+      try {
+        await transport.connect();
+        await transport.start();
+      } catch (err) {
+        console.error("Connection failed:", err);
+      }
     }
-  }
-  ```
+    ```
 
-  In simpler app flows, `startStreaming()` is often the safest default because it combines `connect()` and `start()` in one call.
-
+    In simpler app flows, `startStreaming()` is often the safest default because it combines `connect()` and `start()` in one call.
   </Step>
-
   <Step title="Turn incoming frames into metrics">
+    Compute band powers per channel as frames arrive.
 
-  Compute band powers per channel as frames arrive.
-
-  ```ts
-  import { band_powers } from "@elata-biosciences/eeg-web";
-
-  transport.onFrame = (frame: HeadbandFrameV1) => {
-    const { eeg } = frame;
-
-    for (let ch = 0; ch < eeg.channelCount; ch++) {
-      const channelSamples = eeg.samples.map((row) => row[ch]);
-      const powers = band_powers(
-        new Float64Array(channelSamples),
-        eeg.sampleRateHz,
-      );
-
-      console.log(
-        `${eeg.channelNames[ch]}: alpha=${powers.alpha.toFixed(2)} beta=${powers.beta.toFixed(2)}`,
-      );
-    }
-  };
-  ```
-
+    ```ts
+    import { band_powers } from "@elata-biosciences/eeg-web";
+    
+    transport.onFrame = (frame: HeadbandFrameV1) => {
+      const { eeg } = frame;
+    
+      for (let ch = 0; ch < eeg.channelCount; ch++) {
+        const channelSamples = eeg.samples.map((row) => row[ch]);
+        const powers = band_powers(
+          new Float64Array(channelSamples),
+          eeg.sampleRateHz,
+        );
+    
+        console.log(
+          `${eeg.channelNames[ch]}: alpha=${powers.alpha.toFixed(2)} beta=${powers.beta.toFixed(2)}`,
+        );
+      }
+    };
+    ```
   </Step>
 </Steps>
 
@@ -275,14 +257,10 @@ transport.onStatus = (status) => {
 
 <Tabs>
   <Tab title="Classic Muse">
-
-  Works with the standard browser BLE flow.
-
+    Works with the standard browser BLE flow.
   </Tab>
   <Tab title="Athena firmware">
-
-  Use `athenaDecoderFactory` during transport creation. Athena devices expose richer frame content, including 8 EEG channels plus additional sensor data.
-
+    Use `athenaDecoderFactory` during transport creation. Athena devices expose richer frame content, including 8 EEG channels plus additional sensor data.
   </Tab>
 </Tabs>
 
@@ -297,7 +275,7 @@ const channelNames = transport.getEegNames();
 ```
 
 <Tip>
-If you are testing across Muse variants, keep the Athena decoder factory enabled from day one so you do not need a separate transport setup later.
+  If you are testing across Muse variants, keep the Athena decoder factory enabled from day one so you do not need a separate transport setup later.
 </Tip>
 
 ## Architecture at a glance
@@ -321,7 +299,7 @@ The browser EEG BLE flow usually looks like this:
 - Test with synthetic data first during development if no headband is available
 
 <Info>
-`band_powers` is most useful with roughly 1 to 2 seconds of data. At 256 Hz, that is about 256 to 512 samples.
+  `band_powers` is most useful with roughly 1 to 2 seconds of data. At 256 Hz, that is about 256 to 512 samples.
 </Info>
 
 ## Where to go next
