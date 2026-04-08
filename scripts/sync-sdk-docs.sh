@@ -305,7 +305,7 @@ for entry in "${REFERENCE_FILES[@]}"; do
         continue
     fi
 
-    if [[ -n "$old_content" ]]; then
+    if [[ -n "$old_hash" && -n "$old_content" ]]; then
         echo "_Changed since last sync — diff below. Merge updates into the relevant sub-pages._"
         echo ""
         echo '```diff'
@@ -320,6 +320,37 @@ for entry in "${REFERENCE_FILES[@]}"; do
     fi
     echo ""
 done
+
+# Warn about reference files in the SDK that aren't in REFERENCE_FILES.
+_tracked_refs=()
+for entry in "${REFERENCE_FILES[@]}"; do
+    _tracked_refs+=("${entry%%:*}")
+done
+
+_untracked_refs=()
+for f in "$SDK_DOCS/reference/"*.mdx; do
+    [[ -f "$f" ]] || continue
+    rel="reference/$(basename "$f")"
+    # create-elata-demo is handled by the auto-copy section, not REFERENCE_FILES
+    [[ "$rel" == "reference/create-elata-demo.mdx" ]] && continue
+    _found=0
+    for t in "${_tracked_refs[@]}"; do
+        [[ "$t" == "$rel" ]] && _found=1 && break
+    done
+    [[ "$_found" -eq 0 ]] && _untracked_refs+=("$rel")
+done
+
+if [[ ${#_untracked_refs[@]} -gt 0 ]]; then
+    echo "---"
+    echo ""
+    echo "> [!WARNING]"
+    echo "> **Untracked SDK reference files** — these exist in the SDK but are not in"
+    echo "> \`REFERENCE_FILES\` in the sync script. Add them to the script and create"
+    echo "> sub-pages in this repo before the next sync."
+    echo ">"
+    for r in "${_untracked_refs[@]}"; do echo "> - \`$r\`"; done
+    echo ""
+fi
 
 echo "---"
 echo ""
