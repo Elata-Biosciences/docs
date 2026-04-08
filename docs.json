@@ -235,6 +235,21 @@
                   "sdk/operations/compatibility",
                   "sdk/operations/troubleshooting"
                 ]
+              },
+              {
+                "group": "Contributors",
+                "pages": [
+                  "sdk/maintainers/contributing-eeg-transports"
+                ]
+              },
+              {
+                "group": "Maintainers",
+                "pages": [
+                  "sdk/maintainers/repo-workflows",
+                  "sdk/maintainers/related-repos",
+                  "sdk/maintainers/vendor-headset-onboarding",
+                  "sdk/maintainers/releasing"
+                ]
               }
             ]
           },
@@ -363,10 +378,10 @@
         "language": "cn",
         "tabs": [
           {
-            "tab": "学习",
+            "tab": "\u5b66\u4e60",
             "groups": [
               {
-                "group": "介绍",
+                "group": "\u4ecb\u7ecd",
                 "pages": [
                   "cn/learn/protocol-overview",
                   "cn/learn/how-it-works",
@@ -374,7 +389,7 @@
                 ]
               },
               {
-                "group": "$ELTA代币",
+                "group": "$ELTA\u4ee3\u5e01",
                 "pages": [
                   "cn/home/elta-token/elta-overview",
                   "cn/home/elta-token/elta-distribution",
@@ -384,7 +399,7 @@
                 ]
               },
               {
-                "group": "经济模型",
+                "group": "\u7ecf\u6d4e\u6a21\u578b",
                 "pages": [
                   "cn/learn/tokenomics",
                   "cn/learn/revenue-model",
@@ -392,7 +407,7 @@
                 ]
               },
               {
-                "group": "治理",
+                "group": "\u6cbb\u7406",
                 "pages": [
                   "cn/home/governance/structure",
                   "cn/home/governance/teams"
@@ -401,24 +416,24 @@
             ]
           },
           {
-            "tab": "Elata应用",
+            "tab": "Elata\u5e94\u7528",
             "groups": [
               {
-                "group": "概览",
+                "group": "\u6982\u89c8",
                 "pages": [
                   "cn/home/app-tokens",
                   "cn/home/build-an-app"
                 ]
               },
               {
-                "group": "构建应用",
+                "group": "\u6784\u5efa\u5e94\u7528",
                 "pages": [
                   "cn/builders/getting-started",
                   "cn/builders/launch-your-app"
                 ]
               },
               {
-                "group": "应用经济",
+                "group": "\u5e94\u7528\u7ecf\u6d4e",
                 "pages": [
                   "cn/builders/bonding-curve-economics",
                   "cn/builders/fee-pipeline",
@@ -427,7 +442,7 @@
                 ]
               },
               {
-                "group": "用户指南",
+                "group": "\u7528\u6237\u6307\u5357",
                 "pages": [
                   "cn/users/explore-apps",
                   "cn/users/buy-and-trade",
@@ -438,10 +453,10 @@
             ]
           },
           {
-            "tab": "生物特征SDK",
+            "tab": "\u751f\u7269\u7279\u5f81SDK",
             "groups": [
               {
-                "group": "概览",
+                "group": "\u6982\u89c8",
                 "pages": [
                   "cn/sdk/overview"
                 ]
@@ -471,7 +486,7 @@
                 ]
               },
               {
-                "group": "指南",
+                "group": "\u6307\u5357",
                 "pages": [
                   "cn/sdk/guides/eeg-ble-integration",
                   "cn/sdk/guides/rppg-camera"
@@ -480,7 +495,7 @@
             ]
           },
           {
-            "tab": "资源",
+            "tab": "\u8d44\u6e90",
             "groups": [
               {
                 "group": "AgentForge",
@@ -506,14 +521,14 @@
                 ]
               },
               {
-                "group": "参考",
+                "group": "\u53c2\u8003",
                 "pages": [
                   "cn/resources/smart-contracts",
                   "cn/resources/faq"
                 ]
               },
               {
-                "group": "社区",
+                "group": "\u793e\u533a",
                 "pages": [
                   "cn/resources/media-assets",
                   "cn/resources/references"

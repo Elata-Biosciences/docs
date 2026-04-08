@@ -1,0 +1,25 @@
+---
+title: "Vendor Headset Onboarding Checklist"
+description: "Step-by-step checklist for external device companies adding headset support to the Elata browser EEG stack."
+---
+
+Use this checklist when a hardware vendor wants to add headset support.
+
+The canonical repo guide lives in the SDK monorepo:
+
+- [docs/vendor-headset-onboarding-checklist.md](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/vendor-headset-onboarding-checklist.md)
+
+## Fast Path Summary
+
+1. Confirm protocol and GATT docs: UUIDs, packet format, sample rate, channel map, and timestamps.
+2. Choose the integration path:
+   - `eeg-web-ble` device module at `src/devices/<vendor>/`
+   - sibling package such as `packages/eeg-web-<vendor>` for bridge-heavy flows
+   - app-local adapter for private proofs of concept
+3. Converge on `HeadbandTransport` and `HeadbandFrameV1`.
+4. Add mocked BLE and packet tests.
+5. Update docs and add a changeset for publishable changes.
+
+For architecture and package expectations, see:
+
+- [Contributing EEG Transports](/sdk/maintainers/contributing-eeg-transports)

@@ -1,0 +1,32 @@
+---
+title: "Contributing EEG Transports"
+description: "How to add headset transports beyond the built-in Muse path for the Elata browser EEG stack."
+---
+
+The canonical, detailed guide lives in the SDK monorepo:
+
+**[docs/contributing-eeg-transports.md](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/contributing-eeg-transports.md)**
+
+## Summary
+
+- **`@elata-biosciences/eeg-web-ble`** is the shared **Web Bluetooth** transport package. It includes a **built-in Muse** implementation and is **not limited to Muse** for contributions.
+- **Layout:** `src/transport/` (`BleTransport`) vs `src/devices/muse/` (Muse protocol). Add new vendors under `src/devices/<vendor>/`.
+- New hardware should converge on **`HeadbandTransport`** and **`HeadbandFrameV1`** from **`@elata-biosciences/eeg-web`**.
+- Prefer a **new device module** in `eeg-web-ble`, a **`BleTransport` `device` adapter**, or a **sibling package** under `packages/` when the integration is large or needs a bridge.
+
+## Recommended Default For Generally Useful Devices
+
+Use an **upstream contribution inside `eeg-web-ble`**:
+
+- `packages/eeg-web-ble/src/devices/<vendor>/...` for protocol, GATT, and decode logic
+- reuse `src/transport/bleTransport.ts` for transport and frame behavior
+- type adapters against exported `BleDeviceLike` from `@elata-biosciences/eeg-web-ble`
+- add mocked Web Bluetooth tests in `src/__tests__/`
+- update package docs, maintainer docs, and SDK docs together
+- add a changeset if the change should ship
+
+Open a GitHub issue before large protocol or packaging changes. Follow the repo **[CONTRIBUTING guide](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/CONTRIBUTING.md)** for PRs, tests, and changesets.
+
+If you need a handoff-ready checklist for external partners, use:
+
+- [Vendor Headset Onboarding Checklist](/sdk/maintainers/vendor-headset-onboarding)
