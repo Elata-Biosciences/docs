@@ -27,6 +27,11 @@ fi
 SYNC_STATE="$DOCS_REPO/.sdk-sync-state"
 [[ -f "$SYNC_STATE" ]] || touch "$SYNC_STATE"
 
+# Stores the previous rendered content of each reference file so we can show
+# a diff instead of the full file. Filenames: <path-with-slashes-as-underscores>.prev
+STATE_DIR="$DOCS_REPO/.sdk-sync-state.d"
+mkdir -p "$STATE_DIR"
+
 CHANGED=()
 REMOVED=()
 
@@ -111,6 +116,19 @@ set_stored_hash() {
     grep -vF "  $rel" "$SYNC_STATE" > "$tmp" 2>/dev/null || true
     echo "$hash  $rel" >> "$tmp"
     mv "$tmp" "$SYNC_STATE"
+}
+
+# Returns the stored rendered content for a given SDK-relative path, or empty string.
+get_stored_content() {
+    local key="${1//\//_}"
+    local f="$STATE_DIR/$key.prev"
+    [[ -f "$f" ]] && cat "$f" || true
+}
+
+# Saves the rendered content for a given SDK-relative path.
+set_stored_content() {
+    local key="${1//\//_}"
+    printf '%s' "$2" > "$STATE_DIR/$key.prev"
 }
 
 # ---------------------------------------------------------------------------
@@ -253,8 +271,18 @@ for entry in "${REFERENCE_FILES[@]}"; do
     sdk_rel="${entry%%:*}"
     docs_rel="${entry##*:}"
     src="$SDK_DOCS/$sdk_rel"
+    docs_dir="$DOCS_REPO/$(dirname "$docs_rel")"
 
-    echo "### \`$sdk_rel\` → \`$docs_rel\` (and sibling pages)"
+    # List sibling sub-pages in the heading
+    siblings=""
+    if [[ -d "$docs_dir" ]]; then
+        siblings="$(ls "$docs_dir"/*.mdx 2>/dev/null | xargs -n1 basename | tr '\n' ' ' | sed 's/ $//')"
+    fi
+    if [[ -n "$siblings" ]]; then
+        echo "### \`$sdk_rel\` → \`$(dirname "$docs_rel")/\` ($siblings)"
+    else
+        echo "### \`$sdk_rel\` → \`$docs_rel\` (and sibling pages)"
+    fi
     echo ""
 
     if [[ ! -f "$src" ]]; then
@@ -263,9 +291,13 @@ for entry in "${REFERENCE_FILES[@]}"; do
         continue
     fi
 
-    new_hash="$(rewrite_links < "$src" | sha256sum | cut -d' ' -f1)"
+    new_content="$(rewrite_links < "$src")"
+    new_hash="$(echo "$new_content" | sha256sum | cut -d' ' -f1)"
     old_hash="$(get_stored_hash "$sdk_rel")"
+    old_content="$(get_stored_content "$sdk_rel")"
+
     set_stored_hash "$sdk_rel" "$new_hash"
+    set_stored_content "$sdk_rel" "$new_content"
 
     if [[ -n "$old_hash" && "$new_hash" == "$old_hash" ]]; then
         echo "_(unchanged since last sync — no action needed)_"
@@ -273,15 +305,19 @@ for entry in "${REFERENCE_FILES[@]}"; do
         continue
     fi
 
-    if [[ -n "$old_hash" ]]; then
-        echo "_Changed since last sync — review and merge updates into sub-pages if needed._"
+    if [[ -n "$old_content" ]]; then
+        echo "_Changed since last sync — diff below. Merge updates into the relevant sub-pages._"
+        echo ""
+        echo '```diff'
+        diff -u <(echo "$old_content") <(echo "$new_content") | tail -n +3 || true
+        echo '```'
     else
         echo "_First sync — review and merge into sub-pages if needed._"
+        echo ""
+        echo '```mdx'
+        echo "$new_content"
+        echo '```'
     fi
-    echo ""
-    echo '```'
-    rewrite_links < "$src"
-    echo '```'
     echo ""
 done
 
