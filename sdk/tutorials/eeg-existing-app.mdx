@@ -1,6 +1,6 @@
 ---
-title: "Add EEG to an existing browser app"
-description: "Step by step, wire Elata EEG processing into a browser app and verify the WASM path works."
+title: Add EEG To An Existing Browser App
+description: Step by step, wire Elata EEG processing into a browser app and verify the WASM path works.
 ---
 
 Use this page if you already have a browser app and want the recommended
@@ -12,7 +12,7 @@ only need the package model first, use [EEG In A Browser App](/sdk/guides/eeg-br
 This tutorial shows the recommended path for adding
 `@elata-biosciences/eeg-web` to an existing browser application.
 
-EEG is **optional** in the typical Elata journey. **Camera rPPG** is the usual
+EEG is **optional** in the typical Elata journey—**camera rPPG** is the usual
 primary integration unless your product needs brain-signal features.
 
 Use this when your app needs EEG analysis APIs in the browser.
@@ -101,11 +101,30 @@ This is the first thing to fix before adding more product logic.
 
 If you are using Vite, the two common fixes are:
 
-1. add `vite-plugin-wasm` and `vite-plugin-top-level-await`, then keep using
-   `await initEegWasm()`
-2. import the WASM asset URL directly and pass it to `initEegWasm(wasmUrl)`
+**Option 1 — add WASM plugins:**
 
-The guide at [EEG In A Browser App](/sdk/guides/eeg-browser) shows both patterns.
+```bash
+pnpm add -D vite-plugin-wasm vite-plugin-top-level-await
+```
+
+```ts vite.config.ts
+import wasm from "vite-plugin-wasm";
+import topLevelAwait from "vite-plugin-top-level-await";
+
+export default { plugins: [wasm(), topLevelAwait()] };
+```
+
+Then keep calling `await initEegWasm()` as normal.
+
+**Option 2 — pass the asset URL explicitly:**
+
+```ts
+import wasmUrl from "@elata-biosciences/eeg-web/wasm/eeg_wasm_bg.wasm?url";
+await initEegWasm(wasmUrl);
+```
+
+This avoids the plugins but requires the `?url` import to be resolvable by your
+bundler.
 
 If you are stuck, compare your app against the scaffolded `eeg-demo`
 app before assuming the package itself is broken.
@@ -138,16 +157,8 @@ loading working first, then add transport.
 - You expected device discovery: `eeg-web` does not do Bluetooth transport by itself
 - You are evaluating the SDK from scratch: start with [Build Your First Elata App](/sdk/tutorials/first-app) instead of manual setup
 
-## Next
+## Next Steps
 
-<CardGroup cols={3}>
-  <Card title="Add Web Bluetooth" icon="bluetooth" iconType="light" href="/sdk/tutorials/eeg-ble-live-stream">
-    Stream Muse EEG over BLE
-  </Card>
-  <Card title="eeg-web Reference" icon="brain" iconType="light" href="/sdk/eeg-web/getting-started">
-    Package API and exports
-  </Card>
-  <Card title="EEG In A Browser" icon="book-open" iconType="light" href="/sdk/guides/eeg-browser">
-    Integration overview
-  </Card>
-</CardGroup>
+- Add live Muse-compatible transport: [Stream Muse-Compatible EEG Over Web Bluetooth](/sdk/tutorials/eeg-ble-live-stream)
+- EEG package reference: [eeg-web](/sdk/eeg-web/getting-started)
+- Higher-level integration summary: [EEG In A Browser App](/sdk/guides/eeg-browser)

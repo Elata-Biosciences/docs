@@ -1,6 +1,6 @@
 ---
-title: "Compatibility"
-description: "Current browser, device, and Node.js expectations for the Elata SDK."
+title: Compatibility
+description: Current browser, device, and Node.js expectations for the Elata SDK.
 ---
 
 ## Package And Tooling Expectations
@@ -12,18 +12,14 @@ description: "Current browser, device, and Node.js expectations for the Elata SD
 | `@elata-biosciences/eeg-web-ble` | Chrome or Edge with Web Bluetooth | `>= 20` | depends on `@elata-biosciences/eeg-web` |
 | `@elata-biosciences/rppg-web` | modern browser with camera and WebAssembly | `>= 20` | packaged WASM assets must be reachable by the browser |
 
----
-
 ## Browser Support
 
 | Workflow | Chrome / Edge | Safari macOS | Safari iOS | Notes |
 | --- | --- | --- | --- | --- |
 | `create-elata-demo` | n/a | n/a | n/a | scaffolder runs in Node |
 | EEG WASM with `eeg-web` | Supported | Supported | Supported | requires packaged `wasm/` assets |
-| Muse browser BLE with `eeg-web-ble` | Supported in secure context | Not supported | Not supported | requires Web Bluetooth |
+| Web Bluetooth EEG with `eeg-web-ble` | Supported in secure context | Not supported for this workflow | Not supported for this workflow | requires Web Bluetooth |
 | rPPG with `rppg-web` | Supported | Supported | Supported with camera permissions | requires packaged `pkg/` assets |
-
----
 
 ## Web Bluetooth Expectations
 
@@ -32,31 +28,20 @@ description: "Current browser, device, and Node.js expectations for the Elata SD
 - Enable Bluetooth on the machine.
 - Expect Safari and iOS browser BLE to be unsupported for this workflow.
 
-<Warning>
-  `eeg-web-ble` requires Web Bluetooth and an `https://` origin or `localhost`. Safari and iOS do not support Web Bluetooth for Muse browser workflows.
-</Warning>
-
----
-
 ## Supported Device Classes
+
+**Built into `eeg-web-ble` today:**
 
 - Muse 2 and Muse S classic BLE devices
 - Muse S Athena protocol v2 devices
-- The synthetic Muse-compatible BLE bridge used for testing
+- the synthetic Muse-compatible BLE bridge used for testing
 
----
-
-## Safari And iOS Notes
-
-- `eeg-web` can be used as a browser-side WASM package on Safari when your app serves its packaged assets correctly.
-- `eeg-web-ble` is not a Safari or iOS browser workflow. Use a native app shell with CoreBluetooth or a companion bridge app streaming frames over WebSocket.
-- `rppg-web` can run on Safari and iOS, but camera permissions and packaged WASM delivery still need to be correct.
-
----
+Additional headsets can follow the same `HeadbandTransport` contract; see
+[Contributing EEG Transports](/maintainers/contributing-eeg-transports).
 
 ## Package Manager Notes
 
-Generated demo apps work with `pnpm` or `npm`. This repo prefers `pnpm` for
+Generated demo apps work with `pnpm` or `npm`, but this repo prefers `pnpm` for
 local development.
 
 If you scaffold a demo app inside another `pnpm` workspace and do not add it to
@@ -76,19 +61,3 @@ npm run dev
 ```
 
 </CodeGroup>
-
----
-
-## Related
-
-<CardGroup cols={3}>
-  <Card title="Troubleshooting" icon="wrench" iconType="light" href="/sdk/operations/troubleshooting">
-    Common failures and fixes
-  </Card>
-  <Card title="Choose A Package" icon="compass" iconType="light" href="/sdk/guides/choose-the-right-package">
-    Package decision guide
-  </Card>
-  <Card title="Muse Device" icon="microchip" iconType="light" href="/sdk/eeg-web-ble/muse-device">
-    Protocol details and browser support
-  </Card>
-</CardGroup>

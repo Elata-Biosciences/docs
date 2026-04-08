@@ -1,15 +1,22 @@
 ---
-title: "Create Elata Demo"
-description: "Scaffold Elata starter apps from published templates."
+title: create-elata-demo
+description: Scaffold Elata starter apps from published templates.
 ---
 
 ## What This Package Is
 
-`@elata-biosciences/create-elata-demo` is a CLI scaffolder that generates ready-to-run Elata web apps.
+This package provides the `create-elata-demo` CLI and the templates behind:
+
+- `rppg-demo`
+- `eeg-demo`
+
+Short aliases are also supported:
+
+- `rppg`
+- `eeg`
+- `eeg-ble`
 
 Use it when you want a clean scaffolded app or a consumer-facing reference project.
-
----
 
 ## When To Use It
 
@@ -19,30 +26,8 @@ Use this package when you want:
 - a reference project that matches the published package surface
 - a known-good baseline before integrating packages into an existing app
 
-Do not start with repo-internal demos when this package already covers your use case.
-
----
-
-## Templates
-
-The scaffolder exposes three user-facing app starters:
-
-| Template | Description |
-| --- | --- |
-| `rppg-demo` | React \+ Vite rPPG starter app |
-| `eeg-demo` | React \+ Vite EEG starter app with synthetic data and browser EEG wiring |
-| `eeg-ble` | Muse-compatible EEG starter with Chrome or Bluefy-on-iOS Web Bluetooth guidance |
-
-Short aliases are also supported:
-
-| Alias | Resolves to |
-| --- | --- |
-| `rppg` | `rppg-demo` |
-| `eeg` | `eeg-demo` |
-| `ble` | `eeg-ble` |
-| `eeg-web-ble-demo` | `eeg-ble` |
-
----
+Do not start with repo-internal demos when this package already covers your use
+case.
 
 ## Install And Invocation
 
@@ -62,9 +47,11 @@ npx @elata-biosciences/create-elata-demo my-app
 
 </CodeGroup>
 
----
+## Requirements
 
-## List Available Templates
+- Node.js `>= 18`
+
+## Template Listing
 
 <CodeGroup>
 
@@ -77,8 +64,6 @@ npx @elata-biosciences/create-elata-demo -- --list-templates
 ```
 
 </CodeGroup>
-
----
 
 ## Recommended Usage
 
@@ -99,9 +84,6 @@ pnpm create @elata-biosciences/elata-demo my-app -- --template eeg
 
 # EEG starter app with BLE alias
 pnpm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
-
-# Short BLE alias
-pnpm create @elata-biosciences/elata-demo my-app -- --template ble
 ```
 
 ```bash npm
@@ -119,64 +101,26 @@ npm create @elata-biosciences/elata-demo my-app -- --template eeg
 
 # EEG starter app with BLE alias
 npm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
-
-# Short BLE alias
-npm create @elata-biosciences/elata-demo my-app -- --template ble
 ```
 
 </CodeGroup>
 
-When the CLI is run interactively without `--template`, it prompts you to pick a template. In non-interactive runs, it falls back to `rppg-demo`.
-
-If you omit the project directory, the CLI also prompts for the project name.
-
----
+When the CLI is run interactively without `--template`, it prompts you to pick
+a template. In non-interactive runs, it still falls back to `rppg-demo`.
 
 ## What You Get
 
 Each generated app includes:
 
-- a minimal Vite \+ React app shell
+- a minimal Vite + React app shell
 - Elata packages pinned to a compatible set of versions
 - a template-specific `README.md`
-- a `build` script that type-checks and runs `vite build`
-
-After scaffolding:
-
-<CodeGroup>
-
-```bash pnpm
-cd my-app
-pnpm install
-pnpm run dev
-```
-
-```bash npm
-cd my-app
-npm install
-npm run dev
-```
-
-</CodeGroup>
-
----
-
-## What Happens Behind The Scenes
-
-The scaffolder binary:
-
-1. Prompts for the app type first when running interactively without `--template`
-2. Prompts for `projectName` when missing
-3. Validates the selected starter name
-4. Copies the chosen template into the target directory
-5. Renames `_gitignore` to `.gitignore`
-6. Rewrites placeholders like `__APP_NAME__` and package-version placeholders
-
----
+- a buildable project you can use as a comparison baseline later
 
 ## Workspace Caveat
 
-If you scaffold a new app inside another `pnpm` workspace and that app is not added to the workspace globs, run this from the parent directory:
+If you scaffold a new app inside another `pnpm` workspace and that app is not
+added to the workspace globs, run this from the parent directory:
 
 <CodeGroup>
 
@@ -193,8 +137,6 @@ npm run dev
 
 </CodeGroup>
 
----
-
 ## Repo Verification
 
 The package is tested from the repo with:
@@ -204,32 +146,11 @@ pnpm --dir packages/create-elata-demo test
 ./run.sh test create-elata-demo
 ```
 
-The second command also smoke-tests each template by scaffolding, installing dependencies, and running a build.
+The second command also smoke-tests each template by scaffolding, installing
+dependencies, and running a build.
 
----
+## Related Docs
 
-## When To Use The Scaffolder vs. Examples
-
-| If you want... | Use |
-| --- | --- |
-| A clean, self-contained scaffolded app with pinned deps | `create-elata-demo` |
-| A full product-shaped reference with routing, game loops, and charts | [Example Apps](/sdk/guides/example-apps) |
-| To modify the SDK itself | In-repo dev demos (`eeg-demo/`, `packages/rppg-web/demo/`) |
-
----
-
-## Next
-
-<CardGroup cols={3}>
-  <Card title="Build Your First App" icon="rocket" iconType="light" href="/sdk/tutorials/first-app">
-    Scaffold and run a starter app
-  </Card>
-
-  <Card title="Choose A Package" icon="compass" iconType="light" href="/sdk/guides/choose-the-right-package">
-    Package decision guide
-  </Card>
-
-  <Card title="Example Apps" icon="grid-2" iconType="light" href="/sdk/guides/example-apps">
-    Full reference implementations
-  </Card>
-</CardGroup>
+- Fastest onboarding page: [Quickstart](/sdk/tutorials/first-app)
+- First end-to-end tutorial: [Build Your First Elata App](/sdk/tutorials/first-app)
+- Package choice help: [Package Selection](/sdk/overview)

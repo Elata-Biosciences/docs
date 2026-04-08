@@ -7,7 +7,7 @@ description: "Connect to EEG headband devices over Web Bluetooth"
 
 Use `@elata-biosciences/eeg-web-ble` when your app needs:
 
-- browser-side discovery of Muse-compatible devices
+- browser-side discovery and streaming for **supported** headsets (Muse 2, Muse S classic, Muse S Athena out of the box)
 - live EEG streaming over Web Bluetooth
 - normalized headband frames for app logic or downstream analysis
 
@@ -17,9 +17,17 @@ Install it alongside `@elata-biosciences/eeg-web`.
 
 ## Installation
 
-```bash
+<CodeGroup>
+
+```bash pnpm
 pnpm add @elata-biosciences/eeg-web-ble @elata-biosciences/eeg-web
 ```
+
+```bash npm
+npm install @elata-biosciences/eeg-web-ble @elata-biosciences/eeg-web
+```
+
+</CodeGroup>
 
 `eeg-web-ble` depends on `eeg-web` for shared frame types and the WASM module.
 
@@ -68,6 +76,8 @@ await transport.startStreaming();
 // ... later
 await transport.stop();
 ```
+
+If you need finer-grained control (e.g. reconnect without re-pairing), you can call `connect()` and `start()` separately — but both are required; omitting `start()` produces silence with no error.
 
 ---
 
@@ -137,9 +147,19 @@ const channelNames = transport.getEegNames();
 
 ---
 
+## Key Exports
+
+- `BleTransport`
+- `BleDeviceLike` (adapter contract for custom headset integrations)
+- `MuseBleDevice` (default built-in device)
+- transport and frame types
+
+---
+
 ## Platform Caveats
 
 - Safari and iOS do not provide usable Web Bluetooth support for this workflow.
+- Athena startup requires an `athenaDecoderFactory`.
 - For Safari and iOS, use a native BLE shell, companion bridge, or hybrid WebView strategy with `@elata-biosciences/eeg-web` frame contracts as the boundary.
 - Firmware variants may differ in command behavior.
 
