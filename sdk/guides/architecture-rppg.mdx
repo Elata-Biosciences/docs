@@ -95,9 +95,9 @@ Can be JS/ONNX or native ML. Kept independent of the rPPG core.
 
 | Target | Approach | Package |
 | --- | --- | --- |
-| Web | Rust to WASM via `rppg-wasm`, wrapped by `rppg-web` for a stable TS API | `@elata-biosciences/rppg-web` |
-| Native | Rust to FFI via `rppg-ffi` | `rppg-ffi` crate |
-| Compatibility | Constructors also available through `eeg-wasm` / `eeg-ffi` | `@elata-biosciences/eeg-web` |
+| Web | Rust to WASM via the internal `elata-rppg-wasm` crate, wrapped by `rppg-web` for a stable TS API | `@elata-biosciences/rppg-web` |
+| Native | Rust to FFI via the internal `elata-rppg-ffi` crate | Internal binding crate |
+| Compatibility | Constructors also available through the internal `elata-eeg-wasm` / `elata-eeg-ffi` crates | `@elata-biosciences/eeg-web` |
 
 Camera and MediaPipe stay outside WASM, handled by browser or native APIs.
 

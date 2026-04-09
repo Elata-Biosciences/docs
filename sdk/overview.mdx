@@ -115,20 +115,17 @@ pnpm add @elata-biosciences/rppg-web
 
 ## Rust Crates
 
-The SDK is built on Rust crates that compile to WASM and native targets:
+The SDK is built on Rust crates that compile to WASM and native targets. The
+primary public Rust crates are the core and protocol crates; synthetic and
+binding crates are mainly internal packaging surfaces.
 
 | Crate | Purpose |
 | --- | --- |
-| `eeg-hal` | Core HAL traits: `EegDevice`, `SampleBuffer`, `ChannelConfig` |
-| `eeg-hal-synthetic` | Synthetic EEG device for testing |
-| `eeg-signal` | FFT, band power analysis, filtering |
-| `eeg-models` | Alpha Bump Detector, Calmness Model |
-| `eeg-ffi` | UniFFI bindings for iOS/Android |
-| `eeg-wasm` | WebAssembly bindings for browser |
-| `rppg` | rPPG pipeline core |
-| `rppg-wasm` | rPPG WASM bindings |
-| `bridge-proto` | BLE packet format and protocol |
-| `muse-proto` | Muse classic and Athena protocol |
+| `elata-eeg-hal` | Core HAL traits: `EegDevice`, `SampleBuffer`, `ChannelConfig` |
+| `elata-eeg-signal` | FFT, band power analysis, filtering |
+| `elata-eeg-models` | Alpha Bump Detector, Calmness Model |
+| `elata-rppg` | rPPG pipeline core |
+| `elata-muse-proto` | Muse classic and Athena protocol |
 
 ---
 
