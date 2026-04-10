@@ -138,10 +138,10 @@ See [Resources → Contracts](/resources/smart-contracts) for deployed addresses
 
 ```typescript
 import { createPublicClient, http } from 'viem'
-import { baseSepolia } from 'viem/chains' // Use 'base' for mainnet
+import { sepolia } from 'viem/chains'
 
 const client = createPublicClient({
-  chain: baseSepolia,
+  chain: sepolia,
   transport: http()
 })
 

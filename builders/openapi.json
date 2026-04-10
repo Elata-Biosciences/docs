@@ -1,152 +1,193 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
+    "title": "Elata Appstore Public API",
+    "version": "1.0.0",
+    "description": "Public ownership verification and premium-content discovery endpoints for Elata apps."
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
+      "url": "https://app.elata.bio/api/v1"
     }
   ],
   "paths": {
-    "/plants": {
+    "/users/{address}/elta": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "summary": "Read ELTA balance",
         "parameters": [
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
+            "name": "address",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "ELTA balance",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                "schema": { "$ref": "#/components/schemas/EltaResponse" }
               }
             }
           }
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/users/{address}/veelta": {
+      "get": {
+        "summary": "Read veELTA voting power",
         "parameters": [
           {
-            "name": "id",
+            "name": "address",
             "in": "path",
-            "description": "ID of plant to delete",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+          "200": {
+            "description": "veELTA balance and lock",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                "schema": { "$ref": "#/components/schemas/VeEltaResponse" }
               }
             }
           }
         }
       }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
-        "requestBody": {
-          "description": "Plant added to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+    },
+    "/apps/{tokenAddress}/users/{userAddress}/token": {
+      "get": {
+        "summary": "Verify app-token ownership",
+        "parameters": [
+          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "userAddress", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "fresh", "in": "query", "required": false, "schema": { "type": "string", "enum": ["1"] } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token ownership result",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenVerificationResponse" }
               }
             }
           }
-        },
+        }
+      }
+    },
+    "/apps/{tokenAddress}/users/{userAddress}/gate-access": {
+      "get": {
+        "summary": "Evaluate saved gate config",
+        "parameters": [
+          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "userAddress", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "fresh", "in": "query", "required": false, "schema": { "type": "string", "enum": ["1"] } }
+        ],
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
+            "description": "Gate evaluation result",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GateAccessResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{tokenAddress}/users/{userAddress}/premium-content": {
+      "get": {
+        "summary": "List currently owned premium content",
+        "parameters": [
+          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "userAddress", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "fresh", "in": "query", "required": false, "schema": { "type": "string", "enum": ["1"] } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owned premium content",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PremiumContentListResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{tokenAddress}/users/{userAddress}/premium-content/{contentId}": {
+      "get": {
+        "summary": "Check one premium content item",
+        "parameters": [
+          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "userAddress", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "contentId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "fresh", "in": "query", "required": false, "schema": { "type": "string", "enum": ["1"] } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Premium content ownership result",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PremiumContentItemResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{tokenAddress}/market-summary": {
+      "get": {
+        "summary": "Read app market summary",
+        "parameters": [
+          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "App market summary",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MarketSummaryResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{tokenAddress}/premium-content/catalog": {
+      "get": {
+        "summary": "Read premium-content catalog",
+        "parameters": [
+          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Premium-content catalog",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PremiumCatalogResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apps/{tokenAddress}/premium-content/activity": {
+      "get": {
+        "summary": "Read recent premium-content purchases",
+        "parameters": [
+          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent premium-content sales",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PremiumActivityResponse" }
+              }
+            }
           }
         }
       }
@@ -154,64 +195,39 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
+      "EltaResponse": {
         "type": "object",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
+          "address": { "type": "string" },
+          "token": { "type": "string" },
+          "balance": { "type": "string" },
+          "balanceFormatted": { "type": "string" },
+          "decimals": { "type": "integer" }
         }
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
+      "VeEltaResponse": {
+        "type": "object",
+        "properties": {
+          "address": { "type": "string" },
+          "token": { "type": "string" },
+          "votingPower": { "type": "string" },
+          "lock": {
             "type": "object",
             "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
+              "principal": { "type": "string" },
+              "unlockTime": { "type": "integer" },
+              "unlockDate": { "type": ["string", "null"] }
             }
           }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
         }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
+      },
+      "TokenVerificationResponse": { "type": "object" },
+      "GateAccessResponse": { "type": "object" },
+      "PremiumContentListResponse": { "type": "object" },
+      "PremiumContentItemResponse": { "type": "object" },
+      "MarketSummaryResponse": { "type": "object" },
+      "PremiumCatalogResponse": { "type": "object" },
+      "PremiumActivityResponse": { "type": "object" }
     }
   }
 }

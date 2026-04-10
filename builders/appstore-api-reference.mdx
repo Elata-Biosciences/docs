@@ -1,0 +1,281 @@
+---
+title: "API Reference"
+description: "Request and response shapes for the stable Elata Appstore public API."
+icon: "book"
+---
+
+# API Reference
+
+All routes are `GET` requests. Replace path parameters with valid `0x` addresses. `contentId` is the store-scoped premium content ID, not the ERC-721 `tokenId`.
+
+## GET /users/{address}/elta
+
+Returns the user's ELTA balance.
+
+```json
+{
+  "address": "0x1234...abcd",
+  "token": "ELTA",
+  "balance": "1000000000000000000",
+  "balanceFormatted": "1",
+  "decimals": 18
+}
+```
+
+## GET /users/{address}/veelta
+
+Returns the user's veELTA voting power and lock details.
+
+```json
+{
+  "address": "0x1234...abcd",
+  "token": "veELTA",
+  "votingPower": "500000000000000000",
+  "lock": {
+    "principal": "1000000000000000000",
+    "unlockTime": 1735689600,
+    "unlockDate": "2024-12-31T00:00:00.000Z"
+  }
+}
+```
+
+## GET /apps/{tokenAddress}/users/{userAddress}/token
+
+Returns liquid and staked balances for one app token.
+
+```json
+{
+  "app": {
+    "tokenAddress": "0xAppToken...",
+    "onchainAppId": 42,
+    "vaultAddress": "0xVault...",
+    "tokenLaunched": true
+  },
+  "user": {
+    "address": "0xUser..."
+  },
+  "balances": {
+    "liquid": {
+      "raw": "5000000000000000000",
+      "formatted": "5",
+      "decimals": 18
+    },
+    "staked": {
+      "raw": "2000000000000000000",
+      "formatted": "2",
+      "vaultAddress": "0xVault..."
+    },
+    "totalRaw": "7000000000000000000"
+  },
+  "currentlyHoldsAppToken": true
+}
+```
+
+## GET /apps/{tokenAddress}/users/{userAddress}/gate-access
+
+Evaluates the app's saved gate config against live chain state.
+
+```json
+{
+  "app": {
+    "tokenAddress": "0xAppToken...",
+    "onchainAppId": 42,
+    "hasGate": true
+  },
+  "user": {
+    "address": "0xUser..."
+  },
+  "checks": [
+    {
+      "id": "elta",
+      "minimum": "1000000000000000000",
+      "actual": "2500000000000000000",
+      "satisfied": true
+    },
+    {
+      "id": "appToken",
+      "minimum": "5000000000000000000",
+      "actual": "3000000000000000000",
+      "satisfied": false
+    }
+  ],
+  "meetsGate": false
+}
+```
+
+## GET /apps/{tokenAddress}/users/{userAddress}/premium-content
+
+Lists premium content the user currently holds for one app.
+
+```json
+{
+  "app": {
+    "tokenAddress": "0xAppToken...",
+    "onchainAppId": 42,
+    "contentStoreAddress": "0xStore...",
+    "content721Address": "0xCollection..."
+  },
+  "user": {
+    "address": "0xUser..."
+  },
+  "items": [
+    {
+      "contentId": "3",
+      "tokenId": "9",
+      "currentlyOwns": true,
+      "originalBuyerAddress": "0xUser...",
+      "purchaseTxHash": "0xPurchase...",
+      "lastTransferTxHash": null,
+      "lastUpdatedBlock": "123456",
+      "listing": {
+        "active": true,
+        "uri": "ipfs://...",
+        "metadata": {
+          "name": "Founder Pass"
+        }
+      }
+    }
+  ]
+}
+```
+
+## GET /apps/{tokenAddress}/users/{userAddress}/premium-content/{contentId}
+
+Returns current ownership plus purchase provenance for one premium content item.
+
+```json
+{
+  "app": {
+    "tokenAddress": "0xAppToken...",
+    "onchainAppId": 42,
+    "contentStoreAddress": "0xStore...",
+    "content721Address": "0xCollection..."
+  },
+  "user": {
+    "address": "0xUser..."
+  },
+  "contentId": "3",
+  "currentlyOwns": false,
+  "ownedTokens": [],
+  "purchaseProvenance": {
+    "hasPurchased": true,
+    "purchases": [
+      {
+        "tokenId": "9",
+        "buyerAddress": "0xUser...",
+        "price": "10000000000000000",
+        "protocolFee": "100000000000000",
+        "txHash": "0xPurchase...",
+        "blockNumber": "123456"
+      }
+    ]
+  },
+  "listing": {
+    "active": true,
+    "mintedCount": "14",
+    "maxSupply": "100",
+    "uri": "ipfs://...",
+    "metadata": {
+      "name": "Founder Pass"
+    }
+  }
+}
+```
+
+## GET /apps/{tokenAddress}/market-summary
+
+Returns cheap, app-scoped market metadata.
+
+```json
+{
+  "tokenAddress": "0xAppToken...",
+  "onchainAppId": 42,
+  "pairAddress": "0xPair...",
+  "contentStoreAddress": "0xStore...",
+  "content721Address": "0xCollection...",
+  "tokenLaunched": true,
+  "graduated": false,
+  "holderCount": 312,
+  "tradeCount": 1284,
+  "totalVolume": "913245000000000000000"
+}
+```
+
+## GET /apps/{tokenAddress}/premium-content/catalog
+
+Returns indexed listing data for premium content discovery.
+
+```json
+{
+  "app": {
+    "tokenAddress": "0xAppToken...",
+    "onchainAppId": 42,
+    "contentStoreAddress": "0xStore...",
+    "content721Address": "0xCollection..."
+  },
+  "items": [
+    {
+      "contentId": "3",
+      "active": true,
+      "mintedCount": "14",
+      "maxSupply": "100",
+      "defaultPaymentType": "NATIVE",
+      "uri": "ipfs://...",
+      "metadata": {
+        "name": "Founder Pass"
+      },
+      "prices": {
+        "native": "10000000000000000",
+        "app": "500000000000000000",
+        "elta": null,
+        "usdc": null
+      },
+      "saleWindow": {
+        "startTime": null,
+        "endTime": null
+      }
+    }
+  ]
+}
+```
+
+## GET /apps/{tokenAddress}/premium-content/activity
+
+Returns recent indexed premium-content purchases for one app.
+
+```json
+{
+  "app": {
+    "tokenAddress": "0xAppToken...",
+    "onchainAppId": 42,
+    "contentStoreAddress": "0xStore..."
+  },
+  "sales": [
+    {
+      "contentId": "3",
+      "tokenId": "9",
+      "buyerAddress": "0xBuyer...",
+      "price": "10000000000000000",
+      "protocolFee": "100000000000000",
+      "txHash": "0xPurchase...",
+      "blockNumber": "123456"
+    }
+  ]
+}
+```
+
+## Errors
+
+```json
+{
+  "error": "Invalid address"
+}
+```
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid address or parameter |
+| `404` | App or premium-content surface not configured |
+| `429` | Rate limited |
+| `500` | Internal error |
+| `503` | Primitive contract not configured |

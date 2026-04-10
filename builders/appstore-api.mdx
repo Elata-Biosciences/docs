@@ -1,0 +1,127 @@
+---
+title: "Appstore API"
+description: "Public ownership and premium-content verification endpoints for Elata apps."
+icon: "code"
+---
+
+# Elata Appstore API
+
+The Elata Appstore exposes a small public REST API for ownership verification. The stable surface is intentionally narrow: token checks, saved gate evaluation, premium-content ownership, and a small app-scoped discovery layer for bots.
+
+## Base URL
+
+```bash
+https://app.elata.bio/api/v1
+```
+
+<Tip>
+No API key is required. All endpoints are read-only and return JSON.
+</Tip>
+
+## Stable Endpoints
+
+### Primitive checks
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /users/{address}/elta` | Read ELTA balance |
+| `GET /users/{address}/veelta` | Read veELTA voting power and lock details |
+
+### App-scoped verification
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /apps/{tokenAddress}/users/{userAddress}/token` | Read liquid and staked app-token balances |
+| `GET /apps/{tokenAddress}/users/{userAddress}/gate-access` | Evaluate the app's saved gate config against live chain state |
+| `GET /apps/{tokenAddress}/users/{userAddress}/premium-content` | List the premium content the user currently holds |
+| `GET /apps/{tokenAddress}/users/{userAddress}/premium-content/{contentId}` | Check one premium content item, including purchase provenance |
+
+### Discovery
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /apps/{tokenAddress}/market-summary` | Cheap market metadata for one app |
+| `GET /apps/{tokenAddress}/premium-content/catalog` | Indexed premium-content listings for one app |
+| `GET /apps/{tokenAddress}/premium-content/activity` | Recent indexed premium-content sales for one app |
+
+## What Is Not Public
+
+The public API does not expose broad wallet-wide scans, generic supply endpoints, staking stats endpoints, or storefront endpoints beyond the app-scoped discovery routes above.
+
+## Authentication
+
+These routes are public and do not require SIWE, session cookies, or bearer tokens.
+
+## Rate Limits
+
+Rate limits are segmented by endpoint family rather than using one global bucket:
+
+| Family | Routes | Notes |
+| --- | --- | --- |
+| Primitive | `elta`, `veelta` | Cheapest reads |
+| Verification | `token`, `gate-access` | Live chain-backed |
+| Premium ownership | `premium-content` | Indexed ownership reads |
+| Discovery | `market-summary`, `catalog`, `activity` | Bot-attractive, app-scoped only |
+
+When a limit is exceeded, the API returns `429` with a `Retry-After` header.
+
+## Caching
+
+Elata applies HTTP cache headers to every public `GET` route.
+
+| Family | Typical cache behavior |
+| --- | --- |
+| Primitive | Short CDN caching |
+| Verification | About 5 seconds with a small stale window |
+| Premium ownership | About 5 seconds with a small stale window |
+| Discovery | About 60 seconds with stale-while-revalidate |
+
+For first-party flows that just confirmed a purchase, append `?fresh=1` to bypass the server cache on the next read.
+
+## Parameter Sourcing
+
+Use the app admin integration UI to copy:
+
+- `tokenAddress`
+- `onchainAppId`
+- `content721Address`
+- `contentStoreAddress`
+
+For premium content, the owner view on the app page shows the `contentId` for each listing. Use `contentId` in the public API, not ERC-721 `tokenId`.
+
+## Common Responses
+
+| Status | Meaning |
+| --- | --- |
+| `200` | Success |
+| `400` | Invalid address or parameter |
+| `404` | App or premium-content surface not configured |
+| `429` | Rate limited |
+| `500` | Server error |
+| `503` | Primitive contract not configured on this chain |
+
+## Quick Start
+
+```javascript
+const baseUrl = "https://app.elata.bio/api/v1";
+const tokenAddress = "0xYourAppTokenAddress";
+const userAddress = "0xUserWalletAddress";
+
+const response = await fetch(
+  `${baseUrl}/apps/${tokenAddress}/users/${userAddress}/gate-access`
+);
+
+if (!response.ok) {
+  throw new Error(`Gate check failed: ${response.status}`);
+}
+
+const result = await response.json();
+
+if (result.meetsGate) {
+  grantAccess();
+} else {
+  showUnlockPrompt(result.checks);
+}
+```
+
+See the [API Reference](/builders/appstore-api-reference) for response shapes and the [Code Examples](/builders/appstore-api-examples) for client patterns.

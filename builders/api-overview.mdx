@@ -138,10 +138,10 @@ See [Resources → Contracts](/resources/smart-contracts) for deployed addresses
 
 ```typescript
 import { createPublicClient, http } from 'viem'
-import { baseSepolia } from 'viem/chains' // Use 'base' for mainnet
+import { sepolia } from 'viem/chains'
 
 const client = createPublicClient({
-  chain: baseSepolia,
+  chain: sepolia,
   transport: http()
 })
 
@@ -338,6 +338,23 @@ elata-appstore/src/abi/
 | -------------- | ----------- |
 | Read endpoints | 100 req/min |
 | Heavy queries  | 10 req/min  |
+
+### Public Ownership API
+
+The stable public Appstore API lives under:
+
+```bash
+https://app.elata.bio/api/v1
+```
+
+Use it for:
+
+- app-token balance verification
+- saved gate evaluation
+- premium-content ownership checks
+- app-scoped discovery for bots
+
+See [Appstore API](/builders/appstore-api) for the exact routes and cache behavior.
 
 ### RPC Limits
 

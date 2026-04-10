@@ -1,0 +1,174 @@
+---
+title: "API Examples"
+description: "Practical ownership-verification and premium-content integration examples."
+icon: "laptop-code"
+---
+
+# Code Examples
+
+These examples target the stable v1 ownership API.
+
+## Constants
+
+```javascript
+const BASE_URL = "https://app.elata.bio/api/v1";
+const APP_TOKEN = "0xYourAppTokenAddress";
+```
+
+## Check Saved Gate Access
+
+```javascript
+async function checkGateAccess(userAddress) {
+  const response = await fetch(
+    `${BASE_URL}/apps/${APP_TOKEN}/users/${userAddress}/gate-access`
+  );
+
+  if (!response.ok) {
+    throw new Error(`Gate check failed: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+const result = await checkGateAccess("0xUserWalletAddress");
+
+if (result.meetsGate) {
+  unlockApp();
+} else {
+  renderMissingRequirements(result.checks);
+}
+```
+
+## Check Token Balances
+
+```javascript
+async function getTokenState(userAddress) {
+  const response = await fetch(
+    `${BASE_URL}/apps/${APP_TOKEN}/users/${userAddress}/token`
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch token state");
+  return response.json();
+}
+
+const tokenState = await getTokenState("0xUserWalletAddress");
+const liquid = BigInt(tokenState.balances.liquid.raw);
+const staked = BigInt(tokenState.balances.staked.raw);
+```
+
+## Check Premium Content Ownership
+
+```javascript
+async function userOwnsContent(userAddress, contentId) {
+  const response = await fetch(
+    `${BASE_URL}/apps/${APP_TOKEN}/users/${userAddress}/premium-content/${contentId}`
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch premium content state");
+  const data = await response.json();
+
+  return {
+    currentlyOwns: data.currentlyOwns,
+    hasPurchasedBefore: data.purchaseProvenance.hasPurchased,
+    ownedTokens: data.ownedTokens,
+  };
+}
+```
+
+## Refresh Immediately After Purchase
+
+Use `fresh=1` for the first post-purchase read when your app just confirmed a purchase.
+
+```javascript
+async function refreshOwnedContent(userAddress) {
+  const response = await fetch(
+    `${BASE_URL}/apps/${APP_TOKEN}/users/${userAddress}/premium-content?fresh=1`
+  );
+
+  if (!response.ok) throw new Error("Failed to refresh ownership");
+  return response.json();
+}
+```
+
+## React Query Example
+
+```tsx
+import { useQuery } from "@tanstack/react-query";
+
+function useGateAccess(userAddress: string | undefined) {
+  return useQuery({
+    queryKey: ["elata-gate-access", APP_TOKEN, userAddress],
+    enabled: Boolean(userAddress),
+    staleTime: 5_000,
+    queryFn: async () => {
+      const response = await fetch(
+        `${BASE_URL}/apps/${APP_TOKEN}/users/${userAddress}/gate-access`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Gate check failed: ${response.status}`);
+      }
+
+      return response.json();
+    },
+  });
+}
+```
+
+## Next.js Server Component Example
+
+```tsx
+async function getPremiumContent(userAddress: string) {
+  const response = await fetch(
+    `${BASE_URL}/apps/${APP_TOKEN}/users/${userAddress}/premium-content`,
+    {
+      next: { revalidate: 5 },
+    }
+  );
+
+  if (!response.ok) return null;
+  return response.json();
+}
+```
+
+## Bot Discovery Example
+
+```javascript
+async function getCatalog() {
+  const response = await fetch(
+    `${BASE_URL}/apps/${APP_TOKEN}/premium-content/catalog`
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch catalog");
+  return response.json();
+}
+
+async function getRecentSales() {
+  const response = await fetch(
+    `${BASE_URL}/apps/${APP_TOKEN}/premium-content/activity`
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch premium activity");
+  return response.json();
+}
+```
+
+## Client Caching Guidance
+
+| Route family | Recommended client TTL |
+| --- | --- |
+| Primitive | 10-15 seconds |
+| Verification | 5 seconds |
+| Premium ownership | 5 seconds |
+| Discovery | 30-60 seconds |
+
+## BigInt Comparisons
+
+```javascript
+const required = BigInt("5000000000000000000");
+const actual = BigInt(result.checks.find((check) => check.id === "appToken").actual);
+
+if (actual >= required) {
+  unlockPremiumTier();
+}
+```

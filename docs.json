@@ -115,7 +115,10 @@
                   "builders/introduction",
                   "builders/getting-started",
                   "builders/launch-your-app",
-                  "builders/install-and-run"
+                  "builders/install-and-run",
+                  "builders/appstore-api",
+                  "builders/appstore-api-reference",
+                  "builders/appstore-api-examples"
                 ]
               },
               {
