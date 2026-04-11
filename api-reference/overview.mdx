@@ -1,88 +1,100 @@
 ---
 title: "API Reference Overview"
-description: "Smart contract interfaces for the Elata protocol"
+description: "Canonical reference for the Elata Appstore public ownership API."
 ---
 
-## Overview
+# API Reference Overview
 
-The Elata protocol is composed of modular smart contracts deployed on Ethereum and Sepolia. This reference documents the public interfaces for the current protocol stack.
+This tab documents the only intended public API surface for Elata apps: read-only ownership verification, saved gate evaluation, premium-content ownership, and a small app-scoped discovery layer.
 
----
+## Base URL
 
-## Contract Map
-
-| Contract | Purpose | Category |
-|---|---|---|
-| **AppRegistry** | Canonical app ownership and contributor-split mapping | Core |
-| **ContributorSplit** | Pull-based contributor payout accounting | Core |
-| **AppFeeRouter** | Routes fees from apps to protocol destinations | Fees |
-| **FeeSwapper** | Swaps collected fee tokens before distribution | Fees |
-| **FeeManager** | Fee accounting buckets by app, kind, and asset | Fees |
-| **RewardsDistributor** | Protocol-level reward distribution to stakers | Rewards |
-| **AppRewardsDistributor** | Per-app reward distribution to token holders | Rewards |
-| **VeELTA Votes** | Vote-escrowed ELTA governance power | Governance |
-| **StakeVault Votes** | Staking vault voting weight | Governance |
-| **ElataPoints** | Non-transferable participation reputation | Reputation |
-| **TreasuryUSDCVault** | USDC treasury custody | Treasury |
-
----
-
-## Architecture
-
-```mermaid
-graph TB
-    subgraph "App Layer"
-        AR[AppRegistry]
-        CS[ContributorSplit]
-    end
-
-    subgraph "Fee Pipeline"
-        AFR[AppFeeRouter]
-        FS[FeeSwapper]
-        FM[FeeManager]
-    end
-
-    subgraph "Rewards"
-        RD[RewardsDistributor]
-        ARD[AppRewardsDistributor]
-    end
-
-    subgraph "Governance"
-        VE[VeELTA Votes]
-        SV[StakeVault Votes]
-    end
-
-    subgraph "Other"
-        EP[ElataPoints]
-        TV[TreasuryUSDCVault]
-    end
-
-    AR --> AFR
-    AFR --> FS
-    FS --> FM
-    FM --> RD
-    FM --> ARD
-    FM --> TV
-    AR --> CS
-    VE --> RD
-    SV --> RD
+```bash
+https://app.elata.bio/api/v1
 ```
 
----
+<Tip>
+These routes are public. They do not require SIWE, session cookies, bearer tokens, or API keys.
+</Tip>
 
-## Networks
+## Stable Surface
 
-| Network | Status |
-|---|---|
-| Ethereum mainnet | Production |
-| Sepolia | Testnet |
+### Primitive checks
 
-For deployed addresses, see [Resources → Smart Contracts](/resources/smart-contracts).
+- `GET /users/{address}/elta`
+- `GET /users/{address}/veelta`
 
----
+### App-scoped verification
 
-## Source Code
+- `GET /apps/{tokenAddress}/users/{userAddress}/token`
+- `GET /apps/{tokenAddress}/users/{userAddress}/gate-access`
+- `GET /apps/{tokenAddress}/users/{userAddress}/premium-content`
+- `GET /apps/{tokenAddress}/users/{userAddress}/premium-content/{contentId}`
 
-All contracts are open source:
+### Discovery
 
-- [elata-protocol](https://github.com/elata-biosciences/elata-protocol) — Solidity source and deployment scripts
+- `GET /apps/{tokenAddress}/market-summary`
+- `GET /apps/{tokenAddress}/premium-content/catalog`
+- `GET /apps/{tokenAddress}/premium-content/activity`
+
+## What This API Is For
+
+Use these routes when your app needs to:
+
+- verify whether a wallet currently holds an app token
+- evaluate the app's saved gate thresholds against live balances
+- check whether a wallet owns specific premium content
+- fetch app-scoped catalog or recent-sale data for discovery and bot flows
+
+## What Is Not Public
+
+This API intentionally does **not** expose:
+
+- broad wallet-wide scans
+- generic admin or moderation data
+- release-management actions
+- storefront-management endpoints
+- unrelated contract reference material
+
+## Rate Limits
+
+Rate limits are segmented by route family:
+
+| Family | Limit |
+| --- | --- |
+| Primitive | `120` requests / minute |
+| Verification | `90` requests / minute |
+| Premium ownership | `60` requests / minute |
+| Discovery | `45` requests / minute |
+
+If a limit is exceeded, the API returns `429` and a `Retry-After` header.
+
+## Caching
+
+Elata applies both HTTP caching and short server-side caching:
+
+| Family | Typical cache behavior |
+| --- | --- |
+| Primitive | `s-maxage=15`, `stale-while-revalidate=30` |
+| Verification | `s-maxage=5`, `stale-while-revalidate=5` |
+| Premium ownership | `s-maxage=5`, `stale-while-revalidate=5` |
+| Discovery | `s-maxage=60`, `stale-while-revalidate=120` |
+
+Append `?fresh=1` to bypass the server-side cache on the next read after a just-confirmed purchase or state change.
+
+## Parameter Notes
+
+- `tokenAddress` and `userAddress` must be valid `0x` Ethereum addresses.
+- `contentId` is the store-scoped premium content ID, not the ERC-721 `tokenId`.
+- Premium-content routes are only available for apps that have indexed premium-content surfaces configured.
+
+## Network
+
+Elata is currently live on **Ethereum Sepolia** for this public API surface. Base is the intended launch network later, but the current documented public endpoints should describe the running Sepolia-backed environment today.
+
+## Guide Pages
+
+For narrative integration guidance and code samples, see:
+
+- [Appstore API](/builders/appstore-api)
+- [API Examples](/builders/appstore-api-examples)

@@ -2,6 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Elata Docs",
+  "openapi": "/builders/openapi.json",
   "colors": {
     "primary": "#7D66D9",
     "light": "#7D66D9",
@@ -201,39 +202,32 @@
                 ]
               },
               {
-                "group": "App Management",
+                "group": "Primitive Checks",
                 "pages": [
-                  "api-reference/app-registry",
-                  "api-reference/contributor-split"
+                  "api-reference/elta-balance",
+                  "api-reference/veelta-balance"
                 ]
               },
               {
-                "group": "Fees",
+                "group": "App Verification",
                 "pages": [
-                  "api-reference/app-fee-router",
-                  "api-reference/fee-swapper",
-                  "api-reference/fee-manager"
+                  "api-reference/app-token-ownership",
+                  "api-reference/gate-access"
                 ]
               },
               {
-                "group": "Rewards",
+                "group": "Premium Content",
                 "pages": [
-                  "api-reference/rewards-distributor",
-                  "api-reference/app-rewards-distributor"
+                  "api-reference/premium-content-list",
+                  "api-reference/premium-content-item"
                 ]
               },
               {
-                "group": "Governance",
+                "group": "Discovery",
                 "pages": [
-                  "api-reference/veelta-votes",
-                  "api-reference/stake-vault-votes",
-                  "api-reference/elata-points"
-                ]
-              },
-              {
-                "group": "Treasury",
-                "pages": [
-                  "api-reference/treasury-usdc-vault"
+                  "api-reference/market-summary",
+                  "api-reference/premium-content-catalog",
+                  "api-reference/premium-content-activity"
                 ]
               }
             ]

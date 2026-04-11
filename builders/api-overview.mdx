@@ -44,62 +44,32 @@ graph TB
 
 ## App Store API
 
-The App Store provides REST endpoints for reading data.
+The public Appstore API is intentionally narrow and read-only. It exists for ownership verification, saved gate evaluation, premium-content ownership checks, and a small app-scoped discovery layer.
 
 ### Base URL
 
 ```
-https://app.elata.bio/api
+https://app.elata.bio/api/v1
 ```
 
-### Endpoints
+<Tip>
+No API key is required. These routes are public JSON `GET` endpoints and currently run against Ethereum Sepolia. Base is the intended later launch network.
+</Tip>
 
-#### Get All Apps
+### Public Routes
 
-```bash
-GET /api/apps
-```
+| Family | Routes |
+| ------------------- | ----------------------------- |
+| Primitive checks | `GET /users/{address}/elta`, `GET /users/{address}/veelta` |
+| App verification | `GET /apps/{tokenAddress}/users/{userAddress}/token`, `GET /apps/{tokenAddress}/users/{userAddress}/gate-access` |
+| Premium content | `GET /apps/{tokenAddress}/users/{userAddress}/premium-content`, `GET /apps/{tokenAddress}/users/{userAddress}/premium-content/{contentId}` |
+| Discovery | `GET /apps/{tokenAddress}/market-summary`, `GET /apps/{tokenAddress}/premium-content/catalog`, `GET /apps/{tokenAddress}/premium-content/activity` |
 
-Returns list of all apps with metadata:
+### Canonical Docs
 
-```json
-{
-  "apps": [
-    {
-      "id": "...",
-      "tokenAddress": "0x...",
-      "name": "NeuroPong",
-      "symbol": "NPONG",
-      "description": "...",
-      "imageUrl": "...",
-      "creator": "0x...",
-      "status": "raising" | "live",
-      "createdAt": "2024-01-01T00:00:00Z"
-    }
-  ]
-}
-```
-
-#### Get Single App
-
-```bash
-GET /api/apps/{tokenAddress}
-```
-
-Returns detailed app information including:
-
-- Basic metadata
-- Social links
-- Team members
-- Artifacts (game files)
-
-#### Get Prices
-
-```bash
-GET /api/prices
-```
-
-Returns current ELTA price data for UI display.
+- [API Reference](/api-reference/overview) for endpoint-by-endpoint reference
+- [Appstore API](/builders/appstore-api) for integration guidance
+- [API Examples](/builders/appstore-api-examples) for client patterns
 
 ---
 
@@ -354,7 +324,18 @@ Use it for:
 - premium-content ownership checks
 - app-scoped discovery for bots
 
-See [Appstore API](/builders/appstore-api) for the exact routes and cache behavior.
+Rate limits and caching are segmented by route family:
+
+| Route family | Rate limit | HTTP cache |
+| --- | --- | --- |
+| Primitive | `120` requests / minute | `s-maxage=15`, `stale-while-revalidate=30` |
+| Verification | `90` requests / minute | `s-maxage=5`, `stale-while-revalidate=5` |
+| Premium ownership | `60` requests / minute | `s-maxage=5`, `stale-while-revalidate=5` |
+| Discovery | `45` requests / minute | `s-maxage=60`, `stale-while-revalidate=120` |
+
+For first-party post-purchase flows, append `?fresh=1` to bypass the server cache on the next read.
+
+See [Appstore API](/builders/appstore-api) for the guide layer and [API Reference](/api-reference/overview) for the exact request and response contracts.
 
 ### RPC Limits
 

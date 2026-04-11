@@ -3,24 +3,28 @@
   "info": {
     "title": "Elata Appstore Public API",
     "version": "1.0.0",
-    "description": "Public ownership verification and premium-content discovery endpoints for Elata apps."
+    "description": "Public ownership verification and premium-content discovery endpoints for Elata apps. Elata is currently running this surface on Ethereum Sepolia; Base is the intended later launch network."
   },
   "servers": [
     {
-      "url": "https://app.elata.bio/api/v1"
+      "url": "https://app.elata.bio/api/v1",
+      "description": "Current public deployment (Ethereum Sepolia)"
     }
+  ],
+  "tags": [
+    { "name": "Primitive Checks" },
+    { "name": "App Verification" },
+    { "name": "Premium Content" },
+    { "name": "Discovery" }
   ],
   "paths": {
     "/users/{address}/elta": {
       "get": {
+        "tags": ["Primitive Checks"],
         "summary": "Read ELTA balance",
+        "description": "Returns the wallet's current ELTA balance on the active Elata network.",
         "parameters": [
-          {
-            "name": "address",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
+          { "$ref": "#/components/parameters/AddressParam" }
         ],
         "responses": {
           "200": {
@@ -30,60 +34,73 @@
                 "schema": { "$ref": "#/components/schemas/EltaResponse" }
               }
             }
-          }
+          },
+          "400": { "$ref": "#/components/responses/InvalidAddressResponse" },
+          "429": { "$ref": "#/components/responses/RateLimitedResponse" },
+          "500": { "$ref": "#/components/responses/EltaReadFailedResponse" },
+          "503": { "$ref": "#/components/responses/EltaNotConfiguredResponse" }
         }
       }
     },
     "/users/{address}/veelta": {
       "get": {
+        "tags": ["Primitive Checks"],
         "summary": "Read veELTA voting power",
+        "description": "Returns the wallet's current veELTA voting power and lock details.",
         "parameters": [
-          {
-            "name": "address",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
+          { "$ref": "#/components/parameters/AddressParam" }
         ],
         "responses": {
           "200": {
-            "description": "veELTA balance and lock",
+            "description": "veELTA balance and lock details",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/VeEltaResponse" }
               }
             }
-          }
+          },
+          "400": { "$ref": "#/components/responses/InvalidAddressResponse" },
+          "429": { "$ref": "#/components/responses/RateLimitedResponse" },
+          "500": { "$ref": "#/components/responses/VeEltaReadFailedResponse" },
+          "503": { "$ref": "#/components/responses/VeEltaNotConfiguredResponse" }
         }
       }
     },
     "/apps/{tokenAddress}/users/{userAddress}/token": {
       "get": {
+        "tags": ["App Verification"],
         "summary": "Verify app-token ownership",
+        "description": "Returns liquid and staked balances for one app token and whether the wallet currently holds that token.",
         "parameters": [
-          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "userAddress", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "fresh", "in": "query", "required": false, "schema": { "type": "string", "enum": ["1"] } }
+          { "$ref": "#/components/parameters/TokenAddressParam" },
+          { "$ref": "#/components/parameters/UserAddressParam" },
+          { "$ref": "#/components/parameters/FreshParam" }
         ],
         "responses": {
           "200": {
-            "description": "Token ownership result",
+            "description": "App-token ownership result",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/TokenVerificationResponse" }
               }
             }
-          }
+          },
+          "400": { "$ref": "#/components/responses/InvalidAddressResponse" },
+          "404": { "$ref": "#/components/responses/AppNotFoundResponse" },
+          "429": { "$ref": "#/components/responses/RateLimitedResponse" },
+          "500": { "$ref": "#/components/responses/TokenVerificationFailedResponse" }
         }
       }
     },
     "/apps/{tokenAddress}/users/{userAddress}/gate-access": {
       "get": {
+        "tags": ["App Verification"],
         "summary": "Evaluate saved gate config",
+        "description": "Evaluates the app's saved gate thresholds against live chain-backed balances for one wallet.",
         "parameters": [
-          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "userAddress", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "fresh", "in": "query", "required": false, "schema": { "type": "string", "enum": ["1"] } }
+          { "$ref": "#/components/parameters/TokenAddressParam" },
+          { "$ref": "#/components/parameters/UserAddressParam" },
+          { "$ref": "#/components/parameters/FreshParam" }
         ],
         "responses": {
           "200": {
@@ -93,17 +110,23 @@
                 "schema": { "$ref": "#/components/schemas/GateAccessResponse" }
               }
             }
-          }
+          },
+          "400": { "$ref": "#/components/responses/InvalidAddressResponse" },
+          "404": { "$ref": "#/components/responses/AppNotFoundResponse" },
+          "429": { "$ref": "#/components/responses/RateLimitedResponse" },
+          "500": { "$ref": "#/components/responses/GateAccessFailedResponse" }
         }
       }
     },
     "/apps/{tokenAddress}/users/{userAddress}/premium-content": {
       "get": {
+        "tags": ["Premium Content"],
         "summary": "List currently owned premium content",
+        "description": "Lists the premium content items a wallet currently holds for one app.",
         "parameters": [
-          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "userAddress", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "fresh", "in": "query", "required": false, "schema": { "type": "string", "enum": ["1"] } }
+          { "$ref": "#/components/parameters/TokenAddressParam" },
+          { "$ref": "#/components/parameters/UserAddressParam" },
+          { "$ref": "#/components/parameters/FreshParam" }
         ],
         "responses": {
           "200": {
@@ -113,18 +136,24 @@
                 "schema": { "$ref": "#/components/schemas/PremiumContentListResponse" }
               }
             }
-          }
+          },
+          "400": { "$ref": "#/components/responses/InvalidAddressResponse" },
+          "404": { "$ref": "#/components/responses/PremiumSurfaceNotConfiguredResponse" },
+          "429": { "$ref": "#/components/responses/RateLimitedResponse" },
+          "500": { "$ref": "#/components/responses/PremiumOwnershipFailedResponse" }
         }
       }
     },
     "/apps/{tokenAddress}/users/{userAddress}/premium-content/{contentId}": {
       "get": {
+        "tags": ["Premium Content"],
         "summary": "Check one premium content item",
+        "description": "Returns ownership and purchase provenance for one store-scoped premium content item. `contentId` is not the ERC-721 tokenId.",
         "parameters": [
-          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "userAddress", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "contentId", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "fresh", "in": "query", "required": false, "schema": { "type": "string", "enum": ["1"] } }
+          { "$ref": "#/components/parameters/TokenAddressParam" },
+          { "$ref": "#/components/parameters/UserAddressParam" },
+          { "$ref": "#/components/parameters/ContentIdParam" },
+          { "$ref": "#/components/parameters/FreshParam" }
         ],
         "responses": {
           "200": {
@@ -134,15 +163,22 @@
                 "schema": { "$ref": "#/components/schemas/PremiumContentItemResponse" }
               }
             }
-          }
+          },
+          "400": { "$ref": "#/components/responses/InvalidPremiumItemRequestResponse" },
+          "404": { "$ref": "#/components/responses/PremiumSurfaceNotConfiguredResponse" },
+          "429": { "$ref": "#/components/responses/RateLimitedResponse" },
+          "500": { "$ref": "#/components/responses/PremiumOwnershipFailedResponse" }
         }
       }
     },
     "/apps/{tokenAddress}/market-summary": {
       "get": {
+        "tags": ["Discovery"],
         "summary": "Read app market summary",
+        "description": "Returns cheap, app-scoped market metadata for discovery and bot flows.",
         "parameters": [
-          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } }
+          { "$ref": "#/components/parameters/TokenAddressParam" },
+          { "$ref": "#/components/parameters/FreshParam" }
         ],
         "responses": {
           "200": {
@@ -152,15 +188,22 @@
                 "schema": { "$ref": "#/components/schemas/MarketSummaryResponse" }
               }
             }
-          }
+          },
+          "400": { "$ref": "#/components/responses/InvalidAddressResponse" },
+          "404": { "$ref": "#/components/responses/AppNotFoundResponse" },
+          "429": { "$ref": "#/components/responses/RateLimitedResponse" },
+          "500": { "$ref": "#/components/responses/MarketSummaryFailedResponse" }
         }
       }
     },
     "/apps/{tokenAddress}/premium-content/catalog": {
       "get": {
+        "tags": ["Discovery"],
         "summary": "Read premium-content catalog",
+        "description": "Returns indexed premium-content listing and pricing metadata for one app.",
         "parameters": [
-          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } }
+          { "$ref": "#/components/parameters/TokenAddressParam" },
+          { "$ref": "#/components/parameters/FreshParam" }
         ],
         "responses": {
           "200": {
@@ -170,15 +213,22 @@
                 "schema": { "$ref": "#/components/schemas/PremiumCatalogResponse" }
               }
             }
-          }
+          },
+          "400": { "$ref": "#/components/responses/InvalidAddressResponse" },
+          "404": { "$ref": "#/components/responses/PremiumSurfaceNotConfiguredResponse" },
+          "429": { "$ref": "#/components/responses/RateLimitedResponse" },
+          "500": { "$ref": "#/components/responses/PremiumCatalogFailedResponse" }
         }
       }
     },
     "/apps/{tokenAddress}/premium-content/activity": {
       "get": {
+        "tags": ["Discovery"],
         "summary": "Read recent premium-content purchases",
+        "description": "Returns recent indexed premium-content purchases for one app.",
         "parameters": [
-          { "name": "tokenAddress", "in": "path", "required": true, "schema": { "type": "string" } }
+          { "$ref": "#/components/parameters/TokenAddressParam" },
+          { "$ref": "#/components/parameters/FreshParam" }
         ],
         "responses": {
           "200": {
@@ -188,46 +238,583 @@
                 "schema": { "$ref": "#/components/schemas/PremiumActivityResponse" }
               }
             }
-          }
+          },
+          "400": { "$ref": "#/components/responses/InvalidAddressResponse" },
+          "404": { "$ref": "#/components/responses/PremiumSurfaceNotConfiguredResponse" },
+          "429": { "$ref": "#/components/responses/RateLimitedResponse" },
+          "500": { "$ref": "#/components/responses/PremiumActivityFailedResponse" }
         }
       }
     }
   },
   "components": {
+    "parameters": {
+      "AddressParam": {
+        "name": "address",
+        "in": "path",
+        "required": true,
+        "description": "Wallet address as a valid `0x` Ethereum address.",
+        "schema": {
+          "type": "string",
+          "pattern": "^0x[a-fA-F0-9]{40}$"
+        }
+      },
+      "TokenAddressParam": {
+        "name": "tokenAddress",
+        "in": "path",
+        "required": true,
+        "description": "App token address as a valid `0x` Ethereum address.",
+        "schema": {
+          "type": "string",
+          "pattern": "^0x[a-fA-F0-9]{40}$"
+        }
+      },
+      "UserAddressParam": {
+        "name": "userAddress",
+        "in": "path",
+        "required": true,
+        "description": "User wallet address as a valid `0x` Ethereum address.",
+        "schema": {
+          "type": "string",
+          "pattern": "^0x[a-fA-F0-9]{40}$"
+        }
+      },
+      "ContentIdParam": {
+        "name": "contentId",
+        "in": "path",
+        "required": true,
+        "description": "Store-scoped premium content identifier. This is not the ERC-721 tokenId.",
+        "schema": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        }
+      },
+      "FreshParam": {
+        "name": "fresh",
+        "in": "query",
+        "required": false,
+        "description": "Set to `1` to bypass the server-side public API cache on this read.",
+        "schema": {
+          "type": "string",
+          "enum": ["1"]
+        }
+      }
+    },
+    "responses": {
+      "InvalidAddressResponse": {
+        "description": "One or more address parameters are invalid.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "Invalid address" }
+          }
+        }
+      },
+      "InvalidPremiumItemRequestResponse": {
+        "description": "The address or `contentId` parameter is invalid.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "examples": {
+              "invalidAddress": { "value": { "error": "Invalid address" } },
+              "invalidContentId": { "value": { "error": "Invalid contentId" } }
+            }
+          }
+        }
+      },
+      "AppNotFoundResponse": {
+        "description": "The app token is unknown to the public API.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "App not found" }
+          }
+        }
+      },
+      "PremiumSurfaceNotConfiguredResponse": {
+        "description": "The app was not found or does not have premium content configured.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "App not found or premium content is not configured" }
+          }
+        }
+      },
+      "RateLimitedResponse": {
+        "description": "The public API rate limit bucket for this route family was exceeded.",
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before retrying.",
+            "schema": { "type": "string" }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "Too many requests. Please try again later." }
+          }
+        }
+      },
+      "EltaNotConfiguredResponse": {
+        "description": "The ELTA contract address is not configured on the active chain.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "ELTA contract is not configured on this chain" }
+          }
+        }
+      },
+      "VeEltaNotConfiguredResponse": {
+        "description": "The veELTA contract address is not configured on the active chain.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "veELTA contract is not configured on this chain" }
+          }
+        }
+      },
+      "EltaReadFailedResponse": {
+        "description": "The server failed to read the ELTA balance.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "Failed to read ELTA balance" }
+          }
+        }
+      },
+      "VeEltaReadFailedResponse": {
+        "description": "The server failed to read the veELTA balance.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "Failed to read veELTA balance" }
+          }
+        }
+      },
+      "TokenVerificationFailedResponse": {
+        "description": "The server failed to verify app-token ownership.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "Failed to verify app token ownership" }
+          }
+        }
+      },
+      "GateAccessFailedResponse": {
+        "description": "The server failed to evaluate gate access.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "Failed to evaluate app gate access" }
+          }
+        }
+      },
+      "PremiumOwnershipFailedResponse": {
+        "description": "The server failed to read premium-content ownership.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "Failed to read premium content ownership" }
+          }
+        }
+      },
+      "MarketSummaryFailedResponse": {
+        "description": "The server failed to read app market summary.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "Failed to read app market summary" }
+          }
+        }
+      },
+      "PremiumCatalogFailedResponse": {
+        "description": "The server failed to read the premium-content catalog.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "Failed to read premium content catalog" }
+          }
+        }
+      },
+      "PremiumActivityFailedResponse": {
+        "description": "The server failed to read premium-content activity.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "Failed to read premium content activity" }
+          }
+        }
+      }
+    },
     "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": { "type": "string" },
+          "details": {}
+        }
+      },
+      "BalanceSnapshot": {
+        "type": "object",
+        "required": ["raw", "formatted"],
+        "properties": {
+          "raw": { "type": "string" },
+          "formatted": { "type": "string" },
+          "decimals": { "type": "integer" },
+          "vaultAddress": { "type": ["string", "null"] }
+        }
+      },
       "EltaResponse": {
         "type": "object",
+        "required": ["address", "token", "balance", "balanceFormatted", "decimals"],
         "properties": {
           "address": { "type": "string" },
-          "token": { "type": "string" },
+          "token": { "type": "string", "enum": ["ELTA"] },
           "balance": { "type": "string" },
           "balanceFormatted": { "type": "string" },
           "decimals": { "type": "integer" }
         }
       },
+      "VeEltaLock": {
+        "type": "object",
+        "required": ["principal", "unlockTime", "unlockDate"],
+        "properties": {
+          "principal": { "type": "string" },
+          "unlockTime": { "type": "integer" },
+          "unlockDate": { "type": ["string", "null"], "format": "date-time" }
+        }
+      },
       "VeEltaResponse": {
         "type": "object",
+        "required": ["address", "token", "votingPower", "lock"],
         "properties": {
           "address": { "type": "string" },
-          "token": { "type": "string" },
+          "token": { "type": "string", "enum": ["veELTA"] },
           "votingPower": { "type": "string" },
-          "lock": {
+          "lock": { "$ref": "#/components/schemas/VeEltaLock" }
+        }
+      },
+      "AppContextBasic": {
+        "type": "object",
+        "required": ["tokenAddress", "onchainAppId"],
+        "properties": {
+          "tokenAddress": { "type": "string" },
+          "onchainAppId": { "type": ["integer", "null"] },
+          "vaultAddress": { "type": ["string", "null"] },
+          "tokenLaunched": { "type": ["boolean", "null"] },
+          "contentStoreAddress": { "type": ["string", "null"] },
+          "content721Address": { "type": ["string", "null"] }
+        }
+      },
+      "UserContext": {
+        "type": "object",
+        "required": ["address"],
+        "properties": {
+          "address": { "type": "string" }
+        }
+      },
+      "TokenVerificationResponse": {
+        "type": "object",
+        "required": ["app", "user", "balances", "currentlyHoldsAppToken"],
+        "properties": {
+          "app": { "$ref": "#/components/schemas/AppContextBasic" },
+          "user": { "$ref": "#/components/schemas/UserContext" },
+          "balances": {
             "type": "object",
+            "required": ["liquid", "staked", "totalRaw"],
             "properties": {
-              "principal": { "type": "string" },
-              "unlockTime": { "type": "integer" },
-              "unlockDate": { "type": ["string", "null"] }
+              "liquid": {
+                "type": "object",
+                "required": ["raw", "formatted", "decimals"],
+                "properties": {
+                  "raw": { "type": "string" },
+                  "formatted": { "type": "string" },
+                  "decimals": { "type": "integer" }
+                }
+              },
+              "staked": {
+                "type": "object",
+                "required": ["raw", "formatted", "vaultAddress"],
+                "properties": {
+                  "raw": { "type": "string" },
+                  "formatted": { "type": "string" },
+                  "vaultAddress": { "type": ["string", "null"] }
+                }
+              },
+              "totalRaw": { "type": "string" }
+            }
+          },
+          "currentlyHoldsAppToken": { "type": "boolean" }
+        }
+      },
+      "GateCheck": {
+        "type": "object",
+        "required": ["id", "minimum", "actual", "satisfied"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": ["elta", "veelta", "appToken", "stakedAppToken"]
+          },
+          "minimum": { "type": "string" },
+          "actual": { "type": "string" },
+          "satisfied": { "type": "boolean" }
+        }
+      },
+      "GateAccessResponse": {
+        "type": "object",
+        "required": ["app", "user", "checks", "meetsGate"],
+        "properties": {
+          "app": {
+            "type": "object",
+            "required": ["tokenAddress", "onchainAppId", "hasGate"],
+            "properties": {
+              "tokenAddress": { "type": "string" },
+              "onchainAppId": { "type": ["integer", "null"] },
+              "hasGate": { "type": "boolean" }
+            }
+          },
+          "user": { "$ref": "#/components/schemas/UserContext" },
+          "checks": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/GateCheck" }
+          },
+          "meetsGate": { "type": "boolean" }
+        }
+      },
+      "MetadataObject": {
+        "type": ["object", "null"],
+        "additionalProperties": true
+      },
+      "PremiumListingSummary": {
+        "type": ["object", "null"],
+        "properties": {
+          "active": { "type": ["boolean", "null"] },
+          "uri": { "type": ["string", "null"] },
+          "metadata": { "$ref": "#/components/schemas/MetadataObject" }
+        }
+      },
+      "PremiumContentListItem": {
+        "type": "object",
+        "required": [
+          "contentId",
+          "tokenId",
+          "currentlyOwns",
+          "originalBuyerAddress",
+          "purchaseTxHash",
+          "lastTransferTxHash",
+          "lastUpdatedBlock",
+          "listing"
+        ],
+        "properties": {
+          "contentId": { "type": ["string", "null"] },
+          "tokenId": { "type": "string" },
+          "currentlyOwns": { "type": "boolean" },
+          "originalBuyerAddress": { "type": ["string", "null"] },
+          "purchaseTxHash": { "type": ["string", "null"] },
+          "lastTransferTxHash": { "type": ["string", "null"] },
+          "lastUpdatedBlock": { "type": "string" },
+          "listing": { "$ref": "#/components/schemas/PremiumListingSummary" }
+        }
+      },
+      "PremiumContentListResponse": {
+        "type": "object",
+        "required": ["app", "user", "items"],
+        "properties": {
+          "app": { "$ref": "#/components/schemas/AppContextBasic" },
+          "user": { "$ref": "#/components/schemas/UserContext" },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PremiumContentListItem" }
+          }
+        }
+      },
+      "OwnedTokenRecord": {
+        "type": "object",
+        "required": [
+          "tokenId",
+          "ownerAddress",
+          "originalBuyerAddress",
+          "purchaseTxHash",
+          "lastTransferTxHash",
+          "lastUpdatedBlock"
+        ],
+        "properties": {
+          "tokenId": { "type": "string" },
+          "ownerAddress": { "type": "string" },
+          "originalBuyerAddress": { "type": ["string", "null"] },
+          "purchaseTxHash": { "type": ["string", "null"] },
+          "lastTransferTxHash": { "type": ["string", "null"] },
+          "lastUpdatedBlock": { "type": "string" }
+        }
+      },
+      "PurchaseRecord": {
+        "type": "object",
+        "required": ["tokenId", "buyerAddress", "price", "protocolFee", "txHash", "blockNumber"],
+        "properties": {
+          "tokenId": { "type": "string" },
+          "buyerAddress": { "type": "string" },
+          "price": { "type": "string" },
+          "protocolFee": { "type": ["string", "null"] },
+          "txHash": { "type": "string" },
+          "blockNumber": { "type": "string" }
+        }
+      },
+      "PremiumItemListing": {
+        "type": ["object", "null"],
+        "properties": {
+          "active": { "type": ["boolean", "null"] },
+          "mintedCount": { "type": "string" },
+          "maxSupply": { "type": ["string", "null"] },
+          "uri": { "type": ["string", "null"] },
+          "metadata": { "$ref": "#/components/schemas/MetadataObject" }
+        }
+      },
+      "PremiumContentItemResponse": {
+        "type": "object",
+        "required": [
+          "app",
+          "user",
+          "contentId",
+          "currentlyOwns",
+          "ownedTokens",
+          "purchaseProvenance",
+          "listing"
+        ],
+        "properties": {
+          "app": { "$ref": "#/components/schemas/AppContextBasic" },
+          "user": { "$ref": "#/components/schemas/UserContext" },
+          "contentId": { "type": "string" },
+          "currentlyOwns": { "type": "boolean" },
+          "ownedTokens": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OwnedTokenRecord" }
+          },
+          "purchaseProvenance": {
+            "type": "object",
+            "required": ["hasPurchased", "purchases"],
+            "properties": {
+              "hasPurchased": { "type": "boolean" },
+              "purchases": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/PurchaseRecord" }
+              }
+            }
+          },
+          "listing": { "$ref": "#/components/schemas/PremiumItemListing" }
+        }
+      },
+      "MarketSummaryResponse": {
+        "type": "object",
+        "required": [
+          "tokenAddress",
+          "onchainAppId",
+          "pairAddress",
+          "contentStoreAddress",
+          "content721Address",
+          "tokenLaunched",
+          "graduated",
+          "holderCount",
+          "tradeCount",
+          "totalVolume"
+        ],
+        "properties": {
+          "tokenAddress": { "type": "string" },
+          "onchainAppId": { "type": ["integer", "null"] },
+          "pairAddress": { "type": ["string", "null"] },
+          "contentStoreAddress": { "type": ["string", "null"] },
+          "content721Address": { "type": ["string", "null"] },
+          "tokenLaunched": { "type": ["boolean", "null"] },
+          "graduated": { "type": ["boolean", "null"] },
+          "holderCount": { "type": "integer" },
+          "tradeCount": { "type": "integer" },
+          "totalVolume": { "type": "string" }
+        }
+      },
+      "PremiumCatalogItem": {
+        "type": "object",
+        "required": [
+          "contentId",
+          "active",
+          "mintedCount",
+          "maxSupply",
+          "defaultPaymentType",
+          "uri",
+          "metadata",
+          "prices",
+          "saleWindow"
+        ],
+        "properties": {
+          "contentId": { "type": "string" },
+          "active": { "type": ["boolean", "null"] },
+          "mintedCount": { "type": "string" },
+          "maxSupply": { "type": ["string", "null"] },
+          "defaultPaymentType": { "type": ["string", "null"] },
+          "uri": { "type": ["string", "null"] },
+          "metadata": { "$ref": "#/components/schemas/MetadataObject" },
+          "prices": {
+            "type": "object",
+            "required": ["native", "app", "elta", "usdc"],
+            "properties": {
+              "native": { "type": ["string", "null"] },
+              "app": { "type": ["string", "null"] },
+              "elta": { "type": ["string", "null"] },
+              "usdc": { "type": ["string", "null"] }
+            }
+          },
+          "saleWindow": {
+            "type": "object",
+            "required": ["startTime", "endTime"],
+            "properties": {
+              "startTime": { "type": ["string", "null"], "format": "date-time" },
+              "endTime": { "type": ["string", "null"], "format": "date-time" }
             }
           }
         }
       },
-      "TokenVerificationResponse": { "type": "object" },
-      "GateAccessResponse": { "type": "object" },
-      "PremiumContentListResponse": { "type": "object" },
-      "PremiumContentItemResponse": { "type": "object" },
-      "MarketSummaryResponse": { "type": "object" },
-      "PremiumCatalogResponse": { "type": "object" },
-      "PremiumActivityResponse": { "type": "object" }
+      "PremiumCatalogResponse": {
+        "type": "object",
+        "required": ["app", "items"],
+        "properties": {
+          "app": { "$ref": "#/components/schemas/AppContextBasic" },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PremiumCatalogItem" }
+          }
+        }
+      },
+      "PremiumSaleRecord": {
+        "type": "object",
+        "required": ["contentId", "tokenId", "buyerAddress", "price", "protocolFee", "txHash", "blockNumber"],
+        "properties": {
+          "contentId": { "type": "string" },
+          "tokenId": { "type": "string" },
+          "buyerAddress": { "type": "string" },
+          "price": { "type": "string" },
+          "protocolFee": { "type": ["string", "null"] },
+          "txHash": { "type": "string" },
+          "blockNumber": { "type": "string" }
+        }
+      },
+      "PremiumActivityResponse": {
+        "type": "object",
+        "required": ["app", "sales"],
+        "properties": {
+          "app": {
+            "type": "object",
+            "required": ["tokenAddress", "onchainAppId", "contentStoreAddress"],
+            "properties": {
+              "tokenAddress": { "type": "string" },
+              "onchainAppId": { "type": ["integer", "null"] },
+              "contentStoreAddress": { "type": ["string", "null"] }
+            }
+          },
+          "sales": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PremiumSaleRecord" }
+          }
+        }
+      }
     }
   }
 }
