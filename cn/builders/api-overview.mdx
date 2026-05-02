@@ -101,6 +101,52 @@ GET /api/prices
 
 Returns current ELTA price data for UI display.
 
+#### Premium Content and In-Game Purchases
+
+Apps with a configured content store can use premium ownership and purchase endpoints.
+
+##### Record a Successful Purchase
+
+```bash
+POST /api/apps/{tokenAddress}/content/purchase
+```
+
+Call this after a successful on-chain `purchaseWithToken` transaction.
+
+```json
+{
+  "contentId": 7,
+  "paymentType": "NATIVE",
+  "transactionHash": "0x..."
+}
+```
+
+Supported `paymentType` values: `NATIVE`, `APP`, `ELTA`, `USDC`.
+
+##### Read Premium Catalog
+
+```bash
+GET /api/v1/apps/{tokenAddress}/premium-content/catalog
+```
+
+##### Read User Ownership List
+
+```bash
+GET /api/v1/apps/{tokenAddress}/users/{userAddress}/premium-content
+```
+
+##### Read Single User Premium Item
+
+```bash
+GET /api/v1/apps/{tokenAddress}/users/{userAddress}/premium-content/{contentId}
+```
+
+##### Read Premium Activity
+
+```bash
+GET /api/v1/apps/{tokenAddress}/premium-content/activity
+```
+
 ---
 
 ## Smart Contracts

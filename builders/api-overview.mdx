@@ -60,6 +60,62 @@ The full operation reference, request/response schemas, and status of each endpo
 
 The OpenAPI spec also defines `proposed` endpoints for app discovery (search, holders, activity), launch preflight, market data (snapshots, candles, curves, leaderboards), portfolio (holdings, history, P&L), rewards (claimable, programs, claim payloads), and runtime config (contracts, chains, feature flags). See the [API Reference tab](/api-reference/overview) for the full list and the status legend.
 
+### Premium content and in-game purchase endpoints
+
+The App Store currently supports premium content ownership and purchase recording for apps with a configured content store.
+
+#### Record a successful purchase
+
+```bash
+POST /api/apps/{tokenAddress}/content/purchase
+```
+
+Use this after a successful on-chain `purchaseWithToken` transaction.
+
+```json
+{
+  "contentId": 7,
+  "paymentType": "NATIVE",
+  "transactionHash": "0x..."
+}
+```
+
+Supported `paymentType` values: `NATIVE`, `APP`, `ELTA`, `USDC`.
+
+This endpoint verifies the transaction receipt, sender wallet, target contract, and decoded calldata before recording the purchase event.
+
+#### Read premium content catalog
+
+```bash
+GET /api/v1/apps/{tokenAddress}/premium-content/catalog
+```
+
+Returns the app's premium content catalog.
+
+#### Read user premium ownership list
+
+```bash
+GET /api/v1/apps/{tokenAddress}/users/{userAddress}/premium-content
+```
+
+Returns which premium content entries a user owns for the app.
+
+#### Read a specific premium content item for a user
+
+```bash
+GET /api/v1/apps/{tokenAddress}/users/{userAddress}/premium-content/{contentId}
+```
+
+Returns ownership and metadata for a single premium content item.
+
+#### Read premium purchase activity
+
+```bash
+GET /api/v1/apps/{tokenAddress}/premium-content/activity
+```
+
+Returns recent premium content purchase activity for discovery surfaces.
+
 ---
 
 ## Smart Contracts
