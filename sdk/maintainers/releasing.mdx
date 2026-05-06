@@ -10,6 +10,7 @@ This repository currently publishes:
 - `@elata-biosciences/eeg-web`
 - `@elata-biosciences/eeg-web-ble`
 - `@elata-biosciences/rppg-web`
+- `@elata-biosciences/ppg-web`
 - `@elata-biosciences/create-elata-demo`
 
 ## Quick Reference
@@ -19,18 +20,22 @@ This repository currently publishes:
 | Add a changeset | `./run.sh changeset` |
 | Apply changesets and update changelogs | `./run.sh bump` |
 | Run the release preflight | `./run.sh release-check all` |
-| Build, publish, tag, and push | `./run.sh release all next` or `./run.sh release all latest` |
+| Build, publish, tag, and push | `./run.sh release` (defaults to npm dist-tag `latest`) |
+| Semver bump all packages, then publish | `./run.sh release patch`, `minor`, or `major` |
+| Publish on the `next` dist-tag | `./run.sh release next` or `./run.sh release all next` |
 
 ## Maintainer Workflow
 
 1. Apply changesets with `./run.sh bump`.
 2. Review the version and changelog diff, then commit it.
 3. Run `./run.sh release-check all`.
-4. Publish with `./run.sh release all next` or `latest`.
+4. Publish with `./run.sh release` (defaults to npm dist-tag `latest`), or `./run.sh release next` for `next`.
+
+Optional: `./run.sh release patch`, `minor`, or `major` bumps every publishable package with `pnpm version` before publishing. Prefer `./run.sh bump` when cutting a Changesets release so changelogs stay accurate.
 
 Release order is fixed in `run.sh`:
 
-`eeg-web` -> `eeg-web-ble` -> `rppg-web` -> `create-elata-demo`
+`eeg-web` -> `eeg-web-ble` -> `rppg-web` -> `ppg-web` -> `create-elata-demo`
 
 ## Contributor Expectation
 
@@ -41,7 +46,7 @@ If a user-facing package change should ship, include a changeset in the PR.
 Publish to a non-`latest` channel first:
 
 ```bash
-./run.sh release all next
+./run.sh release next
 ```
 
 After verification, promote or publish as `latest`.
