@@ -59,6 +59,56 @@ Compare your asset layout with the scaffolded `eeg-demo` app.
 
 ---
 
+## App Store Upload Blocked: "Elata Sensor SDK Not Detected"
+
+The app store scans every uploaded bundle and requires a real, called integration
+of an Elata sensor SDK (`@elata-biosciences/rppg-web` or `@elata-biosciences/eeg-web`).
+The scan only inspects the files inside your zip, so the SDK must ship in the
+bundle itself.
+
+Common causes:
+
+- The SDK is loaded from a CDN `<script>` tag instead of being bundled. This will not pass the scan.
+- The SDK's WASM assets (for example `pkg/rppg_wasm_bg.wasm`) are missing from the zip.
+- A hand-written `elata-sdk.js`-style stub is included instead of the published package.
+- The SDK is installed but never called. Your code must actually invoke it, for example `createRppgSession(...)`.
+
+The fastest fix is to start from a scaffolded app, which bundles everything correctly:
+
+```bash
+npm create @elata-biosciences/elata-demo my-app
+```
+
+If your app has no build step (plain `index.html` + `script.js`), vendor the SDK
+into your app folder instead:
+
+```bash
+npm install @elata-biosciences/rppg-web esbuild
+npx esbuild node_modules/@elata-biosciences/rppg-web/dist/index.js \
+  --bundle --format=esm --outfile=vendor/rppg-web.js
+cp -r node_modules/@elata-biosciences/rppg-web/pkg pkg
+```
+
+Then load your script as a module and import from the vendored file:
+
+```html
+<script type="module" src="script.js"></script>
+```
+
+```js
+import { createRppgSession } from './vendor/rppg-web.js';
+```
+
+Zip the whole app folder, including `pkg/` and `vendor/`, and upload that zip.
+
+<Tip>
+  The `pkg/` folder must sit at the root of your zip — the SDK loads
+  `/pkg/rppg_wasm.js` at runtime. For `@elata-biosciences/eeg-web`, vendor its
+  `wasm/` assets the same way.
+</Tip>
+
+---
+
 ## I Am Not Sure Which Package I Need
 
 Start with [Choose The Right Package](/sdk/guides/choose-the-right-package).

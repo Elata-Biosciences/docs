@@ -60,6 +60,9 @@ description: "Frequently asked questions about Elata Protocol"
   <Accordion title="What SDKs are available?">
     Three npm packages: `@elata-biosciences/eeg-web` (WASM signal processing), `@elata-biosciences/eeg-web-ble` (Web Bluetooth headband connection), and `@elata-biosciences/rppg-web` (camera-based heart rate). See the [SDK documentation](/sdk/overview) for installation and guides.
   </Accordion>
+  <Accordion title="Why was my upload blocked with &quot;Elata sensor SDK not detected&quot;?">
+    Every app submitted to the app store must bundle and call one of the Elata sensor SDKs. The upload scan only sees the files inside your zip, so a CDN script tag or a hand-written stub will not pass. See [Troubleshooting](/sdk/operations/troubleshooting#app-store-upload-blocked-elata-sensor-sdk-not-detected) for the fix.
+  </Accordion>
   <Accordion title="Where can I find contract ABIs?">
     ABIs are available in the [elata-appstore repository](https://github.com/elata-biosciences/elata-appstore) under `src/abi/`. See the [API Overview](/builders/api-overview) for integration details.
   </Accordion>
