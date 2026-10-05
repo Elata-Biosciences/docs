@@ -3,10 +3,17 @@ title: "Create Elata Demo"
 description: "Scaffold a ready-to-run Elata starter app from a template."
 ---
 
+<Warning>
+  **Known issue:** the current npm release of `create-elata-demo` (0.12.1)
+  fails to start. A fix is coming in the next release. Until then, follow
+  [Add rPPG to an existing app](/sdk/tutorials/rppg-existing-app) to set up
+  the SDK in your own web app instead. See [What's live](/overview/status).
+</Warning>
+
 ## What it is
 
 `@elata-biosciences/create-elata-demo` generates a working Vite + React app
-wired to the Elata SDKs. It's the fastest way to a running app, and a
+wired to the Elata SDK. It's the fastest way to a running app, and a
 known-good baseline before you integrate the SDKs into your own project.
 
 ---
@@ -22,7 +29,7 @@ known-good baseline before you integrate the SDKs into your own project.
 | `pulse-game` | `pulse`, `recovery` | rPPG recovery game that runs in a sandboxed iframe and saves scores with `app-metrics`, end to end | Webcam |
 
 <Tip>
-  Building for the Elata App Store? `pulse-game` shows the full store pattern:
+  Building for Elata? `pulse-game` shows the full Elata pattern:
   the app runs in an iframe and talks to a host over the
   [metrics bridge](/apps/platform/metrics-and-scores).
 </Tip>
@@ -75,7 +82,7 @@ Every generated app includes:
 - a template-specific `README.md`
 - `npm run dev`: start the dev server
 - `npm run build`: type-check and build to `dist/`
-- `npm run build:zip`: build and write `app.zip`, ready to [upload to the App Store](/apps/build/launch-your-app)
+- `npm run build:zip`: build and write `app.zip`, ready to [upload to Elata](/apps/build/launch-your-app)
 
 ```bash
 cd my-app
@@ -115,7 +122,7 @@ pnpm --dir my-app --ignore-workspace run dev
   <Card title="Choose A Package" icon="compass" href="/sdk/guides/choose-the-right-package">
     Package decision guide
   </Card>
-  <Card title="Publish to the Store" icon="store" href="/apps/build/launch-your-app">
+  <Card title="Publish on Elata" icon="store" href="/apps/build/launch-your-app">
     Upload your app
   </Card>
 </CardGroup>

@@ -26,8 +26,8 @@ const best = await metrics.loadScores({ order: 'value_desc', limit: 10 });
 const recent = await metrics.query({ type: 'level_complete', limit: 20 });
 ```
 
-Data is scoped to the (user, app) pair and never crosses app boundaries. The
-store keeps a local copy and, for signed-in users, syncs it to the user's
+Data is scoped to the (user, app) pair and never crosses app boundaries. Elata
+ keeps a local copy and, for signed-in users, syncs it to the user's
 account so it follows them across devices. These records also power your
 [analytics](/apps/operate/analytics-and-health).
 
@@ -37,7 +37,7 @@ account so it follows them across devices. These records also power your
 
 | Method | What it does |
 | --- | --- |
-| `ready()` | Resolves once the connection to the store is set up |
+| `ready()` | Resolves once the connection to Elata is set up |
 | `record({ type, data })` | Store an event record |
 | `query({ type?, since?, until?, limit? })` | Read records back |
 | `clear()` | Delete all of this app's records for the user |
@@ -86,11 +86,11 @@ const result = await metrics.reportAffect({
 Two things must be true or the call fails with `scope_denied`:
 
 1. **Your app has the `biometrics` scope.** Contact the Elata team to enable it for your app.
-2. **The user has consented.** Ask with [`elata:consent:request`](/apps/platform/consent-and-insights). The store also re-checks consent on the server for every sample.
+2. **The user has consented.** Ask with [`elata:consent:request`](/apps/platform/consent-and-insights). Elata also re-checks consent on the server for every sample.
 
 ---
 
-## For store hosts
+## For hosts
 
 The package also ships a host entry, `@elata-biosciences/app-metrics/host`
-(`createMetricsHost`), used by the App Store itself. App developers don't need it.
+(`createMetricsHost`), used by Elata itself. App developers don't need it.

@@ -14,7 +14,7 @@ description: "Elata SDK 当前对浏览器、设备和 Node.js 的要求。"
 | `@elata-biosciences/ppg-web` | 支持 Web Bluetooth 的 Chrome 或 Edge | `>= 20` | 运行在 `eeg-web-ble` 传输之上 |
 | `@elata-biosciences/biosignal-session` | 支持 Web Worker 的现代浏览器 | `>= 20` | 录制需要一个提供存储端的宿主 |
 | `@elata-biosciences/biosignal-analytics` | 支持 WebAssembly 的现代浏览器 | `>= 20` | 浏览器必须能访问打包的 WASM 资源 |
-| `@elata-biosciences/app-payments`、`app-state`、`app-metrics` | 任意现代浏览器 | `>= 20` | 仅在 Elata 应用商店框架内有效 |
+| `@elata-biosciences/app-payments`、`app-state`、`app-metrics` | 任意现代浏览器 | `>= 20` | 仅在 Elata 框架内有效 |
 
 ---
 
@@ -59,9 +59,27 @@ description: "Elata SDK 当前对浏览器、设备和 Node.js 的要求。"
 
 ---
 
+## 包版本
+
+这些包各自独立发布版本，各包的最新版本之间不一定互相兼容。组合使用多个包时，请使用 `create-elata-demo` 固定的版本组合：
+
+| 包 | 版本 |
+| --- | --- |
+| `@elata-biosciences/eeg-web` | 0.12.0 |
+| `@elata-biosciences/eeg-web-ble` | 0.12.0 |
+| `@elata-biosciences/ppg-web` | 0.12.0 |
+| `@elata-biosciences/rppg-web` | 0.14.0 |
+| `@elata-biosciences/app-metrics` | 0.5.0 |
+
+<Warning>
+  `eeg-web-ble@0.12.0` 和 `ppg-web@0.12.0` 仍声明了过时的 peer 依赖范围（`eeg-web ^0.2.1`、`rppg-web ^0.3.0`）。与上表中的版本一起安装时，npm 会因 `ERESOLVE` 错误而中止。在这些范围更新之前，请使用 `npm install --legacy-peer-deps`。pnpm 只会打印警告。
+</Warning>
+
+---
+
 ## 包管理器说明
 
-生成的演示应用可以使用 `pnpm` 或 `npm`。
+生成的演示应用可以使用 `pnpm` 或 `npm`。对于 `eeg-demo`、`eeg-ble` 和 `ppg-demo` 模板，npm 目前需要加上 `--legacy-peer-deps`（参见上文“包版本”一节）。
 
 如果你在另一个 `pnpm` 工作区中创建演示应用且没有将其加入该工作区，请使用：
 

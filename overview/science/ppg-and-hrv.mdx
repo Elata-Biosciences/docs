@@ -1,0 +1,70 @@
+---
+title: "PPG and Heart-Rate Variability"
+description: "Optical heart rate from a headband, heart-rate variability, and the conditions that make HRV meaningful."
+---
+
+## Contact PPG
+
+**Photoplethysmography (PPG)** shines light into the skin and measures how much
+comes back. As blood volume pulses with each heartbeat, the reflected light
+changes. It's the same principle as rPPG, but with a sensor touching the skin,
+which gives a much stronger signal. Smartwatches use it, and so do some
+headbands, such as Muse S.
+
+The Elata SDK's `ppg-web` package reads a headband's optical sensor over Web
+Bluetooth and estimates heart rate and heart-rate variability on the device.
+
+---
+
+## Heart-rate variability (HRV)
+
+Your heart doesn't beat like a metronome. The time between beats varies
+slightly from beat to beat, and that variation is **heart-rate variability**.
+Higher HRV at rest is often linked with recovery and relaxation, and lower HRV
+with stress or fatigue, though it also varies with age, fitness, breathing,
+and time of day.
+
+The SDK reports two common time-domain measures:
+
+| Measure | What it is |
+| --- | --- |
+| **RMSSD** | Root mean square of successive differences between beats. Reflects short-term, beat-to-beat variation. |
+| **SDNN** | Standard deviation of the beat-to-beat intervals over the recording. Reflects overall variation. |
+
+Strictly, variability measured from PPG is **pulse-rate variability**. It
+closely tracks ECG-based HRV at rest, but the two aren't always
+interchangeable.
+
+---
+
+## What makes HRV meaningful
+
+| Condition | Why |
+| --- | --- |
+| **At rest** | Agreement between wearable and ECG-based HRV is very good to excellent at rest, and declines as activity increases |
+| **Long enough** | A minute or more of clean data; a few seconds isn't enough |
+| **Clean beat detection** | One missed or extra beat distorts RMSSD badly, so noisy segments must be excluded |
+| **Compared to yourself** | HRV differs widely between people; trends against your own baseline are more informative than absolute numbers |
+
+The SDK withholds HRV values (returns no value) when it can't detect beats
+reliably, instead of reporting a misleading number.
+
+---
+
+## What it can't claim
+
+PPG-based heart rate is widely used and generally accurate at rest. It does
+not diagnose arrhythmias or other heart conditions: published reviews note that
+ECG confirmation remains necessary for diagnosis.
+
+---
+
+## Sources
+
+Peer-reviewed literature, retrieved via PubMed:
+
+- Georgiou K, et al. Can wearable devices accurately measure heart rate variability? A systematic review. *Folia Medica*, 2018. [doi:10.2478/folmed-2018-0012](https://doi.org/10.2478/folmed-2018-0012)
+- Hejjel L, Béres S. Comment on "Pulse rate variability in cardiovascular health: a review on its applications and relationship with heart rate variability". *Physiological Measurement*, 2021. [doi:10.1088/1361-6579/abd332](https://doi.org/10.1088/1361-6579/abd332)
+- De Wever M, et al. Photoplethysmography for heart rate and rhythm monitoring: current evidence and clinical applications. *JACC: Clinical Electrophysiology*, 2026. [doi:10.1016/j.jacep.2026.06.034](https://doi.org/10.1016/j.jacep.2026.06.034)
+
+SDK implementation: [`ppg-web`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/ppg-web) (public SDK repository).

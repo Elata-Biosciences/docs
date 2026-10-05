@@ -57,9 +57,9 @@ npm run dev
 
 ---
 
-## 应用商店上传提示“Elata sensor SDK not detected”
+## Elata 上传提示“Elata sensor SDK not detected”
 
-商店会检查每次上传是否真正使用了 SDK。请确认你的构建产物：
+Elata 会检查每次上传是否真正使用了 SDK。请确认你的构建产物：
 
 - 确实调用了 SDK，例如 `createRppgSession(...)` 或 `initEegWasm(...)`，而不仅仅是导入
 - 在构建输出中包含打包的 `.wasm` 文件
@@ -70,7 +70,7 @@ npm run dev
 
 ## `app-payments`、`app-state` 或 `app-metrics` 调用超时
 
-这些包与 Elata 应用商店的父框架通信。当你在 `localhost` 上运行应用时，没有父框架来响应，因此调用会超时或以 `no_parent` 拒绝。请妥善处理这种情况，并在商店的试玩窗口中测试完整流程。对于购买功能，[`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo) 包含一个可在本地运行的模拟宿主。
+这些包与 Elata 的父框架通信。当你在 `localhost` 上运行应用时，没有父框架来响应，因此调用会超时或以 `no_parent` 拒绝。请妥善处理这种情况，并在 Elata 的试玩窗口中测试完整流程。对于购买功能，[`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo) 包含一个可在本地运行的模拟宿主。
 
 ---
 

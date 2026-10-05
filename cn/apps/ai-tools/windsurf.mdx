@@ -1,11 +1,11 @@
 ---
 title: "Windsurf"
-description: "使用 Windsurf 结合生物特征 SDK 和商店 API 构建 Elata 应用。"
+description: "使用 Windsurf 结合 Elata SDK 和 Elata API 构建 Elata 应用。"
 ---
 
 ## 概述
 
-当 Windsurf 了解商店的运作方式（沙箱、SDK 包和上传规则）时，它在 Elata 应用上的表现最好。本页提供一个可直接粘贴的项目上下文文件，以及常见任务的提示词。
+当 Windsurf 了解 Elata 的运作方式（沙箱、SDK 包和上传规则）时，它在 Elata 应用上的表现最好。本页提供一个可直接粘贴的项目上下文文件，以及常见任务的提示词。
 
 ---
 
@@ -24,14 +24,14 @@ description: "使用 Windsurf 结合生物特征 SDK 和商店 API 构建 Elata 
 ```markdown .windsurfrules
 # Elata app
 
-This is a browser app for the Elata App Store (https://app.elata.bio), built on
-the Elata Biometric SDKs. It is a static web build that runs inside a sandboxed
-iframe in the store.
+This is a browser app for Elata (https://app.elata.bio), built on
+the Elata SDK. It is a static web build that runs inside a sandboxed
+iframe in Elata.
 
 ## Docs
 - Docs home: https://docs.elata.bio (full text for agents: https://docs.elata.bio/llms-full.txt)
 - Building apps: https://docs.elata.bio/apps/build/overview
-- Host bridge (store APIs): https://docs.elata.bio/apps/platform/host-bridge
+- Host bridge (Elata APIs): https://docs.elata.bio/apps/platform/host-bridge
 - SDK overview: https://docs.elata.bio/sdk/overview
 - Package references for agents: node_modules/@elata-biosciences/<package>/llms.txt
 
@@ -40,11 +40,11 @@ iframe in the store.
 - @elata-biosciences/eeg-web + eeg-web-ble: EEG over Web Bluetooth (Muse built in)
 - @elata-biosciences/ppg-web: headband PPG heart rate and HRV
 - @elata-biosciences/biosignal-session / biosignal-analytics: recording and analysis (not yet on npm)
-- @elata-biosciences/app-payments: in-app purchases (store checkout)
+- @elata-biosciences/app-payments: in-app purchases (Elata checkout)
 - @elata-biosciences/app-state: per-user key-value storage (not yet on npm; use the elata:state:* messages)
 - @elata-biosciences/app-metrics: event records, scores, reportAffect
 
-## Store rules
+## Elata rules
 - The build must actually use an Elata sensor SDK (rPPG, EEG, or PPG), or upload fails.
 - Ship a zip with index.html at the root; use relative asset URLs.
 - Never handle wallets, payments, or sessions in the app. Use app-payments for purchases.
@@ -88,14 +88,14 @@ benefits on startup.
 ### 保存进度
 
 ```text
-Persist the player's settings and best score with the store's elata:state:get/set messages.
-Fall back to localStorage when the store replies with not_authenticated.
+Persist the player's settings and best score with Elata's elata:state:get/set messages.
+Fall back to localStorage when Elata replies with not_authenticated.
 ```
 
 ### 准备上传
 
 ```text
-Check that this build is ready for the Elata App Store: index.html at the zip
+Check that this build is ready for Elata: index.html at the zip
 root, relative asset paths, SDK usage present, and public/elata.json with the
 version from package.json. Then run npm run build:zip.
 ```
@@ -109,7 +109,7 @@ version from package.json. Then run npm run build:zip.
 </Tip>
 
 - 从 `create-elata-demo` 模板开始，再逐步迭代。
-- 提交前在商店的试玩窗口中测试。沙箱的行为与 `localhost` 不同。
+- 提交前在 Elata 的试玩窗口中测试。沙箱的行为与 `localhost` 不同。
 
 ---
 
@@ -120,6 +120,6 @@ version from package.json. Then run npm run build:zip.
     发布如何进行
   </Card>
   <Card title="SDK 概览" icon="brain" href="/cn/sdk/overview">
-    生物特征 SDK 包
+    Elata SDK 包
   </Card>
 </CardGroup>

@@ -7,7 +7,7 @@ description: "请求生物特征数据共享同意，并读取用户的跨应用
 
 Elata 为每位用户维护一个跨应用的**生物特征评分**，由应用通过 [`reportAffect`](/cn/apps/platform/metrics-and-scores) 上报的派生会话结果构成。在用户明确同意之前不会共享任何数据，用户也可以随时关闭。
 
-同意提示由商店在自己可信的框架中显示，而不是由你的应用显示。商店还会在服务器端针对每个样本重新检查同意状态，因此你的应用无法在未获同意的情况下做出贡献。
+同意提示由 Elata 在自己可信的框架中显示，而不是由你的应用显示。Elata 还会在服务器端针对每个样本重新检查同意状态，因此你的应用无法在未获同意的情况下做出贡献。
 
 目前只有一种同意用途：`platform_score`。
 
@@ -30,7 +30,7 @@ window.parent?.postMessage(
 );
 ```
 
-商店会打开同意对话框，并在用户做出选择后回复 `{ type: 'elata:consent:state', purpose, granted, requestId }`。
+Elata 会打开同意对话框，并在用户做出选择后回复 `{ type: 'elata:consent:state', purpose, granted, requestId }`。
 
 如需让用户在应用设置中**关闭共享**，发送同样的消息并附带 `action: 'revoke'`。
 
@@ -60,7 +60,7 @@ window.parent?.postMessage(
 );
 ```
 
-商店会回复 `elata:insights:state`：
+Elata 会回复 `elata:insights:state`：
 
 ```ts
 {
@@ -91,6 +91,6 @@ window.parent?.postMessage(
 ## 贡献评分的应用检查清单
 
 1. 请 Elata 团队为你的应用开启 `biometrics` 权限。
-2. 在应用和商店页面中说明测量什么、共享什么。
+2. 在应用和应用页面中说明测量什么、共享什么。
 3. 在调用 `reportAffect` 之前，先用 `elata:consent:request` 请求同意。
 4. 当 `reportAffect` 返回 `scope_denied` 时，再次提供同意提示。

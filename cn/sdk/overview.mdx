@@ -3,7 +3,7 @@ title: "快速上手"
 description: "用于摄像头 rPPG、Web Bluetooth EEG、头带 PPG、会话录制和分析的浏览器 SDK。"
 ---
 
-## Elata 生物特征 SDK
+## Elata SDK
 
 Elata SDK 是一组在浏览器中采集和处理生物信号的 npm 包。它们基于编译为 WebAssembly 的 Rust crate 构建，因此信号处理在用户设备上运行。
 
@@ -54,11 +54,11 @@ npm run dev
 | [`@elata-biosciences/biosignal-analytics`](/cn/sdk/biosignal-analytics/getting-started) | EEG 窗口特征、HRV、稳健统计和透明的总体评分。*尚未发布到 npm。* |
 | `@elata-biosciences/rppg-models-web` | 实验性：为 `rppg-web` 提供可选的学习型波形重建。需自行提供模型文件。*尚未发布到 npm。* |
 
-### 应用商店
+### Elata
 
 | 包 | 功能 |
 | --- | --- |
-| [`@elata-biosciences/app-payments`](/cn/apps/platform/in-app-purchases) | 通过商店结账实现应用内购买 |
+| [`@elata-biosciences/app-payments`](/cn/apps/platform/in-app-purchases) | 通过 Elata 结账实现应用内购买 |
 | [`@elata-biosciences/app-state`](/cn/apps/platform/app-state) | 按用户的键值存储。*尚未发布到 npm；请使用 [`elata:state:*` 消息](/cn/apps/platform/app-state)。* |
 | [`@elata-biosciences/app-metrics`](/cn/apps/platform/metrics-and-scores) | 事件记录、分数以及生物特征评分贡献 |
 
@@ -123,7 +123,7 @@ npm install @elata-biosciences/ppg-web @elata-biosciences/eeg-web @elata-bioscie
   <Card title="你的第一个应用" icon="rocket" href="/cn/sdk/tutorials/first-app">
     创建并运行入门应用
   </Card>
-  <Card title="发布到商店" icon="store" href="/cn/apps/build/overview">
-    在 Elata 应用商店上线
+  <Card title="发布到 Elata" icon="store" href="/cn/apps/build/overview">
+    在 Elata 上线
   </Card>
 </CardGroup>

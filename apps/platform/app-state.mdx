@@ -1,10 +1,11 @@
 ---
 title: "App State"
+tag: "Experimental"
 description: "Per-user, per-app key-value storage with @elata-biosciences/app-state."
 ---
 
 <Warning>
-  `@elata-biosciences/app-state` is not published to npm yet. Until it is, you can call the store directly with the `elata:state:*` messages shown below; the store already supports them.
+  `@elata-biosciences/app-state` is not published to npm yet. Until it is, you can call Elata directly with the `elata:state:*` messages shown below; Elata already supports them.
 </Warning>
 
 ## Overview
@@ -14,6 +15,7 @@ save games, settings, progress. You don't need a backend, and your app never
 sees the user's identity. Values follow the user across devices.
 
 ```bash
+# Not on npm yet. This command works after the first release.
 npm install @elata-biosciences/app-state
 ```
 
@@ -47,12 +49,12 @@ All three functions reject with `AppStateError`, which has a `code`:
 
 | Code | Where it comes from | Meaning |
 | --- | --- | --- |
-| `no_parent` | Local | Not running inside the store's frame |
+| `no_parent` | Local | Not running inside Elata's frame |
 | `timeout` | Local | No reply in time |
-| `invalid_input` | Local or store | Bad key or value |
-| `not_authenticated` | Store | The user isn't signed in |
-| `value_too_large` | Store | Value is over 64 KB |
-| `fetch_failed` | Store | The store couldn't reach storage |
+| `invalid_input` | Local or Elata | Bad key or value |
+| `not_authenticated` | Elata | The user isn't signed in |
+| `value_too_large` | Elata | Value is over 64 KB |
+| `fetch_failed` | Elata | Elata couldn't reach storage |
 
 <Tip>
   Players who aren't signed in get `not_authenticated`. Keep a local fallback,
@@ -63,7 +65,7 @@ All three functions reject with `AppStateError`, which has a `code`:
 
 ## Without the package
 
-The store answers these messages directly. Send them to `window.parent` with a unique `requestId` and wait for the matching `…:result` reply:
+Elata answers these messages directly. Send them to `window.parent` with a unique `requestId` and wait for the matching `…:result` reply:
 
 ```js
 function stateCall(type, payload) {
@@ -84,7 +86,7 @@ await stateCall('elata:state:set', { key: 'save_slot_1', value: { level: 7 } });
 await stateCall('elata:state:delete', { key: 'save_slot_1' });
 ```
 
-Add a timeout in production: outside the store nothing replies.
+Add a timeout in production: outside Elata nothing replies.
 
 ---
 

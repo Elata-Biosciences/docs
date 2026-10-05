@@ -1,0 +1,70 @@
+---
+title: "Apps on Elata"
+description: "What kinds of apps live on Elata, how they're reviewed, and how they run safely in your browser."
+---
+
+## What an Elata app is
+
+An Elata app is a web app that responds to signals from your body: your pulse
+from a webcam, brain activity from an EEG headband, or heart rate from a
+headband's optical sensor. You open it at [app.elata.bio](https://app.elata.bio)
+and play it in the browser. There's nothing to install.
+
+---
+
+## Kinds of apps
+
+| Category | Examples |
+| --- | --- |
+| **Games** | Games that react to your heart rate, focus, or calm |
+| **Neurometrics** | Live EEG and heart-rate dashboards |
+| **Wellness** | Breathwork, meditation, and recovery |
+| **Tools** | Focus timers and self-tracking |
+| **Experiments** | Studies, prototypes, and research apps |
+
+---
+
+## How apps get onto Elata
+
+Anyone can build an app with the open-source [Elata SDK](/overview/elata-sdk).
+To publish it, a builder registers the app on Elata, uploads the build, and
+submits it for review.
+
+Every release goes through:
+
+1. **Automatic checks** when it's uploaded: the right file layout, size limits, and use of the Elata SDK.
+2. **An automated security scan** of the code.
+3. **A human moderator review** against the [submission policy](/apps/build/review-and-policy).
+
+Only approved releases are public. Builders can share a draft with a few
+playtesters before that.
+
+---
+
+## How apps run safely
+
+Each app runs in an **isolated sandbox** on its own web origin. That means:
+
+- The app can't see who you are, your email, your wallet, or your Elata account.
+- It can ask for your camera or Bluetooth, and your browser asks you first.
+- When it needs something from Elata, like a purchase or saved progress, it sends a request and Elata handles it on your behalf.
+- Payment details never pass through the app.
+
+---
+
+## What builders get
+
+Builders don't have to build accounts, payments, hosting, or storage. Elata
+provides:
+
+| Capability | Status |
+| --- | --- |
+| Hosting, listing, reviews, and discovery | Live |
+| Saved progress and scores per user | Live |
+| Reminders through Elata | Live |
+| Contributing to the user's opt-in biometric Score | Live |
+| One-time in-app purchases | Live on testnet |
+| Monthly subscriptions | Experimental |
+
+See [What's live](/overview/status) for details, and the
+[Build Apps](/apps/what-are-elata-apps) tab to get started.

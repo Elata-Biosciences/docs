@@ -1,44 +1,38 @@
 ---
 title: "FAQ"
-description: "Frequently asked questions about Elata, the App Store, and the Biometric SDKs."
+description: "Answers to common questions about Elata, its apps, the Elata SDK, privacy, points, and the ELTA token."
 ---
 
-## General
+## About Elata
 
 <AccordionGroup>
   <Accordion title="What is Elata?">
-    A platform for building and distributing biosignal apps: browser SDKs for rPPG, EEG, and PPG, plus the [Elata App Store](https://app.elata.bio), where those apps are published and played. See [What is Elata?](/learn/protocol-overview).
+    A marketplace for privacy-respecting biosignal apps at [app.elata.bio](https://app.elata.bio), plus the open-source Elata SDK for building them. See [Welcome](/overview/welcome).
   </Accordion>
-  <Accordion title="Do I need special hardware?">
-    No. Camera (rPPG) apps work with any webcam. EEG and headband-PPG apps need a supported headband such as Muse.
+  <Accordion title="Is Elata a medical product?">
+    No. Elata apps are for wellness, games, learning, and research. They don't diagnose, treat, or monitor any medical condition. See [Safety and limitations](/users/safety-and-limitations).
   </Accordion>
-  <Accordion title="Which browsers are supported?">
-    Camera apps work in modern browsers. EEG over Bluetooth needs a Chromium-based browser with Web Bluetooth (Chrome or Edge on desktop and Android). See [Compatibility](/sdk/operations/compatibility).
+  <Accordion title="What's available today?">
+    The [What's live](/overview/status) page lists every capability as live, experimental, planned, or retired.
   </Accordion>
 </AccordionGroup>
 
 ---
 
-## Building apps
+## Using apps
 
 <AccordionGroup>
-  <Accordion title="How do I publish an app?">
-    Build a web app with the SDKs, then use the Build an App wizard at [app.elata.bio/build-app](https://app.elata.bio/build-app). See the [Quickstart](/quickstart).
+  <Accordion title="Do I need special hardware?">
+    No. Camera apps work with any webcam. EEG and headband heart-rate apps need a supported headband such as Muse. See [Devices](/users/devices).
   </Accordion>
-  <Accordion title="Does my app have to use the SDK?">
-    Yes. Uploads must use at least one Elata sensor SDK (rPPG, EEG, or PPG). See [Requirements](/apps/build/requirements).
+  <Accordion title="Which browsers are supported?">
+    Camera apps work in modern browsers. Bluetooth headbands need Chrome or Edge (Web Bluetooth); Safari and iOS browsers don't support it. See [Devices](/users/devices).
   </Accordion>
-  <Accordion title="What does it cost to publish?">
-    A small one-time registration fee in USDC, shown in the wizard.
+  <Accordion title="Do I need a crypto wallet?">
+    No. You can sign in with a social login. Connecting an existing wallet is optional.
   </Accordion>
-  <Accordion title="How do I make money from my app?">
-    Sell one-time items with [in-app purchases](/apps/platform/in-app-purchases), or charge a monthly [subscription](/apps/platform/subscriptions).
-  </Accordion>
-  <Accordion title="Can I host the app myself?">
-    Yes, with approval. Request external hosting from your app's Edit page. See [Upload and hosting](/apps/build/upload-and-hosting#self-hosted-apps).
-  </Accordion>
-  <Accordion title="How long does review take?">
-    Every release is scanned automatically and then reviewed by a moderator. You're notified in the store and by email when it's approved.
+  <Accordion title="Does it cost anything?">
+    Browsing and playing are free. Some apps sell optional items or offer a monthly subscription. See [Monetization](/overview/monetization).
   </Accordion>
 </AccordionGroup>
 
@@ -48,22 +42,50 @@ description: "Frequently asked questions about Elata, the App Store, and the Bio
 
 <AccordionGroup>
   <Accordion title="Does my camera or EEG data leave my device?">
-    Raw signals are processed on your device, and apps are not allowed to send them anywhere. See [Privacy and data](/learn/privacy-and-data).
+    Raw signals are processed on your device, and apps aren't allowed to send them anywhere. See [Privacy and consent](/overview/privacy-and-consent).
   </Accordion>
   <Accordion title="What is the biometric Score?">
-    An optional, cross-app measure built from derived session results. It's only built if you opt in, and you can turn it off at any time.
+    An optional, cross-app measure built from derived session results. It's only built if you opt in, and you can turn it off at any time. See [Score and insights](/users/score-and-insights).
+  </Accordion>
+  <Accordion title="How do I delete my data?">
+    Email [info@elata.bio](mailto:info@elata.bio). See [Your data](/users/your-data).
   </Accordion>
 </AccordionGroup>
 
 ---
 
-## Accounts and points
+## Building apps
 
 <AccordionGroup>
-  <Accordion title="Do I need a crypto wallet?">
-    No. You can sign in with a social login. Connecting an existing wallet is optional.
+  <Accordion title="How do I publish an app?">
+    Build a web app with the Elata SDK, then use the Build an App wizard at [app.elata.bio/build-app](https://app.elata.bio/build-app). See the [Quickstart](/apps/quickstart).
   </Accordion>
+  <Accordion title="Does my app have to use the Elata SDK?">
+    Yes. Uploads must use at least one Elata sensor package (rPPG, EEG, or PPG). See [Requirements](/apps/build/requirements).
+  </Accordion>
+  <Accordion title="What does it cost to publish?">
+    A one-time registration fee in USDC, shown in the wizard.
+  </Accordion>
+  <Accordion title="How do I make money from my app?">
+    Sell one-time items or charge a monthly subscription. See [Monetize your app](/apps/build/monetize).
+  </Accordion>
+  <Accordion title="How long does review take?">
+    Every release is scanned automatically and then reviewed by a moderator. You're notified on Elata and by email when it's approved.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Points and the token
+
+<AccordionGroup>
   <Accordion title="What are Elata Points?">
-    Non-transferable points you earn for taking part in the store. See [Elata Points](/elata-points).
+    Off-chain points you earn for taking part: playing, reviewing, building, and inviting friends. They can't be bought, sold, or transferred. See [Elata Points](/overview/points).
+  </Accordion>
+  <Accordion title="Do I need ELTA to use Elata?">
+    No. See [ELTA token](/overview/elta-token).
+  </Accordion>
+  <Accordion title="Where can I buy ELTA?">
+    No official liquidity pool exists yet. Any pool that appears before an official announcement is unauthorized. See [ELTA token](/overview/elta-token).
   </Accordion>
 </AccordionGroup>

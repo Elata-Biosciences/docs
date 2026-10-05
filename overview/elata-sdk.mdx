@@ -1,0 +1,61 @@
+---
+title: "The Elata SDK"
+description: "Open-source packages that turn webcams and consumer headbands into biosignal sensors, with processing on the user's device."
+---
+
+## What it does
+
+The Elata SDK is a set of open-source JavaScript packages for building apps on
+biosignals. It handles the hard parts:
+
+- **Connecting** to devices: a webcam, or a Bluetooth EEG headband such as Muse
+- **Processing** raw signals into usable measures: heart rate, heart-rate variability, EEG band powers, signal quality
+- **Running on the device**: the processing core is written in Rust and compiled to WebAssembly, so it runs in the browser and raw data doesn't have to go to a server
+
+The SDK is free to use, published on [npm](https://www.npmjs.com/org/elata-biosciences),
+and developed in the open on
+[GitHub](https://github.com/Elata-Biosciences/elata-bio-sdk).
+
+---
+
+## Package families
+
+| Family | Packages | Status |
+| --- | --- | --- |
+| **Sensors** | `rppg-web` (webcam heart rate), `eeg-web` (EEG processing), `eeg-web-ble` (Bluetooth headbands), `ppg-web` (headband heart rate) | Live |
+| **Elata platform** | `app-payments` (purchases), `app-metrics` (records and scores) | Live |
+| | `app-state` (saved progress) | Experimental |
+| **Recording and analysis** | `biosignal-session` (local session recording), `biosignal-analytics` (features and scores), `rppg-models-web` (learned waveform models) | Experimental |
+| **Tooling** | `create-elata-demo` (starter apps) | Live, known issue |
+
+"Experimental" packages are available as source code but not yet on npm. See
+[What's live](/overview/status).
+
+---
+
+## Supported devices
+
+| Device | Signals | Browser |
+| --- | --- | --- |
+| Any webcam | Pulse (rPPG) | Modern browsers |
+| Muse 2 and Muse S | 4-channel EEG, PPG | Chrome or Edge (Web Bluetooth) |
+| Muse S (Athena) | 8-channel EEG, optics, motion | Chrome or Edge (Web Bluetooth) |
+
+Other headsets can be added through the SDK's device contract. See
+[Device integration](/integrate).
+
+---
+
+## You don't have to publish on Elata
+
+The SDK works in any web app. Publishing on Elata adds distribution, accounts,
+and payments, but the sensor packages don't require it.
+
+<CardGroup cols={2}>
+  <Card title="SDK overview" icon="package" href="/sdk/overview">
+    Packages, installation, and device support
+  </Card>
+  <Card title="Your first app" icon="graduation-cap" href="/sdk/tutorials/first-app">
+    A hands-on tutorial
+  </Card>
+</CardGroup>

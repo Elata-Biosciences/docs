@@ -10,8 +10,8 @@ session results that apps report with
 [`reportAffect`](/apps/platform/metrics-and-scores#reportaffect). Nothing is
 shared until the user explicitly opts in, and they can turn it off at any time.
 
-Consent is shown by the store in its own trusted frame, not by your app. The
-store also re-checks consent on the server for every sample, so your app can't
+Consent is shown by Elata in its own trusted frame, not by your app. Elata
+ also re-checks consent on the server for every sample, so your app can't
 contribute without it.
 
 There's currently one consent purpose: `platform_score`.
@@ -35,7 +35,7 @@ window.parent?.postMessage(
 );
 ```
 
-The store opens its consent dialog and replies with
+Elata opens its consent dialog and replies with
 `{ type: 'elata:consent:state', purpose, granted, requestId }` once the user
 decides.
 
@@ -70,7 +70,7 @@ window.parent?.postMessage(
 );
 ```
 
-The store replies with `elata:insights:state`:
+Elata replies with `elata:insights:state`:
 
 ```ts
 {

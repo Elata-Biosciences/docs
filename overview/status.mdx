@@ -1,0 +1,80 @@
+---
+title: "What's Live"
+description: "The status of every Elata capability: live, experimental, planned, or retired."
+---
+
+This page is the single source of truth for what you can use today. Other pages
+link here instead of repeating it.
+
+| Label | Meaning |
+| --- | --- |
+| **Live** | Available now to everyone. |
+| **Experimental** | Usable, but may change or have limits. |
+| **Planned** | Direction we're working toward. Not available yet. |
+| **Retired** | Removed. Listed so old links and posts make sense. |
+
+---
+
+## Elata (app.elata.bio)
+
+| Capability | Status | Notes |
+| --- | --- | --- |
+| Browse, play, save, review, and follow apps | Live | [Explore apps](/users/explore-apps) |
+| Publish web apps (Build an App wizard, review, sandboxed hosting) | Live | [Quickstart](/apps/quickstart) |
+| Sign in with social login or an existing wallet | Live | |
+| Elata Points, quests, referrals, leaderboard | Live | [Points](/overview/points) |
+| Biometric Score, consent, and Insights | Live | Opt-in. [Privacy and consent](/overview/privacy-and-consent) |
+| Reminders from apps (notifications) | Live | Delivered by Elata, never by the app directly |
+| In-app purchases (USDC) | Live on testnet | Payments currently run on a test network (Ethereum Sepolia) |
+| App subscriptions and Elata membership | Experimental | May show "Coming soon" in Elata until enabled. [Membership](/users/membership-and-purchases) |
+
+---
+
+## Elata SDK
+
+| Capability | Status | Notes |
+| --- | --- | --- |
+| `rppg-web`, `eeg-web`, `eeg-web-ble`, `ppg-web` | Live | On npm. [SDK overview](/sdk/overview) |
+| `app-metrics`, `app-payments` | Live | On npm |
+| `create-elata-demo` (starter apps) | Live, known issue | The current npm release (0.12.1) fails to start. A fix is coming in the next release. |
+| `app-state` | Experimental | Not on npm yet. Apps can use the [`elata:state:*` messages](/apps/platform/app-state) directly. |
+| `biosignal-session`, `biosignal-analytics`, `rppg-models-web` | Experimental | Source code only, not on npm yet. APIs may change. |
+| Muse 2, Muse S, Muse S (Athena) over Web Bluetooth | Live | Chrome or Edge. [Devices](/users/devices) |
+| Any webcam for rPPG | Live | |
+
+---
+
+## Data and research
+
+| Capability | Status | Notes |
+| --- | --- | --- |
+| On-device processing of raw signals | Live | Raw signals never need to leave the device |
+| Federated learning (training models without collecting raw data) | Planned | Research direction. Not part of the live product. [Research directions](/overview/science/research-directions) |
+
+---
+
+## ELTA token
+
+| Capability | Status | Notes |
+| --- | --- | --- |
+| ELTA token on Base | Live | Deployed, with no official liquidity pool yet. [ELTA token](/overview/elta-token) |
+
+Elata's wider on-chain protocol (staking, app tokens, governance) is not part of
+the live product. Its source is in the public
+[elata-protocol](https://github.com/Elata-Biosciences/elata-protocol)
+repository, which notes it is pending an external audit.
+
+---
+
+## Retired
+
+These existed before and have been removed. Old links redirect here or to the
+nearest current page.
+
+| Capability | What replaced it |
+| --- | --- |
+| Launching a token for each app, bonding curves, and trading app tokens | Apps are registered on Elata with a one-time fee; no token is launched |
+| Staking for apps, tournaments, and veELTA pages in these docs | Not part of the live product |
+| "Premium content" | [In-app purchases](/apps/platform/in-app-purchases) and [subscriptions](/apps/platform/subscriptions) |
+| The API Reference tab | [Host bridge](/apps/platform/host-bridge) for builders |
+| ElataEEG hardware, ZORP, AgentForge, NewsReader | Archived projects. See the [Archive](/archive/overview). |

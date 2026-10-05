@@ -1,0 +1,57 @@
+---
+title: "Data for Research"
+description: "What biosignal data exists in the Elata ecosystem, what doesn't, and the tools available for running your own studies."
+---
+
+## What data exists
+
+Elata is built so that raw biosignals don't need to leave the user's device.
+That shapes what data exists:
+
+| Data | Exists? | Where |
+| --- | --- | --- |
+| Raw camera frames, raw EEG, raw PPG | Not collected by Elata | Processed and discarded on the user's device |
+| Derived session results for the biometric Score | Yes, with consent | Elata, for users who opt in |
+| App saves, records, and scores | Yes | The user's account, scoped to each app |
+| Aggregate app analytics | Yes | Visible to each app's builder, anonymized |
+
+<Note>
+  Elata does not currently offer research datasets or data access programs.
+</Note>
+
+---
+
+## Running your own study
+
+Researchers can use the open-source tools directly:
+
+- **Build a study as an Elata app.** Use the SDK for capture and processing, and publish it on Elata to reach participants in their browser. Your app is responsible for its own consent and study protocol. Apps may not send raw biosignals off the device under Elata's [submission policy](/apps/build/review-and-policy).
+- **Use the SDK in your own tools.** The sensor packages work in any web app, outside Elata, under your own institution's data handling.
+
+---
+
+## Recording sessions (experimental)
+
+<Warning>
+  Experimental. `biosignal-session` is available as source code only, and
+  Elata does not host session recordings yet.
+</Warning>
+
+`biosignal-session` records multi-sensor sessions (EEG, PPG, rPPG metrics, and
+more) as typed streams in Apache Arrow files, designed for reliability:
+
+- every chunk carries a checksum and a stable identity, so it can be stored and retried safely
+- real gaps are recorded as explicit discontinuities, never interpolated
+- time is a single session clock in integer microseconds
+
+Recording is local: the package has no network client. The application that
+embeds it decides where data is stored. See
+[biosignal-session](/sdk/biosignal-session/getting-started).
+
+---
+
+## Analysis tools (experimental)
+
+`biosignal-analytics` provides reproducible features and transparent scores,
+with every value traceable to the algorithm and version that produced it. See
+[Metrics and scores](/overview/science/metrics-and-scores).

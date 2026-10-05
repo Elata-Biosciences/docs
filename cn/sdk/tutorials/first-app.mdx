@@ -19,7 +19,7 @@ description: "先创建一个可运行的应用，再以它为参考进行更深
 - `eeg-demo`：浏览器 EEG 处理，支持 Muse Web Bluetooth
 - `eeg-ble`：以蓝牙为主、面向 Muse 兼容头带的 EEG 入门应用
 - `ppg-demo`：通过 Muse 头带的 PPG 传感器获取心率和 HRV
-- `pulse-game`：运行在沙箱 iframe 中并保存分数的 rPPG 游戏，与应用在 Elata 应用商店中的运行方式相同
+- `pulse-game`：运行在沙箱 iframe 中并保存分数的 rPPG 游戏，与应用在 Elata 中的运行方式相同
 
 ## 为什么从这里开始
 
@@ -41,7 +41,7 @@ description: "先创建一个可运行的应用，再以它为参考进行更深
 | 只添加浏览器 EEG（先用合成或离线样本） | `eeg-demo` |
 | 通过蓝牙连接 Muse 兼容头带（Chrome/Edge） | `eeg-ble` |
 | 通过 Muse 头带读取心率和 HRV | `ppg-demo` |
-| 查看完整的应用商店模式（沙箱 iframe + 保存分数） | `pulse-game` |
+| 查看完整的 Elata 模式（沙箱 iframe + 保存分数） | `pulse-game` |
 
 如果不确定，就从 `rppg-demo` 开始。
 
@@ -119,7 +119,7 @@ npm run dev
 - `eeg-demo`：在浏览器中加载 EEG 处理并显示由合成数据驱动的输出
 - `eeg-ble`：在 EEG 基础上增加受支持的 Muse 兼容头带的蓝牙配对和数据流
 - `ppg-demo`：连接 Muse 头带并显示 BPM、RMSSD 和实时 PPG 诊断
-- `pulse-game`：在沙箱 iframe 中运行游戏，并通过本地宿主保存分数，与应用商店的方式相同
+- `pulse-game`：在沙箱 iframe 中运行游戏，并通过本地宿主保存分数，与 Elata 的方式相同
 
 如果你只是在评估，先停在这里，从生成的应用中学习，然后再集成到现有代码库中。
 
@@ -131,7 +131,7 @@ npm run dev
 - 已接入的 Elata 包
 - 包含模板说明的 `README.md`
 - 用于确认应用能干净编译的 `build` 脚本
-- 将应用打包以[上传到 Elata 应用商店](/cn/apps/build/launch-your-app)的 `build:zip` 脚本
+- 将应用打包以[上传到 Elata](/cn/apps/build/launch-your-app)的 `build:zip` 脚本
 
 它就是你确认可用的基线。
 

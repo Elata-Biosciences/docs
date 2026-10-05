@@ -5,7 +5,7 @@ description: "The app manifest that declares your release version."
 
 ## Overview
 
-`elata.json` is a small manifest you include in your upload. Today the store
+`elata.json` is a small manifest you include in your upload. Today Elata
 uses it to read your **release version**, so your listing shows `v1.2.3`
 instead of `Release #4`.
 
@@ -18,7 +18,7 @@ instead of `Release #4`.
 ```
 
 <Note>
-  `elata.json` is optional today. If it is missing or invalid, the store falls
+  `elata.json` is optional today. If it is missing or invalid, Elata falls
   back to other version sources (see below). It will become required in a
   future update, so add it now.
 </Note>
@@ -55,7 +55,7 @@ my-app/
 
 ## Version fallbacks
 
-If there's no valid `elata.json`, the store looks for a version in this order:
+If there's no valid `elata.json`, Elata looks for a version in this order:
 
 1. `elata.json` (or `elata.manifest.json`)
 2. The `version` in the shallowest `package.json` in the zip

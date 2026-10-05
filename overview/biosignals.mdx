@@ -1,0 +1,82 @@
+---
+title: "Biosignals Explained"
+description: "A plain-language guide to camera heart rate, EEG headbands, and headband PPG: what each measures and what it can't tell you."
+---
+
+A **biosignal** is a measurable signal from the body, like a heartbeat or the
+brain's electrical activity. Elata apps use three kinds, all from devices
+people already own or can buy.
+
+---
+
+## Camera heart rate (rPPG)
+
+**What it is.** Each heartbeat pushes blood into the skin, which changes its
+color very slightly. A webcam can pick up that change, too small to see with
+your eyes. This is called remote photoplethysmography, or rPPG.
+
+**What it can estimate.** Pulse rate, and how steady the signal is.
+
+**What affects it.** Movement, dim or flickering light, strong shadows, video
+compression, and low frame rates all reduce accuracy. Accuracy can also vary
+with skin tone and camera quality.
+
+More detail: [Camera heart rate (rPPG)](/overview/science/rppg).
+
+---
+
+## EEG headbands
+
+**What it is.** Electroencephalography (EEG) measures tiny electrical
+signals from the brain through sensors on the scalp. Consumer headbands like
+Muse use a few dry sensors on the forehead and behind the ears.
+
+**What it can estimate.** How strong different rhythms are, such as alpha
+waves, which tend to rise when you're relaxed with your eyes closed. Apps turn
+these into measures like "calm" or "focus."
+
+**What affects it.** Blinking, jaw clenching, movement, and poor sensor contact
+create signals much larger than brain activity. A few sensors can't locate
+activity precisely, and "calm" or "focus" scores are estimates, not direct
+readouts of a mental state.
+
+More detail: [EEG headbands](/overview/science/eeg).
+
+---
+
+## Headband PPG and heart-rate variability
+
+**What it is.** Some headbands, like Muse S, have an optical sensor that
+shines light into the skin and measures the reflection, the same principle as
+a smartwatch heart-rate sensor (photoplethysmography, or PPG).
+
+**What it can estimate.** Heart rate and **heart-rate variability (HRV)**: the
+small variation in time between beats, which is often linked to recovery and
+stress.
+
+**What affects it.** Movement, a loose fit, and short recordings. HRV in
+particular needs clean data over a minute or more to be meaningful.
+
+More detail: [PPG and HRV](/overview/science/ppg-and-hrv).
+
+---
+
+## What these signals are not
+
+<Warning>
+  Elata apps are not medical devices. They don't diagnose, treat, or monitor
+  any medical condition. If an app shows a reading that worries you, talk to a
+  medical professional rather than relying on the app.
+</Warning>
+
+These measurements are useful for games, feedback, and personal exploration.
+They are estimates that depend on conditions, and the same person can get
+different readings on different days.
+
+---
+
+## Where processing happens
+
+All three kinds of signal are processed on your device by the
+[Elata SDK](/overview/elata-sdk). Raw camera frames and raw biosignals don't
+need to leave your device. See [Privacy and consent](/overview/privacy-and-consent).

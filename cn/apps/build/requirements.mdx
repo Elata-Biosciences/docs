@@ -6,7 +6,7 @@ description: "上传和提交之前，你的应用需要满足的条件。"
 ## 检查清单
 
 <Steps>
-  <Step title="商店账户">
+  <Step title="Elata 账户">
     在 [app.elata.bio](https://app.elata.bio) 登录。你可以使用社交账号登录，或连接已有钱包。
   </Step>
   <Step title="注册费">
@@ -19,10 +19,10 @@ description: "上传和提交之前，你的应用需要满足的条件。"
     根目录包含 `index.html` 的 `.zip`（或单个 `.html` 文件）。资源路径必须是**相对路径**，因为应用在子路径下提供服务。参见[上传与托管](/cn/apps/build/upload-and-hosting)。
   </Step>
   <Step title="版本号">
-    添加 [`elata.json`](/cn/apps/build/elata-json)，让商店显示 `v1.2.3` 而不是版本编号。
+    添加 [`elata.json`](/cn/apps/build/elata-json)，让 Elata 显示 `v1.2.3` 而不是版本编号。
   </Step>
-  <Step title="商店页面素材">
-    提交时必须提供应用图标和头图。建议提供截图和详细描述。参见[商店页面](/cn/apps/build/app-metadata)。
+  <Step title="应用页面素材">
+    提交时必须提供应用图标和头图。建议提供截图和详细描述。参见[应用页面](/cn/apps/build/app-metadata)。
   </Step>
 </Steps>
 
@@ -30,7 +30,7 @@ description: "上传和提交之前，你的应用需要满足的条件。"
 
 ## SDK 使用检查
 
-商店会在你的包中查找对 Elata SDK 的真实调用，例如 `rppg-web` 的 `createRppgSession(...)`，或 EEG 包中的 `initEegWasm(...)` 和 `BleTransport`，以及打包的 WASM 文件。只导入包而不使用是不够的。
+Elata 会在你的包中查找对 Elata SDK 的真实调用，例如 `rppg-web` 的 `createRppgSession(...)`，或 EEG 包中的 `initEegWasm(...)` 和 `BleTransport`，以及打包的 WASM 文件。只导入包而不使用是不够的。
 
 <Tip>
   `npm create @elata-biosciences/elata-demo` 生成的模板已经可以通过此检查。如果手动集成 SDK，请在构建输出中保留打包的 `.wasm` 文件。
@@ -42,7 +42,7 @@ description: "上传和提交之前，你的应用需要满足的条件。"
 
 应用运行在沙箱中。审核和自动扫描会拒绝以下应用：
 
-- 在商店自带结账流程之外发起钱包交易、签名或授权
+- 在 Elata 自带结账流程之外发起钱包交易、签名或授权
 - 将原始摄像头画面、麦克风音频或原始生物信号发送到设备之外
 - 试图访问父页面、其 Cookie 或存储，或逃逸沙箱
 - 冒充其他应用、开发者或服务

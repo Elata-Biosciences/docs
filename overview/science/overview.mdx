@@ -1,0 +1,79 @@
+---
+title: "Science at Elata"
+description: "Elata's scientific stance: what the measurements are for, how claims are graded, and where to read more."
+---
+
+## Our stance
+
+Elata builds tools for **wellness, games, learning, and research**. The
+signals Elata apps use (camera heart rate, consumer EEG, and headband PPG) are
+real physiological measurements, but they come from consumer devices in
+uncontrolled settings. They are estimates, not clinical readings.
+
+Three rules follow from that:
+
+1. **No diagnosis.** Elata and Elata apps don't diagnose, treat, or monitor medical conditions.
+2. **Show the uncertainty.** Measures come with signal-quality and confidence values, and scores withhold themselves when the data isn't good enough rather than guessing.
+3. **Grade every claim.** A measured heart rate and a "focus" score are different kinds of claim, and the SDK labels them differently.
+
+---
+
+## How claims are graded
+
+The SDK's analytics package (`biosignal-analytics`, currently
+[experimental](/overview/status)) gives every metric a registered definition
+with two labels.
+
+**Measurement class:** what kind of number it is.
+
+| Class | Meaning | Example |
+| --- | --- | --- |
+| Measured | Read more or less directly from the signal | Heart rate |
+| Derived (deterministic) | Computed from measured values by a fixed formula | HRV (RMSSD), band power |
+| Model-inferred | Estimated by a statistical or learned model | A learned waveform reconstruction |
+| Product composite | A product interpretation combining several inputs | Focus, Readiness |
+
+**Evidence tier:** how strongly the metric is supported.
+
+| Tier | Meaning |
+| --- | --- |
+| Beta default | Well supported; shown by default |
+| Advanced | Supported, but for informed users |
+| Experimental | Early; may change or be removed |
+| Rejected | Evaluated and deliberately not used |
+
+Each value also records the exact algorithm and version that produced it, so
+it can be traced and recomputed when an algorithm improves. Feature code is
+tested against reference implementations (NumPy/SciPy) so the numbers agree
+across the Rust, WebAssembly, and JavaScript versions.
+
+---
+
+## In this section
+
+<CardGroup cols={2}>
+  <Card title="Camera heart rate (rPPG)" icon="camera" href="/overview/science/rppg">
+    How a webcam estimates pulse, and its limits
+  </Card>
+  <Card title="EEG headbands" icon="brain" href="/overview/science/eeg">
+    What four dry sensors can and can't tell you
+  </Card>
+  <Card title="PPG and HRV" icon="heart-pulse" href="/overview/science/ppg-and-hrv">
+    Optical heart rate and heart-rate variability
+  </Card>
+  <Card title="Metrics and scores" icon="gauge" href="/overview/science/metrics-and-scores">
+    How derived measures and scores are built
+  </Card>
+  <Card title="Data for research" icon="database" href="/overview/science/data-for-research">
+    What data exists, and what doesn't
+  </Card>
+  <Card title="Research directions" icon="telescope" href="/overview/science/research-directions">
+    Planned and archived research work
+  </Card>
+</CardGroup>
+
+---
+
+## Sources
+
+- [`biosignal-analytics` README and registry](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) (public SDK repository)
