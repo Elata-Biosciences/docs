@@ -1,0 +1,63 @@
+---
+title: "Camera Heart Rate (rPPG)"
+description: "How a webcam estimates pulse, how the Elata SDK does it, and the conditions that limit accuracy."
+---
+
+## The principle
+
+With every heartbeat, the volume of blood in the skin rises and falls. Blood
+absorbs light, so the skin's color changes very slightly in time with the
+pulse. A camera can detect this change even though it's invisible to the eye.
+Measuring it without contact is called **remote photoplethysmography (rPPG)**.
+
+---
+
+## How the Elata SDK does it
+
+`rppg-web` runs this pipeline in the browser, on the user's device:
+
+1. **Find the face.** A face-landmark model locates skin regions such as the forehead and cheeks.
+2. **Average the color.** For each video frame, the SDK averages the red, green, and blue values in those regions.
+3. **Extract the pulse signal.** Established methods combine the color channels to cancel out lighting and motion: the green-channel method, CHROM (chrominance-based), and POS (plane-orthogonal-to-skin).
+4. **Estimate the rate.** The SDK estimates beats per minute two ways, from the signal's frequency spectrum and from its autocorrelation, and checks that they agree.
+5. **Report quality.** Every estimate comes with a signal-quality value and a confidence value, so an app can tell a clean reading from a guess.
+
+Raw video frames never leave the device.
+
+---
+
+## What affects accuracy
+
+rPPG works well under good conditions and degrades under poor ones. Published
+reviews consistently identify the same challenges:
+
+| Factor | Why it matters |
+| --- | --- |
+| **Motion** | Head movement changes how light hits the skin, which can swamp the pulse signal |
+| **Lighting** | Dim, uneven, or flickering light (some LED and fluorescent lights) adds noise |
+| **Skin tone** | Darker skin absorbs more light, which lowers signal amplitude for optical methods |
+| **Camera and compression** | Low frame rates and heavy video compression remove the tiny color changes rPPG depends on |
+| **Distance and framing** | Fewer skin pixels mean a weaker signal |
+
+Tips for users are on [Devices](/users/devices). Builders can use the SDK's
+quality and confidence values to prompt users or hold back a reading.
+
+---
+
+## What rPPG can and can't claim
+
+- **Can:** estimate pulse rate at rest in reasonable conditions, and show how steady the signal is.
+- **With caution:** heart-rate variability from a camera needs very clean, longer recordings.
+- **Can't:** diagnose heart rhythm problems or replace a medical device. Even contact PPG, used in smartwatches, needs ECG confirmation for diagnosis.
+
+---
+
+## Sources
+
+Peer-reviewed literature, retrieved via PubMed:
+
+- Debnath U, Kim S. A comprehensive review of heart rate measurement using remote photoplethysmography and deep learning. *Biomedical Engineering Online*, 2025. [doi:10.1186/s12938-025-01405-5](https://doi.org/10.1186/s12938-025-01405-5)
+- Chen W, et al. Deep learning and remote photoplethysmography powered advancements in contactless physiological measurement. *Frontiers in Bioengineering and Biotechnology*, 2024. [doi:10.3389/fbioe.2024.1420100](https://doi.org/10.3389/fbioe.2024.1420100)
+- De Wever M, et al. Photoplethysmography for heart rate and rhythm monitoring: current evidence and clinical applications. *JACC: Clinical Electrophysiology*, 2026. [doi:10.1016/j.jacep.2026.06.034](https://doi.org/10.1016/j.jacep.2026.06.034)
+
+SDK implementation: [`rppg-web`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/rppg-web) (public SDK repository).

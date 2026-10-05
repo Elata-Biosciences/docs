@@ -20,7 +20,7 @@ description: "从模板创建可直接运行的 Elata 入门应用。"
 | `pulse-game` | `pulse`、`recovery` | 运行在沙箱 iframe 中、通过 `app-metrics` 保存分数的 rPPG 恢复游戏，完整演示端到端流程 | 网络摄像头 |
 
 <Tip>
-  要为 Elata 应用商店开发？`pulse-game` 展示了完整的商店模式：应用运行在 iframe 中，通过[指标桥接](/cn/apps/platform/metrics-and-scores)与宿主通信。
+  要为 Elata 开发？`pulse-game` 展示了完整的 Elata 模式：应用运行在 iframe 中，通过[指标桥接](/cn/apps/platform/metrics-and-scores)与宿主通信。
 </Tip>
 
 ---
@@ -69,7 +69,7 @@ pnpm dlx @elata-biosciences/create-elata-demo --list-templates
 - 针对该模板的 `README.md`
 - `npm run dev`：启动开发服务器
 - `npm run build`：类型检查并构建到 `dist/`
-- `npm run build:zip`：构建并生成 `app.zip`，可直接[上传到应用商店](/cn/apps/build/launch-your-app)
+- `npm run build:zip`：构建并生成 `app.zip`，可直接[上传到 Elata](/cn/apps/build/launch-your-app)
 
 ```bash
 cd my-app
@@ -108,7 +108,7 @@ pnpm --dir my-app --ignore-workspace run dev
   <Card title="选择合适的包" icon="compass" href="/cn/sdk/guides/choose-the-right-package">
     包选择指南
   </Card>
-  <Card title="发布到商店" icon="store" href="/cn/apps/build/launch-your-app">
+  <Card title="发布到 Elata" icon="store" href="/cn/apps/build/launch-your-app">
     上传你的应用
   </Card>
 </CardGroup>

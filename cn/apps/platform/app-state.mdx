@@ -1,10 +1,11 @@
 ---
 title: "应用状态"
+tag: "Experimental"
 description: "使用 @elata-biosciences/app-state 实现按用户、按应用的键值存储。"
 ---
 
 <Warning>
-  `@elata-biosciences/app-state` 尚未发布到 npm。在此之前，你可以直接使用下文所示的 `elata:state:*` 消息调用商店；商店已经支持这些消息。
+  `@elata-biosciences/app-state` 尚未发布到 npm。在此之前，你可以直接使用下文所示的 `elata:state:*` 消息调用 Elata；Elata 已经支持这些消息。
 </Warning>
 
 ## 概述
@@ -46,12 +47,12 @@ await deleteState('save_slot_1');
 
 | Code | 来源 | 含义 |
 | --- | --- | --- |
-| `no_parent` | 本地 | 不在商店框架内运行 |
+| `no_parent` | 本地 | 不在 Elata 框架内运行 |
 | `timeout` | 本地 | 未及时收到回复 |
-| `invalid_input` | 本地或商店 | 键或值无效 |
-| `not_authenticated` | 商店 | 用户未登录 |
-| `value_too_large` | 商店 | 值超过 64 KB |
-| `fetch_failed` | 商店 | 商店无法访问存储 |
+| `invalid_input` | 本地或 Elata | 键或值无效 |
+| `not_authenticated` | Elata | 用户未登录 |
+| `value_too_large` | Elata | 值超过 64 KB |
+| `fetch_failed` | Elata | Elata 无法访问存储 |
 
 <Tip>
   未登录的用户会得到 `not_authenticated`。请保留本地备用方案（例如 `localStorage`），并在用户登录后同步到 `app-state`。
@@ -61,7 +62,7 @@ await deleteState('save_slot_1');
 
 ## 不使用该包
 
-商店会直接响应这些消息。将它们连同唯一的 `requestId` 发送到 `window.parent`，并等待对应的 `…:result` 回复：
+Elata 会直接响应这些消息。将它们连同唯一的 `requestId` 发送到 `window.parent`，并等待对应的 `…:result` 回复：
 
 ```js
 function stateCall(type, payload) {
@@ -82,7 +83,7 @@ await stateCall('elata:state:set', { key: 'save_slot_1', value: { level: 7 } });
 await stateCall('elata:state:delete', { key: 'save_slot_1' });
 ```
 
-生产环境中请加上超时：在商店之外没有人会回复。
+生产环境中请加上超时：在 Elata 之外没有人会回复。
 
 ---
 

@@ -1,0 +1,82 @@
+---
+title: "Privacy and Consent"
+description: "What stays on your device, what apps can store, how the opt-in biometric Score works, and your rights over your data."
+---
+
+## On-device first
+
+The Elata SDK processes biosignals on your device. Raw camera frames, raw EEG,
+and raw PPG don't need to leave it, and Elata's
+[submission policy](/apps/build/review-and-policy) forbids apps from sending
+them anywhere.
+
+Elata's [privacy policy](https://elata.bio/privacy) puts it this way: raw
+physiological signals never leave the user's device through the SDK, and the
+processing pipeline produces non-identifying derived metrics by design.
+
+---
+
+## What apps can see
+
+Apps run in a sandbox and never see who you are. They can't read your wallet,
+email, session, or your Elata account. When an app needs something from the
+platform, Elata answers on your behalf.
+
+---
+
+## What apps can store
+
+An app can save data for you through Elata:
+
+- settings, saves, and progress
+- event records and scores
+
+That data is scoped to that one app and your account. Apps can't read each
+other's data. Builders only see aggregate, anonymized
+[analytics](/apps/operate/analytics-and-health), never individual users.
+
+---
+
+## The biometric Score
+
+The Score is a single, cross-app measure (0 to 100) built from **derived**
+session results, such as how much calmer you got during a session compared
+with your own baseline. Raw signal is never part of it.
+
+- **Off by default.** Nothing is shared until you opt in.
+- **Asked by Elata, not the app.** The consent prompt appears in Elata's own interface.
+- **Enforced on the server.** Every result is checked against your current consent before it counts.
+- **Revocable.** You can turn sharing off at any time.
+- **Versioned.** If the consent terms change materially, you're asked again.
+
+You can see your Score and activity on your **Insights** page, and inside apps
+that ask for it. See [Score and insights](/users/score-and-insights).
+
+---
+
+## Your rights
+
+Under Elata's privacy policy you can ask to access, correct, delete, export, or
+restrict your personal data. Email [info@elata.bio](mailto:info@elata.bio); the
+policy commits to responding within 30 days.
+
+Each app on Elata is built by an independent developer. Read an app's own terms
+if it links to any.
+
+---
+
+## What's next
+
+| Capability | Status |
+| --- | --- |
+| On-device processing | Live |
+| Opt-in Score with revocable consent | Live |
+| Federated learning: improving models by training across devices without collecting raw data | Planned (research) |
+
+See [Research directions](/overview/science/research-directions).
+
+---
+
+## Sources
+
+- [Elata privacy policy](https://elata.bio/privacy)

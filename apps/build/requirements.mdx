@@ -6,7 +6,7 @@ description: "What your app needs before you upload and submit it."
 ## Checklist
 
 <Steps>
-  <Step title="A store account">
+  <Step title="An Elata account">
     Sign in at [app.elata.bio](https://app.elata.bio). You can sign in with a social login or connect an existing wallet.
   </Step>
   <Step title="A registration fee">
@@ -19,10 +19,10 @@ description: "What your app needs before you upload and submit it."
     A `.zip` with `index.html` at its root (or a single `.html` file). Asset paths must be **relative**, because apps are served under a sub-path. See [Upload and hosting](/apps/build/upload-and-hosting).
   </Step>
   <Step title="A version">
-    Add an [`elata.json`](/apps/build/elata-json) so the store shows `v1.2.3` instead of a release number.
+    Add an [`elata.json`](/apps/build/elata-json) so Elata shows `v1.2.3` instead of a release number.
   </Step>
   <Step title="Listing assets">
-    An app icon and a header image are required to submit. Screenshots and an extended description are recommended. See [Store listing](/apps/build/app-metadata).
+    An app icon and a header image are required to submit. Screenshots and an extended description are recommended. See [App listing](/apps/build/app-metadata).
   </Step>
 </Steps>
 
@@ -30,7 +30,7 @@ description: "What your app needs before you upload and submit it."
 
 ## SDK usage check
 
-The store looks for real calls into the Elata SDKs in your bundle, for example
+Elata looks for real calls into the Elata SDK in your bundle, for example
 `createRppgSession(...)` from `rppg-web`, or `initEegWasm(...)` and
 `BleTransport` from the EEG packages, along with the packaged WASM files.
 Importing a package without using it is not enough.
@@ -47,7 +47,7 @@ Importing a package without using it is not enough.
 
 Apps run in a sandbox. Reviews and the automated scan reject apps that:
 
-- start wallet transactions, signatures, or approvals outside the store's own checkout
+- start wallet transactions, signatures, or approvals outside Elata's own checkout
 - send raw camera frames, microphone audio, or raw biosignals off the device
 - try to reach the parent page, its cookies, or storage, or escape the sandbox
 - impersonate another app, developer, or service

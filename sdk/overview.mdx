@@ -3,10 +3,10 @@ title: "Getting Started"
 description: "Browser SDKs for camera rPPG, EEG over Web Bluetooth, headband PPG, session recording, and analytics."
 ---
 
-## Elata Biometric SDKs
+## Elata SDK
 
-The Elata SDKs are npm packages for capturing and processing biosignals in the
-browser. They're built on Rust crates compiled to WebAssembly, so signal
+The Elata SDK is a set of npm packages for capturing and processing biosignals in the
+browser. The packages are built on Rust crates compiled to WebAssembly, so signal
 processing runs on the user's device.
 
 <Info>
@@ -39,36 +39,47 @@ See [create-elata-demo](/sdk/create-elata-demo) for all five templates.
 
 ## Packages
 
+"Live" packages are on npm. "Experimental" packages are available as source
+code in the [SDK repository](https://github.com/Elata-Biosciences/elata-bio-sdk)
+and not yet on npm. See [What's live](/overview/status).
+
 ### Sensors
 
-| Package | What it does |
-| --- | --- |
-| [`@elata-biosciences/rppg-web`](/sdk/rppg-web/getting-started) | Heart rate and pulse signals from a webcam (rPPG). The default starting point: no hardware needed. |
-| [`@elata-biosciences/eeg-web`](/sdk/eeg-web/getting-started) | EEG signal processing, band powers, and models (WASM), plus the shared headband frame contract. |
-| [`@elata-biosciences/eeg-web-ble`](/sdk/eeg-web-ble/getting-started) | Connect EEG headbands over Web Bluetooth. Muse built in; extensible to other devices. |
-| [`@elata-biosciences/ppg-web`](/sdk/ppg-web/getting-started) | Heart rate and HRV from a headband's optical (PPG) sensor. |
+| Package | What it does | Status |
+| --- | --- | --- |
+| [`@elata-biosciences/rppg-web`](/sdk/rppg-web/getting-started) | Heart rate and pulse signals from a webcam (rPPG). The default starting point: no hardware needed. | Live |
+| [`@elata-biosciences/eeg-web`](/sdk/eeg-web/getting-started) | EEG signal processing, band powers, and models (WASM), plus the shared headband frame contract. | Live |
+| [`@elata-biosciences/eeg-web-ble`](/sdk/eeg-web-ble/getting-started) | Connect EEG headbands over Web Bluetooth. Muse built in; extensible to other devices. | Live |
+| [`@elata-biosciences/ppg-web`](/sdk/ppg-web/getting-started) | Heart rate and HRV from a headband's optical (PPG) sensor. | Live |
 
 ### Recording and analysis
 
-| Package | What it does |
-| --- | --- |
-| [`@elata-biosciences/biosignal-session`](/sdk/biosignal-session/getting-started) | Record multi-sensor sessions to local storage with a fault-tolerant protocol and Arrow chunks. *Not yet on npm.* |
-| [`@elata-biosciences/biosignal-analytics`](/sdk/biosignal-analytics/getting-started) | EEG window features, HRV, robust statistics, and transparent headline scores. *Not yet on npm.* |
-| `@elata-biosciences/rppg-models-web` | Experimental: optional learned waveform reconstruction for `rppg-web`. You supply the model file. *Not yet on npm.* |
+| Package | What it does | Status |
+| --- | --- | --- |
+| [`@elata-biosciences/biosignal-session`](/sdk/biosignal-session/getting-started) | Record multi-sensor sessions to local storage with a fault-tolerant protocol and Arrow chunks. | Experimental |
+| [`@elata-biosciences/biosignal-analytics`](/sdk/biosignal-analytics/getting-started) | EEG window features, HRV, robust statistics, and transparent headline scores. | Experimental |
+| `@elata-biosciences/rppg-models-web` | Optional learned waveform reconstruction for `rppg-web`. You supply the model file. | Experimental |
 
-### App Store
+### Elata
 
-| Package | What it does |
-| --- | --- |
-| [`@elata-biosciences/app-payments`](/apps/platform/in-app-purchases) | In-app purchases through the store checkout |
-| [`@elata-biosciences/app-state`](/apps/platform/app-state) | Per-user key-value storage. *Not yet on npm; use the [`elata:state:*` messages](/apps/platform/app-state).* |
-| [`@elata-biosciences/app-metrics`](/apps/platform/metrics-and-scores) | Event records, scores, and biometric Score contribution |
+| Package | What it does | Status |
+| --- | --- | --- |
+| [`@elata-biosciences/app-payments`](/apps/platform/in-app-purchases) | In-app purchases through Elata checkout | Live |
+| [`@elata-biosciences/app-state`](/apps/platform/app-state) | Per-user key-value storage. Until it's on npm, use the [`elata:state:*` messages](/apps/platform/app-state). | Experimental |
+| [`@elata-biosciences/app-metrics`](/apps/platform/metrics-and-scores) | Event records, scores, and biometric Score contribution | Live |
 
 ### Tooling
 
-| Package | What it does |
-| --- | --- |
-| [`@elata-biosciences/create-elata-demo`](/sdk/create-elata-demo) | Scaffold a starter app from a template |
+| Package | What it does | Status |
+| --- | --- | --- |
+| [`@elata-biosciences/create-elata-demo`](/sdk/create-elata-demo) | Scaffold a starter app from a template | Live, known issue |
+
+<Warning>
+  **Known issue:** the current npm release of `create-elata-demo` (0.12.1)
+  fails to start with "Missing packaged SDK version metadata for
+  @elata-biosciences/app-metrics". A fix is coming in the next release. Until
+  then, add the packages to an app directly (below).
+</Warning>
 
 ---
 
@@ -125,7 +136,7 @@ The packages are built on public Rust crates you can also use directly:
   <Card title="Your First App" icon="rocket" href="/sdk/tutorials/first-app">
     Scaffold and run a starter app
   </Card>
-  <Card title="Publish to the Store" icon="store" href="/apps/build/overview">
-    Ship it on the Elata App Store
+  <Card title="Publish on Elata" icon="store" href="/apps/build/overview">
+    Ship it on Elata
   </Card>
 </CardGroup>

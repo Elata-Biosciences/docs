@@ -1,14 +1,14 @@
 ---
 title: "Builder Overview"
-description: "What the Elata App Store gives you and what you avoid building yourself."
+description: "What Elata gives you and what you avoid building yourself."
 ---
 
 ## What You Get
 
-You ship a static web app. The App Store provides the rest:
+You ship a static web app. Elata provides the rest:
 
 - Hosting for your build, or embedding of your own HTTPS site
-- A store listing with discovery, reviews, comments, votes, and sharing
+- an Elata listing with discovery, reviews, comments, votes, and sharing
 - Signed-in users, with no auth code in your app
 - One-time in-app purchases and monthly subscriptions, paid in USDC
 - Per-user key-value storage, event records, and score leaderboards
@@ -19,20 +19,20 @@ You ship a static web app. The App Store provides the rest:
 
 ## What You Avoid Building Yourself
 
-| You would otherwise need | The store handles it |
+| You would otherwise need | Elata handles it |
 | --- | --- |
-| Auth, sessions, wallets | Users sign in to the store. Your app never sees their identity or session. |
-| Checkout and payment processing | The store runs checkout and records ownership. You read entitlements. |
+| Auth, sessions, wallets | Users sign in to Elata. Your app never sees their identity or session. |
+| Checkout and payment processing | Elata runs checkout and records ownership. You read entitlements. |
 | A backend for saves and settings | [`app-state`](/apps/platform/app-state) and [`app-metrics`](/apps/platform/metrics-and-scores) store per-user data for you. |
-| Consent flows for biometric data | The store shows consent in its own trusted frame and enforces it server-side. |
-| Hosting, CDN, TLS | Upload a `.zip`. The store serves it on an isolated per-app origin. |
+| Consent flows for biometric data | Elata shows consent in its own trusted frame and enforces it server-side. |
+| Hosting, CDN, TLS | Upload a `.zip`. Elata serves it on an isolated per-app origin. |
 
 ---
 
 ## How Your App Runs
 
 Your app runs inside a sandboxed iframe on its own origin. It has no access to
-the store's cookies, the user's wallet, or the store's backend. Everything it
+Elata's cookies, the user's wallet, or Elata's backend. Everything it
 needs from the platform goes through a small `postMessage` bridge that the
 `@elata-biosciences/app-*` packages wrap for you. See
 [Host bridge](/apps/platform/host-bridge).
@@ -68,6 +68,6 @@ needs from the platform goes through a small `postMessage` bridge that the
     The wizard, step by step
   </Card>
   <Card title="Host Bridge" icon="plug" href="/apps/platform/host-bridge">
-    How your app talks to the store
+    How your app talks to Elata
   </Card>
 </CardGroup>

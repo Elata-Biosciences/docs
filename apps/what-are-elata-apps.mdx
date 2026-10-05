@@ -1,14 +1,14 @@
 ---
 title: "What Are Elata Apps?"
-description: "Browser apps built on the Elata Biometric SDKs and published to the Elata App Store."
+description: "Browser apps built on the Elata SDK and published to Elata."
 ---
 
 ## The Idea
 
-An Elata app is a web app that uses the Elata Biometric SDKs to work with the
+An Elata app is a web app that uses the Elata SDK to work with the
 body's signals: heart rate from a webcam, EEG from a consumer headband, or PPG
 from a headband's optical sensor. You build it with standard web tooling,
-upload it to the [Elata App Store](https://app.elata.bio), and users play it
+upload it to the [Elata](https://app.elata.bio), and users play it
 right in the browser.
 
 You build the product. Elata handles hosting, sign-in, payments, per-user
@@ -21,21 +21,21 @@ storage, and distribution.
 | Capability | What it gives you |
 | --- | --- |
 | **Hosting** | Upload a static build (or point to your own HTTPS URL). Elata serves it inside a secure, sandboxed frame. |
-| **Distribution** | A store listing at `app.elata.bio/app/<your-app>` with discovery, reviews, comments, votes, and sharing. |
-| **Accounts** | Users are already signed in to the store. Your app never handles passwords, wallets, or session tokens. |
-| **In-app purchases** | Sell one-time items through the store checkout with [`app-payments`](/apps/platform/in-app-purchases). |
+| **Distribution** | an Elata listing at `app.elata.bio/app/<your-app>` with discovery, reviews, comments, votes, and sharing. |
+| **Accounts** | Users are already signed in to Elata. Your app never handles passwords, wallets, or session tokens. |
+| **In-app purchases** | Sell one-time items through Elata checkout with [`app-payments`](/apps/platform/in-app-purchases). |
 | **Subscriptions** | Offer a monthly plan with an optional free trial. See [Subscriptions](/apps/platform/subscriptions). |
 | **Per-user storage** | Save games, settings, and scores with [`app-state`](/apps/platform/app-state) and [`app-metrics`](/apps/platform/metrics-and-scores). Signed-in users' data follows them across devices. |
 | **Biometric Score** | With user consent, contribute derived session results to the user's cross-app Score. See [Consent and insights](/apps/platform/consent-and-insights). |
-| **Reminders** | Send foreground notifications through the store with [Notifications](/apps/platform/notifications). |
+| **Reminders** | Send foreground notifications through Elata with [Notifications](/apps/platform/notifications). |
 
 ---
 
 ## How It Works
 
-1. **Build** a web app with the [Biometric SDKs](/sdk/overview). The fastest start is `npm create @elata-biosciences/elata-demo my-app`.
+1. **Build** a web app with the [Elata SDK](/sdk/overview). The fastest start is `npm create @elata-biosciences/elata-demo my-app`.
 2. **Register** your app name in the [Build an App](https://app.elata.bio/build-app) wizard.
-3. **Upload** your build as a `.zip` (or give us an HTTPS URL) and try it in the store's play window.
+3. **Upload** your build as a `.zip` (or give us an HTTPS URL) and try it in Elata's play window.
 4. **Publish**: add an icon, header image, and description, then submit for review.
 5. **Go live** once the release passes the automated security scan and a moderator approves it.
 

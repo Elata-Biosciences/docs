@@ -1,0 +1,92 @@
+---
+title: "EEG Headbands"
+description: "What consumer EEG headbands measure, how the Elata SDK processes it, and what calm and focus scores can and can't claim."
+---
+
+## The principle
+
+Neurons communicate with tiny electrical currents. When large groups fire
+together, the combined activity can be picked up by sensors on the scalp. That
+recording is an **electroencephalogram (EEG)**. It's dominated by rhythms at
+different frequencies:
+
+| Band | Approx. range | Often associated with |
+| --- | --- | --- |
+| Delta | 1–4 Hz | Deep sleep |
+| Theta | 4–8 Hz | Drowsiness, some memory tasks |
+| Alpha | 8–12 Hz | Relaxed wakefulness, especially with eyes closed |
+| Beta | 13–30 Hz | Active thinking, alertness |
+| Gamma | 30+ Hz | Fast processing; also heavily contaminated by muscle activity |
+
+These associations are tendencies across groups of people, not rules for any
+single moment.
+
+---
+
+## Consumer headbands
+
+The Elata SDK supports the Muse family over Web Bluetooth:
+
+| Device | EEG channels | Sensor positions |
+| --- | --- | --- |
+| Muse 2, Muse S | 4 | Behind the ears (TP9, TP10) and on the forehead (AF7, AF8) |
+| Muse S (Athena) | 8 | Additional channels on the newer protocol |
+
+Research-grade systems use 32 to 256 wet electrodes in a cap. A headband uses a
+handful of dry sensors in fixed positions. That makes it comfortable and
+affordable, and it limits what it can measure.
+
+---
+
+## How the Elata SDK processes EEG
+
+`eeg-web` runs in the browser using WebAssembly:
+
+- **Filtering and spectra:** removes drift and line noise, and computes the frequency spectrum of each window
+- **Band powers:** absolute, relative, and log power per band and channel
+- **Quality flags:** flatline, clipping, extreme amplitude, and line noise, so bad windows can be excluded
+- **Simple models:** for example, an alpha-rhythm detector and a calmness estimate built on band powers
+
+---
+
+## What affects the signal
+
+| Factor | Effect |
+| --- | --- |
+| **Blinks and eye movement** | Large spikes on the forehead sensors |
+| **Jaw clenching, talking, frowning** | Muscle activity that overwhelms higher frequencies |
+| **Poor contact** | Hair, dry skin, or a loose fit cause noise or flat channels |
+| **Movement** | Cable and sensor motion add slow drifts and bursts |
+| **Few, fixed sensors** | Activity can't be located precisely, and some brain areas aren't covered |
+
+Studies comparing consumer headbands with research systems find that they can
+capture real brain signals. Event-related potentials have been recovered with
+Muse, and four Muse electrodes performed close to a 32-electrode dataset on
+one emotion-classification task. But signal quality varies by device and
+setup: one 2024 comparison found Muse S had the weakest alignment with a
+research-grade amplifier of the devices tested.
+
+---
+
+## What calm and focus scores can claim
+
+A "calm" or "focus" score is a **product interpretation** built from band
+powers and other inputs. It is not a direct readout of a mental state.
+
+- Scores are most meaningful **relative to the same person's baseline**, not compared between people.
+- They should come with **quality information** and be withheld when the signal is poor.
+- Some popular measures don't hold up. For example, the SDK's Focus score deliberately does **not** use the theta/beta ratio, because that ratio isn't a valid measure of attention.
+
+See [Metrics and scores](/overview/science/metrics-and-scores).
+
+---
+
+## Sources
+
+Peer-reviewed literature, retrieved via PubMed:
+
+- Krigolson OE, et al. Choosing MUSE: validation of a low-cost, portable EEG system for ERP research. *Frontiers in Neuroscience*, 2017. [doi:10.3389/fnins.2017.00109](https://doi.org/10.3389/fnins.2017.00109)
+- Mikhaylov D, et al. Comparison of EEG signal spectral characteristics obtained with consumer- and research-grade devices. *Sensors*, 2024. [doi:10.3390/s24248108](https://doi.org/10.3390/s24248108)
+- Garcia-Moreno FM, et al. EEG headbands vs caps: how many electrodes do I need to detect emotions? The case of the MUSE headband. *Computers in Biology and Medicine*, 2024. [doi:10.1016/j.compbiomed.2024.109463](https://doi.org/10.1016/j.compbiomed.2024.109463)
+
+SDK implementation: [`eeg-web`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/eeg-web) and [`biosignal-analytics`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) (public SDK repository).

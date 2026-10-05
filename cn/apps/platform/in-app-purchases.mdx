@@ -5,7 +5,7 @@ description: "使用 @elata-biosciences/app-payments 在应用中出售一次性
 
 ## 概述
 
-`@elata-biosciences/app-payments` 让你的应用可以打开商店的结账流程，并查询用户拥有哪些物品。商店负责结账、以 USDC 收款并记录所有权。你的应用永远不会接触钱包或支付信息。
+`@elata-biosciences/app-payments` 让你的应用可以打开 Elata 的结账流程，并查询用户拥有哪些物品。Elata 负责结账、以 USDC 收款并记录所有权。你的应用永远不会接触钱包或支付信息。
 
 ```bash
 npm install @elata-biosciences/app-payments
@@ -42,7 +42,7 @@ const formatUsdc = (base: string) => `$${(Number(base) / 1e6).toFixed(2)}`;
 const [items, owned] = await Promise.all([getCatalog(), getOwnedItems()]);
 const ownedSet = new Set(owned);
 
-// 2. 启动时重新应用权益。商店是唯一可信来源，
+// 2. 启动时重新应用权益。Elata 是唯一可信来源，
 //    因此刷新页面或更换设备后依然有效。
 for (const id of owned) applyBenefit(id);
 
@@ -76,16 +76,16 @@ async function buy(item) {
 
 <AccordionGroup>
   <Accordion title="根据 status 分支，而不是 txHash">
-    如果用户已经拥有该物品，商店会跳过支付并返回 `{ status: "success", txHash: "" }`。检查 `if (result.txHash)` 的代码会错误处理这种情况。
+    如果用户已经拥有该物品，Elata 会跳过支付并返回 `{ status: "success", txHash: "" }`。检查 `if (result.txHash)` 的代码会错误处理这种情况。
   </Accordion>
   <Accordion title="两种价格格式">
-    `CatalogItem.priceUsdc` 是 USDC 的**最小单位**（6 位小数）：`"50000"` 表示 $0.05。`RequestPurchaseInput.priceUsdc` 是商店会忽略的自由格式显示提示。商店始终按目录价格收费。
+    `CatalogItem.priceUsdc` 是 USDC 的**最小单位**（6 位小数）：`"50000"` 表示 $0.05。`RequestPurchaseInput.priceUsdc` 是 Elata 会忽略的自由格式显示提示。Elata 始终按目录价格收费。
   </Accordion>
   <Accordion title="物品是一次性解锁">
     每个物品只能购买一次。物品不支持消耗品（按次扣减的余额）或周期性计费。如需持续收入，请使用[订阅计划](/cn/apps/platform/subscriptions)。
   </Accordion>
   <Accordion title="超时">
-    `requestPurchase` 最多等待 5 分钟让用户完成结账。`getCatalog`、`getOwnedItems` 和 `hasItem` 默认 10 秒。在商店之外没有人会回复，因此请将 `timeout` 处理为“显示物品可购买”。
+    `requestPurchase` 最多等待 5 分钟让用户完成结账。`getCatalog`、`getOwnedItems` 和 `hasItem` 默认 10 秒。在 Elata 之外没有人会回复，因此请将 `timeout` 处理为“显示物品可购买”。
   </Accordion>
 </AccordionGroup>
 
@@ -99,11 +99,11 @@ async function buy(item) {
 | --- | --- |
 | `invalid_input` | `contentId` 不是非负整数，或某个选项类型错误 |
 | `no_window` | 不在浏览器中运行 |
-| `no_parent` | 不在商店框架内运行 |
+| `no_parent` | 不在 Elata 框架内运行 |
 | `no_crypto` | `crypto.randomUUID` 不可用 |
 | `timeout` | 未及时收到回复 |
 | `not_authenticated` | 用户未登录（所有权查询） |
-| `fetch_failed` | 商店无法查询所有权 |
+| `fetch_failed` | Elata 无法查询所有权 |
 
 正常的 `cancelled` 或 `error` 购买结果会被 resolve，而不是 reject。
 
@@ -111,7 +111,7 @@ async function buy(item) {
 
 ## 安全模型
 
-- 你的应用**无法伪造所有权**。所有权只有在支付验证通过后才由商店记录。
+- 你的应用**无法伪造所有权**。所有权只有在支付验证通过后才由 Elata 记录。
 - 你的应用**永远看不到**支付信息、钱包私钥或会话令牌。
 - 使用相同的 `requestId` 重复请求不会重复扣费。
 - 物品销售收入支付到应用所有者的钱包。
@@ -120,5 +120,5 @@ async function buy(item) {
 
 ## 动手试试
 
-- [`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo)：一个自包含的 HTML 文件，内置模拟商店，可在本地运行完整流程。
+- [`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo)：一个自包含的 HTML 文件，内置模拟 Elata，可在本地运行完整流程。
 - [npm 上的包 README](https://www.npmjs.com/package/@elata-biosciences/app-payments)

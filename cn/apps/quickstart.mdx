@@ -1,0 +1,70 @@
+---
+title: "快速开始"
+description: "构建一个生物信号应用并发布到 Elata。"
+---
+
+本指南带你从零开始，直到提交应用。你需要 Node.js 20 或更高版本，以及一个网络摄像头。
+
+<Steps>
+  <Step title="创建应用骨架">
+    创建一个摄像头心率（rPPG）入门应用：
+
+    ```bash
+    npm create @elata-biosciences/elata-demo my-app -- --template rppg
+    cd my-app
+    npm install
+    ```
+
+    想用 EEG、头带 PPG 或做一个游戏？请查看[模板列表](/cn/sdk/create-elata-demo)。
+  </Step>
+
+  <Step title="在本地运行">
+    ```bash
+    npm run dev
+    ```
+
+    打开本地地址，允许访问摄像头，你应该能看到实时脉搏信号。
+  </Step>
+
+  <Step title="打造你自己的应用">
+    在 `src/` 中修改应用。[rPPG 指南](/cn/sdk/guides/rppg-browser)介绍了会话 API，[平台 API](/cn/apps/platform/host-bridge) 可以为应用添加购买、进度保存和分数功能。
+  </Step>
+
+  <Step title="添加版本号">
+    创建 `public/elata.json`：
+
+    ```json
+    { "version": "1.0.0" }
+    ```
+
+    参见 [elata.json](/cn/apps/build/elata-json)。
+  </Step>
+
+  <Step title="生成上传包">
+    ```bash
+    npm run build:zip
+    ```
+
+    这会生成根目录包含 `index.html` 的 `app.zip`。
+  </Step>
+
+  <Step title="发布">
+    访问 [app.elata.bio/build-app](https://app.elata.bio/build-app)，注册应用名称，上传 `app.zip`，在试玩窗口中试用，添加图标和头图，然后提交审核。完整流程见[发布你的应用](/cn/apps/build/launch-your-app)。
+  </Step>
+</Steps>
+
+---
+
+## 下一步
+
+<CardGroup cols={3}>
+  <Card title="你的第一个应用" icon="graduation-cap" href="/cn/sdk/tutorials/first-app">
+    更深入的 SDK 教程
+  </Card>
+  <Card title="要求" icon="clipboard-check" href="/cn/apps/build/requirements">
+    每次上传需要满足的条件
+  </Card>
+  <Card title="宿主桥接" icon="plug" href="/cn/apps/platform/host-bridge">
+    从应用与 Elata 通信
+  </Card>
+</CardGroup>

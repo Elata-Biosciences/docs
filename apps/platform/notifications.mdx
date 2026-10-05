@@ -1,6 +1,6 @@
 ---
 title: "Notifications"
-description: "Show reminders to users through the store while your app is open."
+description: "Show reminders to users through Elata while your app is open."
 ---
 
 ## Why your app can't notify directly
@@ -13,7 +13,7 @@ There are two supported options:
 
 | Option | Works when | Best for |
 | --- | --- | --- |
-| **Store-brokered reminders** (this page) | The store tab is open | "Session complete", "time for your break" |
+| **Elata-brokered reminders** (this page) | Elata tab is open | "Session complete", "time for your break" |
 | **Installed app** | The user installed your app to their home screen | Reminders while everything is closed |
 
 ---
@@ -31,33 +31,33 @@ window.parent?.postMessage(
 );
 ```
 
-- `body` is plain text. The store strips control characters, collapses it to one line, and cuts it to **140 characters**.
-- You can't set the title, icon, click URL, or actions. The store sets them.
+- `body` is plain text. Elata strips control characters, collapses it to one line, and cuts it to **140 characters**.
+- You can't set the title, icon, click URL, or actions. Elata sets them.
 
-The store replies with `{ type: 'elata:notify:state', requestId?, status }`:
+Elata replies with `{ type: 'elata:notify:state', requestId?, status }`:
 
 | status | Meaning | Suggested UI |
 | --- | --- | --- |
 | `shown` | A notification was shown | Show reminders as on |
-| `undecided` | The user hasn't opted in yet; the store is showing an "Allow reminders?" prompt | A neutral, pending state |
+| `undecided` | The user hasn't opted in yet; Elata is showing an "Allow reminders?" prompt | A neutral, pending state |
 | `blocked` | The user opted out, or the OS denied permission | Stop asking; suggest installing the app |
 | `rate_limited` | More than 3 requests in a minute | Back off |
 | `unsupported` | This browser has no Notification API | Hide the setting |
 
 ---
 
-## What the store guarantees
+## What Elata guarantees
 
-- **Store-authored title.** Always `Elata · <your app name>`, taken from your store listing, so apps can't impersonate the OS, the store, or each other.
+- **Elata-authored title.** Always `Elata · <your app name>`, taken from your Elata listing, so apps can't impersonate the OS, Elata, or each other.
 - **Per-app opt-in.** Off by default. The first request shows an in-frame prompt, and the choice is remembered per app.
 - **Rate limit.** At most 3 reminders per app per minute.
-- **Foreground only.** Reminders appear only while the store tab is open. Clicking one focuses the store.
+- **Foreground only.** Reminders appear only while Elata tab is open. Clicking one focuses Elata.
 
 ---
 
-## Detecting the store
+## Detecting Elata
 
-Use the bridge only when running inside the store, and keep your direct path
+Use the bridge only when running inside Elata, and keep your direct path
 for standalone or installed use:
 
 ```js

@@ -59,9 +59,9 @@ Compare your asset layout with the scaffolded `eeg-demo` app.
 
 ---
 
-## App Store Upload Says "Elata sensor SDK not detected"
+## Elata Upload Says "Elata sensor SDK not detected"
 
-The store checks every upload for real SDK usage. Make sure your build:
+Elata checks every upload for real SDK usage. Make sure your build:
 
 - actually calls the SDK, for example `createRppgSession(...)` or `initEegWasm(...)`, not just imports it
 - includes the packaged `.wasm` files in the build output
@@ -72,10 +72,10 @@ The `create-elata-demo` templates pass this check, so compare your build with on
 
 ## `app-payments`, `app-state`, Or `app-metrics` Calls Time Out
 
-These packages talk to the Elata App Store's parent frame. When you run your
+These packages talk to Elata's parent frame. When you run your
 app on `localhost` there is no parent to answer, so calls time out or reject
-with `no_parent`. Handle that case gracefully, and test the full flow in the
-store's play window. For purchases, [`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo)
+with `no_parent`. Handle that case gracefully, and test the full flow in Elata's
+ play window. For purchases, [`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo)
 includes a mock host you can run locally.
 
 ---

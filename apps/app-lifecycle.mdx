@@ -6,7 +6,7 @@ description: "How an app goes from upload to a live, publicly playable listing."
 ## Overview
 
 Every app version you publish is a **release**. A release moves through one
-pipeline: you upload it, submit it, the store scans it, and a moderator
+pipeline: you upload it, submit it, Elata scans it, and a moderator
 approves it.
 
 ```
@@ -20,7 +20,7 @@ DRAFT ──submit──▶ SUBMITTED ──scan + review──▶ APPROVED (liv
 ## Step 1: Upload
 
 Upload a `.zip` (or a single `.html` file) from the wizard or your app's edit
-page. The store checks it straight away:
+page. Elata checks it straight away:
 
 - the file type and size are within [limits](/apps/build/upload-and-hosting#limits)
 - the bundle has an `index.html` entry and safe file paths
@@ -30,14 +30,14 @@ If something is missing you get a clear "App requirements not met" message
 listing what to fix. A successful upload becomes a **draft** release, and its
 version is read from your [`elata.json`](/apps/build/elata-json).
 
-You can try a draft in the store's play window, and share it with up to 10
+You can try a draft in Elata's play window, and share it with up to 10
 playtest friends, before anyone else can see it.
 
 ---
 
 ## Step 2: Submit for review
 
-When you submit, the store checks that your listing is complete. You need an
+When you submit, Elata checks that your listing is complete. You need an
 **app icon** and a **header image**. Screenshots are optional but recommended.
 The listing details are frozen onto the release at this point, so later edits
 don't change what was reviewed.
@@ -51,11 +51,11 @@ You can withdraw a submission while it is pending.
 Every submitted release is scanned automatically. The scan looks for things
 like wallet-draining code, attempts to escape the sandbox, credential access,
 obfuscated code, and missing SDK usage. A release that fails the scan is held
-back from the store.
+back from Elata.
 
 <Note>
   Scan findings are reviewed by the Elata team and are not shown in detail to
-  uploaders. If your release is held, you'll hear from us through the store.
+  uploaders. If your release is held, you'll hear from us through Elata.
 </Note>
 
 ---
@@ -64,7 +64,7 @@ back from the store.
 
 An Elata moderator reviews the release against the
 [submission policy](/apps/build/review-and-policy). Once approved, it becomes
-your app's live release and you're notified in the store and by email.
+your app's live release and you're notified in Elata and by email.
 
 If it's rejected, fix the issues and submit again.
 

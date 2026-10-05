@@ -24,7 +24,7 @@ Pick the template that matches your goal:
 - `eeg-demo`: browser EEG processing, with Muse Web Bluetooth support
 - `eeg-ble`: Bluetooth-first EEG starter for a Muse-compatible headset
 - `ppg-demo`: heart rate and HRV from a Muse headband's PPG sensor
-- `pulse-game`: an rPPG game that runs in a sandboxed iframe and saves scores, the way apps run in the Elata App Store
+- `pulse-game`: an rPPG game that runs in a sandboxed iframe and saves scores, the way apps run in Elata
 
 ## Why Start Here
 
@@ -46,7 +46,7 @@ Use this decision table:
 | Add browser EEG only (synthetic or offline samples first) | `eeg-demo` |
 | Enable a Muse-compatible headset over Bluetooth (Chrome/Edge) | `eeg-ble` |
 | Read heart rate and HRV from a Muse headband | `ppg-demo` |
-| See the full App Store pattern (sandboxed iframe + saved scores) | `pulse-game` |
+| See the full Elata pattern (sandboxed iframe + saved scores) | `pulse-game` |
 
 If you are unsure, start with `rppg-demo`.
 
@@ -125,7 +125,7 @@ Once the app starts, verify the expected behavior:
 - `eeg-demo`: loads EEG processing in the browser and shows synthetic-data-driven output
 - `eeg-ble`: adds Bluetooth pairing and streaming for a supported Muse-compatible headset on top of EEG
 - `ppg-demo`: connects a Muse headband and shows BPM, RMSSD, and live PPG diagnostics
-- `pulse-game`: runs the game inside a sandboxed iframe and saves scores through a local host, the way the App Store does
+- `pulse-game`: runs the game inside a sandboxed iframe and saves scores through a local host, the way Elata does
 
 If your goal is just evaluation, stop here first and learn from the generated
 app before integrating into an existing codebase.
@@ -138,7 +138,7 @@ Each scaffolded app gives you:
 - Elata packages already wired in
 - a `README.md` with template-specific notes
 - a `build` script so you can confirm the app compiles cleanly
-- a `build:zip` script that packages the app for [upload to the Elata App Store](/apps/build/launch-your-app)
+- a `build:zip` script that packages the app for [upload to Elata](/apps/build/launch-your-app)
 
 This is meant to be your known-good baseline.
 

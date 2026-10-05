@@ -1,0 +1,65 @@
+---
+title: "Monetization"
+description: "How money moves on Elata: what users pay for, how builders earn, and what Elata charges."
+---
+
+Elata is free to browse and play. Money only moves when someone chooses to
+buy something, and every payment goes through Elata's checkout, never through
+an app directly.
+
+<Info>
+  **Status.** In-app purchases are live on a test network (Ethereum Sepolia).
+  App subscriptions and Elata membership are experimental and may show
+  "Coming soon" in Elata until they're enabled. See [What's live](/overview/status).
+</Info>
+
+---
+
+## What users can pay for
+
+| What | How it works | Status |
+| --- | --- | --- |
+| **In-app items** | One-time unlocks inside an app, such as a level pack or a feature. You own the item from then on. | Live on testnet |
+| **App subscriptions** | A monthly plan for one app, sometimes with a free trial set by the builder. | Experimental |
+| **Elata membership** | One monthly plan that unlocks every subscription-gated app on Elata. Renews manually; nothing auto-charges. | Experimental |
+
+Prices are shown in USDC, a dollar-pegged stablecoin. Membership can also be
+paid by card. See [Membership and purchases](/users/membership-and-purchases).
+
+---
+
+## How builders earn
+
+| Way to earn | Details |
+| --- | --- |
+| **Sell in-app items** | Set up items for your app; your app asks Elata to sell them. See [In-app purchases](/apps/platform/in-app-purchases). |
+| **Charge a subscription** | Gate the whole app behind a monthly plan, with no code changes. See [Subscriptions](/apps/platform/subscriptions). |
+
+Revenue is paid to the app owner's wallet after Elata's platform fee.
+
+Builders also earn [Elata Points](/overview/points) for publishing an app and
+for reaching play milestones. Points are not money and can't be sold.
+
+---
+
+## What Elata charges
+
+| Fee | Who pays | When |
+| --- | --- | --- |
+| Registration fee | Builders | Once per app, in USDC, when registering. The amount is shown in the Build an App wizard. |
+| Platform fee | Deducted from builder revenue | On in-app item sales and subscriptions |
+
+---
+
+## Membership and app subscriptions together
+
+Members get access to every gated app without paying each app separately.
+For builders, members count as subscribers: they can open your gated app.
+
+---
+
+## What's not part of monetization
+
+Earlier versions of Elata let each app launch its own token on a bonding curve.
+That model is **retired**: apps are now registered with a one-time fee, and no
+token is involved in buying or selling on Elata. See [What's live](/overview/status#retired).

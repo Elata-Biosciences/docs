@@ -1,16 +1,16 @@
 ---
 title: "宿主桥接"
-description: "沙箱中的应用如何与 Elata 应用商店通信，以及它支持的所有消息。"
+description: "沙箱中的应用如何与 Elata 通信，以及它支持的所有消息。"
 ---
 
 ## 概述
 
-你的应用运行在沙箱 iframe 中，无法访问商店的 Cookie、后端或用户的钱包。当它需要平台的能力（例如购买、保存数据或获取同意）时，会向父框架发送一条 `postMessage`。商店使用用户的会话完成操作并回复。
+你的应用运行在沙箱 iframe 中，无法访问 Elata 的 Cookie、后端或用户的钱包。当它需要平台的能力（例如购买、保存数据或获取同意）时，会向父框架发送一条 `postMessage`。Elata 使用用户的会话完成操作并回复。
 
 你的应用永远不知道用户是谁，只会得到它需要的答案。
 
 ```
-┌──────────── app.elata.bio（商店）─────────────┐
+┌──────────── app.elata.bio（Elata）─────────────┐
 │  会话 · 结账 · 存储 · 同意界面                │
 │        ▲                         │            │
 │        │ postMessage             │ 回复       │
@@ -38,10 +38,10 @@ description: "沙箱中的应用如何与 Elata 应用商店通信，以及它�
 
 ## 基本规则
 
-- **发送给父框架。** 发送到 `window.parent`。目标源使用 `'*'` 即可：商店会检查消息是否来自你应用的框架和源。
+- **发送给父框架。** 发送到 `window.parent`。目标源使用 `'*'` 即可：Elata 会检查消息是否来自你应用的框架和源。
 - **使用 `requestId`。** 需要回复时，附带一个唯一的 `requestId`（8 到 128 个字符；可使用 `crypto.randomUUID()`），并在回复中进行匹配。
-- **处理无回复的情况。** 在商店之外（例如本地开发时）没有人会回复。请设置超时并优雅降级。SDK 包已为你处理这一点。
-- **商店是唯一可信来源。** 价格、所有权和同意状态始终来自商店，而不是你的应用发送的值。
+- **处理无回复的情况。** 在 Elata 之外（例如本地开发时）没有人会回复。请设置超时并优雅降级。SDK 包已为你处理这一点。
+- **Elata 是唯一可信来源。** 价格、所有权和同意状态始终来自 Elata，而不是你的应用发送的值。
 
 ---
 
@@ -49,7 +49,7 @@ description: "沙箱中的应用如何与 Elata 应用商店通信，以及它�
 
 ### 购买
 
-| 应用 → 商店 | 商店 → 应用 |
+| 应用 → Elata | Elata → 应用 |
 | --- | --- |
 | `elata:iap:request` `{ requestId, contentId, priceUsdc?, title?, description? }` | `elata:iap:result` `{ requestId, status: "success" \| "cancelled" \| "error", txHash?, error? }` |
 | `elata:iap:getCatalog` `{ requestId }` | `elata:iap:getCatalog:result` `{ requestId, items }` |
@@ -60,7 +60,7 @@ description: "沙箱中的应用如何与 Elata 应用商店通信，以及它�
 
 ### 应用状态
 
-| 应用 → 商店 | 商店 → 应用 |
+| 应用 → Elata | Elata → 应用 |
 | --- | --- |
 | `elata:state:get` `{ requestId, key }` | `elata:state:get:result` `{ requestId, value }` 或 `{ requestId, error }` |
 | `elata:state:set` `{ requestId, key, value }` | `elata:state:set:result` `{ requestId, ok }` 或 `{ requestId, error }` |
@@ -74,7 +74,7 @@ description: "沙箱中的应用如何与 Elata 应用商店通信，以及它�
 
 ### 同意与洞察
 
-| 应用 → 商店 | 商店 → 应用 |
+| 应用 → Elata | Elata → 应用 |
 | --- | --- |
 | `elata:consent:request` `{ requestId?, purpose: "platform_score", action?: "grant" \| "revoke" }` | `elata:consent:state` `{ requestId?, purpose, granted }` |
 | `elata:consent:query` `{ requestId?, purpose: "platform_score" }` | `elata:consent:state` `{ requestId?, purpose, granted }` |
@@ -84,7 +84,7 @@ description: "沙箱中的应用如何与 Elata 应用商店通信，以及它�
 
 ### 通知
 
-| 应用 → 商店 | 商店 → 应用 |
+| 应用 → Elata | Elata → 应用 |
 | --- | --- |
 | `elata:notify:request` `{ requestId?, body }` | `elata:notify:state` `{ requestId?, status }` |
 
@@ -92,17 +92,17 @@ description: "沙箱中的应用如何与 Elata 应用商店通信，以及它�
 
 ### 导航
 
-将用户带到商店中另一个应用的试玩页面：
+将用户带到 Elata 中另一个应用的试玩页面：
 
 ```js
 window.parent?.postMessage({ type: 'elata:navigate', slug: 'calm-runner' }, '*');
 ```
 
-`slug` 必须是商店应用的标识：小写字母、数字和短横线，最多 64 个字符。没有回复。
+`slug` 必须是 Elata 应用的标识：小写字母、数字和短横线，最多 64 个字符。没有回复。
 
 ### 反馈
 
-应用运行时，商店的悬浮反馈按钮会被隐藏，以免遮挡你的控件。请改为从你自己的界面中打开商店的反馈面板：
+应用运行时，Elata 的悬浮反馈按钮会被隐藏，以免遮挡你的控件。请改为从你自己的界面中打开 Elata 的反馈面板：
 
 ```js
 window.parent?.postMessage({ type: 'elata:feedback:open', mode: 'feature' }, '*');

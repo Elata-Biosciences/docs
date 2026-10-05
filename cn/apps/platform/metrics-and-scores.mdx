@@ -24,7 +24,7 @@ const best = await metrics.loadScores({ order: 'value_desc', limit: 10 });
 const recent = await metrics.query({ type: 'level_complete', limit: 20 });
 ```
 
-数据仅限于（用户，应用）组合，绝不会跨应用共享。商店会保留一份本地副本，并为已登录用户同步到其账户，使数据跟随用户跨设备。这些记录也是你的[分析数据](/cn/apps/operate/analytics-and-health)的来源。
+数据仅限于（用户，应用）组合，绝不会跨应用共享。Elata 会保留一份本地副本，并为已登录用户同步到其账户，使数据跟随用户跨设备。这些记录也是你的[分析数据](/cn/apps/operate/analytics-and-health)的来源。
 
 ---
 
@@ -32,7 +32,7 @@ const recent = await metrics.query({ type: 'level_complete', limit: 20 });
 
 | 方法 | 作用 |
 | --- | --- |
-| `ready()` | 与商店的连接建立后 resolve |
+| `ready()` | 与 Elata 的连接建立后 resolve |
 | `record({ type, data })` | 存储一条事件记录 |
 | `query({ type?, since?, until?, limit? })` | 读取记录 |
 | `clear()` | 删除该用户在此应用中的所有记录 |
@@ -79,10 +79,10 @@ const result = await metrics.reportAffect({
 必须同时满足以下两点，否则调用会以 `scope_denied` 失败：
 
 1. **你的应用拥有 `biometrics` 权限。** 请联系 Elata 团队为你的应用开启。
-2. **用户已同意。** 使用 [`elata:consent:request`](/cn/apps/platform/consent-and-insights) 请求同意。商店还会在服务器端针对每个样本重新检查同意状态。
+2. **用户已同意。** 使用 [`elata:consent:request`](/cn/apps/platform/consent-and-insights) 请求同意。Elata 还会在服务器端针对每个样本重新检查同意状态。
 
 ---
 
-## 面向商店宿主
+## 面向宿主
 
-该包还提供宿主入口 `@elata-biosciences/app-metrics/host`（`createMetricsHost`），供应用商店自身使用。应用开发者不需要它。
+该包还提供宿主入口 `@elata-biosciences/app-metrics/host`（`createMetricsHost`），供 Elata 自身使用。应用开发者不需要它。

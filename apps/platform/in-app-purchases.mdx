@@ -5,8 +5,8 @@ description: "Sell one-time items in your app with @elata-biosciences/app-paymen
 
 ## Overview
 
-`@elata-biosciences/app-payments` lets your app open the store's checkout and
-check what the user owns. The store runs checkout, takes payment in USDC, and
+`@elata-biosciences/app-payments` lets your app open Elata's checkout and
+check what the user owns. Elata runs checkout, takes payment in USDC, and
 records ownership. Your app never touches wallets or payment details.
 
 ```bash
@@ -45,7 +45,7 @@ const formatUsdc = (base: string) => `$${(Number(base) / 1e6).toFixed(2)}`;
 const [items, owned] = await Promise.all([getCatalog(), getOwnedItems()]);
 const ownedSet = new Set(owned);
 
-// 2. Re-apply benefits on startup. The store is the source of truth,
+// 2. Re-apply benefits on startup. Elata is the source of truth,
 //    so this survives reloads and device changes.
 for (const id of owned) applyBenefit(id);
 
@@ -80,16 +80,16 @@ owning it *does*.
 
 <AccordionGroup>
   <Accordion title="Branch on status, never on txHash">
-    If the user already owns the item, the store skips payment and returns `{ status: "success", txHash: "" }`. Code that checks `if (result.txHash)` will mishandle this.
+    If the user already owns the item, Elata skips payment and returns `{ status: "success", txHash: "" }`. Code that checks `if (result.txHash)` will mishandle this.
   </Accordion>
   <Accordion title="Two price formats">
-    `CatalogItem.priceUsdc` is in USDC **base units** (6 decimals): `"50000"` is $0.05. `RequestPurchaseInput.priceUsdc` is a free-form display hint the store ignores. The store always charges the catalog price.
+    `CatalogItem.priceUsdc` is in USDC **base units** (6 decimals): `"50000"` is $0.05. `RequestPurchaseInput.priceUsdc` is a free-form display hint Elata ignores. Elata always charges the catalog price.
   </Accordion>
   <Accordion title="Items are one-time unlocks">
     Each item is bought once. Consumables (spend-per-use balances) and recurring billing aren't supported through items. For recurring revenue use a [subscription plan](/apps/platform/subscriptions).
   </Accordion>
   <Accordion title="Timeouts">
-    `requestPurchase` waits up to 5 minutes for the user to finish checkout. `getCatalog`, `getOwnedItems`, and `hasItem` default to 10 seconds. Outside the store nothing answers, so handle `timeout` by showing items as available.
+    `requestPurchase` waits up to 5 minutes for the user to finish checkout. `getCatalog`, `getOwnedItems`, and `hasItem` default to 10 seconds. Outside Elata nothing answers, so handle `timeout` by showing items as available.
   </Accordion>
 </AccordionGroup>
 
@@ -103,11 +103,11 @@ Calls reject only with `AppPaymentsError`, which has a `code`:
 | --- | --- |
 | `invalid_input` | `contentId` isn't a non-negative integer, or an option has the wrong type |
 | `no_window` | Not running in a browser |
-| `no_parent` | Not running inside the store's frame |
+| `no_parent` | Not running inside Elata's frame |
 | `no_crypto` | `crypto.randomUUID` isn't available |
 | `timeout` | No reply in time |
 | `not_authenticated` | The user isn't signed in (ownership queries) |
-| `fetch_failed` | The store couldn't look up ownership |
+| `fetch_failed` | Elata couldn't look up ownership |
 
 A normal `cancelled` or `error` purchase outcome resolves; it doesn't reject.
 
@@ -115,7 +115,7 @@ A normal `cancelled` or `error` purchase outcome resolves; it doesn't reject.
 
 ## Security model
 
-- Your app **can't fake ownership**. Ownership is recorded by the store only after payment is verified.
+- Your app **can't fake ownership**. Ownership is recorded by Elata only after payment is verified.
 - Your app **never sees** payment details, wallet keys, or session tokens.
 - Repeating a request with the same `requestId` won't charge twice.
 - Revenue from item sales is paid to the app owner's wallet.

@@ -1,0 +1,82 @@
+---
+title: "Metrics and Scores"
+description: "How Elata turns signals into features and scores, why scores withhold themselves, and how the biometric Score is built."
+---
+
+There are two different things in this area, with different statuses:
+
+| | What it is | Status |
+| --- | --- | --- |
+| **SDK headline scores** | Open-source score formulas in `biosignal-analytics` that builders can run on their own data | Experimental (source only, not on npm) |
+| **The biometric Score on Elata** | One cross-app Score per user, built from derived results apps report with consent | Live |
+
+---
+
+## From signals to features
+
+Before any score, the SDK computes **features**: well-defined, reproducible
+numbers.
+
+- **EEG window features:** band powers (absolute, relative, log), spectral entropy, dominant frequency, alpha peak, Hjorth parameters, and quality flags
+- **Pulse features:** heart rate, RMSSD, SDNN, and signal quality
+- **Robust statistics:** medians and median absolute deviations instead of means, so one bad sample doesn't skew the result
+- **Personal baselines:** a rolling 30-day median and range for each person, with outlier rejection
+
+---
+
+## SDK headline scores
+
+<Warning>
+  Experimental. `biosignal-analytics` is available as source code and may
+  change before its first npm release.
+</Warning>
+
+| Score | Describes |
+| --- | --- |
+| **Measurement Quality** | The recording, not the person. Always available alongside any other score. |
+| **Activation** | How far physiological arousal moved from the person's baseline |
+| **Recovery** | How well arousal came back down after an activation |
+| **Focus** | Engagement during a task |
+| **Readiness** | Day-to-day state against the personal baseline |
+| **Resilience** | How consistently someone recovers over time |
+
+These are **product interpretations, never measurements**, and the SDK says
+so. Two design rules keep them honest:
+
+1. **Every contributor is visible.** Each score exposes its inputs with their weights, standardized values, and quality.
+2. **Scores withhold themselves.** Instead of guessing, a score returns no value plus a reason when it can't be computed responsibly:
+
+| Reason | Meaning |
+| --- | --- |
+| Inputs missing | The measurement wasn't made |
+| Insufficient quality | It was made too poorly to read |
+| Insufficient baseline | There's no usable personal baseline to compare with |
+| No task context | Focus: nothing was being attended to |
+| Insufficient history | Readiness needs 14 qualified days; Resilience needs 21 days plus 6 recovered activations |
+
+A missing input never silently becomes a neutral middle value.
+
+---
+
+## The biometric Score on Elata
+
+The Score is a single number from 0 to 100 that reflects a user's results
+across all the apps they use, **only if they opt in**.
+
+How it's built:
+
+- **Apps report derived session results, never raw signal.** A report says, for example, that the user's calm level went from 0.42 at baseline to 0.61 during a five-minute session, with its signal quality and confidence.
+- **Improvement relative to the user's own baseline matters**, not absolute values that differ between people.
+- **Low-quality sessions are dropped**, and the Score shows as "calibrating" until there are enough good sessions to be stable.
+- **Consent is checked on the server** for every report, so an app can't contribute without it.
+- **Only approved apps can contribute.** An app needs a permission granted by Elata before its reports count.
+
+See [Privacy and consent](/overview/privacy-and-consent) and, for builders,
+[Consent and insights](/apps/platform/consent-and-insights).
+
+---
+
+## Sources
+
+- [`biosignal-analytics` README](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) (public SDK repository)
+- [Metrics and scores](/apps/platform/metrics-and-scores) (builder docs)

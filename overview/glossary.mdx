@@ -1,0 +1,75 @@
+---
+title: "Glossary"
+description: "Plain-language definitions of the terms used across the Elata docs."
+---
+
+**Alpha waves.** A rhythm in EEG between about 8 and 12 Hz, often stronger when
+a person is relaxed with their eyes closed.
+
+**App state.** Small pieces of data, such as saves and settings, that an app
+stores for a user through Elata. Scoped to that app and that user.
+
+**Artifact.** In EEG, a signal that doesn't come from the brain, such as a
+blink, jaw clench, or loose sensor. Artifacts are usually much larger than
+brain activity.
+
+**Band power.** How much of an EEG signal falls in a frequency band, such as
+alpha or beta. The basis of most "calm" and "focus" measures.
+
+**Biometric Score.** An optional, cross-app measure (0 to 100) built from
+derived session results, only with the user's consent. See
+[Privacy and consent](/overview/privacy-and-consent).
+
+**Biosignal.** A measurable signal from the body, such as a heartbeat or the
+brain's electrical activity.
+
+**Consent.** A user's explicit, revocable permission for an app to contribute
+derived results to their Score. Requested by Elata, not by the app.
+
+**Derived result.** A summary computed from raw signals, such as average heart
+rate over a session. Raw signals are never part of it.
+
+**EEG (electroencephalography).** Measuring the brain's electrical activity
+through sensors on the scalp.
+
+**Elata.** The marketplace at [app.elata.bio](https://app.elata.bio) where
+biosignal apps are published and played.
+
+**Elata Points.** Off-chain, non-transferable points earned for taking part on
+Elata. See [Points](/overview/points).
+
+**Elata SDK.** Open-source packages for building biosignal apps. See
+[The Elata SDK](/overview/elata-sdk).
+
+**ELTA.** The ERC-20 token for the Elata ecosystem, on Base. See
+[ELTA token](/overview/elta-token).
+
+**Federated learning.** Training a model across many devices without
+collecting their raw data in one place. Planned research direction for Elata.
+
+**Host bridge.** The set of messages an app uses to ask Elata for things like
+purchases and saved progress. See [Host bridge](/apps/platform/host-bridge).
+
+**HRV (heart-rate variability).** The variation in time between heartbeats.
+Often linked to recovery and stress, and sensitive to recording conditions.
+
+**Muse.** A consumer EEG headband line (Muse 2, Muse S, and the newer Muse S
+Athena) supported by the Elata SDK.
+
+**PPG (photoplethysmography).** Measuring pulse by shining light into the skin
+and detecting changes in the reflected light, as smartwatches do.
+
+**Release.** One version of an app on Elata. Every release is scanned and
+reviewed before it goes public.
+
+**rPPG (remote photoplethysmography).** Estimating pulse from a camera by
+detecting tiny color changes in the skin.
+
+**Sandbox.** The isolated environment each app runs in, on its own web origin,
+so it can't see who the user is or access their account.
+
+**Web Bluetooth.** A browser feature that lets web pages connect to Bluetooth
+devices. Available in Chrome and Edge, not in Safari or iOS browsers.
+
+**WebAssembly (WASM).** A format that lets fast, compiled code run in the
+browser. The Elata SDK's signal processing runs as WebAssembly.

@@ -1,11 +1,11 @@
 ---
 title: "什么是 Elata 应用？"
-description: "基于 Elata 生物特征 SDK 构建、发布在 Elata 应用商店上的浏览器应用。"
+description: "基于 Elata SDK 构建、发布在 Elata 上的浏览器应用。"
 ---
 
 ## 理念
 
-Elata 应用是使用 Elata 生物特征 SDK 处理人体信号的 Web 应用：通过网络摄像头获取心率、通过消费级头带获取 EEG，或通过头带的光学传感器获取 PPG。你使用标准 Web 工具构建应用，上传到 [Elata 应用商店](https://app.elata.bio)，用户即可直接在浏览器中使用。
+Elata 应用是使用 Elata SDK 处理人体信号的 Web 应用：通过网络摄像头获取心率、通过消费级头带获取 EEG，或通过头带的光学传感器获取 PPG。你使用标准 Web 工具构建应用，上传到 [Elata](https://app.elata.bio)，用户即可直接在浏览器中使用。
 
 你负责打造产品，Elata 负责托管、登录、支付、按用户存储和分发。
 
@@ -16,21 +16,21 @@ Elata 应用是使用 Elata 生物特征 SDK 处理人体信号的 Web 应用：
 | 能力 | 带来的价值 |
 | --- | --- |
 | **托管** | 上传静态构建产物（或指向你自己的 HTTPS 地址）。Elata 在安全的沙箱框架中提供服务。 |
-| **分发** | 位于 `app.elata.bio/app/<你的应用>` 的商店页面，支持发现、评价、评论、投票和分享。 |
-| **账户** | 用户已登录商店。你的应用永远不需要处理密码、钱包或会话令牌。 |
-| **应用内购买** | 使用 [`app-payments`](/cn/apps/platform/in-app-purchases) 通过商店结账出售一次性物品。 |
+| **分发** | 位于 `app.elata.bio/app/<你的应用>` 的应用页面，支持发现、评价、评论、投票和分享。 |
+| **账户** | 用户已登录 Elata。你的应用永远不需要处理密码、钱包或会话令牌。 |
+| **应用内购买** | 使用 [`app-payments`](/cn/apps/platform/in-app-purchases) 通过 Elata 结账出售一次性物品。 |
 | **订阅** | 提供月度订阅，可选免费试用。参见[订阅](/cn/apps/platform/subscriptions)。 |
 | **按用户存储** | 使用 [`app-state`](/cn/apps/platform/app-state) 和 [`app-metrics`](/cn/apps/platform/metrics-and-scores) 保存存档、设置和分数。已登录用户的数据可跨设备同步。 |
 | **生物特征评分** | 在用户同意的前提下，将派生的会话结果贡献给用户的跨应用评分。参见[同意与洞察](/cn/apps/platform/consent-and-insights)。 |
-| **提醒** | 通过[通知](/cn/apps/platform/notifications)借助商店发送前台提醒。 |
+| **提醒** | 通过[通知](/cn/apps/platform/notifications)借助 Elata 发送前台提醒。 |
 
 ---
 
 ## 如何运作
 
-1. **构建**：使用[生物特征 SDK](/cn/sdk/overview) 构建 Web 应用。最快的方式是 `npm create @elata-biosciences/elata-demo my-app`。
+1. **构建**：使用[Elata SDK](/cn/sdk/overview) 构建 Web 应用。最快的方式是 `npm create @elata-biosciences/elata-demo my-app`。
 2. **注册**：在[构建应用](https://app.elata.bio/build-app)向导中注册应用名称。
-3. **上传**：以 `.zip` 形式上传构建产物（或提供 HTTPS 地址），并在商店的试玩窗口中试用。
+3. **上传**：以 `.zip` 形式上传构建产物（或提供 HTTPS 地址），并在 Elata 的试玩窗口中试用。
 4. **发布**：添加图标、头图和描述，然后提交审核。
 5. **上线**：该版本通过自动安全扫描且审核员批准后即可上线。
 
