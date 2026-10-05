@@ -1,59 +1,77 @@
 ---
-title: "Analysis Models"
-description: "Alpha bump detection, alpha peak tracking, and calmness scoring"
+title: "分析模型"
+description: "Alpha 波峰检测、alpha 峰值追踪和平静度评分"
 ---
+
+这三个模型的用法相同：
+
+- 使用 `new Model(sampleRateHz, channelCount)` 构造
+- 用**交错排列**样本的 `Float32Array`（`[s0_ch0, s0_ch1, …, s1_ch0, …]`）调用 `process(interleaved)`；`getEegInterleavedSamples(frame)` 可以从头带帧生成这种格式
+- `process` 返回结果对象；在积累足够数据之前返回 `undefined`（`min_samples()` 会告诉你需要多少数据）
+- 调用 `reset()` 清除状态
+
+由于 `channelCount` 只有在第一帧到达时才知道，请在处理第一帧的回调中构造模型。
 
 ## WasmAlphaBumpDetector
 
-Detects alpha bumps — transient increases in alpha band power that indicate state transitions.
+检测 alpha 波峰：alpha 频段功率的短暂变化，表示状态转换，例如闭眼。
 
 ```typescript
-import { initEegWasm, WasmAlphaBumpDetector } from "@elata-biosciences/eeg-web";
+import { initEegWasm, WasmAlphaBumpDetector, getEegInterleavedSamples } from "@elata-biosciences/eeg-web";
 
 await initEegWasm();
 
-const detector = new WasmAlphaBumpDetector();
+const detector = new WasmAlphaBumpDetector(256, 4); // sampleRateHz, channelCount
 
-// Feed samples and check for bumps
-const bumpDetected = detector.process(samples, sampleRateHz);
+const result = detector.process(getEegInterleavedSamples(frame));
+if (result?.state_changed) {
+  console.log(result.state, result.alpha_power, result.baseline); // state: "high" | "low" | "transitioning" | "unknown"
+}
 ```
+
+可通过 `set_threshold(multiplier)` 和 `set_baseline_smoothing(alpha)` 进行调整。
 
 ---
 
 ## WasmAlphaPeakModel
 
-Tracks the individual alpha peak frequency (typically 8-13 Hz) which varies per person.
+追踪个体的 alpha 峰值频率（通常为 8 到 13 Hz），该频率因人而异。
 
 ```typescript
 import { WasmAlphaPeakModel } from "@elata-biosciences/eeg-web";
 
-const model = new WasmAlphaPeakModel();
+const model = new WasmAlphaPeakModel(256, 4);
 
-// Feed EEG data to refine peak estimate
-model.process(samples, sampleRateHz);
-const peakHz = model.peak_frequency();
+const result = model.process(interleaved);
+if (result) {
+  console.log(result.peak_frequency, result.smoothed_peak_frequency, result.snr);
+}
 ```
 
 ---
 
 ## WasmCalmnessModel
 
-Computes a calmness score based on the ratio of alpha to beta power — higher alpha relative to beta generally indicates a more relaxed state.
+根据 alpha 与 beta 功率的比值计算平静度分数。相对于 beta 的 alpha 越高，通常表示越放松。
 
 ```typescript
 import { WasmCalmnessModel } from "@elata-biosciences/eeg-web";
 
-const model = new WasmCalmnessModel();
+const model = new WasmCalmnessModel(256, 4);
 
-model.process(samples, sampleRateHz);
-const score = model.score(); // 0.0 to 1.0
+const result = model.process(interleaved);
+if (result) {
+  console.log(result.score);          // 0.0（警觉）到 1.0（非常平静）
+  console.log(result.smoothed_score); // 更平滑
+  console.log(result.alpha_beta_ratio);
+}
 ```
 
 ---
 
 ## AthenaWasmDecoder
 
-Decodes raw Athena protocol packets from Muse S (Athena firmware) headbands. Used as a factory parameter for `BleTransport`:
+解码来自 Muse S（Athena 固件）头带的原始 Athena 协议数据包。作为 `BleTransport` 的工厂参数使用：
 
 ```typescript
 import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
@@ -68,7 +86,7 @@ decoder.set_reorder_window_ms(50);
 const output = decoder.decode(rawBytes);
 ```
 
-The Athena decoder is typically not used directly — it's passed as a factory to [`BleTransport`](/sdk/eeg-web-ble/getting-started):
+Athena 解码器通常不直接使用，而是作为工厂传给 [`BleTransport`](/cn/sdk/eeg-web-ble/getting-started)：
 
 ```typescript
 import { BleTransport } from "@elata-biosciences/eeg-web-ble";
@@ -80,3 +98,16 @@ const transport = new BleTransport({
   },
 });
 ```
+
+---
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="信号处理" icon="wave-square" href="/cn/sdk/eeg-web/signal-processing">
+    频段功率、FFT、频谱分析
+  </Card>
+  <Card title="头带传输" icon="signal-stream" href="/cn/sdk/eeg-web/headband-transport">
+    帧结构和传输接口
+  </Card>
+</CardGroup>

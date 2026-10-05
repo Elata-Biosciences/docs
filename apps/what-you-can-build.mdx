@@ -1,58 +1,62 @@
 ---
 title: "What You Can Build"
-description: "App categories, real examples, and what the protocol makes possible."
+description: "App categories, example ideas, and the biosignals you can build with."
 ---
 
 ## App Categories
 
-Elata apps span four main categories. Each uses the same protocol infrastructure but targets different user behaviors.
+Every app on the store is listed in one of five categories.
 
-| Category | What It Does | Example Use Case |
+| Category | What it covers | Example |
 | --- | --- | --- |
-| **Focus** | Attention training, productivity enhancement | Neurofeedback sessions that reward sustained attention |
-| **Gaming** | Competitive or casual games with token mechanics | Chess with neural HUD overlays, reaction-time contests |
-| **Wellness** | Health monitoring, breathing, meditation | Guided breathwork with live EEG or rPPG biometric feedback |
-| **Research** | Data collection, citizen science, experiments | EEG data studies with participant token incentives |
-
----
-
-## What Makes An Elata App Different
-
-An Elata app is not just a web app with a token bolted on. The protocol gives you:
-
-- **Price discovery** through bonding curves that graduate to DEX liquidity
-- **Fee routing** that splits revenue between contributors and the protocol treasury
-- **Community tools** like tournaments, NFT items, and staking
-- **Governance hooks** so token holders can participate in app-level decisions
-
-You focus on the product experience. The protocol handles the economics.
+| **Games** | Casual or competitive games driven by the body's signals | A runner that speeds up as your heart rate calms down |
+| **Neurometrics** | Measuring and visualizing brain and body signals | A live EEG band-power dashboard for a Muse headband |
+| **Wellness** | Breathing, meditation, recovery, and stress tools | Guided breathwork with live rPPG heart-rate feedback |
+| **Tools** | Utilities for training, focus, and self-tracking | A focus timer that logs a calm/stress trend per session |
+| **Experiments** | Research-style apps, studies, and prototypes | A reaction-time study that records per-session results |
 
 ---
 
 ## Building With Biometrics
 
-Many Elata apps use the [Biometric SDK](/sdk/overview) to add real-time biosignal processing:
+Elata apps are built around the [Biometric SDKs](/sdk/overview). The store checks
+every upload for real SDK usage, so your app must use at least one sensor path:
 
-- **Camera rPPG** for heart rate, stress, and arousal feedback (no hardware needed)
-- **EEG via Web Bluetooth** for brain-signal analysis with Muse headsets
-- **Signal processing** for band powers, calmness models, and alpha detection
+- **Camera rPPG** (`@elata-biosciences/rppg-web`): heart rate and pulse signals from any webcam, no extra hardware
+- **EEG over Web Bluetooth** (`@elata-biosciences/eeg-web` + `eeg-web-ble`): brain signals from supported headbands such as Muse
+- **Headband PPG** (`@elata-biosciences/ppg-web`): heart rate and HRV from a headband's optical sensor
 
-These integrations are optional. You can build an Elata app with or without biometrics.
+On top of the sensor layer you can add recording and analysis with
+[`biosignal-session`](/sdk/biosignal-session/getting-started) and
+[`biosignal-analytics`](/sdk/biosignal-analytics/getting-started).
+
+<Tip>
+  All signal processing runs on the user's device. Raw camera frames and raw
+  biosignals never need to leave the browser.
+</Tip>
+
+---
+
+## What The Store Adds
+
+Your app also gets the store's platform features: sign-in, in-app purchases,
+subscriptions, per-user storage, a cross-app biometric Score, and reminders.
+See [Platform APIs](/apps/platform/host-bridge).
 
 ---
 
 ## Next
 
 <CardGroup cols={3}>
-  <Card title="App Lifecycle" icon="recycle" iconType="light" href="/apps/app-lifecycle">
-    How apps launch and graduate
+  <Card title="App Lifecycle" icon="recycle" href="/apps/app-lifecycle">
+    From upload to live
   </Card>
 
-  <Card title="Builder Overview" icon="hammer" iconType="light" href="/apps/build/overview">
+  <Card title="Builder Overview" icon="hammer" href="/apps/build/overview">
     Start building
   </Card>
 
-  <Card title="Explore Apps" icon="compass" iconType="light" href="/apps/users/explore-apps">
-    See what's live
+  <Card title="Example Apps" icon="grid-2x2" href="/sdk/guides/example-apps">
+    Open source apps built on the SDKs
   </Card>
 </CardGroup>

@@ -1,149 +1,129 @@
 ---
-title: "SDK Overview"
-description: "Cross-platform SDK for EEG signal processing, BLE headband connectivity, and rPPG"
+title: "快速上手"
+description: "用于摄像头 rPPG、Web Bluetooth EEG、头带 PPG、会话录制和分析的浏览器 SDK。"
 ---
 
-## Elata SDK
+## Elata 生物特征 SDK
 
-The Elata SDK is a cross-platform Hardware Abstraction Layer (HAL) for EEG devices with real-time signal processing, analysis models, and remote photoplethysmography (rPPG). It provides three npm packages for web applications.
+Elata SDK 是一组在浏览器中采集和处理生物信号的 npm 包。它们基于编译为 WebAssembly 的 Rust crate 构建，因此信号处理在用户设备上运行。
 
 <Info>
-  **Repository**: [github.com/elata-bio/elata-sdk](https://github.com/elata-bio/elata-sdk)
+  **代码仓库**：[github.com/Elata-Biosciences/elata-bio-sdk](https://github.com/Elata-Biosciences/elata-bio-sdk) · **npm**：[`@elata-biosciences`](https://www.npmjs.com/org/elata-biosciences)
 </Info>
 
 ---
 
-## Architecture
+## 快速开始
 
-```
-┌──────────────────────────────────────────────────────┐
-│                        Elata SDK                      │
-├──────────────────────────────────────────────────────┤
-│  Platform Bindings                                    │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐            │
-│  │  WASM    │  │  Swift   │  │  Kotlin  │            │
-│  │ (Browser)│  │  (iOS)   │  │(Android) │            │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘            │
-│       └─────────────┴─────────────┘                  │
-│                      │                                │
-│  Models Layer        │                                │
-│  ┌─────────────────┐ ┌─────────────────┐              │
-│  │ Alpha Bump      │ │ Calmness        │              │
-│  │ Detector        │ │ Model           │              │
-│  └────────┬────────┘ └────────┬────────┘              │
-│           └────────┬──────────┘                       │
-│  Signal Processing │                                  │
-│  ┌─────────────────────────────────────┐              │
-│  │ FFT │ Band Power │ Filtering        │              │
-│  └─────────────────────────────────────┘              │
-│                    ▲                                  │
-│  HAL Layer         │                                  │
-│  ┌─────────────────────────────────────┐              │
-│  │         EegDevice Trait             │              │
-│  │ connect() │ start_stream() │ read() │              │
-│  └─────────────────────────────────────┘              │
-└──────────────────────────────────────────────────────┘
-```
-
----
-
-## npm Packages
-
-| Package | Version | Description |
-|---------|---------|-------------|
-| [`@elata-biosciences/eeg-web`](https://www.npmjs.com/package/@elata-biosciences/eeg-web) | 0.1.0 | EEG WASM bindings — signal processing, band power, models |
-| [`@elata-biosciences/eeg-web-ble`](https://www.npmjs.com/package/@elata-biosciences/eeg-web-ble) | 0.1.0 | Web Bluetooth transport for EEG headband devices |
-| [`@elata-biosciences/rppg-web`](https://www.npmjs.com/package/@elata-biosciences/rppg-web) | 0.1.1 | rPPG pipeline — heart rate from camera via face detection |
-
----
-
-## Installation
+最快的方式是创建一个入门应用：
 
 ```bash
-# EEG signal processing (WASM)
-pnpm add @elata-biosciences/eeg-web
+# 交互式选择模板
+npm create @elata-biosciences/elata-demo my-app
 
-# BLE headband connectivity (requires eeg-web)
-pnpm add @elata-biosciences/eeg-web-ble @elata-biosciences/eeg-web
-
-# rPPG (camera-based heart rate)
-pnpm add @elata-biosciences/rppg-web
+# 或直接指定模板
+npm create @elata-biosciences/elata-demo my-app -- --template rppg
 ```
-
-**Requirements**: Node.js 18+, modern browser with WebAssembly support.
-
----
-
-## Rust Crates
-
-The SDK is built on Rust crates that compile to WASM and native targets. The
-main public Rust crates are the core and protocol crates; synthetic and binding
-crates are mostly internal packaging surfaces.
-
-| Crate | Purpose |
-|-------|---------|
-| `elata-eeg-hal` | Core HAL traits: `EegDevice`, `SampleBuffer`, `ChannelConfig` |
-| `elata-eeg-signal` | FFT, band power analysis, filtering |
-| `elata-eeg-models` | Alpha Bump Detector, Calmness Model |
-| `elata-rppg` | rPPG pipeline core |
-| `elata-muse-proto` | Muse classic and Athena protocol |
-
----
-
-## Device Support
-
-| Device | Protocol | Channels | Status |
-|--------|----------|----------|--------|
-| Muse 2 | Classic BLE | 4 EEG (TP9, AF7, AF8, TP10) | Supported |
-| Muse S | Classic BLE | 4 EEG + PPG | Supported |
-| Muse S (Athena) | Athena v2 | 8 EEG + optics + accgyro | Supported |
-| Synthetic Bridge | BLE bridge | Configurable | Testing only |
-
----
-
-## Platform Support
-
-| Platform | EEG Processing | BLE Headband | rPPG |
-|----------|---------------|-------------|------|
-| Chrome/Edge (desktop) | WASM | Web Bluetooth | MediaPipe |
-| Chrome (Android) | WASM | Web Bluetooth | MediaPipe |
-| Safari/iOS | WASM | Native bridge required | MediaPipe |
-| Node.js | WASM | N/A | N/A |
-| iOS (Swift) | UniFFI | CoreBluetooth | Native |
-| Android (Kotlin) | UniFFI | Android BLE | Native |
-| Rust (desktop) | Native | N/A | Native |
-
-<Note>
-  Safari/iOS does not support Web Bluetooth. Use a native app shell with CoreBluetooth, or a companion bridge app streaming frames over WebSocket.
-</Note>
-
----
-
-## Build from Source
 
 ```bash
-git clone https://github.com/elata-bio/elata-sdk.git
-cd elata-sdk
-
-./run.sh install          # Install dependencies
-./run.sh build all        # Release build (WASM + TS)
-./run.sh test             # Run all tests
-./run.sh demo eeg         # Launch EEG demo
-./run.sh demo rppg        # Launch rPPG demo
+cd my-app
+npm install
+npm run dev
 ```
+
+全部五个模板见 [create-elata-demo](/cn/sdk/create-elata-demo)。
 
 ---
 
-## Next
+## 包
+
+### 传感器
+
+| 包 | 功能 |
+| --- | --- |
+| [`@elata-biosciences/rppg-web`](/cn/sdk/rppg-web/getting-started) | 通过网络摄像头获取心率和脉搏信号（rPPG）。默认起点：无需任何硬件。 |
+| [`@elata-biosciences/eeg-web`](/cn/sdk/eeg-web/getting-started) | EEG 信号处理、频段功率和模型（WASM），以及共享的头带帧协议。 |
+| [`@elata-biosciences/eeg-web-ble`](/cn/sdk/eeg-web-ble/getting-started) | 通过 Web Bluetooth 连接 EEG 头带。内置 Muse 支持，可扩展到其他设备。 |
+| [`@elata-biosciences/ppg-web`](/cn/sdk/ppg-web/getting-started) | 通过头带的光学（PPG）传感器获取心率和 HRV。 |
+
+### 录制与分析
+
+| 包 | 功能 |
+| --- | --- |
+| [`@elata-biosciences/biosignal-session`](/cn/sdk/biosignal-session/getting-started) | 使用容错协议和 Arrow 分块将多传感器会话录制到本地存储。*尚未发布到 npm。* |
+| [`@elata-biosciences/biosignal-analytics`](/cn/sdk/biosignal-analytics/getting-started) | EEG 窗口特征、HRV、稳健统计和透明的总体评分。*尚未发布到 npm。* |
+| `@elata-biosciences/rppg-models-web` | 实验性：为 `rppg-web` 提供可选的学习型波形重建。需自行提供模型文件。*尚未发布到 npm。* |
+
+### 应用商店
+
+| 包 | 功能 |
+| --- | --- |
+| [`@elata-biosciences/app-payments`](/cn/apps/platform/in-app-purchases) | 通过商店结账实现应用内购买 |
+| [`@elata-biosciences/app-state`](/cn/apps/platform/app-state) | 按用户的键值存储。*尚未发布到 npm；请使用 [`elata:state:*` 消息](/cn/apps/platform/app-state)。* |
+| [`@elata-biosciences/app-metrics`](/cn/apps/platform/metrics-and-scores) | 事件记录、分数以及生物特征评分贡献 |
+
+### 工具
+
+| 包 | 功能 |
+| --- | --- |
+| [`@elata-biosciences/create-elata-demo`](/cn/sdk/create-elata-demo) | 从模板创建入门应用 |
+
+---
+
+## 在现有应用中添加包
+
+```bash
+# 摄像头心率
+npm install @elata-biosciences/rppg-web
+
+# 基于 Web Bluetooth 的 EEG
+npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+
+# 头带 PPG 心率和 HRV
+npm install @elata-biosciences/ppg-web @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble @elata-biosciences/rppg-web
+```
+
+**要求**：工具链需要 Node.js 20 或更高版本，以及支持 WebAssembly 的现代浏览器。
+
+---
+
+## 设备支持
+
+| 设备 | 协议 | 信号 | 状态 |
+| --- | --- | --- | --- |
+| Muse 2 | Classic BLE | 4 路 EEG（TP9、AF7、AF8、TP10）、PPG | 支持 |
+| Muse S | Classic BLE | 4 路 EEG、PPG | 支持 |
+| Muse S（Athena） | Athena | 8 路 EEG、光学、加速度计/陀螺仪 | 支持 |
+| 任意网络摄像头 | 摄像头 | rPPG 脉搏 | 支持 |
+
+想接入新的头戴设备？参见[设备集成](/cn/integrate)。
+
+---
+
+## Rust crate
+
+这些包基于公开的 Rust crate 构建，你也可以直接使用：
+
+| Crate | 用途 |
+| --- | --- |
+| `elata-eeg-hal` | 核心设备 trait：`EegDevice`、`SampleBuffer` |
+| `elata-eeg-signal` | FFT、频段功率、滤波 |
+| `elata-eeg-models` | Alpha 波峰检测器、平静度模型 |
+| `elata-rppg` | rPPG 流水线核心 |
+| `elata-muse-proto` | Muse classic 和 Athena 协议解码 |
+
+---
+
+## 下一步
 
 <CardGroup cols={3}>
-  <Card title="EEG Web" icon="brain" iconType="light" href="/sdk/eeg-web/getting-started">
-    Signal processing and models
+  <Card title="选择合适的包" icon="compass" href="/cn/sdk/guides/choose-the-right-package">
+    包选择指南
   </Card>
-  <Card title="BLE Transport" icon="bluetooth" iconType="light" href="/sdk/eeg-web-ble/getting-started">
-    Connect to headband devices
+  <Card title="你的第一个应用" icon="rocket" href="/cn/sdk/tutorials/first-app">
+    创建并运行入门应用
   </Card>
-  <Card title="rPPG" icon="heart-pulse" iconType="light" href="/sdk/rppg-web/getting-started">
-    Heart rate from camera
+  <Card title="发布到商店" icon="store" href="/cn/apps/build/overview">
+    在 Elata 应用商店上线
   </Card>
 </CardGroup>

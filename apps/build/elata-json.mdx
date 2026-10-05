@@ -1,0 +1,68 @@
+---
+title: "elata.json"
+description: "The app manifest that declares your release version."
+---
+
+## Overview
+
+`elata.json` is a small manifest you include in your upload. Today the store
+uses it to read your **release version**, so your listing shows `v1.2.3`
+instead of `Release #4`.
+
+```json elata.json
+{
+  "version": "1.2.3",
+  "entry": "index.html",
+  "name": "Calm Runner"
+}
+```
+
+<Note>
+  `elata.json` is optional today. If it is missing or invalid, the store falls
+  back to other version sources (see below). It will become required in a
+  future update, so add it now.
+</Note>
+
+---
+
+## Fields
+
+| Field | Required | Rules |
+| --- | --- | --- |
+| `version` | Yes | 1 to 32 characters. Starts with a letter or digit, then letters, digits, `.`, `-`, or `+`. Semver like `1.2.3` or `1.2.3-beta.1` is recommended. |
+| `entry` | No | The entry HTML file, up to 256 characters. Use `index.html`. |
+| `name` | No | A display name, 1 to 80 characters. |
+
+---
+
+## File name and location
+
+- Name the file `elata.json` (`elata.manifest.json` also works).
+- Put it at the root of your zip, next to `index.html`.
+- If there are several, the one closest to the root wins.
+
+With Vite, put it in `public/` so it's copied into `dist/` on every build:
+
+```
+my-app/
+├── public/
+│   └── elata.json
+├── src/
+└── index.html
+```
+
+---
+
+## Version fallbacks
+
+If there's no valid `elata.json`, the store looks for a version in this order:
+
+1. `elata.json` (or `elata.manifest.json`)
+2. The `version` in the shallowest `package.json` in the zip
+3. A meta tag in `index.html`:
+
+```html
+<meta name="elata-version" content="1.2.3" />
+```
+
+The upload response tells you which source was used.

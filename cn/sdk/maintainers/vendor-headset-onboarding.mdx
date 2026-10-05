@@ -1,0 +1,25 @@
+---
+title: "厂商头带接入检查清单"
+description: "面向外部设备厂商、为 Elata 浏览器 EEG 技术栈添加头带支持的逐步检查清单。"
+---
+
+当硬件厂商希望添加头带支持时，请使用此检查清单。
+
+完整的仓库指南位于 SDK 仓库中：
+
+- [docs/vendor-headset-onboarding-checklist.md](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/vendor-headset-onboarding-checklist.md)
+
+## 快速路径概要
+
+1. 确认协议和 GATT 文档：UUID、数据包格式、采样率、通道映射和时间戳。
+2. 选择集成路径：
+   - 位于 `src/devices/<vendor>/` 的 `eeg-web-ble` 设备模块
+   - 用于桥接较多场景的同级包，例如 `packages/eeg-web-<vendor>`
+   - 用于私有概念验证的应用本地适配器
+3. 统一采用 `HeadbandTransport` 和 `HeadbandFrameV1`。
+4. 添加模拟 BLE 和数据包测试。
+5. 更新文档，并为可发布的变更添加 changeset。
+
+关于架构和包的要求，参见：
+
+- [贡献 EEG 传输](/cn/sdk/maintainers/contributing-eeg-transports)

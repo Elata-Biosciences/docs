@@ -1,0 +1,128 @@
+---
+title: "Getting Started"
+description: "Record multi-sensor biosignal sessions locally with @elata-biosciences/biosignal-session."
+---
+
+<Warning>
+  `@elata-biosciences/biosignal-session` is not published to npm yet. The API below reflects the source in the [SDK repository](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-session) and may change before the first release.
+</Warning>
+
+## What it does
+
+`@elata-biosciences/biosignal-session` records a biosignal session (EEG, PPG,
+rPPG metrics, and more) as a set of typed streams, chunked into self-contained
+[Apache Arrow](https://arrow.apache.org/) files. Recording is **local-only**:
+the package has no network client.
+
+It is built for reliability:
+
+- every chunk carries a CRC32C checksum and an idempotent `(session, stream, sequence)` identity
+- the recorder retries, applies backpressure, and never drops data silently
+- real gaps are recorded as explicit discontinuities, never interpolated
+
+---
+
+## The model
+
+```
+Session ─┬─ Source   (headset, camera, synthetic)
+         ├─ Stream   (eeg, ppg, optics, imu, rppg-metrics, ppg-metrics, …)
+         │    └─ Chunk  (Arrow IPC file + CRC32C, sequence 0, 1, 2, …)
+         └─ Event    (markers and annotations)
+```
+
+Time is session-relative integer **microseconds**, anchored once when the
+session starts.
+
+---
+
+## Roles
+
+A recording has two sides that talk over a `MessagePort`:
+
+| Side | Responsibility | Provided by this package |
+| --- | --- | --- |
+| **Recorder** (your app) | Buffers samples, closes chunks, encodes Arrow, checksums, retries | Yes: `RecorderCore`, device adapters, a worker launcher |
+| **Host** (trusted embedder) | Stores chunks durably and acknowledges each one | A reference in-memory host for tests (`createMemoryHost`) |
+
+<Note>
+  The Elata App Store doesn't host session recording yet. Today, use the
+  package in your own host page, or with the in-memory host for development
+  and tests.
+</Note>
+
+---
+
+## Install
+
+```bash
+npm install @elata-biosciences/biosignal-session
+```
+
+| Import | Contents |
+| --- | --- |
+| `@elata-biosciences/biosignal-session` | Contracts, protocol types, error codes, time helpers, CRC32C |
+| `@elata-biosciences/biosignal-session/browser` | `RecorderCore`, handshake, Arrow encode/decode, device adapters, worker launcher |
+| `@elata-biosciences/biosignal-session/testing` | Synthetic source, in-memory host, fake clock, recorder harness |
+
+---
+
+## Device adapters
+
+Wrap the SDK objects you already use as recording sources:
+
+- `createHeadbandSource(transport)`: a `HeadbandTransport` from `eeg-web` / `eeg-web-ble`
+- `createRppgSource(options)`: an `rppg-web` session
+- `createPpgSource(options)`: `ppg-web` metrics
+
+---
+
+## Try it without hardware
+
+The testing entry runs a full recording against an in-memory host with a
+seeded synthetic source. Hours of virtual signal run in seconds:
+
+```ts
+import {
+  createRecorderHarness,
+  createSyntheticSource,
+} from '@elata-biosciences/biosignal-session/testing';
+
+const h = createRecorderHarness();
+const source = createSyntheticSource({ seed: 1234 });
+
+await h.start();
+await h.startSource(source);
+source.pump(60_000);          // 60 s of synthetic EEG, rPPG, and PPG
+await h.advance(60_000);
+await source.stop();
+await h.finalize();
+
+h.core.state();               // "complete"
+```
+
+---
+
+## Read chunks back
+
+Every chunk is a complete Arrow IPC file that carries its own schema and
+identity, so you can decode one on its own, in JavaScript or in Python with
+`pyarrow`:
+
+```ts
+import { decodeChunk, readFloat32Column } from '@elata-biosciences/biosignal-session/browser';
+
+const { table, identity } = decodeChunk(bytes);
+const tp9 = readFloat32Column(table, 'TP9');
+```
+
+---
+
+## Full guide
+
+The step-by-step recording flow (clock anchor, handshake, opening streams,
+pushing samples, finalizing) and the host's guarantees are in the
+[recording guide](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/guides/using-biosignal-sessions.md).
+AI tools can read `node_modules/@elata-biosciences/biosignal-session/llms.txt`.
+
+To analyze what you record, see [biosignal-analytics](/sdk/biosignal-analytics/getting-started).

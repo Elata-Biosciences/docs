@@ -1,48 +1,43 @@
 ---
 title: "What Are Elata Apps?"
-description: "Tokenized applications on the Elata protocol with built-in economics, governance, and community tools."
+description: "Browser apps built on the Elata Biometric SDKs and published to the Elata App Store."
 ---
 
 ## The Idea
 
-![Elata SDK (4)](/images/Elata-SDK-\(4\).png)
+An Elata app is a web app that uses the Elata Biometric SDKs to work with the
+body's signals: heart rate from a webcam, EEG from a consumer headband, or PPG
+from a headband's optical sensor. You build it with standard web tooling,
+upload it to the [Elata App Store](https://app.elata.bio), and users play it
+right in the browser.
 
-<Info>
-  Leading to our iOS/Android launch, we will implement an abstracted version of the user interface, running all economic features under the hood. Transfers, fees, and other economic variables will get routed under the hood and be out-of-sight from end users.
-</Info>
-
-Under the hood, an Elata app is a tokenized application deployed on the Elata protocol. Each app gets its own ERC-20 token, a bonding curve for price discovery, a staking vault, contributor splits, and governance hooks.
-
-You build the product. The protocol handles token launch, fee routing, liquidity, and community infrastructure.
+You build the product. Elata handles hosting, sign-in, payments, per-user
+storage, and distribution.
 
 ---
 
-## What You Get When You Launch
+## What You Get When You Publish
 
-Every app deployed through the protocol receives:
-
-| Component | What It Does |
+| Capability | What it gives you |
 | --- | --- |
-| **App Token** | ERC-20 with 10M supply, distributed 50/25/25 (curve/team/ecosystem) |
-| **Bonding Curve** | Constant-product price discovery until graduation at 42,000 ELTA |
-| **Staking Vault** | Lets token holders stake and signal commitment |
-| **Vesting Wallet** | 25% team allocation with configurable vesting |
-| **Ecosystem Vault** | 25% reserved for ecosystem incentives |
-| **Contributor Split** | Pull-based payout system for up to 150-200 contributors |
-
-<Info>
-  Total launch cost: **110 ELTA** (10 ELTA registration fee \+ 100 ELTA bonding curve seed). ELTA is the protocol's native token with a fixed 77M supply.
-</Info>
+| **Hosting** | Upload a static build (or point to your own HTTPS URL). Elata serves it inside a secure, sandboxed frame. |
+| **Distribution** | A store listing at `app.elata.bio/app/<your-app>` with discovery, reviews, comments, votes, and sharing. |
+| **Accounts** | Users are already signed in to the store. Your app never handles passwords, wallets, or session tokens. |
+| **In-app purchases** | Sell one-time items through the store checkout with [`app-payments`](/apps/platform/in-app-purchases). |
+| **Subscriptions** | Offer a monthly plan with an optional free trial. See [Subscriptions](/apps/platform/subscriptions). |
+| **Per-user storage** | Save games, settings, and scores with [`app-state`](/apps/platform/app-state) and [`app-metrics`](/apps/platform/metrics-and-scores). Signed-in users' data follows them across devices. |
+| **Biometric Score** | With user consent, contribute derived session results to the user's cross-app Score. See [Consent and insights](/apps/platform/consent-and-insights). |
+| **Reminders** | Send foreground notifications through the store with [Notifications](/apps/platform/notifications). |
 
 ---
 
 ## How It Works
 
-1. **Register** your app with metadata and a Safe wallet (10 ELTA).
-2. **Launch** the token stack with a 100 ELTA seed.
-3. **Trade** on the bonding curve while the app builds traction.
-4. **Graduate** when reserves hit 42,000 ELTA, creating a locked DEX liquidity pair.
-5. **Operate** with community tools: tournaments, items, staking, and governance.
+1. **Build** a web app with the [Biometric SDKs](/sdk/overview). The fastest start is `npm create @elata-biosciences/elata-demo my-app`.
+2. **Register** your app name in the [Build an App](https://app.elata.bio/build-app) wizard.
+3. **Upload** your build as a `.zip` (or give us an HTTPS URL) and try it in the store's play window.
+4. **Publish**: add an icon, header image, and description, then submit for review.
+5. **Go live** once the release passes the automated security scan and a moderator approves it.
 
 The full sequence is covered in [App Lifecycle](/apps/app-lifecycle).
 
@@ -50,24 +45,24 @@ The full sequence is covered in [App Lifecycle](/apps/app-lifecycle).
 
 ## Who This Is For
 
-- **Builders** who want to launch a tokenized app without building their own economic infrastructure
-- **Users** who want to discover, trade, and participate in app ecosystems
-- **Communities** that benefit from transparent fee routing and governance
+- **Builders** who want to ship a biosignal app without building hosting, accounts, payments, and storage
+- **Device makers** who want their sensor to reach an app ecosystem (see [Device Integration](/integrate))
+- **Users** who want to discover and play biosignal apps
 
 ---
 
 ## Next
 
 <CardGroup cols={3}>
-  <Card title="Choose Your Path" icon="compass" iconType="light" href="/apps/choose-your-path">
+  <Card title="Choose Your Path" icon="compass" href="/apps/choose-your-path">
     Builder or user?
   </Card>
 
-  <Card title="App Lifecycle" icon="recycle" iconType="light" href="/apps/app-lifecycle">
-    Full launch-to-graduation arc
+  <Card title="App Lifecycle" icon="recycle" href="/apps/app-lifecycle">
+    From upload to live
   </Card>
 
-  <Card title="Builder Overview" icon="hammer" iconType="light" href="/apps/build/overview">
+  <Card title="Builder Overview" icon="hammer" href="/apps/build/overview">
     Start building
   </Card>
 </CardGroup>

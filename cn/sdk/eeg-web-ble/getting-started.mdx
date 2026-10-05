@@ -1,68 +1,96 @@
 ---
-title: "EEG Web BLE — Getting Started"
-description: "Connect to EEG headband devices over Web Bluetooth"
+title: "快速上手"
+description: "通过 Web Bluetooth 连接 EEG 头带设备"
 ---
 
-## Installation
+## 何时使用此包
+
+当你的应用需要以下功能时，使用 `@elata-biosciences/eeg-web-ble`：
+
+- 在浏览器端发现 Muse 兼容设备
+- 通过 Web Bluetooth 实时输出 EEG 数据
+- 用于应用逻辑或下游分析的规范化头带帧
+
+请与 `@elata-biosciences/eeg-web` 一起安装。
+
+---
+
+## 安装
 
 ```bash
-pnpm add @elata-biosciences/eeg-web-ble @elata-biosciences/eeg-web
+npm install @elata-biosciences/eeg-web-ble @elata-biosciences/eeg-web
 ```
 
-`eeg-web-ble` depends on `eeg-web` for shared frame types and the WASM module.
+`eeg-web-ble` 依赖 `eeg-web` 提供的共享帧类型和 WASM 模块。
 
 ---
 
-## Requirements
+## 要求
 
-- Browser with **Web Bluetooth** support (Chrome/Edge on desktop or Android)
-- Served from a **secure context** (`https://`)
-- Safari/iOS does **not** support Web Bluetooth — see [platform notes](/sdk/overview) for alternatives
+- 支持 **Web Bluetooth** 的浏览器（桌面或 Android 上的 Chrome/Edge）
+- 通过**安全上下文**提供服务（`https://` 或 `localhost`）
+- Safari/iOS **不**支持 Web Bluetooth。替代方案参见 [Muse 设备](/cn/sdk/eeg-web-ble/muse-device)
 
----
-
-## Basic Usage
+在显示“连接”按钮之前先检查支持情况：
 
 ```typescript
-import { initEegWasm } from "@elata-biosciences/eeg-web";
+import { checkWebBluetooth } from "@elata-biosciences/eeg-web-ble";
+
+const support = checkWebBluetooth();
+if (!support.supported) {
+  showMessage(support.message); // 说明原因，包括针对 iOS 的提示
+}
+```
+
+---
+
+## 基本用法
+
+`startStreaming()` 是推荐的默认方式。它把 `connect()` 和 `start()` 合并在一起，避免了连接成功却从未开始数据流的常见错误。
+
+```typescript
+import { initEegWasm, AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
 import { BleTransport } from "@elata-biosciences/eeg-web-ble";
 
-// Initialize WASM first
+// 先初始化 WASM
 await initEegWasm();
 
-// Create transport
-const transport = new BleTransport();
+// 创建传输
+const transport = new BleTransport({
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),
+  },
+});
 
-// Handle incoming EEG frames
+// 处理传入的 EEG 帧
 transport.onFrame = (frame) => {
   console.log(`EEG samples: ${frame.eeg.samples.length} rows`);
   console.log(`Channels: ${frame.eeg.channelNames.join(", ")}`);
 };
 
-// Handle connection status changes
+// 处理连接状态变化
 transport.onStatus = (status) => {
   console.log(`Transport: ${status.state}`, status.reason || "");
 };
 
-// Connect and start streaming
-await transport.connect();   // triggers Bluetooth device picker
-await transport.start();     // begins EEG data stream
+// 连接并开始数据流（会弹出蓝牙设备选择器）
+await transport.startStreaming();
 
-// ... later
+// ……之后
 await transport.stop();
-await transport.disconnect();
 ```
 
 ---
 
-## BleTransport Lifecycle
+## BleTransport 生命周期
 
-| Method | What it does |
-|--------|-------------|
-| `connect()` | Opens Bluetooth device picker, pairs, and prepares session |
-| `start()` | Begins EEG data stream; `onFrame` callbacks fire |
-| `stop()` | Stops the data stream; connection stays open |
-| `disconnect()` | Releases the Bluetooth session |
+| 方法 | 作用 |
+| --- | --- |
+| `startStreaming()` | 推荐：一次调用完成连接并开始数据流 |
+| `connect()` | 打开蓝牙设备选择器、配对并准备会话 |
+| `start()` | 开始 EEG 数据流；`onFrame` 回调开始触发 |
+| `stop()` | 停止数据流；连接保持打开 |
+| `disconnect()` | 释放蓝牙会话 |
 
 ---
 
@@ -70,26 +98,26 @@ await transport.disconnect();
 
 ```typescript
 const transport = new BleTransport({
-  sourceName: "my-app-ble",           // name tag in frame.source
+  sourceName: "my-app-ble",           // frame.source 中的名称标签
   deviceOptions: {
-    athenaDecoderFactory: () => new AthenaWasmDecoder(),  // for Athena headbands
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),  // 用于 Athena 头带
     logger: (msg) => console.debug(msg),
     onDisconnected: () => console.warn("Device disconnected"),
   },
 });
 ```
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `sourceName` | `string` | Identifier included in `HeadbandFrameV1.source` |
-| `deviceOptions` | `MuseDeviceOptions` | Passed to underlying `MuseBleDevice` |
-| `device` | `BleDeviceLike` | Inject a custom device implementation |
+| 选项 | 类型 | 说明 |
+| --- | --- | --- |
+| `sourceName` | `string` | 包含在 `HeadbandFrameV1.source` 中的标识 |
+| `deviceOptions` | `MuseDeviceOptions` | 传给底层的 `MuseBleDevice` |
+| `device` | `BleDeviceLike` | 注入自定义设备实现 |
 
 ---
 
-## Athena Support
+## Athena 支持
 
-Muse S headbands with Athena firmware require an Athena decoder factory:
+采用 Athena 固件的 Muse S 头带需要 Athena 解码器工厂。预先加入它，可以同时覆盖经典版和 Athena 流程：
 
 ```typescript
 import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
@@ -102,13 +130,13 @@ const transport = new BleTransport({
 });
 ```
 
-Athena headbands provide 8 EEG channels, optics, accelerometer/gyroscope, and battery data in each frame.
+Athena 头带的每一帧都提供 8 路 EEG 通道、光学、加速度计/陀螺仪和电量数据。
 
 ---
 
-## Device Info
+## 设备信息
 
-After connecting, you can query device metadata:
+连接后，你可以查询设备元数据：
 
 ```typescript
 await transport.connect();
@@ -120,13 +148,25 @@ const channelNames = transport.getEegNames();
 
 ---
 
-## Next
+## 平台注意事项
+
+- Safari 和 iOS 不提供可用于此流程的 Web Bluetooth 支持。
+- 对于 Safari 和 iOS，请使用原生 BLE 外壳、配套桥接或混合 WebView 方案，并以 `@elata-biosciences/eeg-web` 的帧协议作为边界。
+- 不同固件版本的命令行为可能不同。
+
+---
+
+## 下一步
 
 <CardGroup cols={2}>
-  <Card title="Muse Device Details" icon="microchip" iconType="light" href="/sdk/eeg-web-ble/muse-device">
-    Protocol details, characteristics, and compatibility
+  <Card title="实时数据流教程" icon="circle-play" href="/cn/sdk/tutorials/eeg-ble-live-stream">
+    分步 BLE 数据流指南
   </Card>
-  <Card title="EEG + BLE Integration" icon="link" iconType="light" href="/sdk/guides/eeg-ble-integration">
-    End-to-end streaming and processing guide
+  <Card title="Muse 设备详情" icon="microchip" href="/cn/sdk/eeg-web-ble/muse-device">
+    协议细节、特征值和兼容性
+  </Card>
+
+  <Card title="EEG + BLE 集成" icon="link" href="/cn/sdk/guides/eeg-ble-integration">
+    端到端数据流和处理指南
   </Card>
 </CardGroup>

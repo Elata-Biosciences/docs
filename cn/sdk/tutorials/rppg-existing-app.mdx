@@ -1,0 +1,255 @@
+---
+title: "在现有浏览器应用中添加摄像头 rPPG"
+description: "使用 createRppgSession、诊断和清理构建一个可用的浏览器 rPPG 流程。"
+---
+
+如果你已经有一个浏览器应用，并希望按推荐方式进行集成，请阅读本页。
+
+如果你想从脚手架开始，请参阅[快速开始](/cn/sdk/tutorials/first-app)。如果你只想先建立概念模型，请参阅[在浏览器应用中使用 rPPG](/cn/sdk/guides/rppg-browser)。
+
+本教程展示 `@elata-biosciences/rppg-web` 的推荐应用集成路径。
+
+对许多 Elata 产品来说，摄像头 rPPG 是**主要的**浏览器集成方式，无需头戴设备。
+
+核心思路很简单：让 `createRppgSession()` 负责浏览器运行时、视频处理循环和诊断，你的应用负责界面。
+
+当你在[构建你的第一个 Elata 应用](/cn/sdk/tutorials/first-app)之后为摄像头 rPPG 选择**现有应用**分支时，这通常是**下一篇教程**。如果你是在**扩展脚手架**，请继续使用 `rppg-demo`，并参考[在浏览器应用中使用 rPPG](/cn/sdk/guides/rppg-browser) 和 [rppg-web](/cn/sdk/rppg-web/getting-started)。
+
+## 你将构建什么
+
+你将：
+
+1. 安装 `@elata-biosciences/rppg-web`
+2. 请求摄像头访问
+3. 将视频流绑定到 `video` 元素
+4. 启动 `createRppgSession()`
+5. 读取指标和诊断信息
+6. 在清理时停止会话
+
+## 第 1 步：安装包
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/rppg-web
+```
+
+```bash npm
+npm install @elata-biosciences/rppg-web
+```
+
+</CodeGroup>
+
+## 第 2 步：准备 video 元素
+
+你的应用需要一个可以接收摄像头流的 `video` 元素。
+
+```html index.html（或你的组件标记）
+<video id="camera" autoplay playsinline muted></video>
+```
+
+关键属性：
+
+- `autoplay`：视频流绑定后即可开始播放
+- `playsinline`：适配移动端浏览器行为
+- `muted`：避免受自动播放规则限制
+
+## 第 3 步：获取摄像头访问
+
+```ts camera setup
+const videoEl = document.getElementById("camera") as HTMLVideoElement;
+
+const stream = await navigator.mediaDevices.getUserMedia({
+  video: { facingMode: "user" },
+  audio: false,
+});
+
+videoEl.srcObject = stream;
+await videoEl.play();
+```
+
+此时你的浏览器应用应该已经显示摄像头预览了。
+
+## 第 4 步：启动 `createRppgSession()`
+
+```ts rPPG session
+import { createRppgSession } from "@elata-biosciences/rppg-web";
+
+const session = await createRppgSession({
+  video: videoEl,
+  sampleRate: 30,
+  backend: "auto",
+  faceMesh: "off",
+  onDiagnostics: (diagnostics) => {
+    console.log("status", diagnostics.state.status);
+    console.log("frames", diagnostics.framesSeen);
+    console.log("samples", diagnostics.totalSamplesReceived);
+    console.log("issues", diagnostics.issues);
+  },
+  onError: (error) => {
+    console.error(error.code, error.message);
+  },
+});
+```
+
+这是大多数浏览器应用推荐的起点。
+
+它负责：
+
+- 打包的 WASM 后端初始化
+- 帧采集
+- ROI/会话编排
+- 输出诊断信息
+- 清理支持
+
+## 第 5 步：在界面中读取指标
+
+```ts
+const metrics = session.getMetrics();
+console.log(metrics);
+```
+
+在真实应用中，你会通过自己的界面状态层轮询或订阅，并显示对你的产品重要的数值。
+
+## 第 6 步：正确清理
+
+当组件、路由或页面离开时，停止会话并释放摄像头流。按顺序运行（使用上面相同的 `session` 和 `stream`）：
+
+```ts
+await session.stop();
+```
+
+```ts
+for (const track of stream.getTracks()) {
+  track.stop();
+}
+```
+
+这一步比看起来更重要。它能防止之后的会话继承过时的摄像头或运行时状态。
+
+## 完整示例（一次粘贴）
+
+如果你想要一个可以直接放进 Vite + React 应用的文件（例如替换 `src/App.tsx` 的内容），请使用下面的代码。它包含摄像头设置、会话启动以及卸载时的清理。
+
+```tsx App.tsx
+import { useEffect, useRef, useState } from "react";
+import { createRppgSession, type RppgSession } from "@elata-biosciences/rppg-web";
+
+export default function App() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const sessionRef = useRef<RppgSession | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const [line, setLine] = useState("Starting…");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function run() {
+      const video = videoRef.current;
+      if (!video) return;
+
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user" },
+          audio: false,
+        });
+      } catch {
+        setLine("Camera permission denied.");
+        return;
+      }
+
+      if (cancelled) {
+        stream.getTracks().forEach((t) => t.stop());
+        return;
+      }
+
+      streamRef.current = stream;
+      video.srcObject = stream;
+      await video.play().catch(() => undefined);
+
+      const sampleRate = stream.getVideoTracks()[0]?.getSettings().frameRate ?? 30;
+
+      try {
+        const session = await createRppgSession({
+          video,
+          sampleRate,
+          backend: "auto",
+          faceMesh: "off",
+          onDiagnostics: (d) => {
+            setLine(`status=${d.state.status} backend=${d.backendMode}`);
+          },
+          onError: (e) => setLine(`${e.code}: ${e.message}`),
+        });
+
+        if (cancelled) {
+          await session.dispose();
+          return;
+        }
+
+        sessionRef.current = session;
+      } catch (e) {
+        setLine(e instanceof Error ? e.message : "Session failed");
+      }
+    }
+
+    void run();
+
+    return () => {
+      cancelled = true;
+      void sessionRef.current?.dispose();
+      sessionRef.current = null;
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    };
+  }, []);
+
+  return (
+    <main style={{ padding: "1.5rem", maxWidth: 720 }}>
+      <p>{line}</p>
+      <video ref={videoRef} autoPlay playsInline muted style={{ width: "100%", borderRadius: 12 }} />
+    </main>
+  );
+}
+```
+
+这个示例在 `<video>` 上使用 React `ref`，而不是上面步骤中的 `getElementById("camera")`。
+
+## 如何处理诊断信息
+
+最快能带来价值的应用行为是：
+
+1. 显示会话处于 `running`、`degraded` 还是 `failed`
+2. 出现 `issues` 时显示易懂的提示
+3. 在应用获得足够稳定的样本之前，阻止发布或评分
+
+如果之后需要更高层的面向应用的状态层，可以了解：
+
+- `createManagedRppgSession()`
+- `createRppgAppAdapter()`
+- `createRppgAppMonitor()`
+
+但请先从普通的 `createRppgSession()` 开始。
+
+## 常见问题
+
+- `session.getDiagnostics().backendMode` 为 `unavailable`：你的应用很可能没有正确加载打包的 WASM 资源
+- 摄像头访问失败：检查浏览器权限和 `getUserMedia` 支持
+- 会话进入终止状态 `failed`：重新创建会话，而不是继续使用已损坏的处理器
+- 你想先调试底层生成的绑定：除非你确实在调试 SDK 本身，否则请从 `createRppgSession()` 开始
+
+## 下一步
+
+<CardGroup cols={3}>
+  <Card title="rppg-web 参考" icon="heart-pulse" href="/cn/sdk/rppg-web/getting-started">
+    包 API 和导出
+  </Card>
+
+  <Card title="在浏览器中使用 rPPG" icon="book-open" href="/cn/sdk/guides/rppg-browser">
+    集成概览
+  </Card>
+
+  <Card title="构建你的第一个应用" icon="rocket" href="/cn/sdk/tutorials/first-app">
+    最佳的首次设置路径
+  </Card>
+</CardGroup>

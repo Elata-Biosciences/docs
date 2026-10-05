@@ -1,0 +1,147 @@
+---
+title: "通过 Web Bluetooth 使用受支持的设备"
+description: "在受支持的 Chromium 浏览器中输出 Muse 兼容 EEG 设备的数据。"
+---
+
+如果你想了解传输模型和平台限制，而不是完整的演练，请阅读本页。
+
+如果你想要针对现有应用的分步说明，请参阅[通过 Web Bluetooth 输出 Muse 兼容 EEG 数据](/cn/sdk/tutorials/eeg-ble-live-stream)。如果你想从脚手架开始，请参阅[构建你的第一个 Elata 应用](/cn/sdk/tutorials/first-app)。
+
+<Info>
+  **在 SDK 中的角色：**摄像头 **rPPG** 通常是第一个应用。当你需要脑电信号时，**EEG** 是可选项。**Web Bluetooth**（`eeg-web-ble` 搭配 `eeg-web`）用于连接实时的 Muse 兼容头带。它是 EEG 的传输层，而不是与 rPPG 并列的主要产品。
+</Info>
+
+---
+
+## 从确认可用的脚手架应用开始
+
+如果你想以最快速度获得可运行的浏览器 BLE 示例，请先创建 EEG 入门应用：
+
+<CodeGroup>
+
+```bash pnpm
+pnpm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
+cd my-app
+pnpm install
+pnpm run dev
+```
+
+```bash npm
+npm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
+cd my-app
+npm install
+npm run dev
+```
+
+</CodeGroup>
+
+当你想把同样的浏览器 BLE 流程添加到现有应用时，再参考本指南的其余部分。
+
+---
+
+## 要求
+
+- Chrome、Edge，或 iOS 上的 Bluefy
+- `https://` 或 `localhost`
+- 设备已开启蓝牙
+- 一个受支持的 Muse 兼容 EEG 设备
+
+受支持的设备类别：
+
+- Muse 2 和 Muse S classic BLE 设备
+- Muse S Athena 协议 v2 设备
+- 用于测试的合成 Muse 兼容 BLE 桥接
+
+<Note>
+  浏览器 BLE 请在桌面或 Android 上使用 Chrome，或在 iOS 上使用 Bluefy。不要期望 Safari 本身支持此流程。
+</Note>
+
+---
+
+## 安装
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+```
+
+```bash npm
+npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+```
+
+</CodeGroup>
+
+---
+
+## 最小集成
+
+```ts
+import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+
+const transport = new BleTransport({
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),
+  },
+});
+
+transport.onFrame = (frame) => {
+  console.log(frame.eeg.samples.length);
+};
+
+transport.onStatus = (status) => {
+  console.log(status.state, status.reason);
+};
+
+await transport.connect();
+await transport.start();
+```
+
+---
+
+## 典型流程
+
+1. 确认应用运行在安全上下文中。
+2. 构造 `BleTransport`。
+3. 如果需要支持 Athena，提供 `athenaDecoderFactory`。
+4. 订阅帧和状态回调。
+5. 调用 `connect()`，然后调用 `start()`。
+
+---
+
+## 何时改用 BLE 模板
+
+在以下情况，优先使用脚手架生成的 `eeg-demo` 应用或专门的 `eeg-ble` 入门应用：
+
+- 快速检查浏览器 BLE 支持环境
+- 参考传输启动和状态处理方式
+- 比从头编写回调更简单的起点
+
+---
+
+## 常见问题
+
+- 如果 `navigator.bluetooth` 不存在，你很可能在不受支持的浏览器或非安全上下文中。
+- 如果设备选择器始终不出现，请确认蓝牙已开启，且页面通过 `https://` 或 `localhost` 提供。
+- 如果 Athena 设备解码失败，请确保传入了基于 `@elata-biosciences/eeg-web` 的 `athenaDecoderFactory`。
+- 如果你需要普通 iOS 浏览器路径，请规划原生桥接或混合方案，而不是依赖 Safari。本文的浏览器 BLE 指南假设 iOS 上使用 Bluefy。
+
+---
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="BLE 实时数据流教程" icon="circle-play" href="/cn/sdk/tutorials/eeg-ble-live-stream">
+    分步数据流指南
+  </Card>
+  <Card title="在浏览器中使用 EEG" icon="brain" href="/cn/sdk/guides/eeg-browser">
+    浏览器 EEG 包模型
+  </Card>
+  <Card title="eeg-web-ble 参考" icon="bluetooth" href="/cn/sdk/eeg-web-ble/getting-started">
+    传输 API 和选项
+  </Card>
+  <Card title="故障排查" icon="wrench" href="/cn/sdk/operations/troubleshooting">
+    常见故障及解决方法
+  </Card>
+</CardGroup>

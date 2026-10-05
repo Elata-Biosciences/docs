@@ -1,78 +1,96 @@
 ---
-title: "Launch Your App"
-description: "Step-by-step launch flow using current protocol contracts."
+title: "Publish Your App"
+description: "Step-by-step through the Build an App wizard, from registration to submitting for review."
 ---
 
 ## Overview
 
-Launching an Elata app is a two-phase process. Phase A registers your app. Phase B deploys the full token stack.
+Publishing happens in the **Build an App** wizard at
+[app.elata.bio/build-app](https://app.elata.bio/build-app). It has four steps.
+Your progress is saved as a draft, so you can leave and come back.
 
-**Total cost:** 110 ELTA (10 ELTA registration + 100 ELTA bonding curve seed).
-
----
-
-## Phase A: Register (10 ELTA)
-
-Register your app metadata and Safe wallet address through the AppFactory.
-
-1. Prepare your Safe multisig wallet
-2. Approve 10 ELTA for the AppFactory contract
-3. Call `registerApp()` with metadata and your Safe address
-4. Your app appears in the store immediately (no token yet)
+```
+Build → Register → Upload → Publish
+```
 
 ---
 
-## Phase B: Deploy Token Stack (100 ELTA)
+## 1. Build
 
-Deploy the full token infrastructure by seeding the bonding curve.
+The first step is a checklist. Before you continue you should have:
 
-1. Approve 100 ELTA for the AppFactory contract
-2. Call `deployToken()` from your Safe
-3. The protocol deploys: App Token, Bonding Curve, Staking Vault, Vesting Wallet, Ecosystem Vault
+- an app built with an Elata SDK and tested locally
+- a production `.zip` ready to upload
 
-**What gets deployed:**
+If you scaffolded with `create-elata-demo`, run:
 
-| Contract | Purpose |
-| --- | --- |
-| App Token | ERC-20 with 10M supply |
-| Bonding Curve | Constant-product price discovery |
-| Staking Vault | Token holder staking |
-| Vesting Wallet | 25% team allocation with vesting schedule |
-| Ecosystem Vault | 25% ecosystem reserves |
-| Contributor Split | Revenue distribution to contributors |
+```bash
+npm run build:zip
+```
+
+This builds the app and writes `app.zip` with `index.html` at its root, which is
+the format the store expects.
 
 ---
 
-## Post-Launch State
+## 2. Register
 
-After Phase B, your bonding curve is in `PENDING` state. Activate it to begin trading.
+Pick your app's name (up to 50 characters). The store checks that the name is
+available and gives your app a short URL slug, used in
+`app.elata.bio/app/<slug>`.
 
-The curve moves through: `PENDING` to `ACTIVE` to `GRADUATED` (or `CANCELLED`).
-
-<Note>
-  Creator allocation (team vesting) is subject to vesting schedules. Tokens vest linearly over the configured period.
-</Note>
+Then pay the one-time registration fee in USDC. The amount is shown in the
+wizard.
 
 ---
 
-## Important
+## 3. Upload
 
-- Transfer tax (up to 2%) applies to token transfers that touch allowlisted LPs
-- Fee routing begins immediately when trading starts
-- The 100 ELTA seed becomes part of the bonding curve reserve and is not directly withdrawable
+Upload your `app.zip`. The store validates it immediately: file type, size,
+an `index.html` entry, safe paths, and SDK usage. If anything is missing you'll
+see exactly what to fix.
+
+Once it passes, try your app in the play window. This is how users will see it.
+
+<Tip>
+  Add an [`elata.json`](/apps/build/elata-json) to your build so the release
+  shows your version number.
+</Tip>
+
+---
+
+## 4. Publish
+
+Fill in your store listing:
+
+- **App icon** (required)
+- **Header image** (required)
+- **Description**, category, and tags
+- **Screenshots** (optional, up to 10)
+
+Then click **Submit for Review**. Your release goes through the automated
+security scan and moderator review described in [App Lifecycle](/apps/app-lifecycle).
+
+---
+
+## After submitting
+
+- Track the review status on your app page and in the store's notifications.
+- Invite up to 10 playtest friends to try the draft before it's approved.
+- Ship updates later from your app's **Edit** page. Each new upload creates a new release.
 
 ---
 
 ## Next
 
 <CardGroup cols={3}>
-  <Card title="App Metadata" icon="tag" iconType="light" href="/apps/build/app-metadata">
-    Store listing and metadata
+  <Card title="Store Listing" icon="image" href="/apps/build/app-metadata">
+    Fields and image guidelines
   </Card>
-  <Card title="Post-Launch Checklist" icon="list-check" iconType="light" href="/apps/build/post-launch-checklist">
-    What to do after launch
+  <Card title="Upload and Hosting" icon="upload" href="/apps/build/upload-and-hosting">
+    Limits, self-hosting, PWA install
   </Card>
-  <Card title="Bonding Curve Basics" icon="chart-line" iconType="light" href="/apps/design/bonding-curve-basics">
-    How price discovery works
+  <Card title="Post-Launch Checklist" icon="list-check" href="/apps/build/post-launch-checklist">
+    What to do once you're live
   </Card>
 </CardGroup>

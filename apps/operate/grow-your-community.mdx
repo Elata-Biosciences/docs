@@ -1,81 +1,65 @@
 ---
 title: "Grow Your Community"
-description: "Community growth playbook for app builders on the Elata protocol."
+description: "A practical playbook for getting players to your app and keeping them."
 ---
 
-## Overview
-
-Once your app is live, community growth comes from three levers: competitions, collectibles, and commitment tools. This page covers the strategic playbook. For the specific mechanics, see the dedicated pages below.
-
----
-
-## Launch Week Playbook
+## Launch week
 
 <Tip>
-  The first week sets the tone. Focus on visibility, first purchases, and establishing a community heartbeat.
+  The first week sets the tone. Focus on getting people to play, and making it
+  easy for them to talk to you.
 </Tip>
 
-1. **Announce everywhere.** Post your app store link on Twitter, Discord, and any relevant communities.
-2. **Run an inaugural tournament.** Even a small prize pool generates activity and creates early trading volume.
-3. **Create a soulbound access pass.** Gate a feature behind an item purchase to give early supporters something exclusive.
-4. **Distribute XP** to your community so they can participate during the 6-hour early access window.
-5. **Set up social links and team display** on your app listing.
+1. **Share your store link everywhere.** Post `app.elata.bio/app/<slug>` on X, Discord, and relevant communities. Shared links are tracked, so people who share your app earn [Elata Points](/elata-points) when others click through.
+2. **Fill in your listing.** A clear header image, screenshots, and an extended description noticeably improve conversion. See [Store listing](/apps/build/app-metadata).
+3. **Add your team and social links** so players can see who's behind the app.
+4. **Put a feedback button inside your app** using the store's feedback channel. See [Host bridge](/apps/platform/host-bridge#feedback).
 
 ---
 
-## After Launch
+## Keep players coming back
 
-Shift from launch buzz to sustained engagement:
-
-- **Run tournaments regularly** (weekly or bi-weekly) to maintain trading volume and participation
-- **Release new items** to create ongoing token burn pressure
-- **Monitor holder distribution** and address concentration risks early
-- **Adjust contributor splits** as your team and contributor base grows
-- **Engage stakers** with exclusive access or governance participation
+- **Save progress** with [`app-state`](/apps/platform/app-state) so players pick up where they left off, on any device.
+- **Show progress over time.** Record sessions and scores with [`app-metrics`](/apps/platform/metrics-and-scores) and show personal bests or trends.
+- **Use reminders sparingly.** Store-brokered [notifications](/apps/platform/notifications) are opt-in and rate-limited. Use them for things the player asked for, such as "session complete".
+- **Ship regular updates** and describe them in your release changelog.
+- **Reply to reviews and comments** on your app page.
 
 ---
 
-## Social Presence
+## Discovery
 
-Set up and maintain these channels:
+The store ranks apps using signals such as plays, saves, votes, reviews, and
+recency, and personalizes recommendations for signed-in users. New apps start
+with limited exposure and gain visibility as people engage with them.
 
-| Platform | Purpose |
+Users can also:
+
+- **save** your app to their collection
+- **vote** and **review** it
+- **follow** you and other players
+- share it with a tracked link
+
+---
+
+## Social presence
+
+| Platform | Use it for |
 | --- | --- |
-| Twitter/X | Announcements, launch events, milestone updates |
-| Discord | Community discussion, support, tournament coordination |
-| GitHub | Open source code, contribution tracking |
-| Telegram | Quick updates, regional communities |
-| Website | Product landing page, documentation |
-
----
-
-## Team Display
-
-Add team members to your app listing. Visible teams build trust and help users evaluate new apps. Update this as your team grows.
-
----
-
-## What Works
-
-- **Consistency beats intensity.** Regular small events outperform rare large ones.
-- **Burns create interest.** Item purchases that burn tokens give holders a reason to watch supply dynamics.
-- **Staking shows conviction.** A healthy staking ratio signals long-term community health.
-- **Transparency builds trust.** Public contributor splits, visible team, and open governance.
+| X / Twitter | Announcements and release updates |
+| Discord | Support, feedback, and community |
+| GitHub | Open source code and issues |
+| Website | A landing page outside the store |
 
 ---
 
 ## Next
 
-<CardGroup cols={3}>
-  <Card title="Tournaments" icon="trophy" iconType="light" href="/apps/operate/tournaments">
-    Run competitive events
+<CardGroup cols={2}>
+  <Card title="Analytics" icon="activity" href="/apps/operate/analytics-and-health">
+    What to track
   </Card>
-
-  <Card title="Items and Unlocks" icon="gem" iconType="light" href="/apps/operate/items-and-unlocks">
-    Create in-app items
-  </Card>
-
-  <Card title="Analytics and Health" icon="activity" iconType="light" href="/apps/operate/analytics-and-health">
-    Track app metrics
+  <Card title="In-App Purchases" icon="shopping-cart" href="/apps/platform/in-app-purchases">
+    Monetize with one-time items
   </Card>
 </CardGroup>

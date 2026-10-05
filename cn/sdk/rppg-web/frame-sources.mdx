@@ -1,11 +1,11 @@
 ---
-title: "Frame Sources"
-description: "Camera capture and face detection with MediaPipe"
+title: "帧来源"
+description: "使用 MediaPipe 进行摄像头采集和人脸检测"
 ---
 
-## FrameSource Interface
+## FrameSource 接口
 
-All frame sources implement this interface:
+所有帧来源都实现此接口：
 
 ```typescript
 interface FrameSource {
@@ -15,7 +15,7 @@ interface FrameSource {
 }
 
 type Frame = {
-  data: Uint8ClampedArray | number[];  // RGBA pixel data
+  data: Uint8ClampedArray | number[];  // RGBA 像素数据
   width: number;
   height: number;
   roi?: ROI;
@@ -30,21 +30,22 @@ type ROI = { x: number; y: number; w: number; h: number };
 
 ## MediaPipeFrameSource
 
-Captures camera frames and uses MediaPipe for face detection, providing a face ROI with each frame:
+采集摄像头画面并使用 MediaPipe 进行人脸检测，每一帧都附带面部 ROI：
 
 ```typescript
 import { MediaPipeFrameSource } from "@elata-biosciences/rppg-web";
 
-const source = new MediaPipeFrameSource();
+const video = document.querySelector("video")!; // 正在播放的摄像头 <video>
+const source = new MediaPipeFrameSource(video);
 
 source.onFrame = (frame) => {
-  // frame.roi contains the detected face bounding box
-  // frame.data contains the camera image pixels
+  // frame.roi 包含检测到的面部边界框
+  // frame.data 包含摄像头图像像素
   console.log("Face ROI:", frame.roi);
 };
 
 await source.start();
-// ... later
+// ……之后
 await source.stop();
 ```
 
@@ -52,16 +53,17 @@ await source.stop();
 
 ## MediaPipeFaceFrameSource
 
-A more specialized variant that uses MediaPipe FaceMesh for precise facial landmark detection. Provides multiple ROIs for forehead, cheeks, etc.:
+一个更专门的变体，使用 MediaPipe FaceLandmarker 进行面部特征点检测。每一帧都包含面部 ROI 以及额头和脸颊的子 ROI、特征点和 blendshape：
 
 ```typescript
-import { MediaPipeFaceFrameSource, loadFaceMesh } from "@elata-biosciences/rppg-web";
+import { MediaPipeFaceFrameSource, loadFaceLandmarker } from "@elata-biosciences/rppg-web";
 
-const faceMesh = await loadFaceMesh();
-const source = new MediaPipeFaceFrameSource(faceMesh);
+const faceLandmarker = await loadFaceLandmarker();
+if (!faceLandmarker) throw new Error("Face tracking unavailable");
+const source = new MediaPipeFaceFrameSource(video, faceLandmarker);
 
 source.onFrame = (frame) => {
-  // frame.rois may contain multiple face regions
+  // frame.rois 可能包含多个面部区域
   console.log("Face regions:", frame.rois?.length);
 };
 
@@ -70,28 +72,33 @@ await source.start();
 
 ---
 
-## loadFaceMesh
+## loadFaceLandmarker
 
-Helper to load the MediaPipe FaceMesh model:
+从 CDN 加载 MediaPipe FaceLandmarker（含 blendshape）。当人脸追踪不可用时返回 `null`，以便你回退到 `MediaPipeFrameSource`：
 
 ```typescript
-import { loadFaceMesh } from "@elata-biosciences/rppg-web";
+import { loadFaceLandmarker } from "@elata-biosciences/rppg-web";
 
-const faceMesh = await loadFaceMesh();
+const faceLandmarker = await loadFaceLandmarker({
+  // 均为可选：
+  // visionCdnBase, wasmBase, modelAssetPath
+});
 ```
 
 ---
 
 ## DemoRunner
 
-`DemoRunner` orchestrates a frame source and `RppgProcessor` together, handling ROI extraction, skin masking, and stats reporting:
+`DemoRunner` 将帧来源和 `RppgProcessor` 组合在一起，负责 ROI 提取、皮肤掩码和统计上报：
 
 ```typescript
-import { DemoRunner, MediaPipeFrameSource, RppgProcessor } from "@elata-biosciences/rppg-web";
+import { DemoRunner, MediaPipeFrameSource, RppgProcessor, loadWasmBackend } from "@elata-biosciences/rppg-web";
 import type { DemoRunnerOptions } from "@elata-biosciences/rppg-web";
 
-const source = new MediaPipeFrameSource();
-const processor = new RppgProcessor("wasm", 30);
+const backend = await loadWasmBackend();
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const source = new MediaPipeFrameSource(video);
+const processor = new RppgProcessor(backend, 30);
 
 const options: DemoRunnerOptions = {
   useSkinMask: true,
@@ -103,29 +110,42 @@ const options: DemoRunnerOptions = {
 const runner = new DemoRunner(source, processor, options);
 await runner.start();
 
-// ... later
+// ……之后
 await runner.stop();
 ```
 
 ### DemoRunnerOptions
 
-| Option | Type | Default | Description |
+| 选项 | 类型 | 默认值 | 说明 |
 |--------|------|---------|-------------|
-| `roi` | `ROI \| null` | `null` | Fixed ROI override (null = use face detection) |
-| `sampleRate` | `number` | — | Override sample rate |
-| `roiSmoothingAlpha` | `number` | — | Exponential smoothing for ROI jitter |
-| `useSkinMask` | `boolean` | `false` | Apply YCbCr skin tone mask |
-| `skinRatioSmoothingAlpha` | `number` | — | Smooth the skin ratio metric |
-| `onStats` | `function` | — | Callback with per-frame statistics |
+| `roi` | `ROI \| null` | `null` | 固定 ROI（null 表示使用人脸检测） |
+| `sampleRate` | `number` | - | 覆盖采样率 |
+| `roiSmoothingAlpha` | `number` | - | 对 ROI 抖动进行指数平滑 |
+| `useSkinMask` | `boolean` | `false` | 应用 YCbCr 肤色掩码 |
+| `skinRatioSmoothingAlpha` | `number` | - | 平滑皮肤占比指标 |
+| `onStats` | `function` | - | 每帧统计数据的回调 |
 
 ---
 
-## ROI Helper
+## ROI 辅助函数
 
-Extract average green channel intensity from a region of interest:
+从感兴趣区域提取平均绿色通道强度：
 
 ```typescript
 import { averageGreenInROI } from "@elata-biosciences/rppg-web";
 
 const intensity = averageGreenInROI(frame, roi.x, roi.y, roi.w, roi.h);
 ```
+
+---
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="校准与融合" icon="bullseye" href="/cn/sdk/rppg-web/calibration">
+    Muse PPG 校准模型
+  </Card>
+  <Card title="rppg-web 快速上手" icon="heart-pulse" href="/cn/sdk/rppg-web/getting-started">
+    安装并配置 rppg-web
+  </Card>
+</CardGroup>

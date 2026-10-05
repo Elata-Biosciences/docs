@@ -14,9 +14,11 @@ When a Muse headband with PPG is available alongside camera-based rPPG, the SDK 
 Fuses Muse PPG readings with camera rPPG estimates for improved accuracy:
 
 ```typescript
-import { RppgProcessor, MuseFusionCalibrator } from "@elata-biosciences/rppg-web";
+import { RppgProcessor, MuseFusionCalibrator, loadWasmBackend } from "@elata-biosciences/rppg-web";
 
-const processor = new RppgProcessor("wasm", 30);
+const backend = await loadWasmBackend(); // null if the packaged WASM can't be loaded
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const processor = new RppgProcessor(backend, 30);
 const calibrator = new MuseFusionCalibrator();
 
 // Feed Muse PPG readings (from headband)
@@ -67,23 +69,23 @@ model.reset();
 The processor produces evidence from multiple analysis methods:
 
 ```typescript
-type BpmEvidenceSource = "spectral" | "acf" | "tracker" | "muse" | "calibrated";
+type BpmEvidenceSource = "backend" | "spectral" | "acf" | "peaks" | "calibrated";
 
 type BpmEvidence = {
   source: BpmEvidenceSource;
   bpm: number;
-  quality: number;
-  timestampMs: number;
+  confidence: number;
 };
 
 type BpmResolutionResult = {
-  bpm: number;
-  quality: number;
-  source: BpmEvidenceSource;
-  evidence: BpmEvidence[];
+  bpm: number | null;
+  confidence: number;
+  winningSources: BpmEvidenceSource[];
+  aliasFlag: boolean;
+  debug: { /* candidates, history median, winner */ };
 };
 
-type FusionSource = "camera" | "muse" | "fused";
+type FusionSource = "camera" | "muse" | "blend" | "none";
 ```
 
 ---
@@ -123,10 +125,10 @@ flowchart TD
 ## Next
 
 <CardGroup cols={2}>
-  <Card title="Frame Sources" icon="camera" iconType="light" href="/sdk/rppg-web/frame-sources">
+  <Card title="Frame Sources" icon="camera" href="/sdk/rppg-web/frame-sources">
     Camera capture and face detection
   </Card>
-  <Card title="rPPG Camera Integration" icon="video" iconType="light" href="/sdk/guides/rppg-camera">
+  <Card title="rPPG Camera Integration" icon="video" href="/sdk/guides/rppg-camera">
     End-to-end webcam pipeline
   </Card>
 </CardGroup>

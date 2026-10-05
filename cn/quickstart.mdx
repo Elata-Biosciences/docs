@@ -1,76 +1,70 @@
 ---
-title: "快速入门"
-description: "几分钟内开始构建优秀的文档"
+title: "快速开始"
+description: "构建一个生物信号应用并发布到 Elata 应用商店。"
 ---
 
-## 三步开始
+本指南带你从零开始，直到提交应用。你需要 Node.js 20 或更高版本，以及一个网络摄像头。
 
-在本地运行文档站点并进行首次自定义。
+<Steps>
+  <Step title="创建应用骨架">
+    创建一个摄像头心率（rPPG）入门应用：
 
-### 步骤 1：设置本地环境
+    ```bash
+    npm create @elata-biosciences/elata-demo my-app -- --template rppg
+    cd my-app
+    npm install
+    ```
 
-<AccordionGroup>
-  <Accordion icon="copy" title="在本地克隆文档">
-    在入门过程中，如果您还没有包含文档内容的 GitHub 仓库，系统会为您创建一个。您可以在 [控制面板](https://dashboard.mintlify.com) 中找到该仓库的链接。
+    想用 EEG、头带 PPG 或做一个游戏？请查看[模板列表](/cn/sdk/create-elata-demo)。
+  </Step>
 
-    要在本地克隆仓库以便预览和修改文档，请参阅 GitHub 文档中的 [克隆仓库](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) 指南。
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="启动预览服务器">
-    1. 安装 Mintlify CLI：`npm i -g mint`
-    2. 进入文档目录并运行：`mint dev`
-    3. 打开 `http://localhost:3000` 查看文档！
+  <Step title="在本地运行">
+    ```bash
+    npm run dev
+    ```
 
-    <Tip>编辑文件时预览会自动更新。</Tip>
-  </Accordion>
-</AccordionGroup>
+    打开本地地址，允许访问摄像头，你应该能看到实时脉搏信号。
+  </Step>
 
-### 步骤 2：部署更改
+  <Step title="打造你自己的应用">
+    在 `src/` 中修改应用。[rPPG 指南](/cn/sdk/guides/rppg-browser)介绍了会话 API，[平台 API](/cn/apps/platform/host-bridge) 可以为应用添加购买、进度保存和分数功能。
+  </Step>
 
-<AccordionGroup>
-  <Accordion icon="github" title="安装 GitHub 应用">
-    从 [控制面板](https://dashboard.mintlify.com/settings/organization/github-app) 安装 Mintlify GitHub 应用。
+  <Step title="添加版本号">
+    创建 `public/elata.json`：
 
-    GitHub 应用会自动将更改部署到文档站点，无需手动管理部署。
-</Accordion>
-<Accordion icon="palette" title="更新站点名称和颜色">
-    作为第一个更改，让我们更新文档站点的名称和颜色。
+    ```json
+    { "version": "1.0.0" }
+    ```
 
-    1. 在编辑器中打开 `docs.json`。
-    2. 将 `"name"` 字段更改为您的项目名称。
-    3. 更新 `"colors"` 以匹配您的品牌。
-    4. 保存并在 `http://localhost:3000` 即时查看更改。
+    参见 [elata.json](/cn/apps/build/elata-json)。
+  </Step>
 
-    <Tip>尝试更改主色调以查看即时效果！</Tip>
-  </Accordion>
-</AccordionGroup>
+  <Step title="生成上传包">
+    ```bash
+    npm run build:zip
+    ```
 
-### 步骤 3：上线
+    这会生成根目录包含 `index.html` 的 `app.zip`。
+  </Step>
 
-<Accordion icon="rocket" title="发布文档">
-  1. 提交并推送更改。
-  2. 文档将立即更新并上线！
-</Accordion>
+  <Step title="发布">
+    访问 [app.elata.bio/build-app](https://app.elata.bio/build-app)，注册应用名称，上传 `app.zip`，在试玩窗口中试用，添加图标和头图，然后提交审核。完整流程见[发布你的应用](/cn/apps/build/launch-your-app)。
+  </Step>
+</Steps>
 
-## 后续步骤
+---
 
-文档运行后，探索以下关键功能：
+## 下一步
 
-<CardGroup cols={2}>
-
-<Card title="编写内容" icon="pen-to-square" href="/essentials/markdown">
-  学习 MDX 语法并开始编写文档。
-</Card>
-
-<Card title="自定义样式" icon="palette" href="/essentials/settings">
-  让文档完美匹配您的品牌。
-</Card>
-
-<Card title="添加代码示例" icon="square-code" href="/essentials/code">
-  包含语法高亮的代码块。
-</Card>
-
-<Card title="API 文档" icon="code" href="/api-reference/overview">
-  查看完整的协议 API 参考。
-</Card>
-
+<CardGroup cols={3}>
+  <Card title="你的第一个应用" icon="graduation-cap" href="/cn/sdk/tutorials/first-app">
+    更深入的 SDK 教程
+  </Card>
+  <Card title="要求" icon="clipboard-check" href="/cn/apps/build/requirements">
+    每次上传需要满足的条件
+  </Card>
+  <Card title="宿主桥接" icon="plug" href="/cn/apps/platform/host-bridge">
+    从应用与商店通信
+  </Card>
 </CardGroup>

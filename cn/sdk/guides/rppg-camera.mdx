@@ -1,134 +1,217 @@
 ---
-title: "rPPG Camera Integration"
-description: "End-to-end guide: webcam capture, face detection, and heart rate measurement"
+title: 摄像头集成
+description: 使用 Elata rPPG Web SDK 为浏览器应用添加基于摄像头的心率测量。
+sidebarTitle: 摄像头集成
 ---
 
-## Overview
+<Note>
+如果你希望对浏览器应用中的摄像头心率测量进行更底层的控制，请阅读本指南。推荐的高层 API 请先参阅[在浏览器应用中使用 rPPG](/cn/sdk/guides/rppg-browser)。
+</Note>
 
-This guide walks through the complete rPPG flow: capture webcam frames, detect a face with MediaPipe, extract the green channel from the face ROI, and produce a real-time heart rate estimate.
+## 本指南涵盖的内容
 
----
+本指南展示如何：
 
-## Prerequisites
+- 在浏览器中采集网络摄像头画面
+- 检测人脸并提取面部区域
+- 将样本输入 rPPG 处理器
+- 读取实时 BPM 和信号质量
+- 在有 Muse PPG 时改进估算结果
 
-- `@elata-biosciences/rppg-web` installed
-- Browser with camera access (getUserMedia) and WebAssembly support
-- HTTPS or localhost for development
+## 开始之前
 
----
+你需要：
 
-## Quick Start with DemoRunner
+- `@elata-biosciences/rppg-web`
+- 支持摄像头访问（`getUserMedia`）和 WebAssembly 的浏览器
+- `https://` 或 `localhost`
 
-The fastest path uses `DemoRunner` which handles frame capture, face detection, ROI extraction, and processing:
+<CodeGroup>
 
-```typescript
+```bash npm
+npm install @elata-biosciences/rppg-web
+```
+
+```bash pnpm
+pnpm add @elata-biosciences/rppg-web
+```
+
+</CodeGroup>
+
+<Info>
+当面部光线充足、基本保持静止并完整出现在画面中时，rPPG 效果最好。
+</Info>
+
+<Tip>
+大多数应用应使用 `createRppgSession()`，它封装了本页的所有内容（WASM 初始化、帧采集、ROI 选择、诊断、清理）。参见[在浏览器应用中使用 rPPG](/cn/sdk/guides/rppg-browser)。只有在需要自定义编排时，才使用下面的底层组件。
+</Tip>
+
+## 选择起点
+
+<Columns cols={2}>
+  <Card title="从演示开始" href="/cn/sdk/create-elata-demo">
+    如果想以最快速度获得参考实现，请创建一个可运行的浏览器应用。
+  </Card>
+
+  <Card title="rPPG Web 快速上手" href="/cn/sdk/rppg-web/getting-started">
+    了解包的入口和更高层的浏览器 API。
+  </Card>
+
+  <Card title="帧来源" href="/cn/sdk/rppg-web/frame-sources">
+    查看本指南使用的底层摄像头和人脸检测组件。
+  </Card>
+
+  <Card title="校准与融合" href="/cn/sdk/rppg-web/calibration">
+    需要更准确的估算时，添加基于 Muse 的校准。
+  </Card>
+</Columns>
+
+## 使用 DemoRunner 快速集成
+
+`DemoRunner` 在一个流程中处理帧采集、人脸检测、ROI 提取和处理，同时让你保留对处理器的控制。
+
+```ts
 import {
   RppgProcessor,
   MediaPipeFrameSource,
   DemoRunner,
+  loadWasmBackend,
 } from "@elata-biosciences/rppg-web";
 
-const source = new MediaPipeFrameSource();
-const processor = new RppgProcessor("wasm", 30);
+const video = document.querySelector("video")!; // 正在播放的摄像头 <video>
+const backend = await loadWasmBackend(); // 无法加载打包的 WASM 时返回 null
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const source = new MediaPipeFrameSource(video);
+const processor = new RppgProcessor(backend, 30);
 
 const runner = new DemoRunner(source, processor, {
   useSkinMask: true,
-  onStats: (stats) => {
-    document.getElementById("bpm").textContent =
-      processor.getMetrics().bpm?.toFixed(0) || "--";
-    document.getElementById("quality").textContent =
-      (processor.getMetrics().quality * 100).toFixed(0) + "%";
+  onStats: () => {
+    const metrics = processor.getMetrics();
+
+    document.getElementById("bpm")!.textContent =
+      metrics.bpm?.toFixed(0) ?? "--";
+
+    document.getElementById("quality")!.textContent =
+      `${(metrics.confidence * 100).toFixed(0)}%`;
   },
 });
 
 await runner.start();
 ```
 
----
+<Tip>
+只在 `metrics.confidence` 高于应用阈值时显示 BPM。0.5 左右是比较实用的起点。
+</Tip>
 
-## Manual Integration
+## 手动流水线
 
-For full control over the pipeline:
+当你需要更精细地控制人脸追踪、采样或中间结果的渲染方式时，使用手动路径。
 
-```typescript
-import {
-  RppgProcessor,
-  MediaPipeFaceFrameSource,
-  loadFaceMesh,
-  averageGreenInROI,
-} from "@elata-biosciences/rppg-web";
+<Steps>
+  <Step title="加载人脸模型并创建帧来源">
 
-// Step 1: Load face mesh model
-const faceMesh = await loadFaceMesh();
+  ```ts
+  import {
+    MediaPipeFaceFrameSource,
+    loadFaceLandmarker,
+  } from "@elata-biosciences/rppg-web";
 
-// Step 2: Create frame source with face mesh
-const source = new MediaPipeFaceFrameSource(faceMesh);
+  // 从 CDN 加载 MediaPipe FaceLandmarker；不可用时返回 null。
+  const faceLandmarker = await loadFaceLandmarker();
+  if (!faceLandmarker) throw new Error("Face tracking unavailable");
+  const source = new MediaPipeFaceFrameSource(video, faceLandmarker);
+  ```
 
-// Step 3: Create processor
-const processor = new RppgProcessor("wasm", 30, 10); // 10s window
+  </Step>
 
-// Step 4: Process each frame
-source.onFrame = (frame) => {
-  if (!frame.roi) return; // no face detected
+  <Step title="创建处理器">
 
-  const { x, y, w, h } = frame.roi;
-  const green = averageGreenInROI(frame, x, y, w, h);
+  ```ts
+  import { RppgProcessor, loadWasmBackend } from "@elata-biosciences/rppg-web";
 
-  processor.pushSample(frame.timestampMs ?? performance.now(), green);
-};
+  const backend = await loadWasmBackend();
+  if (!backend) throw new Error("rPPG WASM backend unavailable");
+  const processor = new RppgProcessor(backend, 30, 10);
+  ```
 
-// Step 5: Start camera
-await source.start();
+  第三个参数将分析窗口设置为 10 秒。
 
-// Step 6: Poll metrics
-setInterval(() => {
-  const metrics = processor.getMetrics();
-  console.log(`BPM: ${metrics.bpm?.toFixed(1)} (quality: ${metrics.quality?.toFixed(2)})`);
-}, 1000);
+  </Step>
+
+  <Step title="从面部 ROI 输入样本">
+
+  ```ts
+  import { averageGreenInROI } from "@elata-biosciences/rppg-web";
+
+  source.onFrame = (frame) => {
+    if (!frame.roi) return;
+
+    const { x, y, w, h } = frame.roi;
+    const green = averageGreenInROI(frame, x, y, w, h);
+
+    processor.pushSample(
+      frame.timestampMs ?? performance.now(),
+      green,
+    );
+  };
+  ```
+
+  </Step>
+
+  <Step title="启动摄像头并读取指标">
+
+  ```ts
+  await source.start();
+
+  setInterval(() => {
+    const metrics = processor.getMetrics();
+    console.log("BPM:", metrics.bpm, "confidence:", metrics.confidence);
+  }, 1000);
+  ```
+
+  </Step>
+</Steps>
+
+## 添加 Muse 校准
+
+如果有 Muse 设备，你可以将其 PPG 作为参考信号来改进基于摄像头的估算。
+
+```ts
+// `processor` 是上面创建的 RppgProcessor
+processor.updateMuseMetrics(museBpm, 0.9, performance.now());
 ```
 
----
+<Info>
+更完整的融合流程（包括 `MuseFusionCalibrator` 和校准模型）请继续阅读[校准](/cn/sdk/rppg-web/calibration)。
+</Info>
 
-## With Muse PPG Fusion
+## 质量检查清单
 
-If a Muse headband is connected, use its PPG as ground truth to calibrate camera estimates:
+在调试流水线之前，请先检查：
 
-```typescript
-import { RppgProcessor } from "@elata-biosciences/rppg-web";
-import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+- 保持面部光线均匀
+- 减少头部移动
+- 在信任早期 BPM 输出前等待 5 到 10 秒
+- 确认确实检测到了面部 ROI
+- 使用 `DemoRunner` 时启用 `useSkinMask`
 
-const processor = new RppgProcessor("wasm", 30);
-const transport = new BleTransport();
+## 下一步
 
-// Feed Muse PPG data to the processor
-transport.onFrame = (frame) => {
-  if (frame.ppgRaw) {
-    // Extract PPG data and compute BPM from Muse
-    const museBpm = /* ... compute from PPG samples ... */;
-    processor.updateMuseMetrics(museBpm, 0.9, performance.now());
-  }
-};
-```
+<Columns cols={2}>
+  <Card title="rPPG Web 快速上手" href="/cn/sdk/rppg-web/getting-started">
+    了解包的接口和更高层的浏览器会话 API。
+  </Card>
 
----
+  <Card title="帧来源" href="/cn/sdk/rppg-web/frame-sources">
+    更深入地了解摄像头和人脸检测组件。
+  </Card>
 
-## Architecture
+  <Card title="校准与融合" href="/cn/sdk/rppg-web/calibration">
+    通过基于 Muse 的校准和多源融合改进估算。
+  </Card>
 
-```mermaid
-flowchart TD
-    CAM["Webcam"] -->|"getUserMedia"| FS["MediaPipeFrameSource"]
-    FS -->|"face ROI"| ROI["averageGreenInROI()"]
-    ROI -->|"green intensity"| PROC["RppgProcessor"]
-    PROC -->|"spectral + ACF"| BPM["BPM Estimate"]
-    MUS["Muse PPG (optional)"] -->|"updateMuseMetrics"| PROC
-```
-
----
-
-## Tips
-
-- **Lighting matters** — rPPG works best with even, consistent lighting on the face
-- **Minimize motion** — head movement degrades signal quality
-- **Wait 5-10 seconds** — the processor needs a full window of data before producing reliable estimates
-- **Check quality** — only display BPM when `metrics.quality` exceeds your threshold (e.g., > 0.5)
-- **Use skin masking** — set `useSkinMask: true` in DemoRunner for better signal extraction
+  <Card title="create-elata-demo" href="/cn/sdk/create-elata-demo">
+    如果想更快上手，从可运行的参考应用开始。
+  </Card>
+</Columns>

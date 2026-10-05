@@ -1,0 +1,118 @@
+---
+title: "将你的设备接入 Elata SDK"
+description: 通过简单可靠的方式，将头戴设备或生物信号设备接入 Elata EEG BLE 技术栈。
+---
+
+本指南面向希望自己的硬件与 Elata SDK 配合使用的设备厂商。
+
+目标很简单：你的设备应接入共享的 Elata 传输层边界，并输出应用可以信赖的稳定数据帧。
+
+<CardGroup cols={2}>
+  <Card title="从协议开始" icon="plug" href="/cn/sdk/eeg-web/headband-transport">
+    在编写适配器代码之前，先查看共享的帧和传输类型。
+  </Card>
+  <Card title="检查浏览器支持" icon="monitor-smartphone" href="/cn/sdk/operations/compatibility">
+    先确认 Web Bluetooth、浏览器和平台方面的限制。
+  </Card>
+</CardGroup>
+
+## 你要构建的内容
+
+一个可用于生产的集成应做好三件事：
+
+1. 可靠地连接
+2. 以稳定、可预测的格式输出数据帧
+3. 当设备、浏览器或无线链路异常时能干净地恢复
+
+用 Elata 的术语来说，就是统一采用 `HeadbandTransport` 和 `HeadbandFrameV1`，而不是直接暴露厂商特定的数据包格式。
+
+<Info>
+  应用应依赖共享的 Elata 传输协议，而不是厂商的原始数据包。这样可以让下游集成保持简单，也让设备支持更易于维护。
+</Info>
+
+## 快速路径
+
+<Steps>
+  <Step title="选择集成路径">
+    决定你的设备应放在上游的 `eeg-web-ble` 中、单独的包中，还是应用本地的适配器中。尽早使用[集成路径](./integration-paths)做出决定。
+  </Step>
+  <Step title="整理协议清单">
+    收集 GATT 服务、特征值、数据包格式、采样率、通道名称、时间戳行为和已知的固件问题。参见[协议要求](./protocol-requirements)。
+  </Step>
+  <Step title="实现适配器">
+    构建负责发现、会话建立、数据包解码和帧输出的设备层。从[适配器实现](./adapter-implementation)开始。
+  </Step>
+  <Step title="验证可靠性">
+    在调优下游之前，先测试连接、开始、停止、断开、畸形数据包、重连以及帧的正确性。参见[测试与验证](./testing-and-validation)。
+  </Step>
+  <Step title="准备交付">
+    将集成与平台说明、已测试的固件版本和支持预期一起打包。参见[提交与支持](./submission-and-support)。
+  </Step>
+</Steps>
+
+## 开始前需要准备
+
+| 要求 | 原因 |
+| --- | --- |
+| 设备协议细节 | 实现开始前，你需要完整的字节级理解。 |
+| 受支持的浏览器路径 | Web Bluetooth 需要在安全上下文中使用 Chrome 或 Edge。 |
+| 稳定的通道元数据 | 应用需要一致的通道顺序、名称和采样率。 |
+| 清晰的归属模式 | 尽早决定代码放在上游、厂商包中还是私有。 |
+
+如果你还没有了解当前的 BLE 流程，请先阅读 [EEG BLE 快速上手](/cn/sdk/eeg-web-ble/getting-started)。
+
+## 指南地图
+
+<CardGroup cols={2}>
+  <Card title="集成路径" icon="git-branch" href="./integration-paths">
+    选择集成代码的存放位置和归属方式。
+  </Card>
+  <Card title="传输协议" icon="file-code-2" href="./transport-contract">
+    你的设备必须满足的共享接口。
+  </Card>
+  <Card title="协议要求" icon="binary" href="./protocol-requirements">
+    编码前需要收集的协议和元数据清单。
+  </Card>
+  <Card title="适配器实现" icon="cpu" href="./adapter-implementation">
+    构建设备适配器并将其连接到 `BleTransport`。
+  </Card>
+  <Card title="测试与验证" icon="shield-check" href="./testing-and-validation">
+    确保集成在正常和故障情况下都可靠。
+  </Card>
+  <Card title="提交与支持" icon="send" href="./submission-and-support">
+    附上合作方所需的文档和注意事项完成交付。
+  </Card>
+</CardGroup>
+
+## 可靠性优先
+
+设备集成并不是在理想情况下能输出一次数据就算完成。
+
+满足以下条件才算完成：
+
+| 完成的标准 | 说明 |
+| --- | --- |
+| `connect()` 行为可预测 | 发现和会话建立要么成功，要么明确失败 |
+| `start()` 输出稳定的帧 | 行宽、通道顺序和采样率保持正确 |
+| `stop()` 干净 | 会话停止后不会让设备处于异常状态 |
+| `disconnect()` 干净 | 浏览器会话正确释放资源 |
+| 故障清晰可见 | 应用可以响应断开、重试和不支持的状态 |
+
+## 相关文档
+
+- [头带传输](/cn/sdk/eeg-web/headband-transport)
+- [EEG BLE 快速上手](/cn/sdk/eeg-web-ble/getting-started)
+- [Muse 设备](/cn/sdk/eeg-web-ble/muse-device)
+- [兼容性](/cn/sdk/operations/compatibility)
+- [故障排查](/cn/sdk/operations/troubleshooting)
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="选择集成路径" icon="arrow-right" href="./integration-paths">
+    在编码前选择合适的归属和打包方式。
+  </Card>
+  <Card title="查看传输协议" icon="arrow-right" href="./transport-contract">
+    确认你的适配器必须满足的帧和生命周期要求。
+  </Card>
+</CardGroup>

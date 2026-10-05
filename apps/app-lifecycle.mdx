@@ -1,117 +1,101 @@
 ---
 title: "App Lifecycle"
-description: "From registration through bonding curve to graduation and live DEX trading."
+description: "How an app goes from upload to a live, publicly playable listing."
 ---
 
 ## Overview
 
-Every Elata app follows the same lifecycle: register, launch a token, trade on a bonding curve, graduate to a DEX pair, and operate with full community tools.
+Every app version you publish is a **release**. A release moves through one
+pipeline: you upload it, submit it, the store scans it, and a moderator
+approves it.
 
-```mermaid
-flowchart LR
-    REG["Register App"] --> LAUNCH["Launch Token"]
-    LAUNCH --> CURVE["Bonding Curve"]
-    CURVE --> GRAD["Graduation"]
-    GRAD --> DEX["DEX Trading"]
-    DEX --> OPS["Operate"]
+```
+DRAFT ──submit──▶ SUBMITTED ──scan + review──▶ APPROVED (live)
+                      │
+                      └──▶ REJECTED  (fix and resubmit)
 ```
 
 ---
 
-## Phase A: Registration
+## Step 1: Upload
 
-Register your app by calling `AppFactory` with metadata and a Safe wallet address.
+Upload a `.zip` (or a single `.html` file) from the wizard or your app's edit
+page. The store checks it straight away:
 
-- **Cost:** 10 ELTA registration fee
-- **What happens:** App appears in the store immediately (without a token)
-- **Requirements:** A Safe multisig wallet to control the app
+- the file type and size are within [limits](/apps/build/upload-and-hosting#limits)
+- the bundle has an `index.html` entry and safe file paths
+- the bundle uses an Elata sensor SDK
 
-Your app exists on-chain and is visible in the app store, but has no token yet.
+If something is missing you get a clear "App requirements not met" message
+listing what to fix. A successful upload becomes a **draft** release, and its
+version is read from your [`elata.json`](/apps/build/elata-json).
+
+You can try a draft in the store's play window, and share it with up to 10
+playtest friends, before anyone else can see it.
 
 ---
 
-## Phase B: Token Launch
+## Step 2: Submit for review
 
-Deploy the full token stack by sending 100 ELTA as the bonding curve seed.
+When you submit, the store checks that your listing is complete. You need an
+**app icon** and a **header image**. Screenshots are optional but recommended.
+The listing details are frozen onto the release at this point, so later edits
+don't change what was reviewed.
 
-- **Cost:** 100 ELTA seed (total with registration: 110 ELTA)
-- **What gets deployed:** App Token (10M supply), Bonding Curve, Staking Vault, Vesting Wallet, Ecosystem Vault
+You can withdraw a submission while it is pending.
 
-**Token distribution:**
+---
 
-| Destination | Share | Amount |
+## Step 3: Automated security scan
+
+Every submitted release is scanned automatically. The scan looks for things
+like wallet-draining code, attempts to escape the sandbox, credential access,
+obfuscated code, and missing SDK usage. A release that fails the scan is held
+back from the store.
+
+<Note>
+  Scan findings are reviewed by the Elata team and are not shown in detail to
+  uploaders. If your release is held, you'll hear from us through the store.
+</Note>
+
+---
+
+## Step 4: Moderator approval
+
+An Elata moderator reviews the release against the
+[submission policy](/apps/build/review-and-policy). Once approved, it becomes
+your app's live release and you're notified in the store and by email.
+
+If it's rejected, fix the issues and submit again.
+
+---
+
+## After you're live
+
+Approval makes a release eligible to be played. Whether people can find and
+play it also depends on:
+
+| Setting | Who controls it | Values |
 | --- | --- | --- |
-| Bonding curve | 50% | 5,000,000 tokens |
-| Team vesting | 25% | 2,500,000 tokens |
-| Ecosystem vault | 25% | 2,500,000 tokens |
+| **Visibility** | You | Public, Unlisted, Private |
+| **Moderation** | Elata | Active, Suspended, Banned |
+| **Discovery** | Elata | How prominently the app is ranked. New apps start with limited exposure. |
 
-After deployment, the bonding curve enters `PENDING` state.
-
----
-
-## Bonding Curve
-
-Once activated, the curve enters `ACTIVE` state and trading begins.
-
-**How it works:**
-- Constant-product formula: `reserveELTA * reserveToken = k`
-- Price rises as more ELTA is deposited; falls as tokens are sold back
-- 1% trading fee on each trade (configurable by governance)
-
-**Early access:** For the first 6 hours, buyers need 100 XP to participate. This prevents sniping.
-
-**Lifecycle states:**
-
-| State | Description |
-| --- | --- |
-| `PENDING` | Deployed, not yet activated |
-| `ACTIVE` | Trading is live |
-| `GRADUATED` | Reserves hit the graduation threshold |
-| `CANCELLED` | App cancelled before graduation |
-
----
-
-## Graduation
-
-Graduation triggers when ELTA reserves in the bonding curve reach **42,000 ELTA**.
-
-When graduation happens:
-
-<Steps>
-  <Step title="Liquidity pair created">
-    Remaining tokens and ELTA reserves are paired on a DEX.
-  </Step>
-  <Step title="LP tokens locked">
-    The liquidity position is locked for **730 days** (2 years).
-  </Step>
-  <Step title="Trading shifts">
-    All trading moves from the bonding curve to the DEX pair.
-  </Step>
-</Steps>
-
----
-
-## Post-Graduation
-
-After graduation, your app token trades freely on the DEX. The protocol continues to handle:
-
-- **Fee routing** through the FeeRouter
-- **Transfer tax** (up to 2%, LP-keyed)
-- **Contributor payouts** via the ContributorSplit contract
-- **Community tools** (tournaments, items, staking)
+To ship an update, upload a new build. It goes through the same pipeline, and
+your current live release stays up until the new one is approved.
 
 ---
 
 ## Next
 
 <CardGroup cols={3}>
-  <Card title="Launch Requirements" icon="clipboard-check" iconType="light" href="/apps/build/launch-requirements">
-    What you need to launch
+  <Card title="Requirements" icon="clipboard-check" href="/apps/build/requirements">
+    What every upload needs
   </Card>
-  <Card title="Bonding Curve Basics" icon="chart-line" iconType="light" href="/apps/design/bonding-curve-basics">
-    Price discovery mechanics
+  <Card title="Publish Your App" icon="rocket" href="/apps/build/launch-your-app">
+    The wizard, step by step
   </Card>
-  <Card title="App Tokens" icon="coins" iconType="light" href="/apps/design/app-tokens">
-    Token design and distribution
+  <Card title="Review and Policy" icon="shield-check" href="/apps/build/review-and-policy">
+    What reviewers look for
   </Card>
 </CardGroup>

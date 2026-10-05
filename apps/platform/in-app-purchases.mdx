@@ -1,0 +1,128 @@
+---
+title: "In-App Purchases"
+description: "Sell one-time items in your app with @elata-biosciences/app-payments."
+---
+
+## Overview
+
+`@elata-biosciences/app-payments` lets your app open the store's checkout and
+check what the user owns. The store runs checkout, takes payment in USDC, and
+records ownership. Your app never touches wallets or payment details.
+
+```bash
+npm install @elata-biosciences/app-payments
+```
+
+| Function | Returns | Use it to |
+| --- | --- | --- |
+| `getCatalog(opts?)` | `Promise<CatalogItem[]>` | List your app's items with price, title, and description |
+| `getOwnedItems(opts?)` | `Promise<number[]>` | List every `contentId` the user owns |
+| `hasItem(contentId, opts?)` | `Promise<boolean>` | Check one item |
+| `requestPurchase(input)` | `Promise<PurchaseResult>` | Open checkout for an item |
+
+<Note>
+  Your item catalog is set up by the Elata team. Contact us with the items,
+  titles, and prices you want to sell.
+</Note>
+
+---
+
+## The correct flow
+
+Gate your UI on ownership first, then purchase, then apply the benefit.
+
+```ts
+import {
+  getCatalog,
+  getOwnedItems,
+  requestPurchase,
+  AppPaymentsError,
+} from '@elata-biosciences/app-payments';
+
+const formatUsdc = (base: string) => `$${(Number(base) / 1e6).toFixed(2)}`;
+
+// 1. Read the catalog and what the user already owns.
+const [items, owned] = await Promise.all([getCatalog(), getOwnedItems()]);
+const ownedSet = new Set(owned);
+
+// 2. Re-apply benefits on startup. The store is the source of truth,
+//    so this survives reloads and device changes.
+for (const id of owned) applyBenefit(id);
+
+// 3. Buy, then branch on status.
+async function buy(item) {
+  try {
+    const result = await requestPurchase({
+      contentId: item.contentId,
+      priceUsdc: formatUsdc(item.priceUsdc), // display hint only
+      title: item.title,
+    });
+    if (result.status === 'success') {
+      ownedSet.add(item.contentId);
+      applyBenefit(item.contentId);
+    } else if (result.status === 'error') {
+      showError(result.error);
+    }
+    // 'cancelled': the user backed out. Do nothing.
+  } catch (err) {
+    // Only thrown for local problems: no parent frame, bad input, timeout.
+    showError(err instanceof AppPaymentsError ? err.code : String(err));
+  }
+}
+```
+
+`requestPurchase` records *that* the user owns an item. Your app decides what
+owning it *does*.
+
+---
+
+## Things to know
+
+<AccordionGroup>
+  <Accordion title="Branch on status, never on txHash">
+    If the user already owns the item, the store skips payment and returns `{ status: "success", txHash: "" }`. Code that checks `if (result.txHash)` will mishandle this.
+  </Accordion>
+  <Accordion title="Two price formats">
+    `CatalogItem.priceUsdc` is in USDC **base units** (6 decimals): `"50000"` is $0.05. `RequestPurchaseInput.priceUsdc` is a free-form display hint the store ignores. The store always charges the catalog price.
+  </Accordion>
+  <Accordion title="Items are one-time unlocks">
+    Each item is bought once. Consumables (spend-per-use balances) and recurring billing aren't supported through items. For recurring revenue use a [subscription plan](/apps/platform/subscriptions).
+  </Accordion>
+  <Accordion title="Timeouts">
+    `requestPurchase` waits up to 5 minutes for the user to finish checkout. `getCatalog`, `getOwnedItems`, and `hasItem` default to 10 seconds. Outside the store nothing answers, so handle `timeout` by showing items as available.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Errors
+
+Calls reject only with `AppPaymentsError`, which has a `code`:
+
+| Code | Meaning |
+| --- | --- |
+| `invalid_input` | `contentId` isn't a non-negative integer, or an option has the wrong type |
+| `no_window` | Not running in a browser |
+| `no_parent` | Not running inside the store's frame |
+| `no_crypto` | `crypto.randomUUID` isn't available |
+| `timeout` | No reply in time |
+| `not_authenticated` | The user isn't signed in (ownership queries) |
+| `fetch_failed` | The store couldn't look up ownership |
+
+A normal `cancelled` or `error` purchase outcome resolves; it doesn't reject.
+
+---
+
+## Security model
+
+- Your app **can't fake ownership**. Ownership is recorded by the store only after payment is verified.
+- Your app **never sees** payment details, wallet keys, or session tokens.
+- Repeating a request with the same `requestId` won't charge twice.
+- Revenue from item sales is paid to the app owner's wallet.
+
+---
+
+## Try it
+
+- [`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo): one self-contained HTML file with a built-in mock store, so you can run the full flow locally.
+- [Package README on npm](https://www.npmjs.com/package/@elata-biosciences/app-payments)

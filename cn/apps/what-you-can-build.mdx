@@ -1,0 +1,56 @@
+---
+title: "你可以构建什么"
+description: "应用类别、示例创意，以及可用于构建的生物信号。"
+---
+
+## 应用类别
+
+商店中的每个应用都属于以下五个类别之一。
+
+| 类别 | 涵盖内容 | 示例 |
+| --- | --- | --- |
+| **Games（游戏）** | 由人体信号驱动的休闲或竞技游戏 | 心率越平稳、速度越快的跑酷游戏 |
+| **Neurometrics（神经测量）** | 测量和可视化脑部与身体信号 | Muse 头带的实时 EEG 频段功率面板 |
+| **Wellness（健康）** | 呼吸、冥想、恢复和压力工具 | 带有实时 rPPG 心率反馈的呼吸引导 |
+| **Tools（工具）** | 训练、专注和自我追踪工具 | 记录每次会话平静/压力趋势的专注计时器 |
+| **Experiments（实验）** | 研究型应用、实验和原型 | 记录每次会话结果的反应时测试 |
+
+---
+
+## 使用生物特征构建
+
+Elata 应用围绕[生物特征 SDK](/cn/sdk/overview) 构建。商店会检查每次上传是否真正使用了 SDK，因此你的应用必须至少使用一种传感器路径：
+
+- **摄像头 rPPG**（`@elata-biosciences/rppg-web`）：通过任何网络摄像头获取心率和脉搏信号，无需额外硬件
+- **基于 Web Bluetooth 的 EEG**（`@elata-biosciences/eeg-web` + `eeg-web-ble`）：通过 Muse 等受支持的头带获取脑电信号
+- **头带 PPG**（`@elata-biosciences/ppg-web`）：通过头带的光学传感器获取心率和 HRV
+
+在传感器层之上，还可以使用 [`biosignal-session`](/cn/sdk/biosignal-session/getting-started) 和 [`biosignal-analytics`](/cn/sdk/biosignal-analytics/getting-started) 添加录制和分析功能。
+
+<Tip>
+  所有信号处理都在用户设备上运行。原始摄像头画面和原始生物信号永远无需离开浏览器。
+</Tip>
+
+---
+
+## 商店提供的能力
+
+你的应用还能获得商店的平台功能：登录、应用内购买、订阅、按用户存储、跨应用生物特征评分和提醒。参见[平台 API](/cn/apps/platform/host-bridge)。
+
+---
+
+## 下一步
+
+<CardGroup cols={3}>
+  <Card title="应用生命周期" icon="recycle" href="/cn/apps/app-lifecycle">
+    从上传到上线
+  </Card>
+
+  <Card title="开发者概览" icon="hammer" href="/cn/apps/build/overview">
+    开始构建
+  </Card>
+
+  <Card title="示例应用" icon="grid-2x2" href="/cn/sdk/guides/example-apps">
+    基于 SDK 构建的开源应用
+  </Card>
+</CardGroup>

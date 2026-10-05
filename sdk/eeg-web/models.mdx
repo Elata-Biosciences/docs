@@ -3,50 +3,68 @@ title: "Analysis Models"
 description: "Alpha bump detection, alpha peak tracking, and calmness scoring"
 ---
 
+All three models share the same shape:
+
+- construct with `new Model(sampleRateHz, channelCount)`
+- call `process(interleaved)` with a `Float32Array` of **interleaved** samples (`[s0_ch0, s0_ch1, …, s1_ch0, …]`); `getEegInterleavedSamples(frame)` produces this from a headband frame
+- `process` returns a result object, or `undefined` until enough data has accumulated (`min_samples()` tells you how much)
+- call `reset()` to clear state
+
+Because `channelCount` is only known once the first frame arrives, construct models inside your first-frame handler.
+
 ## WasmAlphaBumpDetector
 
-Detects alpha bumps, which are transient increases in alpha band power that indicate state transitions.
+Detects alpha bumps: transient changes in alpha band power that indicate state transitions, such as eyes closing.
 
 ```typescript
-import { initEegWasm, WasmAlphaBumpDetector } from "@elata-biosciences/eeg-web";
+import { initEegWasm, WasmAlphaBumpDetector, getEegInterleavedSamples } from "@elata-biosciences/eeg-web";
 
 await initEegWasm();
 
-const detector = new WasmAlphaBumpDetector();
+const detector = new WasmAlphaBumpDetector(256, 4); // sampleRateHz, channelCount
 
-// Feed samples and check for bumps
-const bumpDetected = detector.process(samples, sampleRateHz);
+const result = detector.process(getEegInterleavedSamples(frame));
+if (result?.state_changed) {
+  console.log(result.state, result.alpha_power, result.baseline); // state: "high" | "low" | "transitioning" | "unknown"
+}
 ```
+
+Tune with `set_threshold(multiplier)` and `set_baseline_smoothing(alpha)`.
 
 ---
 
 ## WasmAlphaPeakModel
 
-Tracks the individual alpha peak frequency (typically 8-13 Hz) which varies per person.
+Tracks the individual alpha peak frequency (typically 8 to 13 Hz), which varies from person to person.
 
 ```typescript
 import { WasmAlphaPeakModel } from "@elata-biosciences/eeg-web";
 
-const model = new WasmAlphaPeakModel();
+const model = new WasmAlphaPeakModel(256, 4);
 
-// Feed EEG data to refine peak estimate
-model.process(samples, sampleRateHz);
-const peakHz = model.peak_frequency();
+const result = model.process(interleaved);
+if (result) {
+  console.log(result.peak_frequency, result.smoothed_peak_frequency, result.snr);
+}
 ```
 
 ---
 
 ## WasmCalmnessModel
 
-Computes a calmness score based on the ratio of alpha to beta power. Higher alpha relative to beta generally indicates a more relaxed state.
+Computes a calmness score from the ratio of alpha to beta power. Higher alpha relative to beta generally indicates a more relaxed state.
 
 ```typescript
 import { WasmCalmnessModel } from "@elata-biosciences/eeg-web";
 
-const model = new WasmCalmnessModel();
+const model = new WasmCalmnessModel(256, 4);
 
-model.process(samples, sampleRateHz);
-const score = model.score(); // 0.0 to 1.0
+const result = model.process(interleaved);
+if (result) {
+  console.log(result.score);          // 0.0 (alert) to 1.0 (very calm)
+  console.log(result.smoothed_score); // less jittery
+  console.log(result.alpha_beta_ratio);
+}
 ```
 
 ---
@@ -86,10 +104,10 @@ const transport = new BleTransport({
 ## Next
 
 <CardGroup cols={2}>
-  <Card title="Signal Processing" icon="wave-square" iconType="light" href="/sdk/eeg-web/signal-processing">
+  <Card title="Signal Processing" icon="wave-square" href="/sdk/eeg-web/signal-processing">
     Band powers, FFT, spectrum analysis
   </Card>
-  <Card title="Headband Transport" icon="signal-stream" iconType="light" href="/sdk/eeg-web/headband-transport">
+  <Card title="Headband Transport" icon="signal-stream" href="/sdk/eeg-web/headband-transport">
     Frame schema and transport interface
   </Card>
 </CardGroup>

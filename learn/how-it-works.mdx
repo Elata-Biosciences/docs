@@ -1,59 +1,60 @@
 ---
 title: "How Elata Works"
-description: "Current protocol architecture and value flow"
+description: "From sensor, to app, to the store: how the pieces fit together."
 ---
 
-## Architecture
-
-Three practical layers:
-
-1. **Launch layer**: `AppFactory`, `AppRegistry`, `AppBondingCurve`, `AppToken`
-2. **Fee layer**: `FeeCollector`, `FeeSwapper`, `ContributorSplit`
-3. **Governance layer**: `ELTA`, `VeELTA`, `ElataPoints`, governor/timelock/config
-
----
-
-## App Lifecycle
-
-1. Register app and contributor split.
-2. Launch token stack (`10,000,000` app supply).
-3. Run active curve distribution (`x*y=k`).
-4. Graduate to LP at target/deadline.
-5. Continue app-level fee routing post-graduation.
-
----
-
-## Fee Flow
+## Three layers
 
 ```mermaid
 graph LR
-    A[LaunchAndTradingAndTransferFees] --> B[FeeCollector]
-    B --> C[FeeSwapper]
-    C --> D[Treasury]
-    C --> E[ContributorSplit]
+    A[Sensor<br/>webcam · EEG headband] --> B[Biometric SDK<br/>in the browser]
+    B --> C[Your app]
+    C -->|postMessage bridge| D[Elata App Store<br/>sign-in · payments · storage]
 ```
 
-Routing policy:
-
-- launch fee -> treasury
-- app-revenue fee kinds -> contributors + treasury (default `80/20`)
-- paused app -> treasury
-
-For full details on fee kinds, routing, and configuration, see the [Fee Flow for Apps](/apps/design/fee-flow) reference.
+1. **Sensors.** A webcam for rPPG, or a Bluetooth EEG/PPG headband such as Muse.
+2. **Biometric SDKs.** Packages that turn raw sensor data into usable signals (heart rate, band powers, HRV) on the user's device, using WebAssembly.
+3. **The App Store.** Hosts your app in a sandbox and provides accounts, payments, storage, and distribution.
 
 ---
 
-## XP and veELTA
+## The builder flow
 
-- XP gates early buys during launch windows (default `100 XP`, `6h`).
-- veELTA provides time-weighted voting power via ELTA locks (`7-730` days, `1x-2x` boost).
+1. **Build** a web app with the SDKs. Start from a template with `npm create @elata-biosciences/elata-demo`.
+2. **Register** your app name in the store's Build an App wizard.
+3. **Upload** a zip of your build. The store checks it immediately.
+4. **Submit** for review. An automated security scan and a moderator review the release.
+5. **Go live.** Users find your app and play it in their browser.
+
+Details: [App Lifecycle](/apps/app-lifecycle).
 
 ---
 
-## Security Posture
+## How your app runs
 
-- fixed ELTA supply (`77,000,000`)
-- explicit curve lifecycle states
-- LP lock on graduation
-- explicit fee-kind taxonomy
-- per-app fee accounting (no unbounded global sweeps)
+Your app runs inside a sandboxed iframe on its own origin. It can use the
+camera and Bluetooth (with the user's permission), but it can't see the user's
+identity, wallet, or the store's data.
+
+When it needs the platform, it sends a message to the store:
+
+| Need | Store feature |
+| --- | --- |
+| Sell an unlock | [In-app purchases](/apps/platform/in-app-purchases) |
+| Save progress | [App state](/apps/platform/app-state) |
+| Track sessions and scores | [Metrics and scores](/apps/platform/metrics-and-scores) |
+| Contribute to the user's Score | [Consent and insights](/apps/platform/consent-and-insights) |
+| Remind the user | [Notifications](/apps/platform/notifications) |
+| Charge monthly | [Subscriptions](/apps/platform/subscriptions) |
+
+---
+
+## Where data lives
+
+| Data | Where it stays |
+| --- | --- |
+| Raw camera frames and biosignals | On the user's device |
+| Saves, records, and scores your app stores | The user's account, scoped to your app |
+| Derived session results for the Score | Shared with Elata only with the user's consent |
+
+See [Privacy and data](/learn/privacy-and-data).

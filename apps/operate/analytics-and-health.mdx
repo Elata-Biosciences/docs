@@ -1,78 +1,51 @@
 ---
-title: "Analytics and Health"
-description: "Metrics to track, holder distribution signals, and what healthy patterns look like."
+title: "Analytics"
+description: "The usage analytics the store gives you, and how to get the most from them."
 ---
 
-## Key Metrics
+## Your analytics page
 
-Track these metrics to understand your app's health:
+Open `app.elata.bio/app/<slug>/analytics` while signed in as the app's owner
+or a team member. It shows aggregate usage for a time window (90 days by
+default):
 
-| Metric | What It Tells You | Healthy Signal |
-| --- | --- | --- |
-| Unique holders | Community size | Steady growth over time |
-| Trading volume | Market activity | Consistent volume, not just launch spikes |
-| Graduation progress | Distance to 42,000 ELTA threshold | Steady accumulation |
-| Staking ratio | % of supply locked | 30-50% of circulating supply |
-| Tournament participation | Community engagement | Growing or stable participation rates |
+| Metric | What it counts |
+| --- | --- |
+| **Users** | Distinct players who recorded data in your app |
+| **Sessions** | Play sessions |
+| **Events** | Records your app wrote with `app-metrics` |
+| **Avg score** | The average of scores saved with `saveScore` |
 
----
-
-## Holder Distribution
-
-Holder concentration is one of the strongest health indicators for an app token.
-
-| Pattern | Signal | Action |
-| --- | --- | --- |
-| Top 5 wallets hold < 30% | Healthy distribution | Continue current strategy |
-| Top 5 wallets hold 30-50% | Moderate concentration | Encourage broader distribution |
-| Top 5 wallets hold > 50% | High concentration risk | Run events and incentives to distribute |
-| Many wallets with tiny holdings | Wide but shallow | Focus on engagement depth |
-
-<Warning>
-  High concentration in a few wallets creates sell pressure risk. If a single holder exits, it can significantly impact the price on the bonding curve.
-</Warning>
+A usage chart shows the trend over the window.
 
 ---
 
-## Health Signals
+## Privacy built in
 
-**Positive signals:**
-- Growing unique holder count week over week
-- Staking ratio above 30%
-- Regular tournament participation
-- Item purchases creating token burns
-- Organic trading volume (not just bot activity)
+Analytics are aggregate and anonymized:
 
-**Warning signals:**
-- Declining holder count
-- Staking ratio below 10%
-- No tournament or item activity
-- Volume concentrated in a few wallets
-- Large unstaking events
+- No individual users or raw payloads are ever shown.
+- Results are suppressed when the cohort is too small to stay anonymous, so very new apps may show no data at first.
 
 ---
 
-## What To Do With This Data
+## Make your analytics useful
 
-Use analytics to guide your operating decisions:
+Analytics are built from what your app records through
+[`app-metrics`](/apps/platform/metrics-and-scores). To get meaningful numbers:
 
-- **Low engagement?** Run a tournament or create a new access-pass item
-- **Holder concentration too high?** Distribute ecosystem vault tokens to new users
-- **Staking dropping?** Review your staking incentives and lock durations
-- **Close to graduation?** Announce the milestone and create urgency
+- **Record meaningful events**, for example `session_complete` or `level_complete`, not every frame.
+- **Save scores** with `saveScore` when a session produces a result. This drives **Avg score**.
+- **Keep event types stable** across releases so trends stay comparable.
 
 ---
 
-## Next
+## What to watch
 
-<CardGroup cols={3}>
-  <Card title="Grow Your Community" icon="users" iconType="light" href="/apps/operate/grow-your-community">
-    Community growth playbook
-  </Card>
-  <Card title="Tournaments" icon="trophy" iconType="light" href="/apps/operate/tournaments">
-    Run competitive events
-  </Card>
-  <Card title="Items and Unlocks" icon="gem" iconType="light" href="/apps/operate/items-and-unlocks">
-    Create in-app items
-  </Card>
-</CardGroup>
+| Signal | What it may mean |
+| --- | --- |
+| Users rising, sessions per user flat | New players arrive but don't return. Look at onboarding and saved progress. |
+| Sessions rising, avg score rising | Players are getting better. Consider harder content. |
+| Drop after a release | Check the new build in the play window and read recent reviews. |
+
+Your app page also shows plays, saves, votes, reviews, and comments.

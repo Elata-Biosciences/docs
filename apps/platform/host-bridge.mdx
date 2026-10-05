@@ -1,0 +1,122 @@
+---
+title: "Host Bridge"
+description: "How your sandboxed app talks to the Elata App Store, and every message it supports."
+---
+
+## Overview
+
+Your app runs in a sandboxed iframe with no access to the store's cookies,
+backend, or the user's wallet. When it needs something from the platform, such
+as a purchase, saved data, or consent, it sends a `postMessage` to the parent
+frame. The store does the work with the user's session and replies.
+
+Your app never sees who the user is. It only gets the answers it needs.
+
+```
+┌──────────── app.elata.bio (store) ────────────┐
+│  session · checkout · storage · consent UI    │
+│        ▲                         │            │
+│        │ postMessage             │ reply      │
+│  ┌─────┴─────────────────────────▼─────────┐  │
+│  │   your app (sandboxed, own origin)      │  │
+│  └─────────────────────────────────────────┘  │
+└───────────────────────────────────────────────┘
+```
+
+---
+
+## Use the SDK packages
+
+For most features there's a small package that wraps the messages, timeouts,
+and errors for you:
+
+| Feature | Package | Page |
+| --- | --- | --- |
+| One-time purchases and ownership | `@elata-biosciences/app-payments` | [In-app purchases](/apps/platform/in-app-purchases) |
+| Per-user key-value storage | `@elata-biosciences/app-state` (not yet on npm) | [App state](/apps/platform/app-state) |
+| Event records, scores, `reportAffect` | `@elata-biosciences/app-metrics` | [Metrics and scores](/apps/platform/metrics-and-scores) |
+
+Consent, insights, notifications, navigation, and feedback use plain
+`postMessage` calls. They're documented below and on their own pages.
+
+---
+
+## Ground rules
+
+- **Send to the parent.** Post to `window.parent`. Using `'*'` as the target origin is fine: the store checks that the message came from your app's frame and origin.
+- **Use a `requestId`.** Where a reply is expected, include a unique `requestId` (8 to 128 characters; `crypto.randomUUID()` works) and match it on the reply.
+- **Handle no reply.** Outside the store (for example in local development) nobody answers. Use a timeout and degrade gracefully. The SDK packages do this for you.
+- **The store is the source of truth.** Prices, ownership, and consent always come from the store, never from values your app sends.
+
+---
+
+## Message reference
+
+### Purchases
+
+| App → store | Store → app |
+| --- | --- |
+| `elata:iap:request` `{ requestId, contentId, priceUsdc?, title?, description? }` | `elata:iap:result` `{ requestId, status: "success" \| "cancelled" \| "error", txHash?, error? }` |
+| `elata:iap:getCatalog` `{ requestId }` | `elata:iap:getCatalog:result` `{ requestId, items }` |
+| `elata:iap:hasItem` `{ requestId, contentId }` | `elata:iap:hasItem:result` `{ requestId, owned }` |
+| `elata:iap:listOwned` `{ requestId }` | `elata:iap:listOwned:result` `{ requestId, ownedContentIds }` |
+
+Use [`app-payments`](/apps/platform/in-app-purchases) instead of sending these by hand.
+
+### App state
+
+| App → store | Store → app |
+| --- | --- |
+| `elata:state:get` `{ requestId, key }` | `elata:state:get:result` `{ requestId, value }` or `{ requestId, error }` |
+| `elata:state:set` `{ requestId, key, value }` | `elata:state:set:result` `{ requestId, ok }` or `{ requestId, error }` |
+| `elata:state:delete` `{ requestId, key }` | `elata:state:delete:result` `{ requestId, ok }` or `{ requestId, error }` |
+
+Once `@elata-biosciences/app-state` is on npm, prefer it over sending these by hand. See [App state](/apps/platform/app-state).
+
+### Metrics
+
+`app-metrics` uses a dedicated `MessageChannel` set up with a
+`__elata_metrics_init` handshake, not individual window messages. Always use
+the [package](/apps/platform/metrics-and-scores).
+
+### Consent and insights
+
+| App → store | Store → app |
+| --- | --- |
+| `elata:consent:request` `{ requestId?, purpose: "platform_score", action?: "grant" \| "revoke" }` | `elata:consent:state` `{ requestId?, purpose, granted }` |
+| `elata:consent:query` `{ requestId?, purpose: "platform_score" }` | `elata:consent:state` `{ requestId?, purpose, granted }` |
+| `elata:insights:request` `{ requestId?, windowDays? }` | `elata:insights:state` `{ requestId?, consented, data? }` |
+
+See [Consent and insights](/apps/platform/consent-and-insights).
+
+### Notifications
+
+| App → store | Store → app |
+| --- | --- |
+| `elata:notify:request` `{ requestId?, body }` | `elata:notify:state` `{ requestId?, status }` |
+
+See [Notifications](/apps/platform/notifications).
+
+### Navigation
+
+Send the user to another app's play page in the store:
+
+```js
+window.parent?.postMessage({ type: 'elata:navigate', slug: 'calm-runner' }, '*');
+```
+
+`slug` must be a store app slug: lowercase letters, digits, and dashes, up to
+64 characters. There's no reply.
+
+### Feedback
+
+The store's floating feedback button is hidden while an app is playing, so it
+doesn't cover your controls. Open the store's feedback panel from your own UI
+instead:
+
+```js
+window.parent?.postMessage({ type: 'elata:feedback:open', mode: 'feature' }, '*');
+// mode: 'feature' (default) or 'bug'
+```
+
+There's no reply.

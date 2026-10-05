@@ -1,0 +1,116 @@
+---
+title: 提交与支持
+description: 附上干净交付所需的文档、注意事项和支持信息来打包设备集成。
+---
+
+当集成已经可以工作，准备交付审核、发布或合作方支持时，请参考本页。
+
+## 干净的交付包含什么
+
+| 项目 | 需要包含 |
+| --- | --- |
+| 设备范围 | 已测试的具体型号和固件版本 |
+| 平台范围 | 浏览器、操作系统目标以及不支持的环境 |
+| 传输说明 | Web Bluetooth、桥接或原生辅助程序的要求 |
+| 已知限制 | 断开注意事项、不支持的信号、设置中的边界情况 |
+| 归属 | 今后由谁维护该集成 |
+
+## 必需的文档
+
+一个可用的集成应附带一套简短的对外说明。
+
+| 文档 | 原因 |
+| --- | --- |
+| 安装和设置说明 | 让团队能快速上手 |
+| 平台注意事项 | 避免在不支持的浏览器上发布 |
+| 设备支持矩阵 | 说明型号和固件的覆盖范围 |
+| 已知限制 | 设定合理的预期 |
+| 故障排查说明 | 缩短支持往返 |
+
+## 建议的提交模板
+
+```md
+## Device integration summary
+- Device model(s):
+- Firmware tested:
+- Transport path: upstream / separate package / app-local
+- Browser matrix tested:
+- Platform limitations:
+
+## Protocol summary
+- Primary service UUIDs:
+- Streaming characteristics:
+- EEG channel map:
+- Sample rate:
+- Timestamp source: device / local
+
+## Reliability notes
+- Reconnect behavior:
+- Known limitations:
+- Open issues:
+```
+
+## 如果集成贡献到上游
+
+在同一组变更中包含：
+
+1. 适配器代码
+2. 模拟测试和数据包测试数据
+3. 面向使用者的文档更新
+4. 所覆盖设备和固件版本的支持说明
+
+如果集成修改了已发布的包，请附上你的团队发布包时使用的版本元数据。
+
+## 如果集成由厂商维护
+
+保持合作方交付简单：
+
+| 交付物 | 原因 |
+| --- | --- |
+| 包或适配器入口 | 为应用团队提供一个清晰的集成接口 |
+| 带版本的支持声明 | 避免不同固件版本之间的混淆 |
+| 问题联系渠道 | 减少无果的支持往返 |
+| 更新日志或发布说明 | 让回归问题更容易追踪 |
+
+## 支持预期
+
+一个好的支持模式会预先回答这些问题：
+
+| 问题 | 示例回答 |
+| --- | --- |
+| 谁修复协议回归？ | 厂商合作方负责设备特定的解码器变更 |
+| 谁修复应用协议回归？ | SDK 维护者负责共享的传输要求 |
+| 如何追踪固件变化？ | 每个受支持的固件版本都有明确的文档 |
+| 使用者如何上报问题？ | 每条发布线只有一个问题渠道和一个负责人 |
+
+<Info>
+  最好的合作方文档简短、准确且带版本。不要在交付中堆砌应用团队不需要的内部流程细节。
+</Info>
+
+## 最终审查问题
+
+在发布或交付之前，确认：
+
+1. 集成是否正确使用了共享的传输协议
+2. 受支持的型号和固件版本是否明确
+3. 浏览器和平台的注意事项是否说明清楚
+4. 其他团队能否在没有内部背景的情况下复现设置
+5. 维护负责人是否明确
+
+## 相关文档
+
+- [测试与验证](./testing-and-validation)
+- [兼容性](/cn/sdk/operations/compatibility)
+- [故障排查](/cn/sdk/operations/troubleshooting)
+- [EEG BLE 快速上手](/cn/sdk/eeg-web-ble/getting-started)
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="EEG BLE 快速上手" icon="arrow-right" href="/cn/sdk/eeg-web-ble/getting-started">
+    回顾当前的 BLE 集成流程，并与你的设备路径进行比较。
+  </Card>
+  <Card title="厂商接入检查清单" icon="arrow-right" href="/cn/sdk/maintainers/vendor-headset-onboarding">
+    面向设备厂商的逐步检查清单。
+  </Card>
+</CardGroup>

@@ -1,0 +1,64 @@
+---
+title: "elata.json"
+description: "声明版本号的应用清单。"
+---
+
+## 概述
+
+`elata.json` 是你随上传包一起提供的小型清单文件。目前商店用它来读取你的**版本号**，这样你的页面会显示 `v1.2.3` 而不是 `Release #4`。
+
+```json elata.json
+{
+  "version": "1.2.3",
+  "entry": "index.html",
+  "name": "Calm Runner"
+}
+```
+
+<Note>
+  目前 `elata.json` 是可选的。如果缺失或无效，商店会回退到其他版本来源（见下文）。它将在未来的更新中变为必需，因此建议现在就添加。
+</Note>
+
+---
+
+## 字段
+
+| 字段 | 必填 | 规则 |
+| --- | --- | --- |
+| `version` | 是 | 1 到 32 个字符。以字母或数字开头，其后为字母、数字、`.`、`-` 或 `+`。推荐使用 `1.2.3` 或 `1.2.3-beta.1` 这样的语义化版本。 |
+| `entry` | 否 | 入口 HTML 文件，最多 256 个字符。请使用 `index.html`。 |
+| `name` | 否 | 显示名称，1 到 80 个字符。 |
+
+---
+
+## 文件名和位置
+
+- 将文件命名为 `elata.json`（`elata.manifest.json` 也可以）。
+- 放在 zip 的根目录，与 `index.html` 同级。
+- 如果存在多个，距离根目录最近的那个生效。
+
+使用 Vite 时，把它放在 `public/` 中，这样每次构建都会被复制到 `dist/`：
+
+```
+my-app/
+├── public/
+│   └── elata.json
+├── src/
+└── index.html
+```
+
+---
+
+## 版本回退顺序
+
+如果没有有效的 `elata.json`，商店会按以下顺序查找版本号：
+
+1. `elata.json`（或 `elata.manifest.json`）
+2. zip 中层级最浅的 `package.json` 里的 `version`
+3. `index.html` 中的 meta 标签：
+
+```html
+<meta name="elata-version" content="1.2.3" />
+```
+
+上传响应会告诉你使用了哪个来源。

@@ -5,7 +5,7 @@ sidebarTitle: Camera Integration
 ---
 
 <Note>
-Use this guide when you want live camera-based heart rate in a browser app. Start with the quick path first. Move to the manual pipeline only if you need lower-level control.
+Use this guide when you want lower-level control over camera-based heart rate in a browser app. For the recommended high-level API, start with [rPPG in a browser app](/sdk/guides/rppg-browser).
 </Note>
 
 ## What this guide covers
@@ -20,31 +20,31 @@ This guide shows how to:
 
 ## Before you start
 
-<CodeGroup>
+You need:
 
-```bash pnpm
-pnpm add @elata-biosciences/rppg-web
-```
+- `@elata-biosciences/rppg-web`
+- a browser with camera access (`getUserMedia`) and WebAssembly support
+- `https://` or `localhost`
+
+<CodeGroup>
 
 ```bash npm
 npm install @elata-biosciences/rppg-web
 ```
 
+```bash pnpm
+pnpm add @elata-biosciences/rppg-web
+```
+
 </CodeGroup>
-
-- `@elata-biosciences/rppg-web` installed
-- Browser with camera access (`getUserMedia`) and WebAssembly support
-- HTTPS or localhost for development
-
-You need:
-
-- `@elata-biosciences/rppg-web`
-- a browser with camera access and WebAssembly support
-- `https://` or `localhost`
 
 <Info>
 rPPG works best when the face is well lit, mostly still, and fully visible in frame.
 </Info>
+
+<Tip>
+Most apps should use `createRppgSession()`, which wraps everything on this page (WASM init, frame capture, ROI selection, diagnostics, cleanup). See [rPPG in a browser app](/sdk/guides/rppg-browser). Use the lower-level pieces below only when you need custom orchestration.
+</Tip>
 
 ## Choose a starting point
 
@@ -66,36 +66,23 @@ rPPG works best when the face is well lit, mostly still, and fully visible in fr
   </Card>
 </Columns>
 
-## Quick integration
+## Quick integration with DemoRunner
 
-For most apps, use `DemoRunner`. It handles frame capture, face detection, ROI extraction, and processing in one flow.
-
-<Tabs>
-  <Tab title="pnpm">
-
-  ```bash
-  pnpm add @elata-biosciences/rppg-web
-  ```
-
-  </Tab>
-  <Tab title="npm">
-
-  ```bash
-  npm install @elata-biosciences/rppg-web
-  ```
-
-  </Tab>
-</Tabs>
+`DemoRunner` handles frame capture, face detection, ROI extraction, and processing in one flow, while leaving you in control of the processor.
 
 ```ts
 import {
   RppgProcessor,
   MediaPipeFrameSource,
   DemoRunner,
+  loadWasmBackend,
 } from "@elata-biosciences/rppg-web";
 
-const source = new MediaPipeFrameSource();
-const processor = new RppgProcessor("wasm", 30);
+const video = document.querySelector("video")!; // a playing camera <video>
+const backend = await loadWasmBackend(); // null if the packaged WASM can't be loaded
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const source = new MediaPipeFrameSource(video);
+const processor = new RppgProcessor(backend, 30);
 
 const runner = new DemoRunner(source, processor, {
   useSkinMask: true,
@@ -106,7 +93,7 @@ const runner = new DemoRunner(source, processor, {
       metrics.bpm?.toFixed(0) ?? "--";
 
     document.getElementById("quality")!.textContent =
-      `${((metrics.quality ?? 0) * 100).toFixed(0)}%`;
+      `${(metrics.confidence * 100).toFixed(0)}%`;
   },
 });
 
@@ -114,7 +101,7 @@ await runner.start();
 ```
 
 <Tip>
-Show BPM only when signal quality is above your app's threshold. A threshold around `0.5` is a practical starting point.
+Show BPM only when `metrics.confidence` is above your app's threshold. A threshold around `0.5` is a practical starting point.
 </Tip>
 
 ## Manual pipeline
@@ -127,11 +114,13 @@ Use the manual path when you want tighter control over face tracking, sampling, 
   ```ts
   import {
     MediaPipeFaceFrameSource,
-    loadFaceMesh,
+    loadFaceLandmarker,
   } from "@elata-biosciences/rppg-web";
 
-  const faceMesh = await loadFaceMesh();
-  const source = new MediaPipeFaceFrameSource(faceMesh);
+  // Loads MediaPipe FaceLandmarker from a CDN; returns null if unavailable.
+  const faceLandmarker = await loadFaceLandmarker();
+  if (!faceLandmarker) throw new Error("Face tracking unavailable");
+  const source = new MediaPipeFaceFrameSource(video, faceLandmarker);
   ```
 
   </Step>
@@ -139,9 +128,11 @@ Use the manual path when you want tighter control over face tracking, sampling, 
   <Step title="Create the processor">
 
   ```ts
-  import { RppgProcessor } from "@elata-biosciences/rppg-web";
+  import { RppgProcessor, loadWasmBackend } from "@elata-biosciences/rppg-web";
 
-  const processor = new RppgProcessor("wasm", 30, 10);
+  const backend = await loadWasmBackend();
+  if (!backend) throw new Error("rPPG WASM backend unavailable");
+  const processor = new RppgProcessor(backend, 30, 10);
   ```
 
   The third argument sets a 10-second analysis window.
@@ -175,7 +166,7 @@ Use the manual path when you want tighter control over face tracking, sampling, 
 
   setInterval(() => {
     const metrics = processor.getMetrics();
-    console.log("BPM:", metrics.bpm, "quality:", metrics.quality);
+    console.log("BPM:", metrics.bpm, "confidence:", metrics.confidence);
   }, 1000);
   ```
 
@@ -187,10 +178,7 @@ Use the manual path when you want tighter control over face tracking, sampling, 
 If a Muse device is available, you can use its PPG as a reference signal to improve camera-based estimates.
 
 ```ts
-import { RppgProcessor } from "@elata-biosciences/rppg-web";
-
-const processor = new RppgProcessor("wasm", 30);
-
+// `processor` is the RppgProcessor created above
 processor.updateMuseMetrics(museBpm, 0.9, performance.now());
 ```
 

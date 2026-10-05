@@ -1,0 +1,58 @@
+---
+title: "Review and Policy"
+description: "What the automated scan and moderators check before an app goes live."
+---
+
+## How review works
+
+Every release is checked twice before it goes live:
+
+1. **Automated security scan.** The store scans your bundle for known malicious patterns, wallet-draining code, sandbox-escape attempts, obfuscated code, and missing SDK usage. A model-assisted code review runs alongside the pattern checks.
+2. **Moderator review.** An Elata moderator reviews the release, its listing, and the scan results, then approves or rejects it.
+
+A release that fails the scan is held back and can't be approved until it's
+resolved.
+
+<Note>
+  To keep the scan effective, detailed security findings aren't returned to
+  uploaders. Upload-time problems you *can* fix yourself, such as a missing
+  `index.html` or no SDK usage, are always shown to you directly.
+</Note>
+
+---
+
+## The submission policy
+
+The full text is published at
+[app.elata.bio/policies/app-submission](https://app.elata.bio/policies/app-submission).
+In short, your app must not:
+
+<AccordionGroup>
+  <Accordion title="Drain wallets or hide transactions">
+    No token transfers, signatures, or approvals except through the store's own checkout. No unlimited spending approvals, and no disguising what a transaction does.
+  </Accordion>
+  <Accordion title="Exfiltrate biometric, camera, or microphone data">
+    Raw biometric data, camera frames, and microphone audio must not leave the user's device or go to a third party. Derived, on-device results (for example a calm score) are fine if disclosed to the user. The one first-party exception is sending derived session results to Elata through [`reportAffect`](/apps/platform/metrics-and-scores#reportaffect), with the user's consent.
+  </Accordion>
+  <Accordion title="Impersonate others">
+    No copying another app's or company's name, branding, icons, or domain.
+  </Accordion>
+  <Accordion title="Escape or weaken the sandbox">
+    No attempts to reach the parent page, bypass the frame's isolation, or work around the store's security controls. Please report sandbox defects through responsible disclosure instead.
+  </Accordion>
+  <Accordion title="Misrepresent itself">
+    Name, description, screenshots, and changelog must accurately describe the app. Material changes in behavior or monetization belong in your release changelog.
+  </Accordion>
+</AccordionGroup>
+
+Violations can lead to a release being removed, or an app or developer account
+being suspended or banned.
+
+---
+
+## Tips for a smooth review
+
+- Keep your bundle readable. Heavily obfuscated code draws extra scrutiny.
+- Only request camera or Bluetooth access when the user starts a session.
+- Make sure the app works in the store's play window before submitting.
+- Describe in your listing what the app measures and what it does with the data.

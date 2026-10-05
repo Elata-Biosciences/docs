@@ -87,8 +87,8 @@ Prefer the scaffolded `eeg-demo` template when you want:
 
 ## Common Gotchas
 
-- `band_powers()` takes a **single-channel** `Float32Array`, not `number[]`. Convert with `new Float32Array(samples[channelIdx])` before passing. Passing a plain array will cause a WASM runtime error. For a Muse headband (4 channels: TP9, AF7, AF8, TP10), use a frontal channel (AF7 = index 1, or AF8 = index 2) for cognitive state features, or average across channels.
-- `WasmCalmnessModel.process()` expects **interleaved** samples: `[s0_ch0, s0_ch1, s1_ch0, s1_ch1, ...]`. The `frame.eeg.samples` layout is per-channel. Convert before passing.
+- `band_powers()` takes a **single-channel** `Float32Array`, not `number[]`. `frame.eeg.samples` is laid out as `samples[sampleIdx][channelIdx]` (one row per time step), so extract a channel with `getEegChannelSamples(frame, channelIdx)` from `eeg-web`. Passing a plain array will cause a WASM runtime error. For a Muse headband (4 channels: TP9, AF7, AF8, TP10), use a frontal channel (AF7 = index 1, or AF8 = index 2) for cognitive state features, or average across channels.
+- `WasmCalmnessModel.process()` expects **interleaved** samples: `[s0_ch0, s0_ch1, s1_ch0, s1_ch1, ...]`. Use `getEegInterleavedSamples(frame)` from `eeg-web` to get that layout.
 - `WasmCalmnessModel` needs `channelCount` at construction, but `channelCount` only arrives on the first frame. Construct the model inside your first-frame handler.
 - If `initEegWasm()` fails, your app may not be loading the packaged `wasm/` assets correctly.
 - If you need a live headset connection, `eeg-web` alone is not enough.
@@ -99,19 +99,19 @@ Prefer the scaffolded `eeg-demo` template when you want:
 ## Next
 
 <CardGroup cols={2}>
-  <Card title="Add EEG To An Existing App" icon="circle-play" iconType="light" href="/sdk/tutorials/eeg-existing-app">
+  <Card title="Add EEG To An Existing App" icon="circle-play" href="/sdk/tutorials/eeg-existing-app">
     Step-by-step integration tutorial
   </Card>
 
-  <Card title="Web Bluetooth" icon="bluetooth" iconType="light" href="/sdk/guides/web-bluetooth">
+  <Card title="Web Bluetooth" icon="bluetooth" href="/sdk/guides/web-bluetooth">
     Connect a Muse headset
   </Card>
 
-  <Card title="eeg-web Reference" icon="brain" iconType="light" href="/sdk/eeg-web/getting-started">
+  <Card title="eeg-web Reference" icon="brain" href="/sdk/eeg-web/getting-started">
     Package API and exports
   </Card>
 
-  <Card title="Troubleshooting" icon="wrench" iconType="light" href="/sdk/operations/troubleshooting">
+  <Card title="Troubleshooting" icon="wrench" href="/sdk/operations/troubleshooting">
     Common failures and fixes
   </Card>
 </CardGroup>

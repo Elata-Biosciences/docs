@@ -1,0 +1,93 @@
+---
+title: "应用状态"
+description: "使用 @elata-biosciences/app-state 实现按用户、按应用的键值存储。"
+---
+
+<Warning>
+  `@elata-biosciences/app-state` 尚未发布到 npm。在此之前，你可以直接使用下文所示的 `elata:state:*` 消息调用商店；商店已经支持这些消息。
+</Warning>
+
+## 概述
+
+`@elata-biosciences/app-state` 为每个用户和每个应用存储小型 JSON 值：存档、设置、进度。你不需要后端，你的应用也永远看不到用户的身份。数据会跟随用户跨设备同步。
+
+```bash
+npm install @elata-biosciences/app-state
+```
+
+```ts
+import { getState, setState, deleteState } from '@elata-biosciences/app-state';
+
+// 从未存储过则为 null
+const save = await getState('save_slot_1');
+
+await setState('save_slot_1', { level: 7, hp: 100 });
+
+// 幂等：即使该键从未设置过也不会报错
+await deleteState('save_slot_1');
+```
+
+---
+
+## 限制
+
+| 限制项 | 数值 |
+| --- | --- |
+| 键 | 1 到 256 个字符，取自 `A-Z a-z 0-9 . _ : / -` |
+| 值 | 任何可 JSON 序列化的值，编码后最多 64 KB |
+| 范围 | 每个（用户，应用）一个命名空间。应用之间无法读取彼此的数据。 |
+
+---
+
+## 错误
+
+三个函数都会以带有 `code` 的 `AppStateError` 拒绝：
+
+| Code | 来源 | 含义 |
+| --- | --- | --- |
+| `no_parent` | 本地 | 不在商店框架内运行 |
+| `timeout` | 本地 | 未及时收到回复 |
+| `invalid_input` | 本地或商店 | 键或值无效 |
+| `not_authenticated` | 商店 | 用户未登录 |
+| `value_too_large` | 商店 | 值超过 64 KB |
+| `fetch_failed` | 商店 | 商店无法访问存储 |
+
+<Tip>
+  未登录的用户会得到 `not_authenticated`。请保留本地备用方案（例如 `localStorage`），并在用户登录后同步到 `app-state`。
+</Tip>
+
+---
+
+## 不使用该包
+
+商店会直接响应这些消息。将它们连同唯一的 `requestId` 发送到 `window.parent`，并等待对应的 `…:result` 回复：
+
+```js
+function stateCall(type, payload) {
+  return new Promise((resolve, reject) => {
+    const requestId = crypto.randomUUID();
+    const onMessage = (e) => {
+      if (e.data?.type !== `${type}:result` || e.data.requestId !== requestId) return;
+      window.removeEventListener('message', onMessage);
+      e.data.error ? reject(new Error(e.data.error)) : resolve(e.data);
+    };
+    window.addEventListener('message', onMessage);
+    window.parent.postMessage({ type, requestId, ...payload }, '*');
+  });
+}
+
+const { value } = await stateCall('elata:state:get', { key: 'save_slot_1' });
+await stateCall('elata:state:set', { key: 'save_slot_1', value: { level: 7 } });
+await stateCall('elata:state:delete', { key: 'save_slot_1' });
+```
+
+生产环境中请加上超时：在商店之外没有人会回复。
+
+---
+
+## app-state 还是 app-metrics？
+
+| 用途 | 包 |
+| --- | --- |
+| 某项内容的最新值：设置、存档槽、已解锁关卡 | `app-state` |
+| 需要查询和绘图的事件或分数历史 | [`app-metrics`](/cn/apps/platform/metrics-and-scores) |

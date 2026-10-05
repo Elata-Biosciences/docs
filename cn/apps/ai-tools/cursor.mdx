@@ -1,0 +1,125 @@
+---
+title: "Cursor"
+description: "使用 Cursor 结合生物特征 SDK 和商店 API 构建 Elata 应用。"
+---
+
+## 概述
+
+当 Cursor 了解商店的运作方式（沙箱、SDK 包和上传规则）时，它在 Elata 应用上的表现最好。本页提供一个可直接粘贴的项目上下文文件，以及常见任务的提示词。
+
+---
+
+## 设置
+
+1. 从 [cursor.com](https://cursor.com) 安装 Cursor。
+2. 打开你的项目。
+3. 在 `.cursor/rules/elata.mdc` 添加项目规则，内容如下。
+
+---
+
+## 项目上下文
+
+将以下内容保存为位于 `.cursor/rules/elata.mdc` 的项目规则（保持英文，便于 AI 工具理解）：
+
+```markdown .cursor/rules/elata.mdc
+# Elata app
+
+This is a browser app for the Elata App Store (https://app.elata.bio), built on
+the Elata Biometric SDKs. It is a static web build that runs inside a sandboxed
+iframe in the store.
+
+## Docs
+- Docs home: https://docs.elata.bio (full text for agents: https://docs.elata.bio/llms-full.txt)
+- Building apps: https://docs.elata.bio/apps/build/overview
+- Host bridge (store APIs): https://docs.elata.bio/apps/platform/host-bridge
+- SDK overview: https://docs.elata.bio/sdk/overview
+- Package references for agents: node_modules/@elata-biosciences/<package>/llms.txt
+
+## Packages
+- @elata-biosciences/rppg-web: camera heart rate (use createRppgSession)
+- @elata-biosciences/eeg-web + eeg-web-ble: EEG over Web Bluetooth (Muse built in)
+- @elata-biosciences/ppg-web: headband PPG heart rate and HRV
+- @elata-biosciences/biosignal-session / biosignal-analytics: recording and analysis (not yet on npm)
+- @elata-biosciences/app-payments: in-app purchases (store checkout)
+- @elata-biosciences/app-state: per-user key-value storage (not yet on npm; use the elata:state:* messages)
+- @elata-biosciences/app-metrics: event records, scores, reportAffect
+
+## Store rules
+- The build must actually use an Elata sensor SDK (rPPG, EEG, or PPG), or upload fails.
+- Ship a zip with index.html at the root; use relative asset URLs.
+- Never handle wallets, payments, or sessions in the app. Use app-payments for purchases.
+- Never send raw camera frames, audio, or raw biosignals off the device.
+- Never access window.parent beyond postMessage.
+- Put the release version in public/elata.json: { "version": "x.y.z" }.
+
+## Commands
+- npm run dev        start the dev server
+- npm run build:zip  build and write app.zip for upload
+```
+
+---
+
+## 常用提示词
+
+### 创建新应用
+
+```text
+Scaffold a new camera heart-rate app with
+npm create @elata-biosciences/elata-demo my-app -- --template rppg
+and explain the project structure.
+```
+
+### 在现有应用中添加 SDK
+
+```text
+Add camera heart rate with @elata-biosciences/rppg-web. Use createRppgSession,
+show signal quality, and stop the camera when the component unmounts.
+Read node_modules/@elata-biosciences/rppg-web/llms.txt first.
+```
+
+### 添加购买
+
+```text
+Add a "Pro theme" unlock with @elata-biosciences/app-payments. Gate the UI on
+getOwnedItems(), branch on result.status (not txHash), and re-apply owned
+benefits on startup.
+```
+
+### 保存进度
+
+```text
+Persist the player's settings and best score with the store's elata:state:get/set messages.
+Fall back to localStorage when the store replies with not_authenticated.
+```
+
+### 准备上传
+
+```text
+Check that this build is ready for the Elata App Store: index.html at the zip
+root, relative asset paths, SDK usage present, and public/elata.json with the
+version from package.json. Then run npm run build:zip.
+```
+
+---
+
+## 提示
+
+<Tip>
+  在让助手编写集成代码之前，先让它阅读 `node_modules` 中对应包的 `llms.txt`。这些文件专为 AI 工具编写，列出了受支持的 API 和常见错误。
+</Tip>
+
+- 从 `create-elata-demo` 模板开始，再逐步迭代。
+- 提交前在商店的试玩窗口中测试。沙箱的行为与 `localhost` 不同。
+
+---
+
+## 下一步
+
+<CardGroup cols=2>
+  <Card title="开发者概览" icon="hammer" href="/cn/apps/build/overview">
+    发布如何进行
+  </Card>
+  <Card title="SDK 概览" icon="brain" href="/cn/sdk/overview">
+    生物特征 SDK 包
+  </Card>
+</CardGroup>

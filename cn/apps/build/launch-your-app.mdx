@@ -1,0 +1,86 @@
+---
+title: "发布你的应用"
+description: "逐步完成“构建应用”向导，从注册到提交审核。"
+---
+
+## 概述
+
+发布在 [app.elata.bio/build-app](https://app.elata.bio/build-app) 的**构建应用**向导中完成，共四个步骤。你的进度会保存为草稿，可以随时离开再回来。
+
+```
+构建 → 注册 → 上传 → 发布
+```
+
+---
+
+## 1. 构建
+
+第一步是一个检查清单。继续之前，你应该已经：
+
+- 使用 Elata SDK 构建应用并在本地测试过
+- 准备好用于上传的生产版 `.zip`
+
+如果你使用 `create-elata-demo` 创建了项目，运行：
+
+```bash
+npm run build:zip
+```
+
+这会构建应用并生成根目录包含 `index.html` 的 `app.zip`，这正是商店要求的格式。
+
+---
+
+## 2. 注册
+
+为你的应用取名（最多 50 个字符）。商店会检查名称是否可用，并为你的应用生成一个简短的 URL 标识（slug），用于 `app.elata.bio/app/<slug>`。
+
+然后以 USDC 支付一次性注册费，金额会在向导中显示。
+
+---
+
+## 3. 上传
+
+上传你的 `app.zip`。商店会立即验证：文件类型、大小、`index.html` 入口、路径安全以及 SDK 使用情况。如果有缺失，你会看到需要修复的具体内容。
+
+通过后，在试玩窗口中试用你的应用，这就是用户看到它的样子。
+
+<Tip>
+  在构建产物中添加 [`elata.json`](/cn/apps/build/elata-json)，让版本显示你的版本号。
+</Tip>
+
+---
+
+## 4. 发布
+
+填写你的商店页面：
+
+- **应用图标**（必填）
+- **头图**（必填）
+- **描述**、类别和标签
+- **截图**（可选，最多 10 张）
+
+然后点击 **Submit for Review**。你的版本将经过[应用生命周期](/cn/apps/app-lifecycle)中描述的自动安全扫描和审核员审核。
+
+---
+
+## 提交之后
+
+- 在应用页面和商店通知中跟踪审核状态。
+- 在获批前邀请最多 10 位试玩好友试用草稿。
+- 之后可在应用的**编辑**页面发布更新。每次新上传都会创建一个新版本。
+
+---
+
+## 下一步
+
+<CardGroup cols={3}>
+  <Card title="商店页面" icon="image" href="/cn/apps/build/app-metadata">
+    字段和图片规范
+  </Card>
+  <Card title="上传与托管" icon="upload" href="/cn/apps/build/upload-and-hosting">
+    限制、自托管、PWA 安装
+  </Card>
+  <Card title="上线后检查清单" icon="list-check" href="/cn/apps/build/post-launch-checklist">
+    上线后该做什么
+  </Card>
+</CardGroup>

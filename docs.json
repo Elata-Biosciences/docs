@@ -63,38 +63,17 @@
                 ]
               },
               {
-                "group": "Core Protocol",
+                "group": "Platform",
                 "pages": [
-                  "elata-points",
-                  "elata-eco-points",
-                  "onchain-build",
-                  "development"
+                  "learn/privacy-and-data",
+                  "elata-points"
                 ]
               },
               {
-                "group": "$ELTA Token",
-                "hidden": true,
+                "group": "Resources",
                 "pages": [
-                  "home/elta-token/elta-overview",
-                  "home/elta-token/elta-distribution",
-                  "home/elta-token/elta-release",
-                  "home/elta-token/staking",
-                  "home/elta-token/veelta"
-                ]
-              },
-              {
-                "group": "Economics",
-                "pages": [
-                  "learn/tokenomics",
-                  "learn/revenue-model",
-                  "home/ELTA-Economy"
-                ]
-              },
-              {
-                "group": "Governance",
-                "pages": [
-                  "home/governance/structure",
-                  "home/governance/teams"
+                  "resources/faq",
+                  "resources/media-assets"
                 ]
               }
             ]
@@ -115,29 +94,31 @@
                 "group": "Build",
                 "pages": [
                   "apps/build/overview",
-                  "apps/build/launch-requirements",
+                  "apps/build/requirements",
                   "apps/build/launch-your-app",
+                  "apps/build/elata-json",
+                  "apps/build/upload-and-hosting",
                   "apps/build/app-metadata",
+                  "apps/build/review-and-policy",
                   "apps/build/post-launch-checklist"
                 ]
               },
               {
-                "group": "Design",
+                "group": "Platform APIs",
                 "pages": [
-                  "apps/design/app-tokens",
-                  "apps/design/bonding-curve-basics",
-                  "apps/design/fee-flow",
-                  "apps/design/incentives-and-access",
-                  "apps/design/community-systems"
+                  "apps/platform/host-bridge",
+                  "apps/platform/in-app-purchases",
+                  "apps/platform/app-state",
+                  "apps/platform/metrics-and-scores",
+                  "apps/platform/consent-and-insights",
+                  "apps/platform/notifications",
+                  "apps/platform/subscriptions"
                 ]
               },
               {
                 "group": "Operate",
                 "pages": [
                   "apps/operate/grow-your-community",
-                  "apps/operate/tournaments",
-                  "apps/operate/items-and-unlocks",
-                  "apps/operate/staking-for-apps",
                   "apps/operate/analytics-and-health"
                 ]
               },
@@ -145,9 +126,7 @@
                 "group": "User Guide",
                 "pages": [
                   "apps/users/explore-apps",
-                  "apps/users/buy-and-trade",
-                  "apps/users/stake-and-earn",
-                  "apps/users/veelta-governance"
+                  "apps/users/membership"
                 ]
               },
               {
@@ -189,9 +168,7 @@
                       "sdk/guides/web-bluetooth",
                       "sdk/guides/eeg-ble-integration",
                       "sdk/guides/rppg-camera",
-                      "sdk/guides/architecture-rppg",
-                      "sdk/guides/example-apps",
-                      "sdk/guides/federated-learning"
+                      "sdk/guides/example-apps"
                     ]
                   },
                   {
@@ -230,6 +207,19 @@
                 ]
               },
               {
+                "group": "PPG Web SDK",
+                "pages": [
+                  "sdk/ppg-web/getting-started"
+                ]
+              },
+              {
+                "group": "Sessions and Analytics",
+                "pages": [
+                  "sdk/biosignal-session/getting-started",
+                  "sdk/biosignal-analytics/getting-started"
+                ]
+              },
+              {
                 "group": "Operations",
                 "pages": [
                   "sdk/operations/compatibility",
@@ -239,92 +229,14 @@
               {
                 "group": "Contributors",
                 "pages": [
-                  "sdk/maintainers/contributing-eeg-transports"
-                ]
-              },
-              {
-                "group": "Maintainers",
-                "pages": [
-                  "sdk/maintainers/repo-workflows",
-                  "sdk/maintainers/related-repos",
-                  "sdk/maintainers/vendor-headset-onboarding",
-                  "sdk/maintainers/releasing"
+                  "sdk/maintainers/contributing-eeg-transports",
+                  "sdk/maintainers/vendor-headset-onboarding"
                 ]
               }
             ]
           },
           {
-            "tab": "API Reference",
-            "openapi": "/api-reference/openapi.yaml",
-            "groups": [
-              {
-                "group": "Overview",
-                "pages": [
-                  "api-reference/overview"
-                ]
-              },
-              {
-                "group": "Apps",
-                "pages": [
-                  "api-reference/apps/list",
-                  "api-reference/apps/get",
-                  "api-reference/apps/search",
-                  "api-reference/apps/holders",
-                  "api-reference/apps/activity"
-                ]
-              },
-              {
-                "group": "Preflight",
-                "pages": [
-                  "api-reference/preflight/launch",
-                  "api-reference/preflight/name-available",
-                  "api-reference/preflight/symbol-available",
-                  "api-reference/preflight/requirements"
-                ]
-              },
-              {
-                "group": "Market",
-                "pages": [
-                  "api-reference/market/prices",
-                  "api-reference/market/elta",
-                  "api-reference/market/app",
-                  "api-reference/market/candles",
-                  "api-reference/market/curve",
-                  "api-reference/market/leaderboard"
-                ]
-              },
-              {
-                "group": "Portfolio",
-                "pages": [
-                  "api-reference/portfolio/get",
-                  "api-reference/portfolio/positions",
-                  "api-reference/portfolio/history",
-                  "api-reference/portfolio/pnl"
-                ]
-              },
-              {
-                "group": "Rewards",
-                "pages": [
-                  "api-reference/rewards/get",
-                  "api-reference/rewards/history",
-                  "api-reference/rewards/programs",
-                  "api-reference/rewards/program-detail",
-                  "api-reference/rewards/claim-payload"
-                ]
-              },
-              {
-                "group": "Config",
-                "pages": [
-                  "api-reference/config/get",
-                  "api-reference/config/contracts",
-                  "api-reference/config/chains",
-                  "api-reference/config/features"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Resources",
+            "tab": "Archive",
             "groups": [
               {
                 "group": "AgentForge",
@@ -355,20 +267,6 @@
                   "home/elata-eeg/elata-eeg-overview",
                   "home/elata-eeg/eeg-architecture"
                 ]
-              },
-              {
-                "group": "Reference",
-                "pages": [
-                  "resources/smart-contracts",
-                  "resources/faq"
-                ]
-              },
-              {
-                "group": "Community",
-                "pages": [
-                  "resources/media-assets",
-                  "resources/references"
-                ]
               }
             ]
           }
@@ -378,10 +276,10 @@
         "language": "cn",
         "tabs": [
           {
-            "tab": "\u5b66\u4e60",
+            "tab": "学习",
             "groups": [
               {
-                "group": "\u4ecb\u7ecd",
+                "group": "简介",
                 "pages": [
                   "cn/learn/protocol-overview",
                   "cn/learn/how-it-works",
@@ -389,76 +287,123 @@
                 ]
               },
               {
-                "group": "$ELTA\u4ee3\u5e01",
+                "group": "平台",
                 "pages": [
-                  "cn/home/elta-token/elta-overview",
-                  "cn/home/elta-token/elta-distribution",
-                  "cn/home/elta-token/elta-release",
-                  "cn/home/elta-token/staking",
-                  "cn/home/elta-token/veelta"
+                  "cn/learn/privacy-and-data",
+                  "cn/elata-points"
                 ]
               },
               {
-                "group": "\u7ecf\u6d4e\u6a21\u578b",
+                "group": "资源",
                 "pages": [
-                  "cn/learn/tokenomics",
-                  "cn/learn/revenue-model",
-                  "cn/home/ELTA-Economy"
-                ]
-              },
-              {
-                "group": "\u6cbb\u7406",
-                "pages": [
-                  "cn/home/governance/structure",
-                  "cn/home/governance/teams"
+                  "cn/resources/faq",
+                  "cn/resources/media-assets"
                 ]
               }
             ]
           },
           {
-            "tab": "Elata\u5e94\u7528",
+            "tab": "Elata应用",
             "groups": [
               {
-                "group": "\u6982\u89c8",
+                "group": "从这里开始",
                 "pages": [
-                  "cn/home/app-tokens",
-                  "cn/home/build-an-app"
+                  "cn/apps/what-are-elata-apps",
+                  "cn/apps/what-you-can-build",
+                  "cn/apps/app-lifecycle",
+                  "cn/apps/choose-your-path"
                 ]
               },
               {
-                "group": "\u6784\u5efa\u5e94\u7528",
+                "group": "构建",
                 "pages": [
-                  "cn/builders/getting-started",
-                  "cn/builders/launch-your-app"
+                  "cn/apps/build/overview",
+                  "cn/apps/build/requirements",
+                  "cn/apps/build/launch-your-app",
+                  "cn/apps/build/elata-json",
+                  "cn/apps/build/upload-and-hosting",
+                  "cn/apps/build/app-metadata",
+                  "cn/apps/build/review-and-policy",
+                  "cn/apps/build/post-launch-checklist"
                 ]
               },
               {
-                "group": "\u5e94\u7528\u7ecf\u6d4e",
+                "group": "平台 API",
                 "pages": [
-                  "cn/builders/bonding-curve-economics",
-                  "cn/builders/fee-pipeline",
-                  "cn/builders/protocol-config",
-                  "cn/builders/grow-your-community"
+                  "cn/apps/platform/host-bridge",
+                  "cn/apps/platform/in-app-purchases",
+                  "cn/apps/platform/app-state",
+                  "cn/apps/platform/metrics-and-scores",
+                  "cn/apps/platform/consent-and-insights",
+                  "cn/apps/platform/notifications",
+                  "cn/apps/platform/subscriptions"
                 ]
               },
               {
-                "group": "\u7528\u6237\u6307\u5357",
+                "group": "运营",
                 "pages": [
-                  "cn/users/explore-apps",
-                  "cn/users/buy-and-trade",
-                  "cn/users/stake-and-earn",
-                  "cn/users/veelta-governance"
+                  "cn/apps/operate/grow-your-community",
+                  "cn/apps/operate/analytics-and-health"
+                ]
+              },
+              {
+                "group": "用户指南",
+                "pages": [
+                  "cn/apps/users/explore-apps",
+                  "cn/apps/users/membership"
+                ]
+              },
+              {
+                "group": "AI 指南",
+                "pages": [
+                  "cn/apps/ai-tools/claude-code",
+                  "cn/apps/ai-tools/cursor",
+                  "cn/apps/ai-tools/windsurf"
                 ]
               }
             ]
           },
           {
-            "tab": "\u751f\u7269\u7279\u5f81SDK",
+            "tab": "生物特征SDK",
             "groups": [
               {
-                "group": "\u6982\u89c8",
+                "group": "概览",
                 "pages": [
-                  "cn/sdk/overview"
+                  "cn/sdk/overview",
+                  "cn/sdk/create-elata-demo",
+                  {
+                    "group": "设备集成",
+                    "pages": [
+                      "cn/integrate",
+                      "cn/integration-paths",
+                      "cn/transport-contract",
+                      "cn/protocol-requirements",
+                      "cn/adapter-implementation",
+                      "cn/testing-and-validation",
+                      "cn/submission-and-support"
+                    ]
+                  },
+                  {
+                    "group": "指南",
+                    "pages": [
+                      "cn/sdk/guides/choose-the-right-package",
+                      "cn/sdk/guides/rppg-browser",
+                      "cn/sdk/guides/eeg-browser",
+                      "cn/sdk/guides/web-bluetooth",
+                      "cn/sdk/guides/eeg-ble-integration",
+                      "cn/sdk/guides/rppg-camera",
+                      "cn/sdk/guides/example-apps"
+                    ]
+                  },
+                  {
+                    "group": "教程",
+                    "pages": [
+                      "cn/sdk/tutorials/first-app",
+                      "cn/sdk/tutorials/eeg-existing-app",
+                      "cn/sdk/tutorials/eeg-ble-live-stream",
+                      "cn/sdk/tutorials/rppg-existing-app"
+                    ]
+                  }
                 ]
               },
               {
@@ -471,14 +416,14 @@
                 ]
               },
               {
-                "group": "EEG Web BLE",
+                "group": "EEG BLE Web SDK",
                 "pages": [
                   "cn/sdk/eeg-web-ble/getting-started",
                   "cn/sdk/eeg-web-ble/muse-device"
                 ]
               },
               {
-                "group": "rPPG Web SDK",
+                "group": "摄像头 Web SDK",
                 "pages": [
                   "cn/sdk/rppg-web/getting-started",
                   "cn/sdk/rppg-web/frame-sources",
@@ -486,16 +431,36 @@
                 ]
               },
               {
-                "group": "\u6307\u5357",
+                "group": "PPG Web SDK",
                 "pages": [
-                  "cn/sdk/guides/eeg-ble-integration",
-                  "cn/sdk/guides/rppg-camera"
+                  "cn/sdk/ppg-web/getting-started"
+                ]
+              },
+              {
+                "group": "会话与分析",
+                "pages": [
+                  "cn/sdk/biosignal-session/getting-started",
+                  "cn/sdk/biosignal-analytics/getting-started"
+                ]
+              },
+              {
+                "group": "运维",
+                "pages": [
+                  "cn/sdk/operations/compatibility",
+                  "cn/sdk/operations/troubleshooting"
+                ]
+              },
+              {
+                "group": "贡献者",
+                "pages": [
+                  "cn/sdk/maintainers/contributing-eeg-transports",
+                  "cn/sdk/maintainers/vendor-headset-onboarding"
                 ]
               }
             ]
           },
           {
-            "tab": "\u8d44\u6e90",
+            "tab": "归档",
             "groups": [
               {
                 "group": "AgentForge",
@@ -514,24 +479,17 @@
                 ]
               },
               {
+                "group": "Zorp 协议",
+                "pages": [
+                  "cn/zorp-protocol/zorp-intro",
+                  "cn/zorp-protocol/zorp-function"
+                ]
+              },
+              {
                 "group": "Elata EEG",
                 "pages": [
                   "cn/home/elata-eeg/elata-eeg-overview",
                   "cn/home/elata-eeg/eeg-architecture"
-                ]
-              },
-              {
-                "group": "\u53c2\u8003",
-                "pages": [
-                  "cn/resources/smart-contracts",
-                  "cn/resources/faq"
-                ]
-              },
-              {
-                "group": "\u793e\u533a",
-                "pages": [
-                  "cn/resources/media-assets",
-                  "cn/resources/references"
                 ]
               }
             ]
@@ -548,7 +506,7 @@
     "links": [
       {
         "label": "Start Building",
-        "href": "https://app.elata.bio/launch"
+        "href": "https://app.elata.bio/build-app"
       }
     ],
     "primary": {
@@ -591,10 +549,5 @@
   },
   "search": {
     "prompt": "Search or ask..."
-  },
-  "api": {
-    "playground": {
-      "display": "interactive"
-    }
   }
 }

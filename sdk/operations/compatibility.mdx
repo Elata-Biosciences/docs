@@ -11,6 +11,10 @@ description: "Current browser, device, and Node.js expectations for the Elata SD
 | `@elata-biosciences/eeg-web` | modern browser with WebAssembly | `>= 20` | browser usage depends on serving packaged WASM assets |
 | `@elata-biosciences/eeg-web-ble` | Chrome or Edge with Web Bluetooth | `>= 20` | depends on `@elata-biosciences/eeg-web` |
 | `@elata-biosciences/rppg-web` | modern browser with camera and WebAssembly | `>= 20` | packaged WASM assets must be reachable by the browser |
+| `@elata-biosciences/ppg-web` | Chrome or Edge with Web Bluetooth | `>= 20` | runs on the `eeg-web-ble` transport |
+| `@elata-biosciences/biosignal-session` | modern browser with Web Workers | `>= 20` | recording needs a host that provides the storage side |
+| `@elata-biosciences/biosignal-analytics` | modern browser with WebAssembly | `>= 20` | packaged WASM assets must be reachable by the browser |
+| `@elata-biosciences/app-payments`, `app-state`, `app-metrics` | any modern browser | `>= 20` | only work inside the Elata App Store frame |
 
 ---
 
@@ -22,6 +26,7 @@ description: "Current browser, device, and Node.js expectations for the Elata SD
 | EEG WASM with `eeg-web` | Supported | Supported | Supported | requires packaged `wasm/` assets |
 | Muse browser BLE with `eeg-web-ble` | Supported in secure context | Not supported | Not supported | requires Web Bluetooth |
 | rPPG with `rppg-web` | Supported | Supported | Supported with camera permissions | requires packaged `pkg/` assets |
+| Headband PPG with `ppg-web` | Supported in secure context | Not supported | Not supported | requires Web Bluetooth |
 
 ---
 
@@ -42,7 +47,7 @@ description: "Current browser, device, and Node.js expectations for the Elata SD
 
 - Muse 2 and Muse S classic BLE devices
 - Muse S Athena protocol v2 devices
-- The synthetic Muse-compatible BLE bridge used for testing
+- Other headsets can be added through the same transport contract. See [Device Integration](/integrate).
 
 ---
 
@@ -56,8 +61,7 @@ description: "Current browser, device, and Node.js expectations for the Elata SD
 
 ## Package Manager Notes
 
-Generated demo apps work with `pnpm` or `npm`. This repo prefers `pnpm` for
-local development.
+Generated demo apps work with `pnpm` or `npm`.
 
 If you scaffold a demo app inside another `pnpm` workspace and do not add it to
 that workspace, use:
@@ -82,13 +86,13 @@ npm run dev
 ## Related
 
 <CardGroup cols={3}>
-  <Card title="Troubleshooting" icon="wrench" iconType="light" href="/sdk/operations/troubleshooting">
+  <Card title="Troubleshooting" icon="wrench" href="/sdk/operations/troubleshooting">
     Common failures and fixes
   </Card>
-  <Card title="Choose A Package" icon="compass" iconType="light" href="/sdk/guides/choose-the-right-package">
+  <Card title="Choose A Package" icon="compass" href="/sdk/guides/choose-the-right-package">
     Package decision guide
   </Card>
-  <Card title="Muse Device" icon="microchip" iconType="light" href="/sdk/eeg-web-ble/muse-device">
+  <Card title="Muse Device" icon="microchip" href="/sdk/eeg-web-ble/muse-device">
     Protocol details and browser support
   </Card>
 </CardGroup>

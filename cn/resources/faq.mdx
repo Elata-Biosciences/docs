@@ -1,278 +1,69 @@
 ---
-title: "FAQ"
-description: "Frequently asked questions about Elata Protocol"
+title: "常见问题"
+description: "关于 Elata、应用商店和生物特征 SDK 的常见问题。"
 ---
 
-## General
+## 概况
 
 <AccordionGroup>
-  <Accordion title="What is Elata?">
-    A protocol for launching neurotech apps with their own tokens. You build an app, pay 110 ELTA to launch, and get a token that trades on a bonding curve. Users can buy in early, stake for fees, and participate in governance.
+  <Accordion title="什么是 Elata？">
+    一个用于构建和分发生物信号应用的平台：包括用于 rPPG、EEG 和 PPG 的浏览器 SDK，以及发布和使用这些应用的 [Elata 应用商店](https://app.elata.bio)。参见[什么是 Elata？](/cn/learn/protocol-overview)。
   </Accordion>
-  
-  <Accordion title="Why does this exist?">
-    Building neurotech is hard. Getting paid for it is harder. Most devs either join closed platforms or spend months fundraising. Elata lets you launch with built-in economics — no VCs, no gatekeepers.
+  <Accordion title="我需要特殊硬件吗？">
+    不需要。摄像头（rPPG）应用适用于任何网络摄像头。EEG 和头带 PPG 应用需要 Muse 等受支持的头带。
   </Accordion>
-  
-  <Accordion title="What blockchain?">
-    **Ethereum Sepolia** — Ethereum's testnet. Production mainnet deployment coming soon.
-    
-    Currently live on **Ethereum Sepolia** (testnet). Mainnet soon.
-  </Accordion>
-  
-  <Accordion title="How do I get testnet tokens?">
-    1. **ETH for gas**: [Alchemy Faucet](https://www.alchemy.com/faucets/ethereum-sepolia) or [QuickNode](https://faucet.quicknode.com/ethereum/sepolia)
-    2. **ELTA**: DM [@elata_bio](https://x.com/elata_bio) your wallet address
-    
-    Testnet tokens have no value. Testing only.
-  </Accordion>
-  
-  <Accordion title="Is it audited?">
-    Uses OpenZeppelin standards. Contracts are non-upgradeable and open source. Formal audit before mainnet.
+  <Accordion title="支持哪些浏览器？">
+    摄像头应用可在现代浏览器中运行。蓝牙 EEG 需要支持 Web Bluetooth 的 Chromium 内核浏览器（桌面和 Android 上的 Chrome 或 Edge）。参见[兼容性](/cn/sdk/operations/compatibility)。
   </Accordion>
 </AccordionGroup>
 
 ---
 
-## ELTA Token
+## 开发应用
 
 <AccordionGroup>
-  <Accordion title="What's ELTA for?">
-    - **Launch apps** — costs 110 ELTA
-    - **Buy app tokens** — ELTA is the trading pair
-    - **Governance** — lock as veELTA to vote
-    - **Earn** — veELTA holders get 15% of all fees
+  <Accordion title="如何发布应用？">
+    使用 SDK 构建 Web 应用，然后通过 [app.elata.bio/build-app](https://app.elata.bio/build-app) 的“构建应用”向导发布。参见[快速开始](/cn/quickstart)。
   </Accordion>
-  
-  <Accordion title="How much ELTA exists?">
-    77 million max. Hard cap, can't be changed.
+  <Accordion title="我的应用必须使用 SDK 吗？">
+    是的。上传的应用必须至少使用一个 Elata 传感器 SDK（rPPG、EEG 或 PPG）。参见[要求](/cn/apps/build/requirements)。
   </Accordion>
-  
-  <Accordion title="Where do I get ELTA?">
-    **Testnet**: DM [@elata_bio](https://x.com/elata_bio) your wallet address.
-    
-    **Mainnet**: Uniswap, or sell app tokens you own.
+  <Accordion title="发布需要多少费用？">
+    一笔以 USDC 支付的少量一次性注册费，金额会在向导中显示。
   </Accordion>
-  
-  <Accordion title="What's veELTA?">
-    Lock ELTA for 7 days to 2 years → get veELTA. Longer lock = more veELTA (up to 2x). veELTA = voting power + 15% of protocol fees.
+  <Accordion title="我的应用如何赚钱？">
+    通过[应用内购买](/cn/apps/platform/in-app-purchases)出售一次性物品，或收取月度[订阅](/cn/apps/platform/subscriptions)费用。
   </Accordion>
-  
-  <Accordion title="Can I sell veELTA?">
-    No. Non-transferable. Stops vote-buying.
+  <Accordion title="我可以自行托管应用吗？">
+    可以，但需要审批。在应用的编辑页面申请外部托管。参见[上传与托管](/cn/apps/build/upload-and-hosting)。
+  </Accordion>
+  <Accordion title="审核需要多长时间？">
+    每个版本都会先经过自动扫描，再由审核员审核。获批后你会在商店内和邮件中收到通知。
   </Accordion>
 </AccordionGroup>
 
 ---
 
-## App Tokens
+## 隐私
 
 <AccordionGroup>
-  <Accordion title="How do app tokens work?">
-    Each app gets an ERC-20 with 1B supply. 50% goes to the creator (auto-staked), 50% sells on a bonding curve. 1% fee on all trades.
+  <Accordion title="我的摄像头或 EEG 数据会离开我的设备吗？">
+    原始信号在你的设备上处理，应用不得将其发送到任何地方。参见[隐私与数据](/cn/learn/privacy-and-data)。
   </Accordion>
-  
-  <Accordion title="What's a bonding curve?">
-    Math that sets price based on how many tokens have sold. Early = cheap. More buyers = higher price. You can always buy or sell — the curve provides liquidity.
-  </Accordion>
-  
-  <Accordion title="What's 'Raising' mean?">
-    Bonding curve is active. Buy directly from the curve, price goes up with demand.
-  </Accordion>
-  
-  <Accordion title="What's 'Live' mean?">
-    Graduated. Hit 42,000 ELTA. Now trades on Uniswap instead of the curve.
-  </Accordion>
-  
-  <Accordion title="What happens at graduation?">
-    Curve hits 42K ELTA → liquidity moves to Uniswap → LP locked 2 years → free market trading starts → curve closes forever.
+  <Accordion title="什么是生物特征评分？">
+    一个可选的跨应用指标，由派生的会话结果构成。只有在你同意后才会生成，你也可以随时关闭。
   </Accordion>
 </AccordionGroup>
 
 ---
 
-## Staking & Rewards
+## 账户与积分
 
 <AccordionGroup>
-  <Accordion title="How do I earn?">
-    Two ways:
-    1. **Stake app tokens** → 70% of that app's fees
-    2. **Lock ELTA as veELTA** → 15% of all protocol fees
+  <Accordion title="我需要加密钱包吗？">
+    不需要。你可以使用社交账号登录，连接已有钱包是可选的。
   </Accordion>
-  
-  <Accordion title="What's the 70/15/15 split?">
-    Every fee gets split: 70% to app stakers, 15% to veELTA holders, 15% to treasury.
-  </Accordion>
-  
-  <Accordion title="Is staking locked?">
-    **App staking**: No lock. Unstake anytime.
-    **veELTA**: Yes, you choose 7 days to 2 years when you lock.
-  </Accordion>
-  
-  <Accordion title="When can I claim?">
-    Anytime. No deadline. Just watch gas costs on small amounts.
-  </Accordion>
-  
-  <Accordion title="What token are rewards in?">
-    ELTA. Always ELTA, no matter which app you staked.
+  <Accordion title="什么是 Elata 积分？">
+    参与商店活动获得的不可转让积分。参见 [Elata 积分](/cn/elata-points)。
   </Accordion>
 </AccordionGroup>
-
----
-
-## Building Apps
-
-<AccordionGroup>
-  <Accordion title="How much to launch?">
-    110 ELTA. 100 seeds your curve, 10 goes to treasury.
-  </Accordion>
-  
-  <Accordion title="What do I get?">
-    - 500M tokens (50%), auto-staked and earning
-    - Ability to add tournaments and items
-    - Full control of app content
-  </Accordion>
-  
-  <Accordion title="Can I update after launch?">
-    Yes — app files, description, links, team. No — token supply, fee rate.
-  </Accordion>
-  
-  <Accordion title="What can I build?">
-    Anything that runs in a browser. Focus tools, games, wellness apps, research platforms. Neurotech focus but not enforced.
-  </Accordion>
-  
-  <Accordion title="Do I need Solidity?">
-    No. Contracts deploy automatically. You just build the frontend.
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Tournaments & Items
-
-<AccordionGroup>
-  <Accordion title="What are tournaments?">
-    Competitions with entry fees. Pay to enter, compete, winners split the pool.
-  </Accordion>
-  
-  <Accordion title="How do prizes work?">
-    96.5% to winners, 2.5% protocol fee, 1% burned.
-  </Accordion>
-  
-  <Accordion title="What are items?">
-    NFTs that unlock features or cosmetics. When someone buys, the payment burns — shrinks token supply.
-  </Accordion>
-  
-  <Accordion title="Can items be traded?">
-    Builder decides. Can be soulbound (stuck to buyer) or tradeable.
-  </Accordion>
-</AccordionGroup>
-
----
-
-## XP System
-
-<AccordionGroup>
-  <Accordion title="What's XP?">
-    Reputation score. Non-transferable, can't be bought.
-  </Accordion>
-  
-  <Accordion title="What's it for?">
-    - **Early access**: 6-hour head start on new app launches
-    - **LotPool voting**: Weight in funding rounds
-    - **Reputation**: Proof you actually use the protocol
-  </Accordion>
-  
-  <Accordion title="How do I get XP?">
-    Participate: tournaments, data contributions, community stuff.
-  </Accordion>
-  
-  <Accordion title="Can I sell XP?">
-    No. Soulbound. That's the point.
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Safety & Security
-
-<AccordionGroup>
-  <Accordion title="Is this safe?">
-    **Risks**:
-    - Token prices can go to zero
-    - Most apps won't succeed
-    - Only risk what you can lose
-    
-    **Protections**:
-    - LP locked 2 years (no rug pulls)
-    - Contracts can't be changed post-deploy
-    - All code is open source
-  </Accordion>
-  
-  <Accordion title="What if a creator disappears?">
-    LP stays locked, liquidity stays. Token keeps trading. Community can fork or continue the app.
-  </Accordion>
-  
-  <Accordion title="How do I verify contracts?">
-    Check address against docs, verify on Etherscan, only use links from official sources. Don't interact with random contracts.
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Technical
-
-<AccordionGroup>
-  <Accordion title="What wallet?">
-    MetaMask, Coinbase Wallet, Rainbow — anything that supports Ethereum.
-  </Accordion>
-  
-  <Accordion title="What network?">
-    **Ethereum Sepolia** (testnet now). Mainnet soon.
-    
-    Chain ID: 11155111 (testnet)
-  </Accordion>
-  
-  <Accordion title="Are contracts upgradeable?">
-    No. Once deployed, rules don't change.
-  </Accordion>
-  
-  <Accordion title="Where's the code?">
-    GitHub:
-    - [elata-protocol](https://github.com/elata-biosciences/elata-protocol) — contracts
-    - [elata-appstore](https://github.com/elata-biosciences/elata-appstore) — frontend
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Getting Help
-
-<AccordionGroup>
-  <Accordion title="Where do I get help?">
-    [Discord](https://discord.gg/GqS9CstffK), [@elata_bio](https://x.com/elata_bio), or [GitHub](https://github.com/elata-biosciences).
-  </Accordion>
-  
-  <Accordion title="Found a bug?">
-    [GitHub Issues](https://github.com/elata-biosciences/elata-protocol/issues). Include steps to reproduce, what happened, what should have happened.
-  </Accordion>
-  
-  <Accordion title="Lost wallet access?">
-    Can't help. Protocol is decentralized — no one has access to your funds. Back up your seed phrase.
-  </Accordion>
-</AccordionGroup>
-
----
-
-## More Questions?
-
-<CardGroup cols={2}>
-  <Card title="Discord" icon="discord" href="https://discord.gg/GqS9CstffK">
-    Ask the community
-  </Card>
-  <Card title="Docs" icon="book" href="/learn/protocol-overview">
-    Read more
-  </Card>
-</CardGroup>
-
-

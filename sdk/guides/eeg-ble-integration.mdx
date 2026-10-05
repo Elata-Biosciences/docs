@@ -146,7 +146,7 @@ You need:
       for (let ch = 0; ch < eeg.channelCount; ch++) {
         const channelSamples = eeg.samples.map((row) => row[ch]);
         const powers = band_powers(
-          new Float64Array(channelSamples),
+          new Float32Array(channelSamples),
           eeg.sampleRateHz,
         );
     
@@ -191,7 +191,7 @@ transport.onFrame = (frame: HeadbandFrameV1) => {
   for (let ch = 0; ch < eeg.channelCount; ch++) {
     const channelSamples = eeg.samples.map((row) => row[ch]);
     const powers = band_powers(
-      new Float64Array(channelSamples),
+      new Float32Array(channelSamples),
       eeg.sampleRateHz,
     );
 
@@ -292,7 +292,7 @@ The browser EEG BLE flow usually looks like this:
 ## Integration tips
 
 - Buffer frames before analysis for more stable results
-- Use `Float64Array` when calling `band_powers`
+- Use `Float32Array` when calling `band_powers`
 - Keep BLE connection logic behind explicit user actions
 - Move frame handling into app state instead of leaving it in `console.log`
 - Start with a demo app if you need a working reference project first

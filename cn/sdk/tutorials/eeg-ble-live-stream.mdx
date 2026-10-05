@@ -1,0 +1,159 @@
+---
+title: "通过 Web Bluetooth 输出 EEG 数据"
+description: "构建一个浏览器 EEG 流程：发现受支持的设备、连接并开始接收数据帧。"
+---
+
+如果你已经有一个浏览器应用，并需要按推荐方式添加 BLE 传输，请阅读本页。
+
+如果你想从脚手架开始，请参阅[快速开始](/cn/sdk/tutorials/first-app)。如果你只想先了解传输模型，请参阅[通过 Web Bluetooth 使用受支持的设备](/cn/sdk/guides/web-bluetooth)。
+
+本教程在浏览器 EEG 包的基础上，使用 `@elata-biosciences/eeg-web-ble` 添加实时 Web Bluetooth 传输。
+
+当你的应用需要在 Chrome 或 Edge 中获取真实的头带数据时，请按本教程操作。
+
+这一步在 EEG 技术栈之上为 Muse 兼容头带**开启 Web Bluetooth**。它应在你确定使用 EEG **之后**进行（如果你的产品也使用摄像头生物信号，通常还在 [rPPG](/cn/sdk/guides/rppg-browser) **之后**）。
+
+## 开始之前
+
+你需要：
+
+- Chrome 或 Edge
+- `https://` 或 `localhost`
+- 设备已开启蓝牙
+- 一个受支持的 Muse 兼容设备
+- 同时安装 `@elata-biosciences/eeg-web` 和 `@elata-biosciences/eeg-web-ble`
+
+此浏览器 BLE 流程不支持 Safari 和 iOS。
+
+## 你将构建什么
+
+你将：
+
+1. 安装 BLE 传输包
+2. 创建 `BleTransport`
+3. 订阅帧和状态事件
+4. 连接并开始数据流
+
+## 第 1 步：安装包
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+```
+
+```bash npm
+npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+```
+
+</CodeGroup>
+
+## 第 2 步：传输模块 + 连接（一次粘贴）
+
+使用一个模块，让导入、处理函数和生命周期集中在一起（例如 `src/headbandBle.ts`）。在**按钮**点击时调用 `connectHeadband()`（浏览器 BLE 需要用户手势）。
+
+```ts headbandBle.ts
+import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+
+let transport: BleTransport | null = null;
+
+export function createHeadbandTransport() {
+  const next = new BleTransport({
+    deviceOptions: {
+      athenaDecoderFactory: () => new AthenaWasmDecoder(),
+    },
+  });
+
+  next.onStatus = (status) => {
+    console.log("status", status.state, status.reason);
+  };
+
+  next.onFrame = (frame) => {
+    console.log("eeg samples", frame.eeg.samples.length);
+  };
+
+  return next;
+}
+
+export async function connectHeadband() {
+  transport = createHeadbandTransport();
+  try {
+    await transport.startStreaming();
+  } catch (error) {
+    console.error("BLE start failed", error);
+  }
+}
+```
+
+为什么要预先加入 `athenaDecoderFactory`：
+
+- 让兼容 Athena 的设备能够正常工作
+- 使用 `@elata-biosciences/eeg-web` 提供的受支持解码路径
+- 避免之后在不同设备型号间测试时出现的常见故障
+
+`startStreaming()` 是推荐的默认方式，因为它在一次调用中完成常见的 `connect()` 加 `start()` 流程，避免了应用连接成功却从未真正开始数据流的常见错误。
+
+## 第 3 步：将数据帧转化为应用状态
+
+`onFrame` 开始触发后，把数据移入你自己的应用状态，而不是只停留在 `console.log` 中。
+
+常见的模式是：
+
+1. 接收 `HeadbandFrameV1` 帧
+2. 提取 EEG 样本或元数据
+3. 计算或转发应用关心的数值
+4. 渲染图表、分数或自适应逻辑
+
+## 第 4 步：在离开路由或组件时清理
+
+当前视图离开时，停止数据流，以便之后的重连从干净的状态开始。将以下代码添加到上面的辅助函数旁边（与 `transport` 在同一模块）。追加到 **headbandBle.ts**：
+
+```ts
+export async function stopHeadband() {
+  if (!transport) return;
+  await transport.stop();
+  transport = null;
+}
+```
+
+如果你希望更精细地控制生命周期，仍然可以分别调用 `connect()` 和 `start()`。本教程使用 `startStreaming()`，因为对大多数应用集成来说它是最安全的默认选择。
+
+## 第 5 步：处理浏览器和平台限制
+
+如果选择器始终不出现或 `navigator.bluetooth` 不存在，请先检查：
+
+- 页面运行在 `https://` 或 `localhost` 上
+- 你使用的是 Chrome 或 Edge
+- 蓝牙已开启
+- 目标设备已开机且可用
+
+## Athena 和经典版设备
+
+SDK 支持：
+
+- Muse 2 和 Muse S classic BLE 设备
+- Muse S Athena 协议 v2 设备
+
+加入 `athenaDecoderFactory` 是同时覆盖两种流程的最简单的受支持方式。
+
+## 常见问题
+
+- `navigator.bluetooth` 未定义：浏览器不受支持或不是安全上下文
+- 没有出现设备选择器：蓝牙已关闭，或页面没有运行在安全源上
+- Athena 解码失败：确认你传入了 `athenaDecoderFactory`
+- 你需要支持 Safari 或 iOS：这个浏览器包不是合适的路径，请使用原生或桥接方案
+
+## 下一步
+
+<CardGroup cols={3}>
+  <Card title="eeg-web-ble 参考" icon="bluetooth" href="/cn/sdk/eeg-web-ble/getting-started">
+    传输 API 和选项
+  </Card>
+  <Card title="eeg-web 参考" icon="brain" href="/cn/sdk/eeg-web/getting-started">
+    EEG 运行时和模型
+  </Card>
+  <Card title="Web Bluetooth 指南" icon="book-open" href="/cn/sdk/guides/web-bluetooth">
+    传输模型概览
+  </Card>
+</CardGroup>

@@ -1,0 +1,167 @@
+---
+title: 传输协议
+description: 为你的设备实现共享的 Elata 传输和帧接口。
+---
+
+这是你的集成必须满足的协议。
+
+应用应看到稳定的 Elata 传输接口，而不是厂商特定的数据包格式或蓝牙细节。
+
+## 核心规则
+
+你的设备适配器应通过 `HeadbandTransport` 输出 `HeadbandFrameV1` 帧。
+
+这是浏览器应用和下游分析的兼容性边界。
+
+<Info>
+  如果帧协议正确，应用代码就能保持简单。如果帧协议不稳定，其上的所有内容都更难让人信赖。
+</Info>
+
+## `HeadbandFrameV1`
+
+每种传输都输出相同的顶层帧结构：
+
+```ts
+interface HeadbandFrameV1 {
+  schemaVersion: "v1";
+  source: string;
+  sequenceId: number;
+  emittedAtMs: number;
+  eeg: HeadbandSignalBlock;
+  ppgRaw?: HeadbandSignalBlock;
+  optics?: HeadbandSignalBlock;
+  accgyro?: HeadbandSignalBlock;
+  battery?: HeadbandBatteryBlock;
+}
+```
+
+实际上，大多数集成应将 `eeg` 视为必需块，只在设备明确提供时才添加其他块。
+
+## `HeadbandSignalBlock`
+
+EEG 数据应规范化为以下结构：
+
+```ts
+interface HeadbandSignalBlock {
+  sampleRateHz: number;
+  channelNames: string[];
+  channelCount: number;
+  samples: number[][];
+  timestampsMs?: number[];
+  clockSource?: "device" | "local";
+}
+```
+
+## 必须保持稳定的内容
+
+| 字段 | 正确的表现 |
+| --- | --- |
+| `source` | 稳定、可读的标识，例如 `vendor-ble` |
+| `sequenceId` | 在运行的会话内单调递增 |
+| `sampleRateHz` | 与设备实际行为一致 |
+| `channelNames` | 稳定且有文档说明 |
+| `channelCount` | 始终与实际行宽一致 |
+| `samples` | 每一行代表一个时间步，并使用相同的通道顺序 |
+| `timestampsMs` | 可选，但提供时需与输出的行对齐 |
+| `clockSource` | 明确说明为 `device` 或 `local` |
+
+## `HeadbandTransport`
+
+所有传输都实现相同的生命周期接口：
+
+```ts
+interface HeadbandTransport {
+  onFrame?: (frame: HeadbandFrameV1) => void;
+  onStatus?: (status: HeadbandTransportStatus) => void;
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
+  start(): Promise<void>;
+  stop(): Promise<void>;
+}
+```
+
+## 生命周期要求
+
+| 方法 | 预期行为 |
+| --- | --- |
+| `connect()` | 配对或连接设备，并准备会话 |
+| `start()` | 开始输出有效帧 |
+| `stop()` | 停止输出且不破坏会话 |
+| `disconnect()` | 释放会话和底层资源 |
+
+状态转换规则与方法本身同样重要。一个干净的集成应清楚地表明传输处于空闲、已连接、输出中、降级、重连中、已断开还是出错状态。
+
+## `HeadbandTransportStatus`
+
+状态更新应足够明确，让应用能够正确响应：
+
+```ts
+interface HeadbandTransportStatus {
+  state: HeadbandTransportState;
+  atMs: number;
+  reason?: string;
+  errorCode?: string;
+  recoverable?: boolean;
+  details?: Record<string, unknown>;
+}
+```
+
+## 集成者的实用规则
+
+<Steps>
+  <Step title="保持通道顺序固定">
+    如果设备输出 `TP9, AF7, AF8, TP10`，每一行输出都应始终使用该顺序。
+  </Step>
+  <Step title="让行宽与通道数一致">
+    一行中的 EEG 数值数量绝不能多于或少于 `channelCount`。
+  </Step>
+  <Step title="使用正确的采样率">
+    如果实际输出速率不同，不要硬编码标称值。
+  </Step>
+  <Step title="说明时间戳行为">
+    说明时间戳来自设备时钟还是浏览器本地时钟。
+  </Step>
+  <Step title="通过状态更新暴露故障">
+    应用需要清晰的信号来处理断开、重试和不可恢复的错误。
+  </Step>
+</Steps>
+
+## 最小用法
+
+```ts
+const transport: HeadbandTransport = /* BleTransport 或其他传输 */;
+
+transport.onFrame = (frame) => {
+  const eegRows = frame.eeg.samples;
+  console.log(eegRows.length);
+};
+
+transport.onStatus = (status) => {
+  console.log(status.state, status.reason ?? "");
+};
+
+await transport.connect();
+await transport.start();
+
+// ……之后
+await transport.stop();
+await transport.disconnect();
+```
+
+## 相关文档
+
+- [头带传输](/cn/sdk/eeg-web/headband-transport)
+- [协议要求](./protocol-requirements)
+- [适配器实现](./adapter-implementation)
+- [测试与验证](./testing-and-validation)
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="协议要求" icon="arrow-right" href="./protocol-requirements">
+    收集满足协议所需的数据包和元数据细节。
+  </Card>
+  <Card title="适配器实现" icon="arrow-right" href="./adapter-implementation">
+    将协议接入真实的设备适配器。
+  </Card>
+</CardGroup>

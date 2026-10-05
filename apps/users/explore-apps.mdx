@@ -1,131 +1,86 @@
 ---
 title: "Explore Apps"
-description: "Discover and evaluate apps deployed on the Elata protocol."
+description: "Find, play, and save apps on the Elata App Store."
 ---
 
 ## The App Store
 
-Browse neurotech apps at [app.elata.bio](https://app.elata.bio). Each app has its own token, bonding curve, and community tools.
+Browse biosignal apps at [app.elata.bio](https://app.elata.bio).
 
-<Card title="Browse Apps" icon="compass" iconType="light" href="https://app.elata.bio">
+<Card title="Browse Apps" icon="compass" href="https://app.elata.bio">
   Go to the App Store
 </Card>
 
 ---
 
-## Finding Apps
+## Signing in
 
-The main page shows all launched apps with their icon, name, token symbol, status, and creator address.
-
-### App Statuses
-
-| Status | Meaning |
-| --- | --- |
-| **Raising** | Bonding curve active, price discovery phase |
-| **Live** | Graduated to DEX, free market trading |
+Sign in with a social login, or connect an existing wallet if you have one.
+Signing in lets you save apps, keep your progress across devices, leave reviews,
+and earn [Elata Points](/elata-points).
 
 ---
 
-## App Detail Pages
+## Finding apps
 
-Click any app to see:
-
-- **Overview:** icon, name, token price, creator, description, social links
-- **Trading:** buy form (if raising), price chart, trading history, DEX link (if live)
-- **Community:** holder distribution, staking stats, team members, tournaments
-- **Play:** embedded game/app with full-screen option
-
----
-
-## Playing Apps
-
-Most Elata apps run directly in your browser.
-
-1. Go to the app's detail page
-2. Click the "Play" button
-3. Use full-screen for the best experience
-
-Some apps require wallet connection for saving progress, accessing premium features, participating in tournaments, or verifying item ownership.
-
-Apps may support EEG devices or camera-based rPPG. Check the app description for compatibility requirements.
-
----
-
-## App Categories
+The home page highlights featured and recommended apps, and recommendations get
+more personal as you play. Browse by category:
 
 | Category | Examples |
 | --- | --- |
-| **Focus** | Attention trainers, flow detectors, brain-feedback pomodoros |
-| **Gaming** | Mind-controlled games, neurofeedback challenges |
-| **Wellness** | Meditation, stress tracking, breathwork |
-| **Research** | Data collection, cognitive tests, experiments |
+| **Games** | Games that react to your heart rate or brain signals |
+| **Neurometrics** | Live EEG and heart-rate dashboards |
+| **Wellness** | Breathwork, meditation, and recovery |
+| **Tools** | Focus timers and self-tracking |
+| **Experiments** | Studies, prototypes, and research apps |
 
 ---
 
-## Early Access
+## App pages
 
-New app launches have a **6-hour early access window**. During this period, you need at least **100 XP** to buy tokens on the bonding curve.
+Each app has a page with:
 
-XP is earned through protocol participation, data contributions, and community activities. It is non-transferable.
-
-<Note>
-  XP is the only way to access early launch windows. There is no way to buy or transfer it. See [Incentives and Access](/apps/design/incentives-and-access) for details.
-</Note>
-
----
-
-## Evaluating Apps
-
-Before participating, check:
-
-- **Creator address:** look it up on the block explorer
-- **Team members:** verify identities if shown
-- **Social links:** confirm they are official channels
-- **Trading volume:** higher volume means more liquidity
-- **Holder distribution:** check for concentration risk
-
-<Warning>
-  Start small and learn how the system works before committing significant funds. Tokens can go to zero.
-</Warning>
+- **Overview:** description, screenshots, and links
+- **Reviews** and **Community** comments
+- **Team:** who built it
+- **Updates:** release notes
 
 ---
 
-## Your Dashboard
+## Playing apps
 
-Access your personal dashboard at [app.elata.bio/dashboard](https://app.elata.bio/dashboard) to see holdings, staked positions, claimable rewards, and transaction history.
+1. Open an app's page.
+2. Click **Play**.
+3. Grant camera or Bluetooth access if the app asks for it.
 
----
+Apps run right in your browser. What each app needs:
 
-## Help
+| App type | You need |
+| --- | --- |
+| Camera (rPPG) | A webcam and a modern browser |
+| EEG headband | A supported headband (such as Muse) and a Chromium-based browser with Web Bluetooth |
 
-- Discord: [#support](https://discord.gg/GqS9CstffK)
-- Twitter: [@elata\_bio](https://x.com/elata_bio)
-- GitHub: [Issues](https://github.com/elata-biosciences)
+Some apps offer in-app items or a monthly subscription. Purchases go through
+the store's checkout, never through the app itself.
 
-<AccordionGroup>
-  <Accordion title="How do I connect my wallet?">
-    Click "Connect Wallet" in the header. Choose your wallet provider (MetaMask, Coinbase Wallet, etc.) and approve the connection.
-  </Accordion>
-
-  <Accordion title="What network should I use?">
-    Elata is currently on Ethereum Sepolia (testnet). Your wallet should prompt you to switch automatically.
-  </Accordion>
-
-  <Accordion title="How can I get testnet ELTA?">
-    Follow [@elata\_bio](https://x.com/elata_bio) on X/Twitter and DM your wallet address to request free testnet ELTA.
-  </Accordion>
-</AccordionGroup>
+<Tip>
+  You can install an app to your home screen from its play page. It opens
+  straight back into the app.
+</Tip>
 
 ---
 
-## Next
+## Your data
 
-<CardGroup cols={2}>
-  <Card title="Buy and Trade" icon="coins" iconType="light" href="/apps/users/buy-and-trade">
-    How buying and trading works
-  </Card>
+Biosignal processing happens on your device. An app can only contribute derived
+session results to your cross-app Score if you explicitly allow it, and you can
+change that any time. See [Privacy and data](/learn/privacy-and-data).
 
-  <Card title="Stake and Earn" icon="piggy-bank" iconType="light" href="/apps/users/stake-and-earn">
-    Staking and rewards
-  </Card>
-</CardGroup>
+---
+
+## Your activity
+
+- **Saved:** apps you've saved
+- **Insights:** your activity and Score across apps
+- **Points:** your Elata Points balance and history
+- **Notifications:** updates from apps and people you follow

@@ -80,9 +80,11 @@ Every session diagnostics payload includes state, issue codes, sampling stats, a
 For custom orchestration, drop to `RppgProcessor` directly. Only use this when you need something `createRppgSession()` does not provide. If you are debugging, compare against `createRppgSession()` first.
 
 ```typescript
-import { RppgProcessor } from "@elata-biosciences/rppg-web";
+import { RppgProcessor, loadWasmBackend } from "@elata-biosciences/rppg-web";
 
-const processor = new RppgProcessor("wasm", 30); // backend, sampleRate
+const backend = await loadWasmBackend(); // null if the packaged WASM can't be loaded
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const processor = new RppgProcessor(backend, 30); // backend, sampleRate
 
 // Feed green-channel intensity from face ROI each frame
 processor.pushSample(performance.now(), greenIntensity);
@@ -99,9 +101,9 @@ new RppgProcessor(backend: Backend, sampleRate: number, windowSeconds?: number)
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `backend` | `"wasm"` or `"native"` | Processing backend |
+| `backend` | `Backend` | A backend object, usually from `loadWasmBackend()` |
 | `sampleRate` | `number` | Expected frames per second (e.g., 30) |
-| `windowSeconds` | `number` | Analysis window length (default: 10) |
+| `windowSeconds` | `number` | Analysis window length in seconds (default: 5) |
 
 ### Pushing Samples
 
@@ -115,11 +117,12 @@ processor.pushSampleRgbMeta(timestampMs, r, g, b, skinRatio?, motion?, clipRatio
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `bpm` | `number` | Estimated heart rate in BPM |
-| `quality` | `number` | Signal quality (0 to 1) |
-| `spectralBpm` | `number` | Spectral analysis estimate |
-| `acfBpm` | `number` | Autocorrelation estimate |
-| `confidence` | `number` | Overall confidence |
+| `bpm` | `number \| null` | Final heart-rate estimate. `null` during warmup (about 10 s) or when the backend is unavailable. |
+| `confidence` | `number` | 0 to 1. Gate your UI on this: show BPM only above your threshold (for example 0.5). |
+| `signal_quality` | `number` | 0 to 1 raw camera signal quality, from skin ratio, motion, and clipping |
+| `spectral_bpm` | `number \| null` | Frequency-domain (FFT) estimate |
+| `acf_bpm` | `number \| null` | Autocorrelation estimate |
+| `reason_codes` | `string[]` | Why confidence is low, for example `low_skin_ratio` or `high_motion` |
 
 ---
 
@@ -140,16 +143,16 @@ processor.pushSampleRgbMeta(timestampMs, r, g, b, skinRatio?, motion?, clipRatio
 ## Next
 
 <CardGroup cols={2}>
-  <Card title="rPPG Existing App Tutorial" icon="circle-play" iconType="light" href="/sdk/tutorials/rppg-existing-app">
+  <Card title="rPPG Existing App Tutorial" icon="circle-play" href="/sdk/tutorials/rppg-existing-app">
     Step-by-step integration guide
   </Card>
-  <Card title="Frame Sources" icon="camera" iconType="light" href="/sdk/rppg-web/frame-sources">
+  <Card title="Frame Sources" icon="camera" href="/sdk/rppg-web/frame-sources">
     MediaPipe face detection and camera capture
   </Card>
-  <Card title="Calibration" icon="bullseye" iconType="light" href="/sdk/rppg-web/calibration">
+  <Card title="Calibration" icon="bullseye" href="/sdk/rppg-web/calibration">
     Muse fusion and calibration models
   </Card>
-  <Card title="Camera Integration Guide" icon="video" iconType="light" href="/sdk/guides/rppg-camera">
+  <Card title="Camera Integration Guide" icon="video" href="/sdk/guides/rppg-camera">
     End-to-end rPPG setup
   </Card>
 </CardGroup>

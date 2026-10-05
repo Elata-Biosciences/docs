@@ -1,119 +1,158 @@
 ---
-title: "rPPG Web — Getting Started"
-description: "Camera-based heart rate measurement with @elata-biosciences/rppg-web"
+title: "快速上手"
+description: "使用 @elata-biosciences/rppg-web 进行基于摄像头的心率测量"
 ---
 
-## What is rPPG?
+## 什么是 rPPG？
 
-Remote photoplethysmography (rPPG) extracts heart rate from subtle color changes in facial skin captured by a standard camera. No contact sensor is needed — just a webcam.
+远程光电容积脉搏波描记（rPPG）通过普通摄像头捕捉面部皮肤细微的颜色变化来提取心率。无需接触式传感器，只需一个网络摄像头。
 
 ---
 
-## Installation
+## 何时使用此包
 
-```bash
+当你的应用需要以下功能时，使用 `@elata-biosciences/rppg-web`：
+
+- 在浏览器中进行基于摄像头的生物信号处理
+- 更高层的 rPPG 会话 API，而不是直接编排 WASM
+- 围绕 rPPG 会话的诊断和面向应用的辅助函数
+
+---
+
+## 安装
+
+<CodeGroup>
+
+```bash pnpm
 pnpm add @elata-biosciences/rppg-web
 ```
 
-Requirements: Node.js 18+, browser with camera access and WebAssembly support.
-
----
-
-## Basic Usage
-
-```typescript
-import { RppgProcessor } from "@elata-biosciences/rppg-web";
-
-const processor = new RppgProcessor("wasm", 30); // backend, sampleRate
-
-// Feed green-channel intensity from face ROI each frame
-processor.pushSample(performance.now(), greenIntensity);
-
-// Get current heart rate estimate
-const metrics = processor.getMetrics();
-console.log("BPM:", metrics.bpm);
-console.log("Quality:", metrics.quality);
+```bash npm
+npm install @elata-biosciences/rppg-web
 ```
 
+</CodeGroup>
+
+要求：Node.js 20+，支持摄像头访问和 WebAssembly 的浏览器。
+
 ---
 
-## RppgProcessor
+## 推荐用法：`createRppgSession`
 
-The main class that processes a stream of color samples and produces heart rate estimates.
+对于大多数浏览器应用，请从 `createRppgSession()` 开始。它负责 WASM 初始化、帧采集、ROI 编排、诊断和清理。
 
-### Constructor
+```typescript
+import { createRppgSession } from "@elata-biosciences/rppg-web";
+
+const session = await createRppgSession({
+  video: videoEl,
+  sampleRate: 30,
+  backend: "auto",
+  faceMesh: "off",
+  onDiagnostics: (diagnostics) => {
+    console.log(diagnostics.state.status, diagnostics.faceTrackingMode);
+    console.log(diagnostics.framesSeen, diagnostics.totalSamplesReceived);
+  },
+});
+
+const metrics = session.getMetrics();
+console.log("BPM:", metrics.bpm);
+
+// 清理时停止并释放摄像头
+await session.stop();
+```
+
+如果还希望在处理器发生终止性故障后自动重启，请使用 `createManagedRppgSession()`。
+
+---
+
+## 诊断建议
+
+每个会话的诊断数据都包含状态、问题代码、采样统计和处理器故障信息。
+
+- 如果 `session.state.status` 变为 `failed`，请将底层处理器视为已终止并重新创建会话。
+- 如果 `backend: "auto"` 回退到不可用的后端模式，诊断信息会报告该状态，而不是静默失败。
+
+---
+
+## 高级：`RppgProcessor`
+
+如需自定义编排，可以直接使用 `RppgProcessor`。只有在需要 `createRppgSession()` 无法提供的功能时才这样做。调试时，请先与 `createRppgSession()` 进行对比。
+
+```typescript
+import { RppgProcessor, loadWasmBackend } from "@elata-biosciences/rppg-web";
+
+const backend = await loadWasmBackend(); // 无法加载打包的 WASM 时返回 null
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const processor = new RppgProcessor(backend, 30); // backend, sampleRate
+
+// 每帧输入来自面部 ROI 的绿色通道强度
+processor.pushSample(performance.now(), greenIntensity);
+
+const metrics = processor.getMetrics();
+console.log("BPM:", metrics.bpm);
+```
+
+### 构造函数
 
 ```typescript
 new RppgProcessor(backend: Backend, sampleRate: number, windowSeconds?: number)
 ```
 
-| Parameter | Type | Description |
+| 参数 | 类型 | 说明 |
 |-----------|------|-------------|
-| `backend` | `"wasm"` or `"native"` | Processing backend |
-| `sampleRate` | `number` | Expected frames per second (e.g., 30) |
-| `windowSeconds` | `number` | Analysis window length (default: 10) |
+| `backend` | `Backend` | 后端对象，通常来自 `loadWasmBackend()` |
+| `sampleRate` | `number` | 预期的每秒帧数（例如 30） |
+| `windowSeconds` | `number` | 分析窗口长度（秒），默认 5 |
 
-### Pushing Samples
-
-Three methods for different input formats:
+### 输入样本
 
 ```typescript
-// Green channel only
-processor.pushSample(timestampMs, intensity);
-
-// RGB channels
+processor.pushSample(timestampMs, intensity);           // 仅绿色通道
 processor.pushSampleRgb(timestampMs, r, g, b, skinRatio?);
-
-// RGB with motion and clip metadata
 processor.pushSampleRgbMeta(timestampMs, r, g, b, skinRatio?, motion?, clipRatio?);
 ```
 
-### Getting Metrics
+### 指标
 
-```typescript
-const metrics: Metrics = processor.getMetrics();
-```
-
-`Metrics` includes:
-
-| Field | Type | Description |
+| 字段 | 类型 | 说明 |
 |-------|------|-------------|
-| `bpm` | `number` | Estimated heart rate in BPM |
-| `quality` | `number` | Signal quality (0-1) |
-| `spectralBpm` | `number` | Spectral analysis estimate |
-| `acfBpm` | `number` | Autocorrelation estimate |
-| `confidence` | `number` | Overall confidence |
-
-### Particle Tracker
-
-Enable for more robust BPM tracking:
-
-```typescript
-processor.enableTracker(minBpm?, maxBpm?, numParticles?);
-```
-
-### State Persistence
-
-Save and restore processor state:
-
-```typescript
-const snapshot = processor.getStateSnapshot();
-// ... later
-processor.loadStateSnapshot(snapshot);
-```
+| `bpm` | `number \| null` | 最终心率估算。预热期间（约 10 秒）或后端不可用时为 `null`。 |
+| `confidence` | `number` | 0 到 1。请据此控制界面：仅在高于阈值（例如 0.5）时显示 BPM。 |
+| `signal_quality` | `number` | 0 到 1 的原始摄像头信号质量，基于皮肤占比、运动和过曝 |
+| `spectral_bpm` | `number \| null` | 频域（FFT）估算 |
+| `acf_bpm` | `number \| null` | 自相关估算 |
+| `reason_codes` | `string[]` | 置信度低的原因，例如 `low_skin_ratio` 或 `high_motion` |
 
 ---
 
-## Next
+## 主要导出
+
+- `createRppgSession`
+- `createManagedRppgSession`
+- `RppgProcessor`
+- `loadWasmBackend`
+- `createRppgAppAdapter`
+- `createRppgAppMonitor`
+- `normalizeRppgError`
+- `computeTraceWaveformDebug`
+- `ensureVideoPlaying`
+
+---
+
+## 下一步
 
 <CardGroup cols={2}>
-  <Card title="Frame Sources" icon="camera" iconType="light" href="/sdk/rppg-web/frame-sources">
-    MediaPipe face detection and camera capture
+  <Card title="rPPG 现有应用教程" icon="circle-play" href="/cn/sdk/tutorials/rppg-existing-app">
+    分步集成指南
   </Card>
-  <Card title="Calibration" icon="bullseye" iconType="light" href="/sdk/rppg-web/calibration">
-    Muse fusion and calibration models
+  <Card title="帧来源" icon="camera" href="/cn/sdk/rppg-web/frame-sources">
+    MediaPipe 人脸检测和摄像头采集
   </Card>
-  <Card title="Camera Integration Guide" icon="video" iconType="light" href="/sdk/guides/rppg-camera">
-    End-to-end rPPG setup
+  <Card title="校准" icon="bullseye" href="/cn/sdk/rppg-web/calibration">
+    Muse 融合和校准模型
+  </Card>
+  <Card title="摄像头集成指南" icon="video" href="/cn/sdk/guides/rppg-camera">
+    端到端 rPPG 设置
   </Card>
 </CardGroup>

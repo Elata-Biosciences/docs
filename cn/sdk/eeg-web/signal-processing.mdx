@@ -1,11 +1,11 @@
 ---
-title: "Signal Processing"
-description: "Band power analysis, FFT, and spectrum computation"
+title: "信号处理"
+description: "频段功率分析、FFT 和频谱计算"
 ---
 
-## Band Powers
+## 频段功率
 
-Compute standard EEG frequency band powers from a sample array:
+从样本数组计算标准 EEG 频段功率：
 
 ```typescript
 import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
@@ -13,20 +13,20 @@ import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
 await initEegWasm();
 
 const powers = band_powers(samples, sampleRateHz);
-// powers.delta  — 0.5–4 Hz
-// powers.theta  — 4–8 Hz
-// powers.alpha  — 8–13 Hz
-// powers.beta   — 13–30 Hz
-// powers.gamma  — 30–100 Hz
+// powers.delta  0.5-4 Hz
+// powers.theta  4-8 Hz
+// powers.alpha  8-13 Hz
+// powers.beta   13-30 Hz
+// powers.gamma  30-100 Hz
 ```
 
-`band_powers` returns a `WasmBandPowers` object with named fields for each standard band.
+`band_powers` 返回一个 `WasmBandPowers` 对象，每个标准频段都有对应的命名字段。
 
 ---
 
-## Individual Band Functions
+## 单个频段函数
 
-For targeted analysis, use individual band functions:
+如需针对性分析，可使用单个频段函数：
 
 ```typescript
 import {
@@ -44,42 +44,55 @@ const theta = theta_power(samples, sampleRateHz);
 const delta = delta_power(samples, sampleRateHz);
 const gamma = gamma_power(samples, sampleRateHz);
 
-// Custom frequency range
+// 自定义频率范围
 const mu = custom_band_power(samples, sampleRateHz, 8.0, 12.0);
 ```
 
 ---
 
-## Power Spectrum
+## 功率谱
 
-Compute the full power spectrum via FFT:
+通过 FFT 计算完整的功率谱：
 
 ```typescript
 import { compute_power_spectrum, get_fft_frequencies } from "@elata-biosciences/eeg-web";
 
-const spectrum = compute_power_spectrum(samples, sampleRateHz);
+const spectrum = compute_power_spectrum(samples); // samples: Float32Array
 const frequencies = get_fft_frequencies(samples.length, sampleRateHz);
 
-// spectrum[i] is the power at frequencies[i] Hz
+// spectrum[i] 是 frequencies[i] Hz 处的功率
 ```
 
 ---
 
-## Input Format
+## 输入格式
 
-All signal processing functions expect:
+所有信号处理函数都要求：
 
-| Parameter | Type | Description |
+| 参数 | 类型 | 说明 |
 |-----------|------|-------------|
-| `samples` | `Float64Array` or `number[]` | Single-channel EEG time series |
-| `sampleRateHz` | `number` | Sampling rate in Hz (e.g., 256 for Muse) |
+| `samples` | `Float32Array` | 单通道 EEG 时间序列。不接受普通数组。 |
+| `sampleRateHz` | `number` | 采样率（Hz），例如 Muse 为 256 |
 
-For multi-channel data (e.g., from `HeadbandFrameV1.eeg.samples`), extract individual channels and process them separately:
+对于多通道数据（例如来自 `HeadbandFrameV1.eeg.samples`），请提取单个通道分别处理：
 
 ```typescript
-const frame: HeadbandFrameV1 = /* ... from transport ... */;
+const frame: HeadbandFrameV1 = /* ……来自传输…… */;
 const channelIndex = 0; // TP9
 
 const channelSamples = frame.eeg.samples.map(row => row[channelIndex]);
-const powers = band_powers(new Float64Array(channelSamples), frame.eeg.sampleRateHz);
+const powers = band_powers(new Float32Array(channelSamples), frame.eeg.sampleRateHz);
 ```
+
+---
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="分析模型" icon="chart-mixed" href="/cn/sdk/eeg-web/models">
+    Alpha 波峰检测、平静度评分
+  </Card>
+  <Card title="EEG 快速上手" icon="brain" href="/cn/sdk/eeg-web/getting-started">
+    安装并初始化 eeg-web
+  </Card>
+</CardGroup>

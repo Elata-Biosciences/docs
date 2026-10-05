@@ -1,0 +1,68 @@
+---
+title: "示例应用"
+description: "使用 Elata EEG、Web Bluetooth 和 rPPG 包构建的开源浏览器应用。"
+---
+
+<Info>
+  这些是包含路由、会话、图表和游戏循环的完整产品级集成。它们超出了 `create-elata-demo` 入门模板的范围，展示了一个完整应用的样子。
+</Info>
+
+## 精选应用
+
+<CardGroup cols={2}>
+  <Card title="Breathwork Trainer" icon="lungs" href="https://github.com/wkyleg/breathwork-trainer">
+    结合实时 EEG 和 rPPG 生物特征监测的呼吸引导。
+  </Card>
+  <Card title="NeuroFlight" icon="plane" href="https://github.com/wkyleg/neuroflight">
+    带有会话后神经分析的 3D 飞行模拟器。
+  </Card>
+  <Card title="Monkey Mind: Inner Invaders" icon="gamepad" href="https://github.com/wkyleg/monkey-mind">
+    根据心理状态做出反应的大脑互动街机游戏。
+  </Card>
+  <Card title="Neuro Chess" icon="chess" href="https://github.com/wkyleg/neuro-chess">
+    带神经状态 HUD 的人机象棋（对战 Stockfish）。
+  </Card>
+  <Card title="Reaction Trainer" icon="bolt" href="https://github.com/wkyleg/reaction-trainer">
+    受压力调节的反应游戏，并追踪结果。
+  </Card>
+</CardGroup>
+
+---
+
+## 这些应用展示了什么
+
+每个应用都是使用已发布的 `@elata-biosciences` 包的独立仓库：
+
+| 包 | 用途 |
+| --- | --- |
+| `@elata-biosciences/eeg-web` | EEG 信号处理和模型 |
+| `@elata-biosciences/eeg-web-ble` | Web Bluetooth 头带数据流 |
+| `@elata-biosciences/rppg-web` | 基于摄像头的心率测量 |
+
+当你需要了解真实产品如何组织 SDK 会话、状态管理、图表和清理时，这些应用可以作为参考实现。
+
+---
+
+## 何时使用这些应用，何时使用 `create-elata-demo`
+
+| 如果你想…… | 从这里开始 |
+| --- | --- |
+| 一分钟内获得可运行的应用 | [`create-elata-demo`](/cn/sdk/create-elata-demo) |
+| 查看包含路由、游戏循环或数据可视化的完整产品 | 上面的任一示例应用 |
+| 将你的集成与确认可用的参考进行对比 | 两种方式都可以 |
+
+---
+
+## 下一步
+
+<CardGroup cols={3}>
+  <Card title="构建你的第一个应用" icon="rocket" href="/cn/sdk/tutorials/first-app">
+    创建入门应用
+  </Card>
+  <Card title="选择合适的包" icon="compass" href="/cn/sdk/guides/choose-the-right-package">
+    包选择指南
+  </Card>
+  <Card title="在浏览器中使用 rPPG" icon="heart-pulse" href="/cn/sdk/guides/rppg-browser">
+    主要的浏览器集成
+  </Card>
+</CardGroup>
