@@ -1,0 +1,94 @@
+---
+title: "故障排查"
+description: "Elata SDK 集成中常见的设置故障及最快的检查方法。"
+---
+
+## 脚手架应用中的 `pnpm install` 没有创建 `node_modules`
+
+你很可能是在另一个 `pnpm` 工作区中创建了该应用。
+
+在父目录中运行：
+
+<CodeGroup>
+
+```bash pnpm
+pnpm --dir my-app --ignore-workspace install
+pnpm --dir my-app --ignore-workspace run dev
+```
+
+```bash npm
+cd my-app
+npm install
+npm run dev
+```
+
+</CodeGroup>
+
+---
+
+## Web Bluetooth 不可用
+
+请检查以下几点：
+
+- 使用 Chrome 或 Edge
+- 运行在 `https://` 或 `localhost` 上
+- 确保设备已开启蓝牙
+- 不要期望此流程在 Safari 或 iOS 上工作
+
+---
+
+## `loadWasmBackend()` 返回 `null`
+
+确保你的应用从浏览器可以访问的路径提供打包的 `pkg/rppg_wasm.js` 和 `pkg/rppg_wasm_bg.wasm` 资源。
+
+如果不确定，请将你的应用与脚手架生成的 `rppg-demo` 应用进行对比。
+
+---
+
+## `initEegWasm()` 失败
+
+你的应用可能没有正确提供 `@elata-biosciences/eeg-web` 打包的 `wasm/` 资源。
+
+请将你的资源目录结构与脚手架生成的 `eeg-demo` 应用进行对比。
+
+<Tip>
+  如果你使用 Vite，两种常见的修复方式是：添加 `vite-plugin-wasm` 和 `vite-plugin-top-level-await`，或者直接导入 WASM 资源 URL 并传给 `initEegWasm(wasmUrl)`。
+</Tip>
+
+---
+
+## 应用商店上传提示“Elata sensor SDK not detected”
+
+商店会检查每次上传是否真正使用了 SDK。请确认你的构建产物：
+
+- 确实调用了 SDK，例如 `createRppgSession(...)` 或 `initEegWasm(...)`，而不仅仅是导入
+- 在构建输出中包含打包的 `.wasm` 文件
+
+`create-elata-demo` 模板可以通过此检查，因此可以将你的构建产物与其中之一进行对比。
+
+---
+
+## `app-payments`、`app-state` 或 `app-metrics` 调用超时
+
+这些包与 Elata 应用商店的父框架通信。当你在 `localhost` 上运行应用时，没有父框架来响应，因此调用会超时或以 `no_parent` 拒绝。请妥善处理这种情况，并在商店的试玩窗口中测试完整流程。对于购买功能，[`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo) 包含一个可在本地运行的模拟宿主。
+
+---
+
+## 我不确定需要哪个包
+
+请从[选择合适的包](/cn/sdk/guides/choose-the-right-package)开始。
+
+如果你只想要最快的路径，请使用 `create-elata-demo`。
+
+---
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="选择合适的包" icon="compass" href="/cn/sdk/guides/choose-the-right-package">
+    包选择指南
+  </Card>
+  <Card title="兼容性" icon="circle-check" href="/cn/sdk/operations/compatibility">
+    浏览器、设备和工具支持
+  </Card>
+</CardGroup>

@@ -1,0 +1,65 @@
+---
+title: "选择合适的包"
+description: "根据你要构建的内容选择合适的 Elata SDK 包。"
+---
+
+## 从这里开始
+
+1. **新应用或只是评估？** 使用 [`create-elata-demo`](/cn/sdk/create-elata-demo)，几分钟内就能得到可运行的应用。
+2. **已有应用？** 从下表中添加你需要的功能对应的包。
+3. **要发布到应用商店？** 添加用于购买、存储和分数的[应用商店包](/cn/apps/platform/host-bridge)。
+
+---
+
+## 按目标选择
+
+| 我想要…… | 使用 | 需同时安装 |
+| --- | --- | --- |
+| 通过网络摄像头测量心率 | [`rppg-web`](/cn/sdk/rppg-web/getting-started) | |
+| 在浏览器中处理 EEG（频段功率、模型） | [`eeg-web`](/cn/sdk/eeg-web/getting-started) | |
+| 通过蓝牙连接 EEG 头带 | [`eeg-web-ble`](/cn/sdk/eeg-web-ble/getting-started) | `eeg-web` |
+| 通过头带的 PPG 传感器获取心率和 HRV | [`ppg-web`](/cn/sdk/ppg-web/getting-started) | `eeg-web`、`eeg-web-ble`、`rppg-web` |
+| 录制来自一个或多个传感器的会话 | [`biosignal-session`](/cn/sdk/biosignal-session/getting-started) | 你要录制的传感器包 |
+| 计算特征、HRV 和总体评分 | [`biosignal-analytics`](/cn/sdk/biosignal-analytics/getting-started) | |
+| 试验学习型 rPPG 波形重建 | `rppg-models-web`（实验性） | `rppg-web` |
+
+---
+
+## 应用商店包
+
+这些包仅在你的应用运行于 [Elata 应用商店](/cn/apps/build/overview)中时才有效：
+
+| 我想要…… | 使用 |
+| --- | --- |
+| 出售一次性物品 | [`app-payments`](/cn/apps/platform/in-app-purchases) |
+| 按用户保存设置和进度 | [`app-state`](/cn/apps/platform/app-state) |
+| 记录会话和分数，或为生物特征评分做贡献 | [`app-metrics`](/cn/apps/platform/metrics-and-scores) |
+
+---
+
+## 常见错误
+
+<Warning>
+  这些是导致首次运行出错的最常见原因。
+</Warning>
+
+- **安装 `eeg-web-ble` 时没有安装 `eeg-web`。** 蓝牙传输层依赖它。
+- **期望在 Safari 或 iOS 上使用 Web Bluetooth。** 请在桌面或 Android 上使用 Chrome 或 Edge。参见[兼容性](/cn/sdk/operations/compatibility)。
+- **通过普通 `http://` 提供服务。** 摄像头和蓝牙需要 `https://` 或 `localhost`。
+- **以为在其他 pnpm 工作区中创建的应用坏了。** 使用 `pnpm --dir my-app --ignore-workspace install` 安装。
+
+---
+
+## 下一步
+
+<CardGroup cols={3}>
+  <Card title="你的第一个应用" icon="rocket" href="/cn/sdk/tutorials/first-app">
+    创建你的第一个应用
+  </Card>
+  <Card title="示例应用" icon="grid-2x2" href="/cn/sdk/guides/example-apps">
+    完整的参考实现
+  </Card>
+  <Card title="兼容性" icon="circle-check" href="/cn/sdk/operations/compatibility">
+    浏览器、设备和工具支持
+  </Card>
+</CardGroup>

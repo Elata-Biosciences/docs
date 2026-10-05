@@ -1,52 +1,52 @@
 ---
-title: "Muse Device"
-description: "MuseBleDevice internals, protocol details, and compatibility"
+title: "Muse 设备"
+description: "MuseBleDevice 内部实现、协议细节和兼容性"
 ---
 
 ## MuseBleDevice
 
-`MuseBleDevice` is the low-level Web Bluetooth class that handles device pairing, GATT characteristic subscriptions, and packet decoding. `BleTransport` wraps it to provide the normalized `HeadbandTransport` interface.
+`MuseBleDevice` 是底层的 Web Bluetooth 类，负责设备配对、GATT 特征值订阅和数据包解码。`BleTransport` 对它进行封装，以提供规范化的 `HeadbandTransport` 接口。
 
-You typically don't use `MuseBleDevice` directly — use `BleTransport` instead.
+通常你不需要直接使用 `MuseBleDevice`，请改用 `BleTransport`。
 
 ---
 
-## Supported Protocols
+## 支持的协议
 
-| Protocol | Headbands | EEG Channels | Extra Data |
+| 协议 | 头带 | EEG 通道 | 额外数据 |
 |----------|-----------|-------------|------------|
-| **Classic** | Muse 2, Muse S (classic) | 4 (TP9, AF7, AF8, TP10) | PPG (3 channels) |
-| **Athena** | Muse S (Athena firmware) | 8 (TP9, AF7, AF8, TP10, AUX1-4) | Optics, accgyro, battery |
+| **Classic** | Muse 2、Muse S（经典版） | 4（TP9、AF7、AF8、TP10） | PPG（3 个通道） |
+| **Athena** | Muse S（Athena 固件） | 8（TP9、AF7、AF8、TP10、AUX1-4） | 光学、加速度计/陀螺仪、电量 |
 
-Protocol is auto-detected during connection based on device characteristics.
+连接时会根据设备特征值自动识别协议。
 
 ---
 
-## Classic Protocol
+## Classic 协议
 
-Classic Muse headbands expose 4 EEG channels at 256 Hz. Each channel has its own GATT characteristic:
+经典版 Muse 头带以 256 Hz 提供 4 路 EEG 通道。每个通道都有自己的 GATT 特征值：
 
-| Characteristic | Channel |
+| 特征值 | 通道 |
 |---------------|---------|
 | `273e0003-...` | TP9 |
 | `273e0004-...` | AF7 |
 | `273e0005-...` | AF8 |
 | `273e0006-...` | TP10 |
 
-PPG is available on 3 additional characteristics (`PPG1`, `PPG2`, `PPG3`).
+PPG 位于另外 3 个特征值上（`PPG1`、`PPG2`、`PPG3`）。
 
 ---
 
-## Athena Protocol
+## Athena 协议
 
-Athena headbands use a different packet format with two main characteristics:
+Athena 头带使用不同的数据包格式，主要有两个特征值：
 
-| Characteristic | Data |
+| 特征值 | 数据 |
 |---------------|------|
-| `273e0013-...` | EEG (8 channels, multiplexed) |
-| `273e0014-...` | Auxiliary (optics, accgyro, battery) |
+| `273e0013-...` | EEG（8 通道，复用） |
+| `273e0014-...` | 辅助数据（光学、加速度计/陀螺仪、电量） |
 
-Athena requires a decoder factory. Without one, connection will fail:
+Athena 需要解码器工厂。没有它，连接将失败：
 
 ```typescript
 import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
@@ -75,13 +75,13 @@ interface MuseDeviceOptions {
 
 ## MuseBoardInfo
 
-Returned by `getBoardInfo()` after connection:
+连接后由 `getBoardInfo()` 返回：
 
 ```typescript
 interface MuseBoardInfo {
   device_name: string;
   sample_rate_hz: number;        // 256
-  channel_count: number;         // 4 or 8
+  channel_count: number;         // 4 或 8
   eeg_channel_names: string[];
   board_id: number;
   protocol: "classic" | "athena";
@@ -92,28 +92,41 @@ interface MuseBoardInfo {
 
 ---
 
-## Browser Compatibility
+## 浏览器兼容性
 
-| Browser | Platform | Status |
+| 浏览器 | 平台 | 状态 |
 |---------|----------|--------|
-| Chrome 56+ | Windows, macOS, Linux, Android | Supported |
-| Edge 79+ | Windows, macOS | Supported |
-| Opera 43+ | Desktop | Supported |
-| Safari | macOS, iOS | Not supported |
-| Firefox | All | Not supported |
+| Chrome 56+ | Windows、macOS、Linux、Android | 支持 |
+| Edge 79+ | Windows、macOS | 支持 |
+| Opera 43+ | 桌面 | 支持 |
+| Safari | macOS、iOS | 不支持 |
+| Firefox | 所有平台 | 不支持 |
 
 <Warning>
-  Web Bluetooth requires HTTPS. It will not work on `http://` (except `localhost` for development).
+  Web Bluetooth 需要 HTTPS。它无法在 `http://` 上工作（开发时的 `localhost` 除外）。
 </Warning>
 
 ---
 
-## Safari/iOS Workarounds
+## Safari/iOS 替代方案
 
-Three strategies for iOS support:
+支持 iOS 的三种策略：
 
-1. **Native app shell** (recommended): implement BLE in Swift with CoreBluetooth, bridge frames to web UI
-2. **Companion bridge**: native app streams frames over WebSocket/WebRTC to the web app
-3. **Hybrid WebView**: `WKWebView` with native message handlers for BLE
+1. **原生应用外壳**（推荐）：用 Swift 和 CoreBluetooth 实现 BLE，将帧桥接到 Web 界面
+2. **配套桥接**：原生应用通过 WebSocket/WebRTC 将帧传给 Web 应用
+3. **混合 WebView**：使用带原生消息处理器的 `WKWebView` 处理 BLE
 
-In all cases, use the `HeadbandFrameV1` schema as the interface boundary so browser and native transports emit the same frame shape.
+无论哪种方式，都应以 `HeadbandFrameV1` 结构作为接口边界，让浏览器和原生传输输出相同的帧结构。
+
+---
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="EEG BLE 快速上手" icon="bluetooth" href="/cn/sdk/eeg-web-ble/getting-started">
+    传输 API 和连接指南
+  </Card>
+  <Card title="头带传输" icon="signal-stream" href="/cn/sdk/eeg-web/headband-transport">
+    帧结构和传输接口
+  </Card>
+</CardGroup>

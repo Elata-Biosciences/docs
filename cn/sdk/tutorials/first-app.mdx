@@ -1,0 +1,201 @@
+---
+title: "构建你的第一个 Elata 应用"
+description: "先创建一个可运行的应用，再以它为参考进行更深入的 SDK 集成。"
+---
+
+如果你刚接触 SDK，希望在手动集成任何内容之前先在本地成功运行一个脚手架应用，请阅读本页。
+
+如果你想看完整的路线图（**rPPG 为主**、**EEG 可选**、**通过蓝牙连接头带**），以及脚手架、分步教程和概览之间的对比，请参阅 [SDK 概览](/cn/sdk/overview)。
+
+目标很简单：在本地运行一个可用的应用，了解每个模板对应哪种传感器流程，并知道下一步去哪里。
+
+## 你将构建什么
+
+你将使用 `@elata-biosciences/create-elata-demo` 创建一个已发布的入门应用。
+
+选择与你的目标相符的模板：
+
+- `rppg-demo`：**主要**：基于摄像头的脉搏/rPPG 应用
+- `eeg-demo`：浏览器 EEG 处理，支持 Muse Web Bluetooth
+- `eeg-ble`：以蓝牙为主、面向 Muse 兼容头带的 EEG 入门应用
+- `ppg-demo`：通过 Muse 头带的 PPG 传感器获取心率和 HRV
+- `pulse-game`：运行在沙箱 iframe 中并保存分数的 rPPG 游戏，与应用在 Elata 应用商店中的运行方式相同
+
+## 为什么从这里开始
+
+这是推荐的默认方式，因为它为你提供：
+
+- 可运行的应用结构
+- 固定的兼容包版本
+- 可以与你自己的应用对比的参考实现
+
+请在将 SDK 集成到现有应用之前先完成这一步。
+
+## 第 1 步：选择模板
+
+使用以下决策表：
+
+| 如果你想…… | 选择 |
+| --- | --- |
+| 构建默认的摄像头应用（无需额外硬件） | `rppg-demo` |
+| 只添加浏览器 EEG（先用合成或离线样本） | `eeg-demo` |
+| 通过蓝牙连接 Muse 兼容头带（Chrome/Edge） | `eeg-ble` |
+| 通过 Muse 头带读取心率和 HRV | `ppg-demo` |
+| 查看完整的应用商店模式（沙箱 iframe + 保存分数） | `pulse-game` |
+
+如果不确定，就从 `rppg-demo` 开始。
+
+## 第 2 步：创建应用
+
+使用交互式选择器开始：
+
+<CodeGroup>
+
+```bash pnpm
+pnpm create @elata-biosciences/elata-demo my-app
+```
+
+```bash npm
+npm create @elata-biosciences/elata-demo my-app
+```
+
+</CodeGroup>
+
+如果你更喜欢直接使用默认路径，可以直接创建 `rppg-demo`：
+
+<CodeGroup>
+
+```bash pnpm
+pnpm create @elata-biosciences/elata-demo my-app -- --template rppg
+```
+
+```bash npm
+npm create @elata-biosciences/elata-demo my-app -- --template rppg
+```
+
+</CodeGroup>
+
+如果想先查看完整的模板列表：
+
+<CodeGroup>
+
+```bash pnpm
+pnpm dlx @elata-biosciences/create-elata-demo --list-templates
+```
+
+```bash npm
+npx @elata-biosciences/create-elata-demo --list-templates
+```
+
+</CodeGroup>
+
+完整的别名和模板对照见 [create-elata-demo](/cn/sdk/create-elata-demo)。
+
+## 第 3 步：安装并运行
+
+复制**其中一列**（pnpm 或 npm），然后按顺序运行每一行：
+
+<CodeGroup>
+
+```bash pnpm
+cd my-app
+pnpm install
+pnpm run dev
+```
+
+```bash npm
+cd my-app
+npm install
+npm run dev
+```
+
+</CodeGroup>
+
+## 第 4 步：确认你得到了什么
+
+应用启动后，确认以下预期行为：
+
+- `rppg-demo`：请求摄像头权限并开始脉搏会话
+- `eeg-demo`：在浏览器中加载 EEG 处理并显示由合成数据驱动的输出
+- `eeg-ble`：在 EEG 基础上增加受支持的 Muse 兼容头带的蓝牙配对和数据流
+- `ppg-demo`：连接 Muse 头带并显示 BPM、RMSSD 和实时 PPG 诊断
+- `pulse-game`：在沙箱 iframe 中运行游戏，并通过本地宿主保存分数，与应用商店的方式相同
+
+如果你只是在评估，先停在这里，从生成的应用中学习，然后再集成到现有代码库中。
+
+## 第 5 步：理解生成的应用
+
+每个脚手架应用都为你提供：
+
+- 一个精简的 Vite + React 外壳
+- 已接入的 Elata 包
+- 包含模板说明的 `README.md`
+- 用于确认应用能干净编译的 `build` 脚本
+- 将应用打包以[上传到 Elata 应用商店](/cn/apps/build/launch-your-app)的 `build:zip` 脚本
+
+它就是你确认可用的基线。
+
+当之后的手动集成出问题时，先把你的应用与这个生成的应用进行对比，再判断是不是包有问题。
+
+## 常见问题：在另一个 `pnpm` 工作区中创建项目
+
+如果你在一个已有 `pnpm-workspace.yaml` 的仓库中创建 `my-app`，`pnpm install` 可能会关联到父级工作区，而不是生成的应用。
+
+在父目录中**逐行**运行以下命令（必要时调整 `my-app`）：
+
+<CodeGroup>
+
+```bash pnpm
+pnpm --dir my-app --ignore-workspace install
+pnpm --dir my-app --ignore-workspace run dev
+```
+
+```bash npm
+cd my-app
+npm install
+npm run dev
+```
+
+</CodeGroup>
+
+## 下一步
+
+你已经有了一个运行中的脚手架应用。推荐的顺序是：**先做摄像头 rPPG**（大多数人的主要应用），**如果产品需要脑电信号再做浏览器 EEG**，然后**通过 Web Bluetooth 连接头带**（EEG 之上的传输层）。每一步都分为两种情况：**继续基于脚手架**，或**集成到你已有的应用中**。
+
+### 下一步：摄像头（rPPG）：主要
+
+选择与你情况相符的一行：
+
+| 你的情况 | 下一步 |
+| --- | --- |
+| **新应用**：继续基于生成的 `rppg-demo` 脚手架开发 | 先阅读[在浏览器应用中使用 rPPG](/cn/sdk/guides/rppg-browser) 了解集成模型，修改模板时参考 [rppg-web](/cn/sdk/rppg-web/getting-started)。脚手架 CLI 详情见 [create-elata-demo](/cn/sdk/create-elata-demo)。 |
+| **现有应用**：需要在已上线的代码库中加入 rPPG | 按照[在现有浏览器应用中添加摄像头 rPPG](/cn/sdk/tutorials/rppg-existing-app)逐步操作。 |
+
+### 然后：浏览器 EEG：可选（暂不需要头带）
+
+| 你的情况 | 下一步 |
+| --- | --- |
+| **新应用**：扩展或重新生成 `eeg-demo` | 阅读[在浏览器应用中使用 EEG](/cn/sdk/guides/eeg-browser)，然后是 [eeg-web](/cn/sdk/eeg-web/getting-started)。脚手架参考：[create-elata-demo](/cn/sdk/create-elata-demo)。 |
+| **现有应用** | [在现有浏览器应用中添加 EEG](/cn/sdk/tutorials/eeg-existing-app)。 |
+
+### 然后：启用蓝牙头带（Muse 兼容）
+
+| 你的情况 | 下一步 |
+| --- | --- |
+| **新应用**：扩展 `eeg-ble` 脚手架 | 阅读[通过 Web Bluetooth 使用受支持的设备](/cn/sdk/guides/web-bluetooth)，然后是 [eeg-web-ble](/cn/sdk/eeg-web-ble/getting-started)（以及 [eeg-web](/cn/sdk/eeg-web/getting-started)）。 |
+| **现有应用** | [通过 Web Bluetooth 输出 Muse 兼容 EEG 数据](/cn/sdk/tutorials/eeg-ble-live-stream)。如果还没有接入 WASM，请先完成上面的 EEG 一行。 |
+
+### 完整路线图
+
+如需按**优先顺序**（rPPG、EEG、蓝牙）在一个地方查看这些选择，请参阅 [SDK 概览](/cn/sdk/overview)。
+
+### 示例应用
+
+<CardGroup cols={2}>
+  <Card title="示例应用" icon="grid-2" href="/cn/sdk/guides/example-apps">
+    完整的产品级参考实现
+  </Card>
+  <Card title="选择合适的包" icon="compass" href="/cn/sdk/guides/choose-the-right-package">
+    包选择指南
+  </Card>
+</CardGroup>

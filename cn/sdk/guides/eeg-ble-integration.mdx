@@ -1,34 +1,177 @@
 ---
-title: "EEG + BLE Integration"
-description: "End-to-end guide: connect a headband, stream EEG, and compute band powers"
+title: "EEG + BLE 集成"
+description: "在浏览器中连接 Muse 兼容头带，输出 EEG 帧，并使用 Elata SDK 计算频段功率。"
+sidebarTitle: "EEG + BLE 集成"
 ---
 
-## Overview
+<Note>
+  如果你想在一个地方看到完整的浏览器 EEG 流程，请阅读本指南。你将初始化 EEG WASM 层、通过 Web Bluetooth 连接、输出数据帧，并把这些帧转化为应用可用的指标。
+</Note>
 
-This guide walks through the complete flow: initialize WASM, connect to a Muse headband over Web Bluetooth, stream EEG frames, and compute real-time band powers.
+## 本指南涵盖的内容
 
----
+本指南展示如何把 `@elata-biosciences/eeg-web` 和 `@elata-biosciences/eeg-web-ble` 组合成一个完整的浏览器流程。
 
-## Prerequisites
+完成后，你将能够：
 
-- `@elata-biosciences/eeg-web` and `@elata-biosciences/eeg-web-ble` installed
-- Chrome/Edge browser with Web Bluetooth support
-- A Muse 2 or Muse S headband
-- HTTPS or localhost for development
+- 初始化 EEG WASM 运行时
+- 在浏览器中连接 Muse 兼容头带
+- 接收规范化的 `HeadbandFrameV1` 帧
+- 从传入的 EEG 样本实时计算频段功率
+- 干净地停止并从断开中恢复
 
----
+## 开始之前
 
-## Full Example
+你需要：
 
-```typescript
-import { initEegWasm, band_powers, AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+- `@elata-biosciences/eeg-web`
+- `@elata-biosciences/eeg-web-ble`
+- 支持 Web Bluetooth 的 Chrome 或 Edge
+- `https://` 或 `localhost`
+- Muse 2 或 Muse S 头带
+
+<Warning>
+  Safari 和 iOS 不支持此浏览器 BLE 流程。对于这些平台，请使用原生 BLE 外壳、桥接应用或其他传输层，并继续以 `@elata-biosciences/eeg-web` 作为处理边界。
+</Warning>
+
+## 选择合适的起点
+
+<Columns cols={2}>
+  <Card title="从可运行的演示开始" href="/cn/sdk/create-elata-demo">
+    如果想以最快速度获得参考应用，请创建 EEG BLE 演示。
+  </Card>
+
+  <Card title="EEG Web 快速上手" href="/cn/sdk/eeg-web/getting-started">
+    在添加设备传输之前，先了解浏览器 EEG 处理包。
+  </Card>
+
+  <Card title="EEG Web BLE 快速上手" href="/cn/sdk/eeg-web-ble/getting-started">
+    查看传输包、生命周期方法和平台限制。
+  </Card>
+
+  <Card title="实时数据流教程" href="/cn/sdk/tutorials/eeg-ble-live-stream">
+    如果想先看教程再看这份端到端指南，请按分步版本操作。
+  </Card>
+</Columns>
+
+## 安装包
+
+<Tabs>
+  <Tab title="pnpm">
+    ```bash
+    pnpm add @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+    ```
+  </Tab>
+  <Tab title="npm">
+    ```bash
+    npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+    ```
+  </Tab>
+</Tabs>
+
+<Info>
+  `@elata-biosciences/eeg-web-ble` 依赖 `@elata-biosciences/eeg-web` 提供的共享帧类型和 EEG WASM 层。
+</Info>
+
+## 集成流程
+
+<Steps>
+  <Step title="初始化 EEG WASM">
+    在创建传输或调用分析函数之前，先初始化 EEG WASM 模块。
+
+    ```ts
+    import { initEegWasm } from "@elata-biosciences/eeg-web";
+
+    await initEegWasm();
+    ```
+  </Step>
+  <Step title="创建 BLE 传输">
+    预先加入 Athena 解码器，这样经典版和兼容 Athena 的头带都能通过同一套设置工作。
+
+    ```ts
+    import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+    import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+
+    const transport = new BleTransport({
+      sourceName: "my-app",
+      deviceOptions: {
+        athenaDecoderFactory: () => new AthenaWasmDecoder(),
+        logger: (msg) => console.debug("[BLE]", msg),
+      },
+    });
+    ```
+  </Step>
+  <Step title="订阅传输状态和数据帧">
+    使用 `onStatus` 更新界面状态，使用 `onFrame` 处理 EEG 数据。
+
+    ```ts
+    import type { HeadbandFrameV1 } from "@elata-biosciences/eeg-web";
+
+    transport.onStatus = (status) => {
+      const el = document.getElementById("status");
+      if (el) el.textContent = status.state;
+    };
+
+    transport.onFrame = (frame: HeadbandFrameV1) => {
+      console.log("channels", frame.eeg.channelNames);
+      console.log("rows", frame.eeg.samples.length);
+    };
+    ```
+  </Step>
+  <Step title="通过用户操作连接并开始数据流">
+    浏览器 BLE 流程通常需要点击或其他用户手势才能打开设备选择器。
+
+    ```ts
+    async function connectHeadband() {
+      try {
+        await transport.connect();
+        await transport.start();
+      } catch (err) {
+        console.error("Connection failed:", err);
+      }
+    }
+    ```
+
+    在较简单的应用流程中，`startStreaming()` 通常是最安全的默认选择，因为它在一次调用中合并了 `connect()` 和 `start()`。
+  </Step>
+  <Step title="将传入的帧转化为指标">
+    在帧到达时按通道计算频段功率。
+
+    ```ts
+    import { band_powers } from "@elata-biosciences/eeg-web";
+
+    transport.onFrame = (frame: HeadbandFrameV1) => {
+      const { eeg } = frame;
+
+      for (let ch = 0; ch < eeg.channelCount; ch++) {
+        const channelSamples = eeg.samples.map((row) => row[ch]);
+        const powers = band_powers(
+          new Float32Array(channelSamples),
+          eeg.sampleRateHz,
+        );
+
+        console.log(
+          `${eeg.channelNames[ch]}: alpha=${powers.alpha.toFixed(2)} beta=${powers.beta.toFixed(2)}`,
+        );
+      }
+    };
+    ```
+  </Step>
+</Steps>
+
+## 完整示例
+
+```ts
+import {
+  initEegWasm,
+  band_powers,
+  AthenaWasmDecoder,
+} from "@elata-biosciences/eeg-web";
 import type { HeadbandFrameV1 } from "@elata-biosciences/eeg-web";
 import { BleTransport } from "@elata-biosciences/eeg-web-ble";
 
-// Step 1: Initialize WASM
 await initEegWasm();
 
-// Step 2: Create transport with Athena support
 const transport = new BleTransport({
   sourceName: "my-app",
   deviceOptions: {
@@ -37,39 +180,40 @@ const transport = new BleTransport({
   },
 });
 
-// Step 3: Handle status changes
 transport.onStatus = (status) => {
   const el = document.getElementById("status");
   if (el) el.textContent = status.state;
 };
 
-// Step 4: Process incoming frames
 transport.onFrame = (frame: HeadbandFrameV1) => {
   const { eeg } = frame;
 
-  // Process each channel
   for (let ch = 0; ch < eeg.channelCount; ch++) {
-    const channelSamples = eeg.samples.map(row => row[ch]);
-    const powers = band_powers(new Float64Array(channelSamples), eeg.sampleRateHz);
+    const channelSamples = eeg.samples.map((row) => row[ch]);
+    const powers = band_powers(
+      new Float32Array(channelSamples),
+      eeg.sampleRateHz,
+    );
 
-    console.log(`${eeg.channelNames[ch]}: α=${powers.alpha.toFixed(2)} β=${powers.beta.toFixed(2)}`);
+    console.log(
+      `${eeg.channelNames[ch]}: alpha=${powers.alpha.toFixed(2)} beta=${powers.beta.toFixed(2)}`,
+    );
   }
 };
 
-// Step 5: Connect and stream
 try {
-  await transport.connect();  // opens Bluetooth picker
-  await transport.start();    // begins streaming
+  await transport.connect();
+  await transport.start();
 } catch (err) {
   console.error("Connection failed:", err);
 }
 ```
 
----
+## 干净地关闭
 
-## Graceful Shutdown
+当用户离开视图或关闭页面时，停止数据流并释放蓝牙会话。
 
-```typescript
+```ts
 async function shutdown() {
   await transport.stop();
   await transport.disconnect();
@@ -78,45 +222,110 @@ async function shutdown() {
 window.addEventListener("beforeunload", shutdown);
 ```
 
----
+## 处理重连
 
-## Handling Reconnection
+如果断开是可恢复的，尝试重新连接并重启数据流。
 
-```typescript
+```ts
 transport.onStatus = (status) => {
   if (status.state === "disconnected" && status.recoverable) {
     console.log("Attempting reconnect...");
+
     setTimeout(async () => {
       try {
         await transport.connect();
         await transport.start();
-      } catch (e) {
-        console.error("Reconnect failed:", e);
+      } catch (error) {
+        console.error("Reconnect failed:", error);
       }
     }, 2000);
   }
 };
 ```
 
----
+## 了解传输生命周期
 
-## Architecture
+| 方法 | 作用 |
+| --- | --- |
+| `startStreaming()` | 一次调用完成连接并开始数据流 |
+| `connect()` | 打开蓝牙选择器并准备会话 |
+| `start()` | 开始 EEG 数据流并触发 `onFrame` |
+| `stop()` | 停止数据流，但保持蓝牙会话打开 |
+| `disconnect()` | 释放蓝牙会话 |
 
-```mermaid
-flowchart LR
-    HD["Muse Headband"] -->|"BLE GATT"| WB["Web Bluetooth API"]
-    WB --> MD["MuseBleDevice"]
-    MD --> BT["BleTransport"]
-    BT -->|"HeadbandFrameV1"| APP["Your App"]
-    APP -->|"channel samples"| BP["band_powers()"]
-    APP -->|"channel samples"| MOD["WasmCalmnessModel"]
+## 设备说明
+
+<Tabs>
+  <Tab title="经典版 Muse">
+    使用标准的浏览器 BLE 流程即可。
+  </Tab>
+  <Tab title="Athena 固件">
+    创建传输时使用 `athenaDecoderFactory`。Athena 设备提供更丰富的帧内容，包括 8 路 EEG 通道和额外的传感器数据。
+  </Tab>
+</Tabs>
+
+连接后还可以检查元数据：
+
+```ts
+await transport.connect();
+
+const isAthena = transport.getIsAthena();
+const boardInfo = transport.getBoardInfo();
+const channelNames = transport.getEegNames();
 ```
 
----
+<Tip>
+  如果你要在不同 Muse 型号之间测试，请从第一天起就启用 Athena 解码器工厂，这样以后就不需要单独的传输设置。
+</Tip>
 
-## Tips
+## 架构一览
 
-- **Buffer frames** for smoother analysis — `band_powers` works best with 1-2 seconds of data (256-512 samples at 256 Hz)
-- **Use `Float64Array`** for best WASM interop performance
-- **Handle the Bluetooth picker** — `connect()` triggers a browser-native device picker that the user must interact with
-- **Test with synthetic data** first during development if no headband is available
+浏览器 EEG BLE 流程通常如下：
+
+1. 初始化 `@elata-biosciences/eeg-web`
+2. 创建 `BleTransport`
+3. 通过用户手势连接
+4. 接收 `HeadbandFrameV1` 帧
+5. 计算频段功率、分数或状态转换等应用指标
+6. 在应用中渲染图表、分数或自适应界面
+
+## 集成建议
+
+- 在分析前对帧进行缓冲，以获得更稳定的结果
+- 调用 `band_powers` 时使用 `Float32Array`
+- 将 BLE 连接逻辑放在明确的用户操作之后
+- 把帧处理放到应用状态中，而不是停留在 `console.log`
+- 如果需要可运行的参考项目，先从演示应用开始
+- 开发时如果没有头带，先用合成数据测试
+
+<Info>
+  `band_powers` 在大约 1 到 2 秒的数据上最有用。在 256 Hz 下，大约是 256 到 512 个样本。
+</Info>
+
+## 下一步
+
+<Columns cols={2}>
+  <Card title="Muse 设备详情" href="/cn/sdk/eeg-web-ble/muse-device">
+    查看设备行为、协议细节和兼容性说明。
+  </Card>
+
+  <Card title="EEG Web BLE 快速上手" href="/cn/sdk/eeg-web-ble/getting-started">
+    更详细地了解传输包 API 和平台注意事项。
+  </Card>
+
+  <Card title="通过 Web Bluetooth 输出 EEG" href="/cn/sdk/tutorials/eeg-ble-live-stream">
+    按照面向应用步骤的教程版本完成此流程。
+  </Card>
+
+  <Card title="在现有浏览器应用中添加 EEG" href="/cn/sdk/tutorials/eeg-existing-app">
+    在添加 BLE 传输之前，先将浏览器 EEG 处理集成到应用中。
+  </Card>
+
+  <Card title="头带传输" href="/cn/sdk/eeg-web/headband-transport">
+    了解 EEG 流程使用的帧结构和传输边界。
+  </Card>
+
+  <Card title="rPPG 摄像头集成" href="/cn/sdk/guides/rppg-camera">
+    需要多模态生物特征时，将此 EEG 流程与浏览器摄像头流水线结合使用。
+  </Card>
+</Columns>

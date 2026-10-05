@@ -1,0 +1,114 @@
+---
+title: "Create Elata Demo"
+description: "从模板创建可直接运行的 Elata 入门应用。"
+---
+
+## 这是什么
+
+`@elata-biosciences/create-elata-demo` 会生成一个已接入 Elata SDK、可直接运行的 Vite + React 应用。这是最快获得可运行应用的方式，也是你将 SDK 集成到自己项目之前的可靠基线。
+
+---
+
+## 模板
+
+| 模板 | 别名 | 内容 | 硬件 |
+| --- | --- | --- | --- |
+| `rppg-demo` | `rppg` | 摄像头脉搏和 rPPG 入门。**默认模板。** | 网络摄像头 |
+| `eeg-demo` | `eeg` | 用于 SDK 接线的浏览器 EEG 入门，支持 Muse Web Bluetooth | Muse（可选） |
+| `eeg-ble` | `ble` | 以蓝牙为主的 EEG 入门，包含浏览器配对流程 | Muse |
+| `ppg-demo` | `ppg`、`muse-ppg` | 头带 PPG 入门，显示 BPM、RMSSD 和实时诊断 | Muse |
+| `pulse-game` | `pulse`、`recovery` | 运行在沙箱 iframe 中、通过 `app-metrics` 保存分数的 rPPG 恢复游戏，完整演示端到端流程 | 网络摄像头 |
+
+<Tip>
+  要为 Elata 应用商店开发？`pulse-game` 展示了完整的商店模式：应用运行在 iframe 中，通过[指标桥接](/cn/apps/platform/metrics-and-scores)与宿主通信。
+</Tip>
+
+---
+
+## 用法
+
+<CodeGroup>
+
+```bash npm
+# 交互式：先选择模板，再输入项目名称
+npm create @elata-biosciences/elata-demo my-app
+
+# 直接指定模板
+npm create @elata-biosciences/elata-demo my-app -- --template rppg
+npm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
+npm create @elata-biosciences/elata-demo my-app -- --template ppg
+npm create @elata-biosciences/elata-demo my-app -- --template pulse-game
+
+# 列出模板
+npx @elata-biosciences/create-elata-demo --list-templates
+```
+
+```bash pnpm
+pnpm create @elata-biosciences/elata-demo my-app
+pnpm create @elata-biosciences/elata-demo my-app -- --template rppg
+pnpm dlx @elata-biosciences/create-elata-demo --list-templates
+```
+
+</CodeGroup>
+
+| 参数 | 含义 |
+| --- | --- |
+| `--template <name>` 或 `--template=<name>` | 选择模板或别名 |
+| `--list-templates` | 列出可用模板 |
+
+未指定 `--template` 时，CLI 在交互模式下会让你选择模板，否则使用 `rppg-demo`。如果省略项目目录，它会询问项目名称。
+
+---
+
+## 你将获得
+
+每个生成的应用都包含：
+
+- Vite + React + TypeScript 应用
+- 固定为兼容版本组合的 Elata 包
+- 针对该模板的 `README.md`
+- `npm run dev`：启动开发服务器
+- `npm run build`：类型检查并构建到 `dist/`
+- `npm run build:zip`：构建并生成 `app.zip`，可直接[上传到应用商店](/cn/apps/build/launch-your-app)
+
+```bash
+cd my-app
+npm install
+npm run dev
+```
+
+---
+
+## 在其他 pnpm 工作区中
+
+如果你在一个未包含新目录的现有 `pnpm` 工作区中创建应用，请在工作区之外安装和运行：
+
+```bash
+pnpm --dir my-app --ignore-workspace install
+pnpm --dir my-app --ignore-workspace run dev
+```
+
+---
+
+## 脚手架还是示例应用？
+
+| 如果你想要…… | 使用 |
+| --- | --- |
+| 依赖版本固定的干净入门项目 | `create-elata-demo` |
+| 带有路由、游戏循环和图表的完整产品级应用 | [示例应用](/cn/sdk/guides/example-apps) |
+
+---
+
+## 下一步
+
+<CardGroup cols={3}>
+  <Card title="你的第一个应用" icon="rocket" href="/cn/sdk/tutorials/first-app">
+    创建并运行入门应用
+  </Card>
+  <Card title="选择合适的包" icon="compass" href="/cn/sdk/guides/choose-the-right-package">
+    包选择指南
+  </Card>
+  <Card title="发布到商店" icon="store" href="/cn/apps/build/launch-your-app">
+    上传你的应用
+  </Card>
+</CardGroup>

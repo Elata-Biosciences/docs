@@ -1,170 +1,58 @@
 ---
-title: "How Elata Works"
-description: "Understanding the protocol architecture and value flows"
+title: "Elata 如何运作"
+description: "从传感器到应用再到商店：各部分如何协同工作。"
 ---
 
-## Architecture
-
-Three layers, each doing one thing well.
-
-<img
-  src="/images/how-elata-works-light.svg"
-  alt="Elata architecture"
-  className="block dark:hidden"
-/>
-
-<img
-  src="/images/how-elata-works-dark.svg"
-  alt="Elata architecture"
-  className="hidden dark:block"
-/>
-
----
-
-## Layer 1: Apps
-
-Where users actually do stuff.
-
-- **App Store** — browse and launch apps
-- **App Tokens** — each app has its own ERC-20 token (1B supply)
-- **Features** — tournaments with prize pools, NFT items that unlock things
-
-### Layer 2: Economics
-
-Where money moves.
-
-| Piece                   | Job                                   |
-| ----------------------- | ------------------------------------- |
-| **Bonding Curves**      | Set token prices based on supply sold |
-| **Staking Vaults**      | Deposit tokens, earn fees             |
-| **Fee Router**          | Collect fees from all sources         |
-| **Rewards Distributor** | Split fees 70/15/15                   |
-
-### Layer 3: Governance
-
-Where decisions happen.
-
-- **veELTA** — lock ELTA for voting power (longer lock = bigger boost)
-- **Governor** — on-chain proposals and voting
-- **LotPool** — XP-weighted funding for new projects
-- **Timelock** — 48-hour delay before execution
-
----
-
-## Where Fees Come From
+## 三个层次
 
 ```mermaid
 graph LR
-    subgraph "Fee Sources"
-        A[Trading Fees 1%]
-        B[App Launch Fees]
-        C[Tournament Fees]
-    end
-    
-    subgraph "Distribution"
-        D[Rewards Distributor]
-    end
-    
-    subgraph "Recipients"
-        E[App Stakers 70%]
-        F[veELTA Holders 15%]
-        G[Treasury 15%]
-    end
-    
-    A --> D
-    B --> D
-    C --> D
-    D --> E
-    D --> F
-    D --> G
+    A[传感器<br/>摄像头 · EEG 头带] --> B[生物特征 SDK<br/>运行在浏览器中]
+    B --> C[你的应用]
+    C -->|postMessage 桥接| D[Elata 应用商店<br/>登录 · 支付 · 存储]
 ```
 
-Three sources:
-
-1. **Trading (1%)** — every buy/sell on a bonding curve
-2. **Launches (10 ELTA)** — flat fee per new app
-3. **Tournaments (2.5%)** — cut of prize pools
-
-### Where Fees Go
-
-| Who                | Cut | Why                                          |
-| ------------------ | --- | -------------------------------------------- |
-| **App stakers**    | 70% | Reward people holding and staking app tokens |
-| **veELTA holders** | 15% | Reward long-term ELTA lockers                |
-| **Treasury**       | 15% | Fund development, grants, ops                |
+1. **传感器**：用于 rPPG 的网络摄像头，或 Muse 等蓝牙 EEG/PPG 头带。
+2. **生物特征 SDK**：在用户设备上借助 WebAssembly，把原始传感器数据转化为可用信号（心率、频段功率、HRV）。
+3. **应用商店**：在沙箱中托管你的应用，并提供账户、支付、存储和分发。
 
 ---
 
-## App Lifecycle
+## 开发者流程
 
-### Launch
+1. **构建**：使用 SDK 构建 Web 应用。可通过 `npm create @elata-biosciences/elata-demo` 从模板开始。
+2. **注册**：在商店的“构建应用”向导中注册应用名称。
+3. **上传**：上传构建产物的 zip 文件，商店会立即进行检查。
+4. **提交**审核：自动安全扫描和人工审核员会审查该版本。
+5. **上线**：用户发现你的应用并在浏览器中使用。
 
-Developer pays **110 ELTA**:
-
-- 100 ELTA → seeds the bonding curve
-- 10 ELTA → treasury
-
-Gets:
-
-- 1 billion tokens total
-- 50% auto-staked (earning fees immediately)
-- 50% on the bonding curve for sale
-
-### Raising
-
-- Users buy from the curve
-- Price rises with each purchase
-- 1% fee on every trade
-- XP holders get 6-hour head start
-
-### Graduation
-
-Curve hits **42,000 ELTA** collected:
-
-- Liquidity auto-deploys to Uniswap
-- LP tokens locked 2 years (no rug pulls)
-- Free market trading begins
-
-### Live
-
-Post-graduation:
-
-- Trades on DEX
-- Staking rewards keep flowing
-- Creator can add tournaments, items
-- Token holders can organize around the app
+详情见[应用生命周期](/cn/apps/app-lifecycle)。
 
 ---
 
-## Who Does What
+## 你的应用如何运行
 
-| Role              | Does                         | Earns                              |
-| ----------------- | ---------------------------- | ---------------------------------- |
-| **Builders**      | Launch apps                  | 50% of tokens (auto-staked) + fees |
-| **Token holders** | Buy/stake app tokens         | 70% of trading fees                |
-| **ELTA lockers**  | Lock ELTA as veELTA          | 15% of all protocol fees + votes   |
-| **Users**         | Play apps, enter tournaments | XP, early access, prizes           |
+你的应用运行在一个拥有独立源的沙箱 iframe 中。在用户许可下，它可以使用摄像头和蓝牙，但无法看到用户的身份、钱包或商店的数据。
 
----
+当需要平台能力时，它会向商店发送消息：
 
-## Security
-
-| Protection              | How                                                            |
-| ----------------------- | -------------------------------------------------------------- |
-| **LP locking**          | Liquidity locked 2 years at graduation. Can't rug.             |
-| **Immutable contracts** | No admin keys. Rules can't change post-deploy.                 |
-| **Timelock**            | 48-hour delay on governance actions.                           |
-| **XP early access**     | 6-hour window for XP holders before public launch. Stops bots. |
+| 需求 | 商店功能 |
+| --- | --- |
+| 出售解锁内容 | [应用内购买](/cn/apps/platform/in-app-purchases) |
+| 保存进度 | [应用状态](/cn/apps/platform/app-state) |
+| 记录会话和分数 | [指标与分数](/cn/apps/platform/metrics-and-scores) |
+| 为用户评分做贡献 | [同意与洞察](/cn/apps/platform/consent-and-insights) |
+| 提醒用户 | [通知](/cn/apps/platform/notifications) |
+| 按月收费 | [订阅](/cn/apps/platform/subscriptions) |
 
 ---
 
-## Next
+## 数据存放在哪里
 
-<CardGroup cols={2}>
-  <Card title="Tokenomics" icon="chart-pie" iconType="light" href="/learn/tokenomics">
-    ELTA supply, distribution, veELTA math
-  </Card>
-  <Card title="Revenue Model" icon="money-bill" iconType="light" href="/learn/revenue-model">
-    Fee mechanics and yield calculations
-  </Card>
-</CardGroup>
+| 数据 | 存放位置 |
+| --- | --- |
+| 原始摄像头画面和生物信号 | 用户的设备上 |
+| 你的应用保存的存档、记录和分数 | 用户账户中，仅限你的应用访问 |
+| 用于评分的派生会话结果 | 仅在用户同意后与 Elata 共享 |
+
+参见[隐私与数据](/cn/learn/privacy-and-data)。

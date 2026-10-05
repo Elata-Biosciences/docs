@@ -8,7 +8,7 @@ running locally before you integrate anything manually.
 
 If you want the full map (**rPPG primary**, **EEG optional**, **Bluetooth to
 connect a headset**) with scaffold vs step-by-step vs overview, use
-[Build A Browser App](/sdk/overview).
+[the SDK overview](/sdk/overview).
 
 The goal is simple: get a working app running locally, understand which
 template maps to which sensor workflow, and know where to go next.
@@ -86,11 +86,11 @@ If you want to see the full template list first:
 <CodeGroup>
 
 ```bash pnpm
-pnpm dlx @elata-biosciences/create-elata-demo -- --list-templates
+pnpm dlx @elata-biosciences/create-elata-demo --list-templates
 ```
 
 ```bash npm
-npx @elata-biosciences/create-elata-demo -- --list-templates
+npx @elata-biosciences/create-elata-demo --list-templates
 ```
 
 </CodeGroup>
@@ -123,7 +123,9 @@ Once the app starts, verify the expected behavior:
 
 - `rppg-demo`: asks for camera access and starts a pulse-style session
 - `eeg-demo`: loads EEG processing in the browser and shows synthetic-data-driven output
-- `eeg-ble` alias for `eeg-demo`: adds Bluetooth pairing and streaming guidance for a supported Muse-compatible headset on top of EEG
+- `eeg-ble`: adds Bluetooth pairing and streaming for a supported Muse-compatible headset on top of EEG
+- `ppg-demo`: connects a Muse headband and shows BPM, RMSSD, and live PPG diagnostics
+- `pulse-game`: runs the game inside a sandboxed iframe and saves scores through a local host, the way the App Store does
 
 If your goal is just evaluation, stop here first and learn from the generated
 app before integrating into an existing codebase.
@@ -136,6 +138,7 @@ Each scaffolded app gives you:
 - Elata packages already wired in
 - a `README.md` with template-specific notes
 - a `build` script so you can confirm the app compiles cleanly
+- a `build:zip` script that packages the app for [upload to the Elata App Store](/apps/build/launch-your-app)
 
 This is meant to be your known-good baseline.
 
@@ -193,21 +196,21 @@ Pick the row that matches you:
 
 | Your situation | What to do next |
 | --- | --- |
-| **New app**: extend `eeg-demo` via the `eeg-ble` alias path | [Web Bluetooth With Supported Devices](/sdk/guides/web-bluetooth), then [eeg-web-ble](/sdk/eeg-web-ble/getting-started) (and [eeg-web](/sdk/eeg-web/getting-started)). |
+| **New app**: extend the `eeg-ble` scaffold | [Web Bluetooth With Supported Devices](/sdk/guides/web-bluetooth), then [eeg-web-ble](/sdk/eeg-web-ble/getting-started) (and [eeg-web](/sdk/eeg-web/getting-started)). |
 | **Existing app** | [Stream Muse-Compatible EEG Over Web Bluetooth](/sdk/tutorials/eeg-ble-live-stream). If WASM is not wired yet, do the EEG row above first. |
 
 ### Full map
 
 For the same choices in one place in **priority order** (rPPG, then EEG, then
-Bluetooth), use [Build A Browser App](/sdk/overview).
+Bluetooth), use [the SDK overview](/sdk/overview).
 
 ### Example Apps
 
 <CardGroup cols={2}>
-  <Card title="Example Apps" icon="grid-2" iconType="light" href="/sdk/guides/example-apps">
+  <Card title="Example Apps" icon="grid-2" href="/sdk/guides/example-apps">
     Full product-shaped reference implementations
   </Card>
-  <Card title="Choose A Package" icon="compass" iconType="light" href="/sdk/guides/choose-the-right-package">
+  <Card title="Choose A Package" icon="compass" href="/sdk/guides/choose-the-right-package">
     Package decision guide
   </Card>
 </CardGroup>

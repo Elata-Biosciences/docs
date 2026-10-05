@@ -1,0 +1,112 @@
+---
+title: "快速上手"
+description: "使用 @elata-biosciences/biosignal-session 在本地录制多传感器生物信号会话。"
+---
+
+## 功能
+
+`@elata-biosciences/biosignal-session` 将生物信号会话（EEG、PPG、rPPG 指标等）录制为一组类型化的数据流，并分块为自包含的 [Apache Arrow](https://arrow.apache.org/) 文件。录制**仅限本地**：该包不包含任何网络客户端。
+
+它为可靠性而设计：
+
+- 每个分块都带有 CRC32C 校验和以及幂等的 `(session, stream, sequence)` 标识
+- 录制器会重试、施加背压，绝不会静默丢弃数据
+- 真实的数据间隙会被记录为显式的不连续，绝不插值
+
+---
+
+## 数据模型
+
+```
+Session ─┬─ Source   （头带、摄像头、合成数据）
+         ├─ Stream   （eeg、ppg、optics、imu、rppg-metrics、ppg-metrics……）
+         │    └─ Chunk  （Arrow IPC 文件 + CRC32C，序号 0、1、2……）
+         └─ Event    （标记和注释）
+```
+
+时间以会话为基准、以整数**微秒**表示，在会话开始时锚定一次。
+
+---
+
+## 角色
+
+一次录制有两端，通过 `MessagePort` 通信：
+
+| 一端 | 职责 | 本包是否提供 |
+| --- | --- | --- |
+| **录制器**（你的应用） | 缓冲样本、关闭分块、编码 Arrow、计算校验和、重试 | 是：`RecorderCore`、设备适配器、Worker 启动器 |
+| **宿主**（可信的嵌入方） | 持久化存储分块并逐个确认 | 提供用于测试的参考内存宿主（`createMemoryHost`） |
+
+<Note>
+  Elata 应用商店目前尚未提供会话录制宿主。现阶段请在你自己的宿主页面中使用该包，或在开发和测试中使用内存宿主。
+</Note>
+
+---
+
+## 安装
+
+```bash
+npm install @elata-biosciences/biosignal-session
+```
+
+| 导入路径 | 内容 |
+| --- | --- |
+| `@elata-biosciences/biosignal-session` | 协议、协议类型、错误码、时间辅助函数、CRC32C |
+| `@elata-biosciences/biosignal-session/browser` | `RecorderCore`、握手、Arrow 编码/解码、设备适配器、Worker 启动器 |
+| `@elata-biosciences/biosignal-session/testing` | 合成数据源、内存宿主、模拟时钟、录制测试工具 |
+
+---
+
+## 设备适配器
+
+将你已在使用的 SDK 对象包装为录制数据源：
+
+- `createHeadbandSource(transport)`：来自 `eeg-web` / `eeg-web-ble` 的 `HeadbandTransport`
+- `createRppgSource(options)`：`rppg-web` 会话
+- `createPpgSource(options)`：`ppg-web` 指标
+
+---
+
+## 无需硬件即可试用
+
+testing 入口可以使用带种子的合成数据源，针对内存宿主运行完整录制。数小时的虚拟信号可在数秒内完成：
+
+```ts
+import {
+  createRecorderHarness,
+  createSyntheticSource,
+} from '@elata-biosciences/biosignal-session/testing';
+
+const h = createRecorderHarness();
+const source = createSyntheticSource({ seed: 1234 });
+
+await h.start();
+await h.startSource(source);
+source.pump(60_000);          // 60 秒的合成 EEG、rPPG 和 PPG
+await h.advance(60_000);
+await source.stop();
+await h.finalize();
+
+h.core.state();               // "complete"
+```
+
+---
+
+## 读取分块
+
+每个分块都是一个完整的 Arrow IPC 文件，自带结构和标识，因此可以单独解码，无论是在 JavaScript 中，还是在 Python 中使用 `pyarrow`：
+
+```ts
+import { decodeChunk, readFloat32Column } from '@elata-biosciences/biosignal-session/browser';
+
+const { table, identity } = decodeChunk(bytes);
+const tp9 = readFloat32Column(table, 'TP9');
+```
+
+---
+
+## 完整指南
+
+逐步的录制流程（时钟锚定、握手、打开数据流、输入样本、结束录制）以及宿主需要提供的保证，见[录制指南](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/guides/using-biosignal-sessions.md)。AI 工具可以读取 `node_modules/@elata-biosciences/biosignal-session/llms.txt`。
+
+要分析录制的数据，请参阅 [biosignal-analytics](/cn/sdk/biosignal-analytics/getting-started)。

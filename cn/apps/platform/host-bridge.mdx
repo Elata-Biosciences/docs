@@ -1,0 +1,112 @@
+---
+title: "宿主桥接"
+description: "沙箱中的应用如何与 Elata 应用商店通信，以及它支持的所有消息。"
+---
+
+## 概述
+
+你的应用运行在沙箱 iframe 中，无法访问商店的 Cookie、后端或用户的钱包。当它需要平台的能力（例如购买、保存数据或获取同意）时，会向父框架发送一条 `postMessage`。商店使用用户的会话完成操作并回复。
+
+你的应用永远不知道用户是谁，只会得到它需要的答案。
+
+```
+┌──────────── app.elata.bio（商店）─────────────┐
+│  会话 · 结账 · 存储 · 同意界面                │
+│        ▲                         │            │
+│        │ postMessage             │ 回复       │
+│  ┌─────┴─────────────────────────▼─────────┐  │
+│  │   你的应用（沙箱，独立源）              │  │
+│  └─────────────────────────────────────────┘  │
+└───────────────────────────────────────────────┘
+```
+
+---
+
+## 使用 SDK 包
+
+大多数功能都有对应的小型包，为你封装了消息、超时和错误处理：
+
+| 功能 | 包 | 页面 |
+| --- | --- | --- |
+| 一次性购买和所有权 | `@elata-biosciences/app-payments` | [应用内购买](/cn/apps/platform/in-app-purchases) |
+| 按用户的键值存储 | `@elata-biosciences/app-state` | [应用状态](/cn/apps/platform/app-state) |
+| 事件记录、分数、`reportAffect` | `@elata-biosciences/app-metrics` | [指标与分数](/cn/apps/platform/metrics-and-scores) |
+
+同意、洞察、通知、导航和反馈使用普通的 `postMessage` 调用，在下文及各自的页面中说明。
+
+---
+
+## 基本规则
+
+- **发送给父框架。** 发送到 `window.parent`。目标源使用 `'*'` 即可：商店会检查消息是否来自你应用的框架和源。
+- **使用 `requestId`。** 需要回复时，附带一个唯一的 `requestId`（8 到 128 个字符；可使用 `crypto.randomUUID()`），并在回复中进行匹配。
+- **处理无回复的情况。** 在商店之外（例如本地开发时）没有人会回复。请设置超时并优雅降级。SDK 包已为你处理这一点。
+- **商店是唯一可信来源。** 价格、所有权和同意状态始终来自商店，而不是你的应用发送的值。
+
+---
+
+## 消息参考
+
+### 购买
+
+| 应用 → 商店 | 商店 → 应用 |
+| --- | --- |
+| `elata:iap:request` `{ requestId, contentId, priceUsdc?, title?, description? }` | `elata:iap:result` `{ requestId, status: "success" \| "cancelled" \| "error", txHash?, error? }` |
+| `elata:iap:getCatalog` `{ requestId }` | `elata:iap:getCatalog:result` `{ requestId, items }` |
+| `elata:iap:hasItem` `{ requestId, contentId }` | `elata:iap:hasItem:result` `{ requestId, owned }` |
+| `elata:iap:listOwned` `{ requestId }` | `elata:iap:listOwned:result` `{ requestId, ownedContentIds }` |
+
+请使用 [`app-payments`](/cn/apps/platform/in-app-purchases)，而不是手动发送这些消息。
+
+### 应用状态
+
+| 应用 → 商店 | 商店 → 应用 |
+| --- | --- |
+| `elata:state:get` `{ requestId, key }` | `elata:state:get:result` `{ requestId, value }` 或 `{ requestId, error }` |
+| `elata:state:set` `{ requestId, key, value }` | `elata:state:set:result` `{ requestId, ok }` 或 `{ requestId, error }` |
+| `elata:state:delete` `{ requestId, key }` | `elata:state:delete:result` `{ requestId, ok }` 或 `{ requestId, error }` |
+
+请使用 [`app-state`](/cn/apps/platform/app-state)，而不是手动发送这些消息。
+
+### 指标
+
+`app-metrics` 使用通过 `__elata_metrics_init` 握手建立的专用 `MessageChannel`，而不是单独的窗口消息。请始终使用[该包](/cn/apps/platform/metrics-and-scores)。
+
+### 同意与洞察
+
+| 应用 → 商店 | 商店 → 应用 |
+| --- | --- |
+| `elata:consent:request` `{ requestId?, purpose: "platform_score", action?: "grant" \| "revoke" }` | `elata:consent:state` `{ requestId?, purpose, granted }` |
+| `elata:consent:query` `{ requestId?, purpose: "platform_score" }` | `elata:consent:state` `{ requestId?, purpose, granted }` |
+| `elata:insights:request` `{ requestId?, windowDays? }` | `elata:insights:state` `{ requestId?, consented, data? }` |
+
+参见[同意与洞察](/cn/apps/platform/consent-and-insights)。
+
+### 通知
+
+| 应用 → 商店 | 商店 → 应用 |
+| --- | --- |
+| `elata:notify:request` `{ requestId?, body }` | `elata:notify:state` `{ requestId?, status }` |
+
+参见[通知](/cn/apps/platform/notifications)。
+
+### 导航
+
+将用户带到商店中另一个应用的试玩页面：
+
+```js
+window.parent?.postMessage({ type: 'elata:navigate', slug: 'calm-runner' }, '*');
+```
+
+`slug` 必须是商店应用的标识：小写字母、数字和短横线，最多 64 个字符。没有回复。
+
+### 反馈
+
+应用运行时，商店的悬浮反馈按钮会被隐藏，以免遮挡你的控件。请改为从你自己的界面中打开商店的反馈面板：
+
+```js
+window.parent?.postMessage({ type: 'elata:feedback:open', mode: 'feature' }, '*');
+// mode：'feature'（默认）或 'bug'
+```
+
+没有回复。

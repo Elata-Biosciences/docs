@@ -67,7 +67,7 @@ import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
 await initEegWasm();
 
 const sampleRate = 256;
-const eegSamples = new Float64Array(/* ... your EEG data ... */);
+const eegSamples = new Float32Array(/* ... one channel of EEG samples ... */);
 
 const powers = band_powers(eegSamples, sampleRate);
 console.log("Alpha:", powers.alpha);
@@ -97,6 +97,9 @@ console.log("Gamma:", powers.gamma);
 - `WasmCalmnessModel`
 - `AthenaWasmDecoder`
 - `createRppgPipeline`
+- Frame helpers: `getEegChannelSamples`, `getEegInterleavedSamples`, `getEegSignalBlock`
+- Preprocessing: `createEegPreprocessor`, `processHeadbandFrame`
+- Errors: `ElataError`, `isElataError`, `asElataError`
 
 <Note>
   Generated `wasm-bindgen` exports are re-exported for compatibility and SDK debugging. Avoid instantiating generated wrappers directly unless you are intentionally debugging the SDK itself.
@@ -106,23 +109,23 @@ console.log("Gamma:", powers.gamma);
 
 ## Next
 
-<Card title="Choose A Package" icon="compass" iconType="light" href="/sdk/guides/choose-the-right-package">
+<Card title="Choose A Package" icon="compass" href="/sdk/guides/choose-the-right-package">
   Not sure if this is the right package? See the decision guide.
 </Card>
 
 <CardGroup cols={2}>
-  <Card title="Add EEG to an Existing App" icon="circle-play" iconType="light" href="/sdk/tutorials/eeg-existing-app">
+  <Card title="Add EEG to an Existing App" icon="circle-play" href="/sdk/tutorials/eeg-existing-app">
     Step-by-step integration tutorial
   </Card>
-  <Card title="Signal Processing" icon="wave-square" iconType="light" href="/sdk/eeg-web/signal-processing">
+  <Card title="Signal Processing" icon="wave-square" href="/sdk/eeg-web/signal-processing">
     Band powers, FFT, spectrum analysis
   </Card>
 
-  <Card title="Models" icon="chart-mixed" iconType="light" href="/sdk/eeg-web/models">
+  <Card title="Models" icon="chart-mixed" href="/sdk/eeg-web/models">
     Alpha bump detection, calmness scoring
   </Card>
 
-  <Card title="Headband Transport" icon="signal-stream" iconType="light" href="/sdk/eeg-web/headband-transport">
+  <Card title="Headband Transport" icon="signal-stream" href="/sdk/eeg-web/headband-transport">
     Frame schema and transport interface
   </Card>
 </CardGroup>

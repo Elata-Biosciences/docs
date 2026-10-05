@@ -1,0 +1,90 @@
+---
+title: "快速上手"
+description: "使用 @elata-biosciences/biosignal-analytics 计算 EEG 特征、HRV、稳健统计和透明的总体评分。"
+---
+
+## 功能
+
+`@elata-biosciences/biosignal-analytics` 在浏览器中将生物信号数据转化为特征和评分，无需服务器或网络连接：
+
+- **EEG 窗口特征**（WASM）：频段功率、谱熵、主频、alpha 峰值、Hjorth 参数和质量标记
+- **HRV 和稳健统计**：时域 HRV、中位数和 MAD、滚动个人基线
+- **总体评分**：测量质量（Measurement Quality）、激活（Activation）、恢复（Recovery）、专注（Focus）、准备度（Readiness）和韧性（Resilience），每个评分都公开其组成部分
+- **指标注册表**：每个指标都有注册的定义、单位、证据等级和算法版本
+
+它与 [`biosignal-session`](/cn/sdk/biosignal-session/getting-started) 天然搭配，但并不依赖它。
+
+```bash
+npm install @elata-biosciences/biosignal-analytics
+```
+
+---
+
+## 分析一个 EEG 窗口
+
+```ts
+import { analyzeEeg, initAnalyticsWasm } from '@elata-biosciences/biosignal-analytics';
+
+await initAnalyticsWasm();
+
+const result = await analyzeEeg({
+  samples,                        // samples[sampleIndex][channelIndex]
+  sampleRateHz: 256,
+  channels: ['TP9', 'AF7', 'AF8', 'TP10'],
+});
+```
+
+每个窗口只调用一次，使 JavaScript/WASM 边界的开销保持很低。结果中包含生成它所用的配置和算法版本。
+
+---
+
+## 总体评分
+
+评分是解读而非测量，并且会明确说明这一点：
+
+- **测量质量**描述的是录制本身而不是人，始终可用。
+- **激活、恢复、专注、准备度和韧性**会列出每个组成部分及其权重、z 分数和质量。
+- 当输入缺失、质量不佳或尚无个人基线时，评分会**主动不给出结果**（返回 `null` 并附带原因），而不是猜测。
+
+| 不给出结果的原因 | 含义 |
+| --- | --- |
+| `inputs_missing` | 未进行该测量 |
+| `insufficient_quality` | 测量质量太差，无法解读 |
+| `insufficient_baseline` | 尚无可用的个人基线 |
+| `no_activation_detected` | 恢复：没有符合条件的激活 |
+| `recovery_incomplete` | 恢复：录制在恢复完成前结束 |
+| `no_task_context` | 专注：没有需要关注的任务 |
+| `insufficient_history` | 准备度和韧性：数据天数还不够 |
+
+`insufficient_history` 包含具体计数，因此你可以准确告诉用户还需要多少天。准备度需要 14 个合格日；韧性需要 21 个合格日以及 6 次已恢复的激活事件。
+
+<Note>
+  专注评分刻意不基于 theta/beta 比值，因为该比值并不是有效的注意力指标。
+</Note>
+
+---
+
+## 在主线程之外运行分析
+
+```ts
+import {
+  createAnalyticsWorkerClient,
+  launchAnalyticsWorker,
+} from '@elata-biosciences/biosignal-analytics';
+
+const client = createAnalyticsWorkerClient({ createWorker: launchAnalyticsWorker });
+```
+
+---
+
+## 入口
+
+| 导入路径 | 内容 |
+| --- | --- |
+| `@elata-biosciences/biosignal-analytics` | 所有内容的重新导出 |
+| `…/registry` | 指标定义、证据等级、算法版本 |
+| `…/insights` | 个人基线和总体评分公式 |
+| `…/worker` | 分析 Worker 入口 |
+| `…/testing` | 测试数据加载器和合成信号辅助函数 |
+
+特征代码经过 Python（NumPy/SciPy）参考数据的验证，因此 Rust、WASM 和 TypeScript 实现的结果一致。

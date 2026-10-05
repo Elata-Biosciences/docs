@@ -1,0 +1,117 @@
+---
+title: "在浏览器应用中使用 EEG"
+description: "将 Elata EEG WASM API 添加到现有浏览器应用中。"
+---
+
+如果你想了解浏览器 EEG 的包模型，而不是完整的集成演练，请阅读本页。
+
+如果你想要针对现有应用的分步说明，请参阅[在现有浏览器应用中添加 EEG](/cn/sdk/tutorials/eeg-existing-app)。如果你想从脚手架开始，请参阅[构建你的第一个 Elata 应用](/cn/sdk/tutorials/first-app)。
+
+<Tip>
+  如果你想要一个无需手动接线就能运行的应用，请先使用 [create-elata-demo](/cn/sdk/create-elata-demo) 创建项目。
+</Tip>
+
+在通常的 Elata 使用路径中，EEG 是**可选的**：对许多应用来说，**摄像头 rPPG** 才是主要的浏览器集成方式。当你需要脑电信号分析时添加 `eeg-web`；当你需要通过 **Web Bluetooth** 连接 Muse 兼容头带时，再同时添加 **`eeg-web-ble`**。
+
+EEG 通过可穿戴头带测量大脑的电活动。在浏览器应用中，开发者通常使用 EEG 输出头带样本、计算频段功率等特征，并驱动反馈、仪表盘、自适应界面或互动体验。
+
+具体的应用示例包括：
+
+- 根据专注度或平静度调整引导的冥想或呼吸训练应用
+- 奖励专注或稳定状态的神经反馈体验
+- 根据心理状态做出反应的模拟运动表现或训练应用
+- 根据实时 EEG 特征改变难度、节奏或效果的游戏或创意工具
+
+---
+
+## 安装
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/eeg-web
+```
+
+```bash npm
+npm install @elata-biosciences/eeg-web
+```
+
+</CodeGroup>
+
+---
+
+## `eeg-web` 提供什么
+
+`@elata-biosciences/eeg-web` 提供：
+
+- 浏览器端的 EEG WASM 初始化
+- `band_powers` 等信号处理和模型导出
+- 更高层浏览器集成使用的共享类型和协议
+
+此包本身不负责蓝牙设备连接。如果还需要浏览器 BLE 传输，请添加 `@elata-biosciences/eeg-web-ble`。
+
+---
+
+## 最小集成
+
+```ts
+import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
+
+await initEegWasm();
+
+const eegData = new Float32Array([0, 1, 0, -1]);
+const powers = band_powers(eegData, 256);
+
+console.log("alpha", powers.alpha);
+```
+
+---
+
+## 典型的集成流程
+
+1. 使用 `initEegWasm()` 初始化打包的 WASM 运行时。
+2. 将浏览器端的 EEG 样本缓冲区传入导出的分析函数。
+3. 如果之后需要实时设备传输，将此包与 `eeg-web-ble` 结合使用。
+
+---
+
+## 何时改用 EEG 模板
+
+在以下情况，优先使用脚手架生成的 `eeg-demo` 模板：
+
+- 你需要一个确认可用的 Vite 配置
+- 你需要参考打包的 WASM 资源应如何提供
+- 你需要一个无需硬件就能运行的合成数据应用
+
+---
+
+## 常见问题
+
+- `band_powers()` 接收的是**单通道**的 `Float32Array`，而不是 `number[]`。`frame.eeg.samples` 的布局是 `samples[sampleIdx][channelIdx]`（每行一个时间步），因此请使用 `eeg-web` 中的 `getEegChannelSamples(frame, channelIdx)` 提取单个通道。传入普通数组会导致 WASM 运行时错误。对于 Muse 头带（4 个通道：TP9、AF7、AF8、TP10），认知状态特征请使用前额通道（AF7 = 索引 1，或 AF8 = 索引 2），或对各通道取平均。
+- `WasmCalmnessModel.process()` 需要**交错排列**的样本：`[s0_ch0, s0_ch1, s1_ch0, s1_ch1, ...]`。使用 `eeg-web` 中的 `getEegInterleavedSamples(frame)` 获取这种布局。
+- `WasmCalmnessModel` 在构造时需要 `channelCount`，但 `channelCount` 只在第一帧到达时才知道。请在处理第一帧的回调中构造模型。
+- 如果 `initEegWasm()` 失败，你的应用可能没有正确加载打包的 `wasm/` 资源。
+- 如果需要实时连接头带，仅有 `eeg-web` 是不够的。
+- 如果你只是在评估 SDK，使用脚手架应用比手动设置更快。
+
+---
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="在现有应用中添加 EEG" icon="circle-play" href="/cn/sdk/tutorials/eeg-existing-app">
+    分步集成教程
+  </Card>
+
+  <Card title="Web Bluetooth" icon="bluetooth" href="/cn/sdk/guides/web-bluetooth">
+    连接 Muse 头带
+  </Card>
+
+  <Card title="eeg-web 参考" icon="brain" href="/cn/sdk/eeg-web/getting-started">
+    包 API 和导出
+  </Card>
+
+  <Card title="故障排查" icon="wrench" href="/cn/sdk/operations/troubleshooting">
+    常见故障及解决方法
+  </Card>
+</CardGroup>

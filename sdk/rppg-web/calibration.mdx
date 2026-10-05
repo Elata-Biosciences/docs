@@ -69,23 +69,23 @@ model.reset();
 The processor produces evidence from multiple analysis methods:
 
 ```typescript
-type BpmEvidenceSource = "spectral" | "acf" | "tracker" | "muse" | "calibrated";
+type BpmEvidenceSource = "backend" | "spectral" | "acf" | "peaks" | "calibrated";
 
 type BpmEvidence = {
   source: BpmEvidenceSource;
   bpm: number;
-  quality: number;
-  timestampMs: number;
+  confidence: number;
 };
 
 type BpmResolutionResult = {
-  bpm: number;
-  quality: number;
-  source: BpmEvidenceSource;
-  evidence: BpmEvidence[];
+  bpm: number | null;
+  confidence: number;
+  winningSources: BpmEvidenceSource[];
+  aliasFlag: boolean;
+  debug: { /* candidates, history median, winner */ };
 };
 
-type FusionSource = "camera" | "muse" | "fused";
+type FusionSource = "camera" | "muse" | "blend" | "none";
 ```
 
 ---
@@ -125,10 +125,10 @@ flowchart TD
 ## Next
 
 <CardGroup cols={2}>
-  <Card title="Frame Sources" icon="camera" iconType="light" href="/sdk/rppg-web/frame-sources">
+  <Card title="Frame Sources" icon="camera" href="/sdk/rppg-web/frame-sources">
     Camera capture and face detection
   </Card>
-  <Card title="rPPG Camera Integration" icon="video" iconType="light" href="/sdk/guides/rppg-camera">
+  <Card title="rPPG Camera Integration" icon="video" href="/sdk/guides/rppg-camera">
     End-to-end webcam pipeline
   </Card>
 </CardGroup>

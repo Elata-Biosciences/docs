@@ -279,7 +279,7 @@
             "tab": "学习",
             "groups": [
               {
-                "group": "介绍",
+                "group": "简介",
                 "pages": [
                   "cn/learn/protocol-overview",
                   "cn/learn/how-it-works",
@@ -287,28 +287,17 @@
                 ]
               },
               {
-                "group": "$ELTA代币",
+                "group": "平台",
                 "pages": [
-                  "cn/home/elta-token/elta-overview",
-                  "cn/home/elta-token/elta-distribution",
-                  "cn/home/elta-token/elta-release",
-                  "cn/home/elta-token/staking",
-                  "cn/home/elta-token/veelta"
+                  "cn/learn/privacy-and-data",
+                  "cn/elata-points"
                 ]
               },
               {
-                "group": "经济模型",
+                "group": "资源",
                 "pages": [
-                  "cn/learn/tokenomics",
-                  "cn/learn/revenue-model",
-                  "cn/home/ELTA-Economy"
-                ]
-              },
-              {
-                "group": "治理",
-                "pages": [
-                  "cn/home/governance/structure",
-                  "cn/home/governance/teams"
+                  "cn/resources/faq",
+                  "cn/resources/media-assets"
                 ]
               }
             ]
@@ -317,35 +306,59 @@
             "tab": "Elata应用",
             "groups": [
               {
-                "group": "概览",
+                "group": "从这里开始",
                 "pages": [
-                  "cn/home/app-tokens",
-                  "cn/home/build-an-app"
+                  "cn/apps/what-are-elata-apps",
+                  "cn/apps/what-you-can-build",
+                  "cn/apps/app-lifecycle",
+                  "cn/apps/choose-your-path"
                 ]
               },
               {
-                "group": "构建应用",
+                "group": "构建",
                 "pages": [
-                  "cn/builders/getting-started",
-                  "cn/builders/launch-your-app"
+                  "cn/apps/build/overview",
+                  "cn/apps/build/requirements",
+                  "cn/apps/build/launch-your-app",
+                  "cn/apps/build/elata-json",
+                  "cn/apps/build/upload-and-hosting",
+                  "cn/apps/build/app-metadata",
+                  "cn/apps/build/review-and-policy",
+                  "cn/apps/build/post-launch-checklist"
                 ]
               },
               {
-                "group": "应用经济",
+                "group": "平台 API",
                 "pages": [
-                  "cn/builders/bonding-curve-economics",
-                  "cn/builders/fee-pipeline",
-                  "cn/builders/protocol-config",
-                  "cn/builders/grow-your-community"
+                  "cn/apps/platform/host-bridge",
+                  "cn/apps/platform/in-app-purchases",
+                  "cn/apps/platform/app-state",
+                  "cn/apps/platform/metrics-and-scores",
+                  "cn/apps/platform/consent-and-insights",
+                  "cn/apps/platform/notifications",
+                  "cn/apps/platform/subscriptions"
+                ]
+              },
+              {
+                "group": "运营",
+                "pages": [
+                  "cn/apps/operate/grow-your-community",
+                  "cn/apps/operate/analytics-and-health"
                 ]
               },
               {
                 "group": "用户指南",
                 "pages": [
-                  "cn/users/explore-apps",
-                  "cn/users/buy-and-trade",
-                  "cn/users/stake-and-earn",
-                  "cn/users/veelta-governance"
+                  "cn/apps/users/explore-apps",
+                  "cn/apps/users/membership"
+                ]
+              },
+              {
+                "group": "AI 指南",
+                "pages": [
+                  "cn/apps/ai-tools/claude-code",
+                  "cn/apps/ai-tools/cursor",
+                  "cn/apps/ai-tools/windsurf"
                 ]
               }
             ]
@@ -356,7 +369,41 @@
               {
                 "group": "概览",
                 "pages": [
-                  "cn/sdk/overview"
+                  "cn/sdk/overview",
+                  "cn/sdk/create-elata-demo",
+                  {
+                    "group": "设备集成",
+                    "pages": [
+                      "cn/integrate",
+                      "cn/integration-paths",
+                      "cn/transport-contract",
+                      "cn/protocol-requirements",
+                      "cn/adapter-implementation",
+                      "cn/testing-and-validation",
+                      "cn/submission-and-support"
+                    ]
+                  },
+                  {
+                    "group": "指南",
+                    "pages": [
+                      "cn/sdk/guides/choose-the-right-package",
+                      "cn/sdk/guides/rppg-browser",
+                      "cn/sdk/guides/eeg-browser",
+                      "cn/sdk/guides/web-bluetooth",
+                      "cn/sdk/guides/eeg-ble-integration",
+                      "cn/sdk/guides/rppg-camera",
+                      "cn/sdk/guides/example-apps"
+                    ]
+                  },
+                  {
+                    "group": "教程",
+                    "pages": [
+                      "cn/sdk/tutorials/first-app",
+                      "cn/sdk/tutorials/eeg-existing-app",
+                      "cn/sdk/tutorials/eeg-ble-live-stream",
+                      "cn/sdk/tutorials/rppg-existing-app"
+                    ]
+                  }
                 ]
               },
               {
@@ -369,14 +416,14 @@
                 ]
               },
               {
-                "group": "EEG Web BLE",
+                "group": "EEG BLE Web SDK",
                 "pages": [
                   "cn/sdk/eeg-web-ble/getting-started",
                   "cn/sdk/eeg-web-ble/muse-device"
                 ]
               },
               {
-                "group": "rPPG Web SDK",
+                "group": "摄像头 Web SDK",
                 "pages": [
                   "cn/sdk/rppg-web/getting-started",
                   "cn/sdk/rppg-web/frame-sources",
@@ -384,16 +431,36 @@
                 ]
               },
               {
-                "group": "指南",
+                "group": "PPG Web SDK",
                 "pages": [
-                  "cn/sdk/guides/eeg-ble-integration",
-                  "cn/sdk/guides/rppg-camera"
+                  "cn/sdk/ppg-web/getting-started"
+                ]
+              },
+              {
+                "group": "会话与分析",
+                "pages": [
+                  "cn/sdk/biosignal-session/getting-started",
+                  "cn/sdk/biosignal-analytics/getting-started"
+                ]
+              },
+              {
+                "group": "运维",
+                "pages": [
+                  "cn/sdk/operations/compatibility",
+                  "cn/sdk/operations/troubleshooting"
+                ]
+              },
+              {
+                "group": "贡献者",
+                "pages": [
+                  "cn/sdk/maintainers/contributing-eeg-transports",
+                  "cn/sdk/maintainers/vendor-headset-onboarding"
                 ]
               }
             ]
           },
           {
-            "tab": "资源",
+            "tab": "归档",
             "groups": [
               {
                 "group": "AgentForge",
@@ -412,24 +479,17 @@
                 ]
               },
               {
+                "group": "Zorp 协议",
+                "pages": [
+                  "cn/zorp-protocol/zorp-intro",
+                  "cn/zorp-protocol/zorp-function"
+                ]
+              },
+              {
                 "group": "Elata EEG",
                 "pages": [
                   "cn/home/elata-eeg/elata-eeg-overview",
                   "cn/home/elata-eeg/eeg-architecture"
-                ]
-              },
-              {
-                "group": "参考",
-                "pages": [
-                  "cn/resources/smart-contracts",
-                  "cn/resources/faq"
-                ]
-              },
-              {
-                "group": "社区",
-                "pages": [
-                  "cn/resources/media-assets",
-                  "cn/resources/references"
                 ]
               }
             ]

@@ -42,7 +42,7 @@ interface HeadbandSignalBlock {
 
 ## HeadbandTransportState
 
-Transport lifecycle states:
+Transport lifecycle states. `HeadbandTransportState` is a string enum: `HeadbandTransportState.Streaming === "streaming"`.
 
 | State | Description |
 |-------|-------------|
@@ -115,7 +115,7 @@ const transport: HeadbandTransport = /* BleTransport or other */;
 
 transport.onFrame = (frame) => {
   const eegSamples = frame.eeg.samples;
-  // Process each row: [tp9, af7, af8, tp10]
+  // samples[sampleIdx][channelIdx]: each row is one time step [tp9, af7, af8, tp10]
 };
 
 transport.onStatus = (status) => {
@@ -132,13 +132,25 @@ await transport.disconnect();
 
 ---
 
+## Helpers
+
+`@elata-biosciences/eeg-web` includes helpers for reshaping frames:
+
+| Helper | Returns |
+| --- | --- |
+| `getEegChannelSamples(frame, channelIndex)` | One channel as a `Float32Array`, ready for `band_powers` |
+| `getEegInterleavedSamples(frame)` | All channels interleaved `[s0_ch0, s0_ch1, …]`, for models such as `WasmCalmnessModel` |
+| `getEegSignalBlock(frame, source?)` | The raw or processed EEG block |
+
+---
+
 ## Next
 
 <CardGroup cols={2}>
-  <Card title="EEG BLE Getting Started" icon="bluetooth" iconType="light" href="/sdk/eeg-web-ble/getting-started">
+  <Card title="EEG BLE Getting Started" icon="bluetooth" href="/sdk/eeg-web-ble/getting-started">
     Connect to headband devices
   </Card>
-  <Card title="EEG + BLE Integration" icon="link" iconType="light" href="/sdk/guides/eeg-ble-integration">
+  <Card title="EEG + BLE Integration" icon="link" href="/sdk/guides/eeg-ble-integration">
     End-to-end streaming guide
   </Card>
 </CardGroup>

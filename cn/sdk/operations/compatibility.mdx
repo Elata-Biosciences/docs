@@ -1,0 +1,97 @@
+---
+title: "兼容性"
+description: "Elata SDK 当前对浏览器、设备和 Node.js 的要求。"
+---
+
+## 包和工具要求
+
+| 包 | 浏览器运行时 | Node.js | 说明 |
+| --- | --- | --- | --- |
+| `@elata-biosciences/create-elata-demo` | 不适用 | `>= 18` | 仅为 CLI 脚手架 |
+| `@elata-biosciences/eeg-web` | 支持 WebAssembly 的现代浏览器 | `>= 20` | 浏览器中使用需要提供打包的 WASM 资源 |
+| `@elata-biosciences/eeg-web-ble` | 支持 Web Bluetooth 的 Chrome 或 Edge | `>= 20` | 依赖 `@elata-biosciences/eeg-web` |
+| `@elata-biosciences/rppg-web` | 支持摄像头和 WebAssembly 的现代浏览器 | `>= 20` | 浏览器必须能访问打包的 WASM 资源 |
+| `@elata-biosciences/ppg-web` | 支持 Web Bluetooth 的 Chrome 或 Edge | `>= 20` | 运行在 `eeg-web-ble` 传输之上 |
+| `@elata-biosciences/biosignal-session` | 支持 Web Worker 的现代浏览器 | `>= 20` | 录制需要一个提供存储端的宿主 |
+| `@elata-biosciences/biosignal-analytics` | 支持 WebAssembly 的现代浏览器 | `>= 20` | 浏览器必须能访问打包的 WASM 资源 |
+| `@elata-biosciences/app-payments`、`app-state`、`app-metrics` | 任意现代浏览器 | `>= 20` | 仅在 Elata 应用商店框架内有效 |
+
+---
+
+## 浏览器支持
+
+| 流程 | Chrome / Edge | Safari macOS | Safari iOS | 说明 |
+| --- | --- | --- | --- | --- |
+| `create-elata-demo` | 不适用 | 不适用 | 不适用 | 脚手架在 Node 中运行 |
+| 使用 `eeg-web` 的 EEG WASM | 支持 | 支持 | 支持 | 需要打包的 `wasm/` 资源 |
+| 使用 `eeg-web-ble` 的 Muse 浏览器 BLE | 在安全上下文中支持 | 不支持 | 不支持 | 需要 Web Bluetooth |
+| 使用 `rppg-web` 的 rPPG | 支持 | 支持 | 授予摄像头权限后支持 | 需要打包的 `pkg/` 资源 |
+| 使用 `ppg-web` 的头带 PPG | 在安全上下文中支持 | 不支持 | 不支持 | 需要 Web Bluetooth |
+
+---
+
+## Web Bluetooth 要求
+
+- 使用 Chrome 或 Edge。
+- 运行在 `https://` 或 `localhost` 上。
+- 设备已开启蓝牙。
+- Safari 和 iOS 浏览器 BLE 不支持此流程。
+
+<Warning>
+  `eeg-web-ble` 需要 Web Bluetooth 以及 `https://` 源或 `localhost`。Safari 和 iOS 不支持用于 Muse 浏览器流程的 Web Bluetooth。
+</Warning>
+
+---
+
+## 支持的设备类别
+
+- Muse 2 和 Muse S classic BLE 设备
+- Muse S Athena 协议 v2 设备
+- 其他头带可以通过同样的传输协议接入。参见[设备集成](/cn/integrate)。
+
+---
+
+## Safari 和 iOS 说明
+
+- 只要应用正确提供打包的资源，`eeg-web` 可以在 Safari 上作为浏览器端 WASM 包使用。
+- `eeg-web-ble` 不适用于 Safari 或 iOS 浏览器。请使用基于 CoreBluetooth 的原生应用外壳，或通过 WebSocket 传输帧的配套桥接应用。
+- `rppg-web` 可以在 Safari 和 iOS 上运行，但仍需要正确的摄像头权限和打包 WASM 资源的交付。
+
+---
+
+## 包管理器说明
+
+生成的演示应用可以使用 `pnpm` 或 `npm`。
+
+如果你在另一个 `pnpm` 工作区中创建演示应用且没有将其加入该工作区，请使用：
+
+<CodeGroup>
+
+```bash pnpm
+pnpm --dir my-app --ignore-workspace install
+pnpm --dir my-app --ignore-workspace run dev
+```
+
+```bash npm
+cd my-app
+npm install
+npm run dev
+```
+
+</CodeGroup>
+
+---
+
+## 相关
+
+<CardGroup cols={3}>
+  <Card title="故障排查" icon="wrench" href="/cn/sdk/operations/troubleshooting">
+    常见故障及解决方法
+  </Card>
+  <Card title="选择合适的包" icon="compass" href="/cn/sdk/guides/choose-the-right-package">
+    包选择指南
+  </Card>
+  <Card title="Muse 设备" icon="microchip" href="/cn/sdk/eeg-web-ble/muse-device">
+    协议细节和浏览器支持
+  </Card>
+</CardGroup>

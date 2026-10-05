@@ -1,0 +1,286 @@
+---
+title: "在浏览器应用中进行远程感知"
+description: "使用官方支持的 Elata 会话辅助函数，为浏览器添加基于摄像头的 rPPG。"
+---
+
+如果你想了解浏览器 rPPG 的集成模型，请阅读本页。
+
+如果你想要针对现有应用的分步说明，请参阅[在现有浏览器应用中添加摄像头 rPPG](/cn/sdk/tutorials/rppg-existing-app)。如果你想从脚手架开始，请参阅[构建你的第一个 Elata 应用](/cn/sdk/tutorials/first-app)。
+
+<Info>
+  对大多数产品而言，这是**主要的**浏览器生物信号路径：在交付有意义的信号体验之前无需任何头戴设备。
+</Info>
+
+rPPG 即远程光电容积脉搏波描记（remote photoplethysmography）。它通过摄像头视频（通常是面部区域）估算与脉搏相关的变化，无需可穿戴传感器。
+
+在浏览器应用中，开发者通常使用 rPPG 将实时摄像头画面转化为心率类指标、诊断信息和健康类反馈。
+
+具体的应用示例包括：
+
+- 在关键时刻根据脉搏变化做出反应的欺骗或诈唬游戏
+- 训练和社交体验中的压力或唤醒度反馈
+- 随时间展示生理反应的呼吸和放松流程
+- 希望无需额外硬件就能获取摄像头脉搏信号的生物反馈类健康应用
+
+---
+
+## 安装
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/rppg-web
+```
+
+```bash npm
+npm install @elata-biosciences/rppg-web
+```
+
+</CodeGroup>
+
+---
+
+## 推荐用法与高级用法
+
+<Tip>
+  浏览器应用请使用 `createRppgSession()`。它负责 WASM 初始化、帧采集、ROI 编排、诊断和清理。
+</Tip>
+
+**推荐：**
+
+- 浏览器应用使用 `createRppgSession()`。
+- 如果希望在处理器发生终止性故障后自动重启，使用 `createManagedRppgSession()`。
+- 只有在确实需要底层样本输入时，才使用 `@elata-biosciences/eeg-web` 中的 `createRppgPipeline()`。
+
+**高级：**
+
+- 只有在需要自定义编排、且已经理解运行时生命周期时，才使用 `RppgProcessor`、`DemoRunner`、自定义后端或生成的 WASM 绑定。
+- 如果你不是在调试 SDK 本身，不要从生成的 WASM 导出开始。
+
+---
+
+## 最小集成
+
+```ts
+import { createRppgSession } from "@elata-biosciences/rppg-web";
+
+const session = await createRppgSession({
+  video: videoEl,
+  sampleRate: 30,
+  backend: "auto",
+  faceMesh: "off",
+  onDiagnostics: (diagnostics) => {
+    console.log(diagnostics.state.status, diagnostics.faceTrackingMode);
+    console.log(diagnostics.framesSeen, diagnostics.totalSamplesReceived);
+    console.log(diagnostics.issues, diagnostics.processorFailure);
+  },
+  onError: (error) => {
+    console.error(error.code, error.message);
+  },
+});
+
+console.log(session.getMetrics());
+```
+
+---
+
+## 典型的集成流程
+
+1. 在浏览器中获取摄像头流并绑定到 `video` 元素。
+2. 调用 `createRppgSession({ video, backend: "auto" })`。
+3. 通过 `session.getMetrics()` 读取指标。
+4. 通过 `onDiagnostics` 或 `session.getDiagnostics()` 展示诊断信息。
+5. 清理时使用 `await session.stop()` 停止会话。
+
+`createRppgSession()` 负责 WASM 初始化、FaceMesh 加载、帧调度、ROI 选择、诊断和清理。
+
+使用 `session.state` 或 `diagnostics.state` 区分：
+
+- 正常运行：`running`
+- 启动回退或降级设置：`degraded`
+- 运行时处理器终止性故障：`failed`
+
+如果你主动选择 `faceMesh: "off"`，会话会保持在受支持的 `video_frame` 模式，默认不会被报告为 FaceMesh 故障。
+
+如果你的应用需要显式的资源路径，而不是默认的 `/pkg/*` 查找，可以传入以下一个或多个参数：
+
+```ts
+const session = await createRppgSession({
+  video: videoEl,
+  wasmJsUrl: "/assets/rppg_wasm.js",
+  wasmBinaryUrl: "/assets/rppg_wasm_bg.wasm",
+});
+```
+
+高级应用也可以直接提供 `wasmImporter`。
+
+---
+
+## 托管重启流程
+
+如果你希望由 SDK 负责处理器终止性故障后的重启时机，请使用托管封装：
+
+```ts
+import { createManagedRppgSession } from "@elata-biosciences/rppg-web";
+
+const managed = await createManagedRppgSession({
+  video: videoEl,
+  faceMesh: "off",
+  maxRetries: 3,
+  retryDelayMs: 1500,
+  onStateChange: (state) => {
+    console.log(state.status, state.retryCount, state.lastError?.code);
+  },
+});
+```
+
+托管封装会暴露 `starting`、`running`、`retrying` 和 `failed` 等高层状态，同时仍允许应用在需要时访问底层的 `RppgSession`。
+
+---
+
+## 高级辅助函数
+
+<AccordionGroup>
+  <Accordion title="轨迹快照">
+    当你需要近期的波形或调试数据点用于图表、调试面板或回归记录时，使用 `getTraceSnapshot()`：
+
+    ```ts
+    const trace = session.getTraceSnapshot(300);
+
+    console.log(trace.points);
+    console.log(trace.lastSample);
+    console.log(trace.backendFailure);
+    ```
+
+    如需基于轨迹数据进行波峰/阈值调试，使用 `computeTraceWaveformDebug()`：
+
+    ```ts
+    import { computeTraceWaveformDebug } from "@elata-biosciences/rppg-web";
+
+    const waveform = computeTraceWaveformDebug(session.getTraceSnapshot(300));
+    console.log(waveform.peaks);
+    ```
+  </Accordion>
+
+  <Accordion title="错误规范化">
+    在应用代码中使用 `normalizeRppgError()`，而不是解析原始的错误消息文本：
+
+    ```ts
+    import { normalizeRppgError } from "@elata-biosciences/rppg-web";
+
+    const normalized = normalizeRppgError(session.lastError, session.getDiagnostics());
+
+    console.log(normalized?.code);
+    console.log(normalized?.message);
+    console.log(normalized?.guidance);
+    ```
+
+    这会为应用提供稳定的错误类别，例如 `wasm_init_failed`、`backend_unavailable`、`camera_not_playing` 和 `processor_failed`。
+  </Accordion>
+
+  <Accordion title="应用适配器">
+    如果你想要一个面向应用的单一快照，包含重启状态、发布门控、轨迹数据和稳定的提示信息，使用 `createRppgAppAdapter()`：
+
+    ```ts
+    import {
+      createManagedRppgSession,
+      createRppgAppAdapter,
+    } from "@elata-biosciences/rppg-web";
+
+    const managed = await createManagedRppgSession({
+      video,
+      faceMesh: "off",
+    });
+
+    const adapter = createRppgAppAdapter();
+    const app = adapter.getSnapshot(managed);
+
+    if (app.canPublish) {
+      console.log(app.publishBpm);
+    }
+
+    console.log(app.status, app.message);
+    ```
+  </Accordion>
+
+  <Accordion title="应用监视器">
+    如果你还希望由 SDK 负责定期获取快照的循环，使用 `createRppgAppMonitor()`：
+
+    ```ts
+    import {
+      createManagedRppgSession,
+      createRppgAppMonitor,
+    } from "@elata-biosciences/rppg-web";
+
+    const managed = await createManagedRppgSession({
+      video,
+      faceMesh: "off",
+    });
+
+    const monitor = createRppgAppMonitor(managed, { intervalMs: 500 });
+    monitor.subscribe((snapshot) => {
+      console.log(snapshot.status, snapshot.publishBpm);
+    });
+    monitor.start();
+    ```
+  </Accordion>
+
+  <Accordion title="视频播放辅助函数">
+    `createRppgSession()` 现在默认会等待视频元素开始播放。如果你需要自己协调这一步，可以直接调用 `ensureVideoPlaying()`：
+
+    ```ts
+    import { ensureVideoPlaying } from "@elata-biosciences/rppg-web";
+
+    await ensureVideoPlaying(video, { timeoutMs: 5000 });
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## 何时改用 rPPG 模板
+
+在以下情况，优先使用脚手架生成的 `rppg-demo` 模板：
+
+- 你需要一个确认可用的浏览器摄像头应用
+- 你需要参考打包 WASM 资源的加载方式
+- 调试你自己的集成时，需要更快的对比基准
+
+---
+
+## 常见问题
+
+- 如果 `session.backendMode` 为 `unavailable`，你的应用很可能没有正确提供打包的 `pkg/` 资源。
+- 如果 `session.state.status` 为 `failed`，请将该处理器后端视为已终止并重新创建会话，而不是继续从中轮询指标。
+- 如果看到 "backend pipeline has no push\_sample API"，你可能绕过了安全的封装路径。浏览器应用请从 `createRppgSession()` 开始，底层输入请使用 `initEegWasm()` 加 `createRppgPipeline()`。
+- 如果遇到 `wasmrppgpipeline_new`，请先初始化 WASM 模块再创建底层流水线，并避免直接调用生成的构造函数。
+- 如果看到已弃用的初始化警告，请通过 `initEegWasm()` 启动，而不是把原始字符串、URL 或缓冲区直接传给生成的初始化导出。
+- 如果摄像头访问失败，请确认页面拥有使用 `getUserMedia` 的权限。
+- 如果 `session.lastError` 不为空，请使用其 `code` 和 `message` 展示真实的采集或处理器故障，而不是盲目重试。
+- 如果你只是在评估 SDK，使用脚手架应用比自己搭建整个浏览器流水线快得多。
+
+---
+
+## 版本建议
+
+<Note>
+  这些包各自独立发布版本，因此 `rppg-web` 和 `eeg-web` 的版本号不会相同。如果同时使用多个 Elata 包，请安装它们的最新版本，或参考 `create-elata-demo` 模板中固定的兼容版本组合。
+</Note>
+
+---
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="现有应用教程" icon="circle-play" href="/cn/sdk/tutorials/rppg-existing-app">
+    分步集成 rPPG
+  </Card>
+
+  <Card title="rppg-web 参考" icon="heart-pulse" href="/cn/sdk/rppg-web/getting-started">
+    包 API 和导出
+  </Card>
+
+  <Card title="故障排查" icon="wrench" href="/cn/sdk/operations/troubleshooting">
+    常见故障及解决方法
+  </Card>
+</CardGroup>

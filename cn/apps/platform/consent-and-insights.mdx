@@ -1,0 +1,96 @@
+---
+title: "同意与洞察"
+description: "请求生物特征数据共享同意，并读取用户的跨应用洞察。"
+---
+
+## 生物特征评分
+
+Elata 为每位用户维护一个跨应用的**生物特征评分**，由应用通过 [`reportAffect`](/cn/apps/platform/metrics-and-scores) 上报的派生会话结果构成。在用户明确同意之前不会共享任何数据，用户也可以随时关闭。
+
+同意提示由商店在自己可信的框架中显示，而不是由你的应用显示。商店还会在服务器端针对每个样本重新检查同意状态，因此你的应用无法在未获同意的情况下做出贡献。
+
+目前只有一种同意用途：`platform_score`。
+
+---
+
+## 请求同意
+
+```js
+const requestId = crypto.randomUUID();
+
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'elata:consent:state' && e.data.requestId === requestId) {
+    console.log('granted?', e.data.granted);
+  }
+});
+
+window.parent?.postMessage(
+  { type: 'elata:consent:request', purpose: 'platform_score', requestId },
+  '*',
+);
+```
+
+商店会打开同意对话框，并在用户做出选择后回复 `{ type: 'elata:consent:state', purpose, granted, requestId }`。
+
+如需让用户在应用设置中**关闭共享**，发送同样的消息并附带 `action: 'revoke'`。
+
+---
+
+## 不弹窗读取同意状态
+
+如需在界面中显示当前状态（例如设置开关），发送 `elata:consent:query`。你会得到相同的回复，且不会显示对话框。
+
+```js
+window.parent?.postMessage(
+  { type: 'elata:consent:query', purpose: 'platform_score', requestId: 'q1' },
+  '*',
+);
+```
+
+---
+
+## 读取用户的洞察
+
+共享评分的用户可以在你的应用中查看自己的跨应用结果。使用 `elata:insights:request` 请求：
+
+```js
+window.parent?.postMessage(
+  { type: 'elata:insights:request', requestId: 'i1', windowDays: 90 },
+  '*',
+);
+```
+
+商店会回复 `elata:insights:state`：
+
+```ts
+{
+  type: 'elata:insights:state',
+  requestId?: string,
+  consented: boolean,      // false → 无数据；提示用户开启共享
+  data?: {
+    engagement: {
+      activeDays: number,
+      currentStreak: number,
+      longestStreak: number,
+      appsUsed: number,
+      totalScores: number,
+      lastActiveAt: number | null,
+    },
+    apps: { slug: string | null, name: string | null }[],
+    score: { value: number | null, calibrating: boolean, sampleCount: number },
+    windowDays: number,
+    generatedAt: number,
+  }
+}
+```
+
+`windowDays` 默认为 90，最大为 365。这些数据是用户**自己**活动的精选摘要，绝不包含其他用户或原始记录。
+
+---
+
+## 贡献评分的应用检查清单
+
+1. 请 Elata 团队为你的应用开启 `biometrics` 权限。
+2. 在应用和商店页面中说明测量什么、共享什么。
+3. 在调用 `reportAffect` 之前，先用 `elata:consent:request` 请求同意。
+4. 当 `reportAffect` 返回 `scope_denied` 时，再次提供同意提示。

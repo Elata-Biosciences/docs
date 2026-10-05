@@ -1,0 +1,88 @@
+---
+title: "快速上手"
+description: "使用 @elata-biosciences/ppg-web 通过 Muse 头带的光学（PPG）传感器获取心率和 HRV。"
+---
+
+## 功能
+
+`@elata-biosciences/ppg-web` 在浏览器中通过头带的 PPG（光学）传感器估算心率和心率变异性。它运行在与 EEG 包相同的规范化头带数据流上，因此可以与同一设备的 EEG 一起使用。
+
+- 读取 Muse 经典版的 `ppgRaw` 和 Muse S Athena 的 `optics` 帧
+- 自动选择最佳通道，也可以手动指定
+- 输出 `bpm`、`rmssdMs`、`sdnnMs` 和 `meanNnMs`，以及置信度和信号质量
+
+---
+
+## 安装
+
+```bash
+npm install @elata-biosciences/ppg-web @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble @elata-biosciences/rppg-web
+```
+
+或者创建入门应用：`npm create @elata-biosciences/elata-demo my-app -- --template ppg`。
+
+---
+
+## 连接 Muse 并读取指标
+
+```ts
+import { createMusePpgSession } from '@elata-biosciences/ppg-web';
+
+// 请在用户手势（例如“连接”按钮）中调用：Web Bluetooth 需要用户手势。
+const session = await createMusePpgSession({
+  windowSec: 16,
+  onMetrics: (m) => {
+    console.log(m.bpm, m.rmssdMs, m.signalQuality);
+  },
+});
+
+// 或者轮询
+const metrics = session.getMetrics();
+
+// 结束时
+await session.stop();
+await session.dispose();
+```
+
+---
+
+## 使用任意头带传输
+
+如果你已经有一个 `HeadbandTransport`（例如自己创建的 `BleTransport`），可以对它进行封装：
+
+```ts
+import { createPpgSession } from '@elata-biosciences/ppg-web';
+
+const session = await createPpgSession({
+  transport,
+  autoStart: true,
+  source: 'auto',   // 'auto' | 'ppgRaw' | 'optics'
+  channel: 'auto',
+});
+```
+
+---
+
+## 会话 API
+
+| 成员 | 作用 |
+| --- | --- |
+| `getMetrics()` | 最新指标（`bpm`、`rmssdMs`、`sdnnMs`、`meanNnMs`、`confidence`、`signalQuality`、`source`、`channel` 等） |
+| `getDiagnostics()` | 指标加上传输状态和信号诊断 |
+| `getTraceSnapshot(maxPoints?)` | 近期滤波后的轨迹，用于图表 |
+| `start()` / `stop()` | 开始或停止数据流 |
+| `disconnect()` | 断开设备 |
+| `dispose()` | 停止并释放所有资源 |
+
+回调：`onMetrics`、`onDiagnostics`、`onStatus`。
+
+---
+
+## 说明
+
+<Note>
+  在 Muse 经典版设备（`ppgRaw`）上，帧时序来自浏览器，因此 HRV 数值仅供预览参考。Muse S Athena 的 `optics` 保留设备时间戳，在可用时是首选来源。
+</Note>
+
+- 需要 Web Bluetooth：桌面或 Android 上的 Chrome 或 Edge，通过 `https://` 或 `localhost` 访问。
+- 如需无需头带的摄像头心率，请使用 [`rppg-web`](/cn/sdk/rppg-web/getting-started)。

@@ -5,7 +5,7 @@ sidebarTitle: Camera Integration
 ---
 
 <Note>
-Use this guide when you want live camera-based heart rate in a browser app. Start with the quick path first. Move to the manual pipeline only if you need lower-level control.
+Use this guide when you want lower-level control over camera-based heart rate in a browser app. For the recommended high-level API, start with [rPPG in a browser app](/sdk/guides/rppg-browser).
 </Note>
 
 ## What this guide covers
@@ -20,31 +20,31 @@ This guide shows how to:
 
 ## Before you start
 
-<CodeGroup>
+You need:
 
-```bash pnpm
-pnpm add @elata-biosciences/rppg-web
-```
+- `@elata-biosciences/rppg-web`
+- a browser with camera access (`getUserMedia`) and WebAssembly support
+- `https://` or `localhost`
+
+<CodeGroup>
 
 ```bash npm
 npm install @elata-biosciences/rppg-web
 ```
 
+```bash pnpm
+pnpm add @elata-biosciences/rppg-web
+```
+
 </CodeGroup>
-
-- `@elata-biosciences/rppg-web` installed
-- Browser with camera access (`getUserMedia`) and WebAssembly support
-- HTTPS or localhost for development
-
-You need:
-
-- `@elata-biosciences/rppg-web`
-- a browser with camera access and WebAssembly support
-- `https://` or `localhost`
 
 <Info>
 rPPG works best when the face is well lit, mostly still, and fully visible in frame.
 </Info>
+
+<Tip>
+Most apps should use `createRppgSession()`, which wraps everything on this page (WASM init, frame capture, ROI selection, diagnostics, cleanup). See [rPPG in a browser app](/sdk/guides/rppg-browser). Use the lower-level pieces below only when you need custom orchestration.
+</Tip>
 
 ## Choose a starting point
 
@@ -66,26 +66,9 @@ rPPG works best when the face is well lit, mostly still, and fully visible in fr
   </Card>
 </Columns>
 
-## Quick integration
+## Quick integration with DemoRunner
 
-For most apps, use `DemoRunner`. It handles frame capture, face detection, ROI extraction, and processing in one flow.
-
-<Tabs>
-  <Tab title="pnpm">
-
-  ```bash
-  pnpm add @elata-biosciences/rppg-web
-  ```
-
-  </Tab>
-  <Tab title="npm">
-
-  ```bash
-  npm install @elata-biosciences/rppg-web
-  ```
-
-  </Tab>
-</Tabs>
+`DemoRunner` handles frame capture, face detection, ROI extraction, and processing in one flow, while leaving you in control of the processor.
 
 ```ts
 import {

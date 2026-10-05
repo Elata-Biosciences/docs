@@ -1,0 +1,32 @@
+---
+title: "贡献 EEG 传输"
+description: "如何在内置 Muse 路径之外，为 Elata 浏览器 EEG 技术栈添加头带传输。"
+---
+
+完整的详细指南位于 SDK 仓库中：
+
+**[docs/contributing-eeg-transports.md](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/contributing-eeg-transports.md)**
+
+## 概要
+
+- **`@elata-biosciences/eeg-web-ble`** 是共享的 **Web Bluetooth** 传输包。它包含**内置的 Muse** 实现，但贡献**不仅限于 Muse**。
+- **目录结构：**`src/transport/`（`BleTransport`）与 `src/devices/muse/`（Muse 协议）分开。新的厂商放在 `src/devices/<vendor>/` 下。
+- 新硬件应统一采用 **`@elata-biosciences/eeg-web`** 中的 **`HeadbandTransport`** 和 **`HeadbandFrameV1`**。
+- 当集成规模较大或需要桥接时，优先选择 `eeg-web-ble` 中的**新设备模块**、**`BleTransport` 的 `device` 适配器**，或 `packages/` 下的**同级包**。
+
+## 通用设备的推荐默认方式
+
+**在 `eeg-web-ble` 中进行上游贡献**：
+
+- 在 `packages/eeg-web-ble/src/devices/<vendor>/...` 中实现协议、GATT 和解码逻辑
+- 复用 `src/transport/bleTransport.ts` 处理传输和帧行为
+- 使用 `@elata-biosciences/eeg-web-ble` 导出的 `BleDeviceLike` 为适配器定义类型
+- 在 `src/__tests__/` 中添加模拟 Web Bluetooth 测试
+- 同时更新包文档、维护者文档和 SDK 文档
+- 如果变更需要发布，添加 changeset
+
+在进行较大的协议或打包变更之前，请先创建 GitHub issue。PR、测试和 changeset 请遵循仓库的 **[贡献指南](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/CONTRIBUTING.md)**。
+
+如果你需要面向外部合作方、可直接交付的检查清单，请使用：
+
+- [厂商头带接入检查清单](/cn/sdk/maintainers/vendor-headset-onboarding)

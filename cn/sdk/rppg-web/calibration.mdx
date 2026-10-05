@@ -1,35 +1,37 @@
 ---
-title: "Calibration & Fusion"
-description: "Muse PPG calibration and multi-source heart rate fusion"
+title: "校准与融合"
+description: "Muse PPG 校准和多源心率融合"
 ---
 
-## Overview
+## 概述
 
-When a Muse headband with PPG is available alongside camera-based rPPG, the SDK supports **sensor fusion** — using the contact PPG as a reference to calibrate and improve camera-based heart rate estimates.
+当 Muse 头带的 PPG 与基于摄像头的 rPPG 同时可用时，SDK 支持**传感器融合**：以接触式 PPG 为参考，校准并改进基于摄像头的心率估算。
 
 ---
 
 ## MuseFusionCalibrator
 
-Fuses Muse PPG readings with camera rPPG estimates for improved accuracy:
+将 Muse PPG 读数与摄像头 rPPG 估算融合，以提高准确性：
 
 ```typescript
-import { RppgProcessor, MuseFusionCalibrator } from "@elata-biosciences/rppg-web";
+import { RppgProcessor, MuseFusionCalibrator, loadWasmBackend } from "@elata-biosciences/rppg-web";
 
-const processor = new RppgProcessor("wasm", 30);
+const backend = await loadWasmBackend(); // 无法加载打包的 WASM 时返回 null
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const processor = new RppgProcessor(backend, 30);
 const calibrator = new MuseFusionCalibrator();
 
-// Feed Muse PPG readings (from headband)
+// 输入 Muse PPG 读数（来自头带）
 calibrator.updateMuse(museBpm, quality, timestampMs);
 
-// Feed camera rPPG readings
+// 输入摄像头 rPPG 读数
 calibrator.updateCamera(cameraBpm, cameraQuality, timestampMs);
 
-// Get fused result
+// 获取融合结果
 const fused = calibrator.fuse(cameraBpm, cameraQuality, timestampMs);
 ```
 
-The `RppgProcessor` also has a built-in Muse integration:
+`RppgProcessor` 也内置了 Muse 集成：
 
 ```typescript
 processor.updateMuseMetrics(museBpm, quality, timestampMs);
@@ -39,22 +41,22 @@ processor.updateMuseMetrics(museBpm, quality, timestampMs);
 
 ## MuseCalibrationModel
 
-A simple regression model that learns the relationship between camera and contact BPM over time:
+一个简单的回归模型，随时间学习摄像头 BPM 与接触式 BPM 之间的关系：
 
 ```typescript
 import { MuseCalibrationModel } from "@elata-biosciences/rppg-web";
 
 const model = new MuseCalibrationModel();
 
-// Train with paired observations
+// 使用成对观测值训练
 model.train(spectralBpm, acfBpm, trueBpm);
 
-// Check if enough data collected
+// 检查是否已收集足够数据
 if (model.isTrained()) {
   const predictedBpm = model.predict(spectralBpm, acfBpm);
 }
 
-// Persistence
+// 持久化
 const snapshot = model.getSnapshot();
 model.loadSnapshot(snapshot);
 model.reset();
@@ -62,35 +64,35 @@ model.reset();
 
 ---
 
-## BPM Evidence Types
+## BPM 证据类型
 
-The processor produces evidence from multiple analysis methods:
+处理器从多种分析方法中生成证据：
 
 ```typescript
-type BpmEvidenceSource = "spectral" | "acf" | "tracker" | "muse" | "calibrated";
+type BpmEvidenceSource = "backend" | "spectral" | "acf" | "peaks" | "calibrated";
 
 type BpmEvidence = {
   source: BpmEvidenceSource;
   bpm: number;
-  quality: number;
-  timestampMs: number;
+  confidence: number;
 };
 
 type BpmResolutionResult = {
-  bpm: number;
-  quality: number;
-  source: BpmEvidenceSource;
-  evidence: BpmEvidence[];
+  bpm: number | null;
+  confidence: number;
+  winningSources: BpmEvidenceSource[];
+  aliasFlag: boolean;
+  debug: { /* 候选项、历史中位数、胜出项 */ };
 };
 
-type FusionSource = "camera" | "muse" | "fused";
+type FusionSource = "camera" | "muse" | "blend" | "none";
 ```
 
 ---
 
-## Muse PPG Filter
+## Muse PPG 滤波
 
-Apply Muse-style bandpass filtering to PPG samples:
+对 PPG 样本应用 Muse 风格的带通滤波：
 
 ```typescript
 import { museStyleFilter } from "@elata-biosciences/rppg-web";
@@ -100,20 +102,33 @@ const filtered = museStyleFilter(ppgSamples, sampleRate);
 
 ---
 
-## Calibration Workflow
+## 校准流程
 
 ```mermaid
 flowchart TD
-    MUS["Muse Headband PPG"] -->|"updateMuse(bpm)"| CAL["MuseFusionCalibrator"]
-    CAM["Camera rPPG"] -->|"updateCamera(bpm)"| CAL
-    CAL -->|"fuse()"| FUSED["Fused BPM Estimate"]
+    MUS["Muse 头带 PPG"] -->|"updateMuse(bpm)"| CAL["MuseFusionCalibrator"]
+    CAM["摄像头 rPPG"] -->|"updateCamera(bpm)"| CAL
+    CAL -->|"fuse()"| FUSED["融合后的 BPM 估算"]
     CAM -->|"spectral + ACF"| MOD["MuseCalibrationModel"]
-    MUS -->|"true BPM"| MOD
-    MOD -->|"predict()"| CALIBRATED["Calibrated Camera BPM"]
+    MUS -->|"真实 BPM"| MOD
+    MOD -->|"predict()"| CALIBRATED["校准后的摄像头 BPM"]
 ```
 
-1. Start with camera-only rPPG
-2. When a Muse headband connects, feed its PPG as ground truth
-3. The calibration model learns the camera-to-contact mapping
-4. Once trained, camera-only estimates are corrected using the learned model
-5. The fusion calibrator combines both sources for maximum accuracy
+1. 从仅使用摄像头的 rPPG 开始
+2. 当 Muse 头带连接后，将其 PPG 作为真实值输入
+3. 校准模型学习摄像头与接触式之间的映射关系
+4. 训练完成后，使用学到的模型校正仅摄像头的估算
+5. 融合校准器结合两种来源，以获得最高准确性
+
+---
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="帧来源" icon="camera" href="/cn/sdk/rppg-web/frame-sources">
+    摄像头采集和人脸检测
+  </Card>
+  <Card title="rPPG 摄像头集成" icon="video" href="/cn/sdk/guides/rppg-camera">
+    端到端网络摄像头流水线
+  </Card>
+</CardGroup>

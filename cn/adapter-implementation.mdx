@@ -1,0 +1,134 @@
+---
+title: 适配器实现
+description: 构建一个接入 BleTransport 并输出稳定头带帧的设备适配器。
+---
+
+协议清单完成后，就可以开始构建适配器了。
+
+目标是隔离设备特定的 BLE 和数据包逻辑，同时为应用保留共享的 Elata 传输协议。
+
+## 推荐结构
+
+对于浏览器 BLE 集成，适配器应满足 `@elata-biosciences/eeg-web-ble` 所期望的 `BleDeviceLike` 结构。
+
+也就是说，设备层负责发现、会话建立、订阅和数据包解码，而 `BleTransport` 负责面向应用的传输接口。
+
+## 实现顺序
+
+<Steps>
+  <Step title="实现发现">
+    定义 `requestDevice` 的过滤条件以及所需的可选服务，以便在浏览器选择器中干净地找到设备。
+  </Step>
+  <Step title="准备会话">
+    连接 GATT，解析特征值，并在开始数据流之前完成所需的启动写入。
+  </Step>
+  <Step title="将数据包解码为 EEG 行">
+    把厂商数据包转换为 `number[][]`，每一行代表一个时间步，行宽与 `numEegChannels` 一致。
+  </Step>
+  <Step title="输出稳定的元数据">
+    准确暴露 `samplingRate`、`eegNames`、`numEegChannels` 及相关设备元数据。
+  </Step>
+  <Step title="干净地停止和释放">
+    取消订阅，安全停止数据流，并在不泄漏资源的情况下释放会话。
+  </Step>
+</Steps>
+
+## 最小适配器骨架
+
+```ts
+import type { BleDeviceLike } from "@elata-biosciences/eeg-web-ble";
+
+export class VendorBleDevice implements BleDeviceLike {
+  isAthena = false;
+  samplingRate = 250;
+  eegNames = ["CH1", "CH2"];
+  numEegChannels = 2;
+  opticsChannelCount = 0;
+
+  getBoardInfo() {
+    return { device_name: "VENDOR_DEVICE" };
+  }
+
+  getCharacteristicInfo() {
+    return { characteristics: [] };
+  }
+
+  async prepareSession() {
+    // 连接 GATT、解析特征值并初始化数据流状态
+  }
+
+  async releaseSession() {
+    // 撤销订阅并释放浏览器会话
+  }
+
+  async startStream(eegCb, _ppgCb) {
+    // 订阅通知并输出解码后的 EEG 行
+    eegCb([[0, 0]]);
+  }
+
+  async stopStream() {
+    // 停止设备数据流并取消订阅
+  }
+}
+```
+
+## 适配器必须负责的内容
+
+| 职责 | 是否由适配器负责？ |
+| --- | --- |
+| 设备发现 | 是 |
+| GATT 连接和特征值设置 | 是 |
+| 数据包解码 | 是 |
+| 准确的元数据 | 是 |
+| 面向应用的传输生命周期 | 通常通过 `BleTransport` |
+| 向应用交付规范化的帧 | 通过共享的传输协议 |
+
+## 数据包解码规则
+
+让解码器保持简单和确定。
+
+| 规则 | 原因 |
+| --- | --- |
+| 尽早拒绝畸形数据包 | 防止坏数据行到达应用 |
+| 保持通道顺序 | 让下游特征和模型保持一致 |
+| 仅在必要时批量处理行 | 避免隐藏的延迟和时间戳混乱 |
+| 有包计数器时进行追踪 | 有助于检测丢包或损坏 |
+| 将 EEG 与辅助信号逻辑清晰分离 | 便于调试和测试 |
+
+## 会话生命周期规则
+
+你的适配器应让这些状态转换符合预期：
+
+| 阶段 | 正确的行为 |
+| --- | --- |
+| 发现 | 只显示匹配的设备 |
+| 连接 | 所需的服务和特征值都能明确解析 |
+| 开始 | 数据流只开始一次，没有重复订阅 |
+| 停止 | 通知干净地停止 |
+| 释放 | 之后可以再次开始会话 |
+
+## 可靠性说明
+
+<Info>
+  对应用使用者来说，`startStreaming()` 是最安全的默认选择，因为它合并了连接和开始。但你的适配器仍应保证底层的 `connect()` 和 `start()` 各自可靠。
+</Info>
+
+如果设备提供 PPG、光学、IMU 或电量等辅助信号，只在语义清晰时才进行映射。不要把 Muse 特有的假设强加给非 Muse 硬件。
+
+## 相关文档
+
+- [EEG BLE 快速上手](/cn/sdk/eeg-web-ble/getting-started)
+- [传输协议](./transport-contract)
+- [测试与验证](./testing-and-validation)
+- [Muse 设备](/cn/sdk/eeg-web-ble/muse-device)
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="验证集成" icon="arrow-right" href="./testing-and-validation">
+    让适配器在真实故障条件下成为可靠的传输。
+  </Card>
+  <Card title="准备交付" icon="arrow-right" href="./submission-and-support">
+    附上其他团队所需的文档和注意事项进行打包。
+  </Card>
+</CardGroup>
