@@ -1,0 +1,94 @@
+---
+title: "Getting Started"
+description: "Heart rate and HRV from a Muse headband's optical (PPG) sensor with @elata-biosciences/ppg-web."
+---
+
+## What it does
+
+`@elata-biosciences/ppg-web` estimates heart rate and heart-rate variability
+from a headband's PPG (optical) sensor, in the browser. It runs on the same
+normalized headband stream as the EEG packages, so it works alongside EEG from
+the same device.
+
+- Reads Muse classic `ppgRaw` and Muse S Athena `optics` frames
+- Picks the best channel automatically, or lets you pin one
+- Reports `bpm`, `rmssdMs`, `sdnnMs`, and `meanNnMs`, plus confidence and signal quality
+
+---
+
+## Install
+
+```bash
+npm install @elata-biosciences/ppg-web @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble @elata-biosciences/rppg-web
+```
+
+Or scaffold the starter: `npm create @elata-biosciences/elata-demo my-app -- --template ppg`.
+
+---
+
+## Connect a Muse and read metrics
+
+```ts
+import { createMusePpgSession } from '@elata-biosciences/ppg-web';
+
+// Call from a user gesture (e.g. a "Connect" button): Web Bluetooth requires it.
+const session = await createMusePpgSession({
+  windowSec: 16,
+  onMetrics: (m) => {
+    console.log(m.bpm, m.rmssdMs, m.signalQuality);
+  },
+});
+
+// Or poll
+const metrics = session.getMetrics();
+
+// When done
+await session.stop();
+await session.dispose();
+```
+
+---
+
+## Use any headband transport
+
+If you already have a `HeadbandTransport` (for example a `BleTransport` you
+created yourself), wrap it:
+
+```ts
+import { createPpgSession } from '@elata-biosciences/ppg-web';
+
+const session = await createPpgSession({
+  transport,
+  autoStart: true,
+  source: 'auto',   // 'auto' | 'ppgRaw' | 'optics'
+  channel: 'auto',
+});
+```
+
+---
+
+## Session API
+
+| Member | What it does |
+| --- | --- |
+| `getMetrics()` | Latest metrics (`bpm`, `rmssdMs`, `sdnnMs`, `meanNnMs`, `confidence`, `signalQuality`, `source`, `channel`, …) |
+| `getDiagnostics()` | Metrics plus transport status and signal diagnostics |
+| `getTraceSnapshot(maxPoints?)` | Recent filtered trace, for charts |
+| `start()` / `stop()` | Start or stop streaming |
+| `disconnect()` | Disconnect the device |
+| `dispose()` | Stop and release everything |
+
+Callbacks: `onMetrics`, `onDiagnostics`, `onStatus`.
+
+---
+
+## Notes
+
+<Note>
+  On classic Muse devices (`ppgRaw`), frame timing comes from the browser, so
+  treat HRV values as a preview. Muse S Athena `optics` keeps device timestamps
+  and is the preferred source when available.
+</Note>
+
+- Requires Web Bluetooth: Chrome or Edge on desktop or Android, over `https://` or `localhost`.
+- For camera-based heart rate without a headband, use [`rppg-web`](/sdk/rppg-web/getting-started).

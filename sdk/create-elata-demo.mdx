@@ -1,235 +1,121 @@
 ---
 title: "Create Elata Demo"
-description: "Scaffold Elata starter apps from published templates."
+description: "Scaffold a ready-to-run Elata starter app from a template."
 ---
 
-## What This Package Is
+## What it is
 
-`@elata-biosciences/create-elata-demo` is a CLI scaffolder that generates ready-to-run Elata web apps.
-
-Use it when you want a clean scaffolded app or a consumer-facing reference project.
-
----
-
-## When To Use It
-
-Use this package when you want:
-
-- the fastest path to a working Elata app
-- a reference project that matches the published package surface
-- a known-good baseline before integrating packages into an existing app
-
-Do not start with repo-internal demos when this package already covers your use case.
+`@elata-biosciences/create-elata-demo` generates a working Vite + React app
+wired to the Elata SDKs. It's the fastest way to a running app, and a
+known-good baseline before you integrate the SDKs into your own project.
 
 ---
 
 ## Templates
 
-The scaffolder exposes three user-facing app starters:
+| Template | Aliases | What you get | Hardware |
+| --- | --- | --- | --- |
+| `rppg-demo` | `rppg` | Camera pulse and rPPG starter. **The default.** | Webcam |
+| `eeg-demo` | `eeg` | Browser EEG starter for SDK wiring, with Muse Web Bluetooth support | Muse (optional) |
+| `eeg-ble` | `ble` | Bluetooth-first EEG starter with the browser pairing flow | Muse |
+| `ppg-demo` | `ppg`, `muse-ppg` | Headband PPG starter showing BPM, RMSSD, and live diagnostics | Muse |
+| `pulse-game` | `pulse`, `recovery` | rPPG recovery game that runs in a sandboxed iframe and saves scores with `app-metrics`, end to end | Webcam |
 
-| Template | Description |
-| --- | --- |
-| `rppg-demo` | React \+ Vite rPPG starter app |
-| `eeg-demo` | React \+ Vite EEG starter app with synthetic data and browser EEG wiring |
-| `eeg-ble` | Muse-compatible EEG starter with Chrome or Bluefy-on-iOS Web Bluetooth guidance |
-
-Short aliases are also supported:
-
-| Alias | Resolves to |
-| --- | --- |
-| `rppg` | `rppg-demo` |
-| `eeg` | `eeg-demo` |
-| `ble` | `eeg-ble` |
-| `ble` | `eeg-ble` |
+<Tip>
+  Building for the Elata App Store? `pulse-game` shows the full store pattern:
+  the app runs in an iframe and talks to a host over the
+  [metrics bridge](/apps/platform/metrics-and-scores).
+</Tip>
 
 ---
 
-## Install And Invocation
-
-This package is usually invoked without installing it permanently:
+## Usage
 
 <CodeGroup>
 
-```bash pnpm
-pnpm create @elata-biosciences/elata-demo my-app
-pnpm dlx @elata-biosciences/create-elata-demo my-app
-```
-
 ```bash npm
-npm create @elata-biosciences/elata-demo my-app
-npx @elata-biosciences/create-elata-demo my-app
-```
-
-</CodeGroup>
-
----
-
-## List Available Templates
-
-<CodeGroup>
-
-```bash pnpm
-pnpm dlx @elata-biosciences/create-elata-demo -- --list-templates
-```
-
-```bash npm
-npx @elata-biosciences/create-elata-demo -- --list-templates
-```
-
-</CodeGroup>
-
----
-
-## Recommended Usage
-
-<CodeGroup>
-
-```bash pnpm
-# Interactive template chooser
-pnpm create @elata-biosciences/elata-demo my-app
-
-# rPPG starter app (alias)
-pnpm create @elata-biosciences/elata-demo my-app -- --template rppg
-
-# EEG starter app
-pnpm create @elata-biosciences/elata-demo my-app -- --template eeg-demo
-
-# EEG starter app (alias)
-pnpm create @elata-biosciences/elata-demo my-app -- --template eeg
-
-# EEG starter app with BLE alias
-pnpm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
-
-# Short BLE alias
-pnpm create @elata-biosciences/elata-demo my-app -- --template ble
-```
-
-```bash npm
-# Interactive template chooser
+# Interactive: pick a template, then a project name
 npm create @elata-biosciences/elata-demo my-app
 
-# rPPG starter app (alias)
+# Pick a template directly
 npm create @elata-biosciences/elata-demo my-app -- --template rppg
-
-# EEG starter app
-npm create @elata-biosciences/elata-demo my-app -- --template eeg-demo
-
-# EEG starter app (alias)
-npm create @elata-biosciences/elata-demo my-app -- --template eeg
-
-# EEG starter app with BLE alias
 npm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
+npm create @elata-biosciences/elata-demo my-app -- --template ppg
+npm create @elata-biosciences/elata-demo my-app -- --template pulse-game
 
-# Short BLE alias
-npm create @elata-biosciences/elata-demo my-app -- --template ble
+# List templates
+npx @elata-biosciences/create-elata-demo --list-templates
+```
+
+```bash pnpm
+pnpm create @elata-biosciences/elata-demo my-app
+pnpm create @elata-biosciences/elata-demo my-app -- --template rppg
+pnpm dlx @elata-biosciences/create-elata-demo --list-templates
 ```
 
 </CodeGroup>
 
-When the CLI is run interactively without `--template`, it prompts you to pick a template. In non-interactive runs, it falls back to `rppg-demo`.
+| Flag | Meaning |
+| --- | --- |
+| `--template <name>` or `--template=<name>` | Choose a template or alias |
+| `--list-templates` | Print the available templates |
 
-If you omit the project directory, the CLI also prompts for the project name.
+Without `--template`, the CLI asks you to pick one when run interactively, and
+uses `rppg-demo` otherwise. If you leave out the project directory, it asks for
+a name.
 
 ---
 
-## What You Get
+## What you get
 
-Each generated app includes:
+Every generated app includes:
 
-- a minimal Vite \+ React app shell
+- a Vite + React + TypeScript app
 - Elata packages pinned to a compatible set of versions
 - a template-specific `README.md`
-- a `build` script that type-checks and runs `vite build`
+- `npm run dev`: start the dev server
+- `npm run build`: type-check and build to `dist/`
+- `npm run build:zip`: build and write `app.zip`, ready to [upload to the App Store](/apps/build/launch-your-app)
 
-After scaffolding:
-
-<CodeGroup>
-
-```bash pnpm
-cd my-app
-pnpm install
-pnpm run dev
-```
-
-```bash npm
+```bash
 cd my-app
 npm install
 npm run dev
 ```
 
-</CodeGroup>
-
 ---
 
-## What Happens Behind The Scenes
+## Inside another pnpm workspace
 
-The scaffolder binary:
+If you scaffold inside an existing `pnpm` workspace that doesn't include the new
+folder, install and run it outside the workspace:
 
-1. Prompts for the app type first when running interactively without `--template`
-2. Prompts for `projectName` when missing
-3. Validates the selected starter name
-4. Copies the chosen template into the target directory
-5. Renames `_gitignore` to `.gitignore`
-6. Rewrites placeholders like `__APP_NAME__` and package-version placeholders
-
----
-
-## Workspace Caveat
-
-If you scaffold a new app inside another `pnpm` workspace and that app is not added to the workspace globs, run this from the parent directory:
-
-<CodeGroup>
-
-```bash pnpm
+```bash
 pnpm --dir my-app --ignore-workspace install
 pnpm --dir my-app --ignore-workspace run dev
 ```
 
-```bash npm
-cd my-app
-npm install
-npm run dev
-```
-
-</CodeGroup>
-
 ---
 
-## Repo Verification
-
-The package is tested from the repo with:
-
-```bash
-pnpm --dir packages/create-elata-demo test
-./run.sh test create-elata-demo
-```
-
-The second command also smoke-tests each template by scaffolding, installing dependencies, and running a build.
-
----
-
-## When To Use The Scaffolder vs. Examples
+## Scaffolder or example apps?
 
 | If you want... | Use |
 | --- | --- |
-| A clean, self-contained scaffolded app with pinned deps | `create-elata-demo` |
-| A full product-shaped reference with routing, game loops, and charts | [Example Apps](/sdk/guides/example-apps) |
-| To modify the SDK itself | In-repo dev demos (`eeg-demo/`, `packages/rppg-web/demo/`) |
+| A clean starter with pinned dependencies | `create-elata-demo` |
+| Full, product-shaped apps with routing, game loops, and charts | [Example apps](/sdk/guides/example-apps) |
 
 ---
 
 ## Next
 
 <CardGroup cols={3}>
-  <Card title="Build Your First App" icon="rocket" iconType="light" href="/sdk/tutorials/first-app">
+  <Card title="Your First App" icon="rocket" href="/sdk/tutorials/first-app">
     Scaffold and run a starter app
   </Card>
-
-  <Card title="Choose A Package" icon="compass" iconType="light" href="/sdk/guides/choose-the-right-package">
+  <Card title="Choose A Package" icon="compass" href="/sdk/guides/choose-the-right-package">
     Package decision guide
   </Card>
-
-  <Card title="Example Apps" icon="grid-2" iconType="light" href="/sdk/guides/example-apps">
-    Full reference implementations
+  <Card title="Publish to the Store" icon="store" href="/apps/build/launch-your-app">
+    Upload your app
   </Card>
 </CardGroup>

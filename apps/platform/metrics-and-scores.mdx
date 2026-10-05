@@ -1,0 +1,96 @@
+---
+title: "Metrics and Scores"
+description: "Record events and scores, and contribute to the biometric Score, with @elata-biosciences/app-metrics."
+---
+
+## Overview
+
+`@elata-biosciences/app-metrics` gives your app a per-user store for **event
+records** and **scores**, plus `reportAffect` for contributing to the user's
+cross-app biometric Score.
+
+```bash
+npm install @elata-biosciences/app-metrics
+```
+
+```ts
+import { createMetricsClient } from '@elata-biosciences/app-metrics';
+
+const metrics = createMetricsClient();
+await metrics.ready();
+
+await metrics.record({ type: 'level_complete', data: { level: 3, time: 42 } });
+await metrics.saveScore({ value: 1200, meta: { level: 3 } });
+
+const best = await metrics.loadScores({ order: 'value_desc', limit: 10 });
+const recent = await metrics.query({ type: 'level_complete', limit: 20 });
+```
+
+Data is scoped to the (user, app) pair and never crosses app boundaries. The
+store keeps a local copy and, for signed-in users, syncs it to the user's
+account so it follows them across devices. These records also power your
+[analytics](/apps/operate/analytics-and-health).
+
+---
+
+## API
+
+| Method | What it does |
+| --- | --- |
+| `ready()` | Resolves once the connection to the store is set up |
+| `record({ type, data })` | Store an event record |
+| `query({ type?, since?, until?, limit? })` | Read records back |
+| `clear()` | Delete all of this app's records for the user |
+| `saveScore({ value, meta? })` | Store a numeric score |
+| `loadScores({ order?, since?, until?, limit? })` | Read scores. `order` is `"value_desc"` or `"timestamp_desc"`. |
+| `reportAffect(report)` | Contribute a session result to the biometric Score (see below) |
+| `dispose()` | Tear down the client |
+
+### Limits
+
+- Each record can be up to 64 KB.
+- Each (user, app) pair has a 5 MB storage quota.
+- Calls fail with `quota_exceeded`, `invalid_payload`, or `rate_limited` when you exceed limits.
+
+Errors are thrown as `MetricsClientError`, whose `code` is one of the host codes
+above or `handshake_timeout`, `disposed`, or `transport`.
+
+---
+
+## reportAffect
+
+`reportAffect` sends a **derived session result**, never raw signal, to Elata
+so it can contribute to the user's cross-app biometric Score.
+
+```ts
+const result = await metrics.reportAffect({
+  dimension: 'calm',      // 'calm' | 'stress' | 'focus'
+  baselineValue: 0.42,    // 0..1
+  sessionValue: 0.61,     // 0..1
+  delta: 0.19,            // -1..1
+  meanHr: 68,             // optional session-average heart rate
+  signalQuality: 0.85,    // 0..1
+  confidence: 0.8,        // 0..1
+  source: 'rppg',
+  durationSec: 300,
+});
+// result: { accepted, calibrating, score }
+```
+
+| Result field | Meaning |
+| --- | --- |
+| `accepted` | `false` if the sample was dropped, for example for low quality |
+| `calibrating` | `true` until the user has enough samples for a stable Score |
+| `score` | The user's Score, 0 to 100, once calibrated; otherwise `null` |
+
+Two things must be true or the call fails with `scope_denied`:
+
+1. **Your app has the `biometrics` scope.** Contact the Elata team to enable it for your app.
+2. **The user has consented.** Ask with [`elata:consent:request`](/apps/platform/consent-and-insights). The store also re-checks consent on the server for every sample.
+
+---
+
+## For store hosts
+
+The package also ships a host entry, `@elata-biosciences/app-metrics/host`
+(`createMetricsHost`), used by the App Store itself. App developers don't need it.

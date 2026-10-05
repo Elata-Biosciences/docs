@@ -14,9 +14,11 @@ When a Muse headband with PPG is available alongside camera-based rPPG, the SDK 
 Fuses Muse PPG readings with camera rPPG estimates for improved accuracy:
 
 ```typescript
-import { RppgProcessor, MuseFusionCalibrator } from "@elata-biosciences/rppg-web";
+import { RppgProcessor, MuseFusionCalibrator, loadWasmBackend } from "@elata-biosciences/rppg-web";
 
-const processor = new RppgProcessor("wasm", 30);
+const backend = await loadWasmBackend(); // null if the packaged WASM can't be loaded
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const processor = new RppgProcessor(backend, 30);
 const calibrator = new MuseFusionCalibrator();
 
 // Feed Muse PPG readings (from headband)

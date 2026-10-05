@@ -1,0 +1,94 @@
+---
+title: "Upload and Hosting"
+description: "Upload limits, self-hosted URLs, the sandbox your app runs in, and home-screen install."
+---
+
+## Two ways to host
+
+| Option | How it works | When to use it |
+| --- | --- | --- |
+| **Store-hosted** (default) | Upload a `.zip` or a single `.html` file. The store serves it. | Almost always |
+| **Self-hosted** | Give the store a public `https://` URL. The store embeds it. | Apps that need their own server. Requires approval from Elata. |
+
+Uploaded code is treated as static web content (HTML, CSS, JS, and assets). It
+runs in the user's browser and is never executed on Elata's servers.
+
+---
+
+## Limits
+
+| Limit | Value |
+| --- | --- |
+| Upload size | 200 MB |
+| Unzipped size | 500 MB |
+| Files in a zip | 2,000 |
+| Single file size | 100 MB |
+
+The zip must contain `index.html`. File paths must be relative and plain: no
+absolute paths, no `..` segments, and no control characters.
+
+---
+
+## Building for the store
+
+- **Use relative URLs.** Apps are served under a sub-path, not at the domain root. Load assets and data with relative paths (`./data.json`, not `/data.json`).
+- **Ship the WASM files.** Keep the SDK's packaged `.wasm` files in your build output.
+- **Use the store's bridge, not browser storage, for anything that matters.** Each app runs on its own origin, so `localStorage` works but stays on one device. Use [`app-state`](/apps/platform/app-state) for data that should follow the user.
+- **Ask for camera access only when needed.** rPPG apps run in the store frame and the browser will prompt for camera permission.
+
+---
+
+## The sandbox
+
+When someone plays your app, the store loads it in a sandboxed iframe on an
+isolated origin for your app. In that sandbox your app:
+
+- **can** run scripts, use the camera (with permission), use Web Bluetooth in supported browsers, use pointer lock, and use its own storage
+- **cannot** read the store's cookies or storage, see the user's wallet or session, or navigate the store page
+
+To talk to the store, use the [host bridge](/apps/platform/host-bridge).
+
+---
+
+## Self-hosted apps
+
+To use your own URL, request external hosting from your app's **Edit** page.
+Once Elata approves the request you can publish releases that point at an
+`https://` URL.
+
+Self-hosted URLs must:
+
+- use `https://` and be publicly reachable
+- allow being embedded in a frame (don't send `X-Frame-Options: DENY` or a CSP `frame-ancestors` that excludes `app.elata.bio`)
+
+Self-hosted URLs are also checked against a URL-reputation service.
+
+---
+
+## Home-screen install (PWA)
+
+When someone installs your app from its play page (**Add to Home Screen**), the
+store makes the install use **your** app's name and icon if your bundle ships a
+web manifest:
+
+1. Add `manifest.webmanifest` (or `manifest.json`) next to `index.html`.
+2. Link it from your HTML: `<link rel="manifest" href="manifest.webmanifest">`. Use relative paths.
+3. Include at least one icon. A 512×512 maskable PNG works best.
+4. Set `name`, `short_name`, `theme_color`, and `background_color`.
+
+The store manages `start_url`, `scope`, and `display` so the installed app
+reopens correctly. Without a manifest, the install uses your store listing's
+name and image.
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Host Bridge" icon="plug" href="/apps/platform/host-bridge">
+    How your app talks to the store
+  </Card>
+  <Card title="Store Listing" icon="image" href="/apps/build/app-metadata">
+    Icon, header, screenshots
+  </Card>
+</CardGroup>

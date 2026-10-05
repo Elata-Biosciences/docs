@@ -1,106 +1,129 @@
 ---
 title: "Cursor"
-description: "Use Cursor to build tokenized apps with the Elata protocol and Biometric SDK."
+description: "Use Cursor to build Elata apps with the Biometric SDKs and store APIs."
 ---
 
 ## Overview
 
-Cursor's AI features can accelerate Elata app development. This guide covers project rules setup and key workflows for building with the protocol and SDK.
+Cursor works best on Elata apps when it knows how the store works: the
+sandbox, the SDK packages, and the upload rules. This page gives you a project
+context file to paste in, plus prompts for common tasks.
 
 ---
 
 ## Setup
 
-1. Install Cursor from [cursor.sh](https://cursor.sh)
-2. Open your Elata project
-3. Create `.cursor/rules.md` with the template below
+1. Install Cursor from [cursor.com](https://cursor.com).
+2. Open your project.
+3. Add a project rule at `.cursor/rules/elata.mdc` with the context below.
 
 ---
 
-## Cursor Rules Template
+## Project context
 
-Create `.cursor/rules.md` in your project root:
+Save this as a project rule at `.cursor/rules/elata.mdc`:
 
-```markdown
-# Elata Development Rules
+```markdown .cursor/rules/elata.mdc
+# Elata app
 
-## Project Context
-This is an Elata app built on the Elata protocol with biometric SDK integration.
+This is a browser app for the Elata App Store (https://app.elata.bio), built on
+the Elata Biometric SDKs. It is a static web build that runs inside a sandboxed
+iframe in the store.
 
-## Key References
-- Protocol docs: https://docs.elata.bio/apps/what-are-elata-apps
-- SDK docs: https://docs.elata.bio/sdk/overview
-- App store: https://app.elata.bio
+## Docs
+- Docs home: https://docs.elata.bio (full text for agents: https://docs.elata.bio/llms-full.txt)
+- Building apps: https://docs.elata.bio/apps/build/overview
+- Host bridge (store APIs): https://docs.elata.bio/apps/platform/host-bridge
+- SDK overview: https://docs.elata.bio/sdk/overview
+- Package references for agents: node_modules/@elata-biosciences/<package>/llms.txt
 
-## SDK Packages
-- `@elata-biosciences/rppg-web`: Camera-based heart rate (createRppgSession)
-- `@elata-biosciences/eeg-web`: EEG signal processing (initEegWasm, band_powers)
-- `@elata-biosciences/eeg-web-ble`: Web Bluetooth headband transport (BleTransport)
-- `@elata-biosciences/create-elata-demo`: App scaffolder
+## Packages
+- @elata-biosciences/rppg-web: camera heart rate (use createRppgSession)
+- @elata-biosciences/eeg-web + eeg-web-ble: EEG over Web Bluetooth (Muse built in)
+- @elata-biosciences/ppg-web: headband PPG heart rate and HRV
+- @elata-biosciences/biosignal-session / biosignal-analytics: recording and analysis
+- @elata-biosciences/app-payments: in-app purchases (store checkout)
+- @elata-biosciences/app-state: per-user key-value storage
+- @elata-biosciences/app-metrics: event records, scores, reportAffect
 
-## Protocol Architecture
-- AppFactory: deploys app token stacks (10M supply, 50/25/25 split)
-- AppBondingCurve: constant-product price discovery, graduates at 42k ELTA
-- FeeRouterV2: routes fees to treasury (20%) and contributors (80%)
-- ContributorSplit: pull-based payout to named contributors
+## Store rules
+- The build must actually use an Elata sensor SDK (rPPG, EEG, or PPG), or upload fails.
+- Ship a zip with index.html at the root; use relative asset URLs.
+- Never handle wallets, payments, or sessions in the app. Use app-payments for purchases.
+- Never send raw camera frames, audio, or raw biosignals off the device.
+- Never access window.parent beyond postMessage.
+- Put the release version in public/elata.json: { "version": "x.y.z" }.
 
-## Code Standards
-- TypeScript, React, Vite
-- No em-dashes in docs or comments
-- Use createRppgSession for browser rPPG (not raw RppgProcessor)
-- Use BleTransport.startStreaming() for BLE (not separate connect/start)
-- Initialize WASM before using SDK analysis functions
+## Commands
+- npm run dev        start the dev server
+- npm run build:zip  build and write app.zip for upload
 ```
 
 ---
 
-## Key Workflows
+## Useful prompts
 
-### Scaffold and Extend
+### Start a new app
 
-Start with a scaffold, then use Cursor to extend:
-
-```bash
-pnpm create @elata-biosciences/elata-demo my-app -- --template rppg
-cd my-app
-pnpm install
+```text
+Scaffold a new camera heart-rate app with
+npm create @elata-biosciences/elata-demo my-app -- --template rppg
+and explain the project structure.
 ```
 
-Open in Cursor and ask it to add features on top of the scaffold.
+### Add the SDK to an existing app
 
-### SDK Integration Patterns
+```text
+Add camera heart rate with @elata-biosciences/rppg-web. Use createRppgSession,
+show signal quality, and stop the camera when the component unmounts.
+Read node_modules/@elata-biosciences/rppg-web/llms.txt first.
+```
 
-When asking Cursor to integrate the SDK, reference the specific entry points:
+### Add a purchase
 
-- **rPPG:** `createRppgSession({ video, backend: "auto", faceMesh: "off" })`
-- **EEG:** `initEegWasm()` then `band_powers(samples, sampleRate)`
-- **BLE:** `new BleTransport({ deviceOptions: { athenaDecoderFactory } })`
+```text
+Add a "Pro theme" unlock with @elata-biosciences/app-payments. Gate the UI on
+getOwnedItems(), branch on result.status (not txHash), and re-apply owned
+benefits on startup.
+```
 
-### Contract Interaction
+### Save progress
 
-Ask Cursor to generate contract interaction code by providing the contract name and method:
+```text
+Persist the player's settings and best score with @elata-biosciences/app-state.
+Fall back to localStorage when getState rejects with not_authenticated.
+```
 
-- Read bonding curve state: `AppBondingCurve.getReserves()`
-- Check app status: `AppRegistry.getApp(appId)`
-- Join tournament: `Tournament.join(entryFee)`
+### Prepare an upload
+
+```text
+Check that this build is ready for the Elata App Store: index.html at the zip
+root, relative asset paths, SDK usage present, and public/elata.json with the
+version from package.json. Then run npm run build:zip.
+```
 
 ---
 
 ## Tips
 
 <Tip>
-  Add the Elata SDK docs and protocol docs as documentation sources in Cursor's settings. This improves code generation quality for SDK-specific patterns.
+  Point the assistant at a package's `llms.txt` in `node_modules` before asking
+  it to write integration code. These files are written for AI tools and list
+  the supported APIs and common mistakes.
 </Tip>
+
+- Start from a `create-elata-demo` template, then iterate.
+- Test in the store's play window before submitting. The sandbox behaves differently from `localhost`.
 
 ---
 
 ## Next
 
-<CardGroup cols={2}>
-  <Card title="Builder Overview" icon="hammer" iconType="light" href="/apps/build/overview">
-    What the protocol gives builders
+<CardGroup cols=2>
+  <Card title="Builder Overview" icon="hammer" href="/apps/build/overview">
+    How publishing works
   </Card>
-  <Card title="SDK Overview" icon="brain" iconType="light" href="/sdk/overview">
-    Biometric SDK packages
+  <Card title="SDK Overview" icon="brain" href="/sdk/overview">
+    The Biometric SDK packages
   </Card>
 </CardGroup>

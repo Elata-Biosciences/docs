@@ -1,0 +1,97 @@
+---
+title: "Getting Started"
+description: "EEG features, HRV, robust statistics, and transparent headline scores with @elata-biosciences/biosignal-analytics."
+---
+
+## What it does
+
+`@elata-biosciences/biosignal-analytics` turns biosignal data into features and
+scores in the browser, with no server or network connection:
+
+- **EEG window features** (WASM): band powers, spectral entropy, dominant frequency, alpha peak, Hjorth parameters, and quality flags
+- **HRV and robust statistics**: time-domain HRV, medians and MADs, rolling personal baselines
+- **Headline scores**: Measurement Quality, Activation, Recovery, Focus, Readiness, and Resilience, each with its contributors exposed
+- **A metric registry**: every metric has a registered definition, unit, evidence tier, and algorithm version
+
+It pairs naturally with [`biosignal-session`](/sdk/biosignal-session/getting-started),
+but doesn't require it.
+
+```bash
+npm install @elata-biosciences/biosignal-analytics
+```
+
+---
+
+## Analyze an EEG window
+
+```ts
+import { analyzeEeg, initAnalyticsWasm } from '@elata-biosciences/biosignal-analytics';
+
+await initAnalyticsWasm();
+
+const result = await analyzeEeg({
+  samples,                        // samples[sampleIndex][channelIndex]
+  sampleRateHz: 256,
+  channels: ['TP9', 'AF7', 'AF8', 'TP10'],
+});
+```
+
+One call per window keeps the JavaScript/WASM boundary cheap. The result
+includes the configuration and algorithm versions that produced it.
+
+---
+
+## Headline scores
+
+Scores are interpretations, not measurements, and they say so:
+
+- **Measurement Quality** describes the recording, not the person, and is always available.
+- **Activation, Recovery, Focus, Readiness, and Resilience** each list every contributor with its weight, z-score, and quality.
+- A score **withholds itself** (returns `null` with a reason) rather than guessing when inputs are missing, quality is poor, or there's no personal baseline yet.
+
+| Withhold reason | Meaning |
+| --- | --- |
+| `inputs_missing` | The measurement wasn't made |
+| `insufficient_quality` | It was made too poorly to read |
+| `insufficient_baseline` | No usable personal baseline yet |
+| `no_activation_detected` | Recovery: nothing qualified as an activation |
+| `recovery_incomplete` | Recovery: the recording ended before recovery |
+| `no_task_context` | Focus: there was no task to attend to |
+| `insufficient_history` | Readiness and Resilience: not enough days of data yet |
+
+`insufficient_history` includes counts, so you can tell the user exactly how
+many more days are needed. Readiness needs 14 qualified days; Resilience needs
+21 plus 6 recovered activation episodes.
+
+<Note>
+  Focus is deliberately not based on the theta/beta ratio, which isn't a valid
+  attention measure.
+</Note>
+
+---
+
+## Run analysis off the main thread
+
+```ts
+import {
+  createAnalyticsWorkerClient,
+  launchAnalyticsWorker,
+} from '@elata-biosciences/biosignal-analytics';
+
+const client = createAnalyticsWorkerClient({ createWorker: launchAnalyticsWorker });
+```
+
+---
+
+## Entry points
+
+| Import | Contents |
+| --- | --- |
+| `@elata-biosciences/biosignal-analytics` | Everything, re-exported |
+| `…/registry` | Metric definitions, evidence tiers, algorithm versions |
+| `…/insights` | Personal baselines and headline-score formulas |
+| `…/worker` | The analytics worker entry |
+| `…/testing` | Fixture loaders and synthetic signal helpers |
+
+Feature code is verified against Python (NumPy/SciPy) reference fixtures, so the
+Rust, WASM, and TypeScript implementations agree.

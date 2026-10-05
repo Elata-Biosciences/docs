@@ -1,0 +1,49 @@
+---
+title: "Privacy and Data"
+description: "What stays on the device, what apps can store, and how biometric consent works."
+---
+
+## On-device first
+
+Elata's SDKs process biosignals in the browser. Raw camera frames, raw EEG, and
+raw PPG don't need to leave the user's device, and the store's
+[submission policy](/apps/build/review-and-policy) forbids apps from sending
+them anywhere.
+
+---
+
+## What apps can see
+
+Apps run in a sandbox and never see who the user is. They can't read the user's
+wallet, email, session, or the store's data. When an app needs something from
+the platform, the store answers on the user's behalf.
+
+---
+
+## What apps can store
+
+Through the store's APIs, an app can save data for the signed-in user:
+
+- settings, saves, and progress with [`app-state`](/apps/platform/app-state)
+- event records and scores with [`app-metrics`](/apps/platform/metrics-and-scores)
+
+This data is scoped to that one app and that one user. Apps can't read each
+other's data. Developers only see aggregate, anonymized
+[analytics](/apps/operate/analytics-and-health), never individual users.
+
+---
+
+## The biometric Score
+
+The Score is a single, cross-app measure (0 to 100) built from **derived**
+session results, such as how much calmer a user got during a session compared
+with their baseline. Raw signal is never part of it.
+
+- **Off by default.** Nothing is shared until the user opts in.
+- **Shown by the store.** The consent prompt appears in the store's own frame, not inside the app.
+- **Enforced on the server.** Every sample is checked against the user's current consent.
+- **Revocable.** Users can turn sharing off at any time.
+- **Versioned.** If the consent terms change materially, users are asked again.
+
+Users can see their own Score and activity on their **Insights** page, and
+inside apps that request it.

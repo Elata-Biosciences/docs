@@ -1,0 +1,68 @@
+---
+title: "Requirements"
+description: "What your app needs before you upload and submit it."
+---
+
+## Checklist
+
+<Steps>
+  <Step title="A store account">
+    Sign in at [app.elata.bio](https://app.elata.bio). You can sign in with a social login or connect an existing wallet.
+  </Step>
+  <Step title="A registration fee">
+    Registering an app name costs a small one-time fee in USDC. The current amount is shown in the wizard.
+  </Step>
+  <Step title="An app that uses an Elata sensor SDK">
+    Uploads are rejected if no Elata SDK usage is detected. Use camera rPPG (`rppg-web`), EEG over Bluetooth (`eeg-web` + `eeg-web-ble`), or headband PPG (`ppg-web`, which runs on the EEG transport).
+  </Step>
+  <Step title="A static web build">
+    A `.zip` with `index.html` at its root (or a single `.html` file). Asset paths must be **relative**, because apps are served under a sub-path. See [Upload and hosting](/apps/build/upload-and-hosting).
+  </Step>
+  <Step title="A version">
+    Add an [`elata.json`](/apps/build/elata-json) so the store shows `v1.2.3` instead of a release number.
+  </Step>
+  <Step title="Listing assets">
+    An app icon and a header image are required to submit. Screenshots and an extended description are recommended. See [Store listing](/apps/build/app-metadata).
+  </Step>
+</Steps>
+
+---
+
+## SDK usage check
+
+The store looks for real calls into the Elata SDKs in your bundle, for example
+`createRppgSession(...)` from `rppg-web`, or `initEegWasm(...)` and
+`BleTransport` from the EEG packages, along with the packaged WASM files.
+Importing a package without using it is not enough.
+
+<Tip>
+  The templates from `npm create @elata-biosciences/elata-demo` already pass
+  this check. If you integrate the SDK by hand, keep the packaged `.wasm` files
+  in your build output.
+</Tip>
+
+---
+
+## Things your app must not do
+
+Apps run in a sandbox. Reviews and the automated scan reject apps that:
+
+- start wallet transactions, signatures, or approvals outside the store's own checkout
+- send raw camera frames, microphone audio, or raw biosignals off the device
+- try to reach the parent page, its cookies, or storage, or escape the sandbox
+- impersonate another app, developer, or service
+
+The full list is in [Review and policy](/apps/build/review-and-policy).
+
+---
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Publish Your App" icon="rocket" href="/apps/build/launch-your-app">
+    Walk through the wizard
+  </Card>
+  <Card title="elata.json" icon="file-code" href="/apps/build/elata-json">
+    The app manifest
+  </Card>
+</CardGroup>

@@ -1,0 +1,107 @@
+---
+title: "Consent and Insights"
+description: "Ask for biometric data-sharing consent and read a user's cross-app insights."
+---
+
+## The biometric Score
+
+Elata keeps a cross-app **biometric Score** for each user, built from derived
+session results that apps report with
+[`reportAffect`](/apps/platform/metrics-and-scores#reportaffect). Nothing is
+shared until the user explicitly opts in, and they can turn it off at any time.
+
+Consent is shown by the store in its own trusted frame, not by your app. The
+store also re-checks consent on the server for every sample, so your app can't
+contribute without it.
+
+There's currently one consent purpose: `platform_score`.
+
+---
+
+## Ask for consent
+
+```js
+const requestId = crypto.randomUUID();
+
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'elata:consent:state' && e.data.requestId === requestId) {
+    console.log('granted?', e.data.granted);
+  }
+});
+
+window.parent?.postMessage(
+  { type: 'elata:consent:request', purpose: 'platform_score', requestId },
+  '*',
+);
+```
+
+The store opens its consent dialog and replies with
+`{ type: 'elata:consent:state', purpose, granted, requestId }` once the user
+decides.
+
+To let users **turn sharing off** from your app's settings, send the same
+message with `action: 'revoke'`.
+
+---
+
+## Read consent without prompting
+
+To show the current state in your UI, for example as a settings toggle, send
+`elata:consent:query`. You get the same reply, and no dialog is shown.
+
+```js
+window.parent?.postMessage(
+  { type: 'elata:consent:query', purpose: 'platform_score', requestId: 'q1' },
+  '*',
+);
+```
+
+---
+
+## Read the user's insights
+
+Users who share their Score can see their own cross-app results inside your
+app. Request them with `elata:insights:request`:
+
+```js
+window.parent?.postMessage(
+  { type: 'elata:insights:request', requestId: 'i1', windowDays: 90 },
+  '*',
+);
+```
+
+The store replies with `elata:insights:state`:
+
+```ts
+{
+  type: 'elata:insights:state',
+  requestId?: string,
+  consented: boolean,      // false → no data; prompt the user to opt in
+  data?: {
+    engagement: {
+      activeDays: number,
+      currentStreak: number,
+      longestStreak: number,
+      appsUsed: number,
+      totalScores: number,
+      lastActiveAt: number | null,
+    },
+    apps: { slug: string | null, name: string | null }[],
+    score: { value: number | null, calibrating: boolean, sampleCount: number },
+    windowDays: number,
+    generatedAt: number,
+  }
+}
+```
+
+`windowDays` defaults to 90 and is capped at 365. The data is a curated summary
+of the user's **own** activity; it never includes other users or raw records.
+
+---
+
+## Checklist for Score-contributing apps
+
+1. Ask the Elata team to enable the `biometrics` scope for your app.
+2. Explain in your app and listing what is measured and what is shared.
+3. Ask for consent with `elata:consent:request` before calling `reportAffect`.
+4. Handle `scope_denied` from `reportAffect` by offering the consent prompt again.

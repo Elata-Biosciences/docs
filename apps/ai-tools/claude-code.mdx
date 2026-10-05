@@ -1,102 +1,105 @@
 ---
 title: "Claude Code"
-description: "Use Claude Code to build tokenized apps with the Elata protocol and Biometric SDK."
+description: "Use Claude Code to build Elata apps with the Biometric SDKs and store APIs."
 ---
 
 ## Overview
 
-Claude Code can help you build Elata apps by generating frontend code, integrating SDK packages, and interacting with protocol contracts. This guide covers setup and key workflows.
+Claude Code works best on Elata apps when it knows how the store works: the
+sandbox, the SDK packages, and the upload rules. This page gives you a project
+context file to paste in, plus prompts for common tasks.
 
 ---
 
 ## Setup
 
-1. Install Claude Code globally:
-
-```bash
-npm install -g @anthropic-ai/claude-code
-```
-
-2. Navigate to your project directory and run:
-
-```bash
-claude
-```
-
-3. Create a `CLAUDE.md` file in your project root with the context below.
+1. Install Claude Code by following the [Claude Code docs](https://docs.claude.com/en/docs/claude-code/overview).
+2. Open a terminal in your project and run `claude`.
+3. Add a `CLAUDE.md` file at your project root with the context below.
 
 ---
 
-## CLAUDE.md Template
+## Project context
 
-Create this file at the root of your project to give Claude Code context about Elata development:
+Save this as `CLAUDE.md` at your project root:
 
-```markdown
-# Project Context
+```markdown CLAUDE.md
+# Elata app
 
-This is an Elata app built on the Elata protocol.
+This is a browser app for the Elata App Store (https://app.elata.bio), built on
+the Elata Biometric SDKs. It is a static web build that runs inside a sandboxed
+iframe in the store.
 
-## Key References
-- Protocol docs: https://docs.elata.bio/apps/what-are-elata-apps
-- SDK docs: https://docs.elata.bio/sdk/overview
-- App store: https://app.elata.bio
+## Docs
+- Docs home: https://docs.elata.bio (full text for agents: https://docs.elata.bio/llms-full.txt)
+- Building apps: https://docs.elata.bio/apps/build/overview
+- Host bridge (store APIs): https://docs.elata.bio/apps/platform/host-bridge
+- SDK overview: https://docs.elata.bio/sdk/overview
+- Package references for agents: node_modules/@elata-biosciences/<package>/llms.txt
 
-## SDK Packages
-- `@elata-biosciences/rppg-web` - Camera-based heart rate (primary integration)
-- `@elata-biosciences/eeg-web` - EEG signal processing
-- `@elata-biosciences/eeg-web-ble` - Web Bluetooth for Muse headsets
-- `@elata-biosciences/create-elata-demo` - App scaffolder
+## Packages
+- @elata-biosciences/rppg-web: camera heart rate (use createRppgSession)
+- @elata-biosciences/eeg-web + eeg-web-ble: EEG over Web Bluetooth (Muse built in)
+- @elata-biosciences/ppg-web: headband PPG heart rate and HRV
+- @elata-biosciences/biosignal-session / biosignal-analytics: recording and analysis
+- @elata-biosciences/app-payments: in-app purchases (store checkout)
+- @elata-biosciences/app-state: per-user key-value storage
+- @elata-biosciences/app-metrics: event records, scores, reportAffect
 
-## Protocol Contracts
-- AppFactory: deploys app token stacks
-- AppRegistry: on-chain app metadata
-- AppBondingCurve: constant-product price discovery
-- FeeRouterV2: fee routing to treasury and contributors
-- ContributorSplit: pull-based contributor payouts
+## Store rules
+- The build must actually use an Elata sensor SDK (rPPG, EEG, or PPG), or upload fails.
+- Ship a zip with index.html at the root; use relative asset URLs.
+- Never handle wallets, payments, or sessions in the app. Use app-payments for purchases.
+- Never send raw camera frames, audio, or raw biosignals off the device.
+- Never access window.parent beyond postMessage.
+- Put the release version in public/elata.json: { "version": "x.y.z" }.
 
-## Stack
-- Frontend: React + Vite
-- Biosignals: Elata SDK (WASM)
-- Contracts: Solidity (Foundry)
-- Chain: Ethereum / Base
-
-## Writing Standards
-- No em-dashes
-- Practical, concise code
-- Use TypeScript
+## Commands
+- npm run dev        start the dev server
+- npm run build:zip  build and write app.zip for upload
 ```
 
 ---
 
-## Key Workflows
+## Useful prompts
 
-### Scaffold a New App
-
-Ask Claude Code to scaffold using the Elata CLI:
+### Start a new app
 
 ```text
-> Scaffold a new rPPG app using create-elata-demo
+Scaffold a new camera heart-rate app with
+npm create @elata-biosciences/elata-demo my-app -- --template rppg
+and explain the project structure.
 ```
 
-### Integrate the Biometric SDK
+### Add the SDK to an existing app
 
 ```text
-> Add camera-based heart rate to my app using @elata-biosciences/rppg-web.
-> Use createRppgSession with auto backend and diagnostics.
+Add camera heart rate with @elata-biosciences/rppg-web. Use createRppgSession,
+show signal quality, and stop the camera when the component unmounts.
+Read node_modules/@elata-biosciences/rppg-web/llms.txt first.
 ```
 
-### Connect to Protocol Contracts
+### Add a purchase
 
 ```text
-> Add a component that reads the current bonding curve price for my app token.
-> Use ethers.js to call AppBondingCurve.getPrice().
+Add a "Pro theme" unlock with @elata-biosciences/app-payments. Gate the UI on
+getOwnedItems(), branch on result.status (not txHash), and re-apply owned
+benefits on startup.
 ```
 
-### Build Tournament UI
+### Save progress
 
 ```text
-> Create a tournament listing page that shows active tournaments from the
-> TournamentFactory contract and lets users join with their app tokens.
+Persist the player's settings and best score with @elata-biosciences/app-state.
+Fall back to localStorage when getState rejects with not_authenticated.
+```
+
+### Prepare an upload
+
+```text
+Check that this build is ready for the Elata App Store: index.html at the zip
+root, relative asset paths, SDK usage present, and public/elata.json with the
+version from package.json. Then run npm run build:zip.
 ```
 
 ---
@@ -104,23 +107,23 @@ Ask Claude Code to scaffold using the Elata CLI:
 ## Tips
 
 <Tip>
-  Point Claude Code at the SDK docs (`docs.elata.bio/sdk/overview`) and protocol docs (`docs.elata.bio/apps/build/overview`) when asking it to generate integration code. It produces better results with explicit documentation references.
+  Point the assistant at a package's `llms.txt` in `node_modules` before asking
+  it to write integration code. These files are written for AI tools and list
+  the supported APIs and common mistakes.
 </Tip>
 
-- Start with `create-elata-demo` to get a working scaffold, then iterate with Claude Code
-- Ask Claude Code to explain SDK code before modifying it
-- Use the `--template rppg` flag for camera apps, `--template eeg` for EEG apps
+- Start from a `create-elata-demo` template, then iterate.
+- Test in the store's play window before submitting. The sandbox behaves differently from `localhost`.
 
 ---
 
 ## Next
 
-<CardGroup cols={2}>
-  <Card title="Builder Overview" icon="hammer" iconType="light" href="/apps/build/overview">
-    What the protocol gives builders
+<CardGroup cols=2>
+  <Card title="Builder Overview" icon="hammer" href="/apps/build/overview">
+    How publishing works
   </Card>
-
-  <Card title="SDK Overview" icon="brain" iconType="light" href="/sdk/overview">
-    Biometric SDK packages
+  <Card title="SDK Overview" icon="brain" href="/sdk/overview">
+    The Biometric SDK packages
   </Card>
 </CardGroup>

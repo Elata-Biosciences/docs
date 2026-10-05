@@ -1,89 +1,68 @@
 ---
-title: "App Metadata and Listing"
-description: "How your app appears in the store, metadata standards, and image requirements."
+title: "Store Listing"
+description: "The fields and images that make up your app's store page."
 ---
 
-## Store Listing Fields
+## Listing fields
 
-When you register an app, you provide metadata that appears in the app store:
+You fill these in during the wizard's Publish step and can change them any time
+from your app's **Edit** page.
 
-| Field | Required | Description |
+| Field | Required to submit | Limits |
 | --- | --- | --- |
-| Name | Yes | Display name for your app |
-| Description | Yes | Short summary shown on the store card |
-| Logo | Yes | Square image for the app icon |
-| Category | Yes | Focus, Gaming, Wellness, or Research |
-| Website | No | External link to your app |
-| Social links | No | Twitter, Discord, GitHub, etc. |
-| Team members | No | Public team display |
-
----
-
-## NFT Metadata Standard
-
-App tokens and in-app items follow ERC-721 with ERC-4906 metadata update signaling. This means metadata changes emit on-chain events that marketplaces can listen to for auto-refresh.
-
-Example metadata JSON:
-
-```json
-{
-  "name": "My Elata App Token",
-  "description": "Access token for the My App ecosystem",
-  "image": "ipfs://QmExample.../logo.png",
-  "external_url": "https://myapp.example.com",
-  "attributes": [
-    { "trait_type": "Category", "value": "Gaming" },
-    { "trait_type": "Version", "value": "1.0" }
-  ]
-}
-```
-
----
-
-## Image Requirements
-
-| Asset | Recommended Size | Format |
-| --- | --- | --- |
-| App logo | 500x500px | PNG or SVG |
-| Token image | 1000x1000px | PNG |
-| Store banner | 1200x630px | PNG or WebP |
-
-<Tip>
-  Use square images for logos and token images. Non-square images will be cropped in the store.
-</Tip>
-
----
-
-## Storage Options
-
-| Option | Best For | Notes |
-| --- | --- | --- |
-| IPFS (Pinata, NFT.Storage) | Production | Recommended. Decentralized and permanent. |
-| Arweave | Production | Alternative permanent storage. |
-| Centralized HTTP | Development | Fine for testing. Do not use for production tokens. |
+| Name | Yes | Up to 50 characters. Set when you register. |
+| App icon | Yes | Square image |
+| Header image | Yes | Wide banner shown at the top of your app page |
+| Description | Recommended | 10 to 1,000 characters. Shown on store cards. |
+| Extended description | No | Up to 5,000 characters. Shown on your app page. |
+| Category | Yes | Games, Neurometrics, Wellness, Tools, or Experiments |
+| Tags | No | Up to 5 tags, each up to 30 characters |
+| Screenshots | No | Up to 10 images |
+| Social links | No | Website, X/Twitter, Discord, GitHub, Telegram, Farcaster, YouTube, and more, plus up to 5 custom links |
+| Team | No | Team members shown on your app page |
 
 <Note>
-  Once metadata is referenced on-chain, changing the underlying content at the same URI does not trigger an ERC-4906 update. Use `setTokenURI` to point to new content and emit the update event.
+  When you submit a release, the listing is frozen onto that release. Edits
+  after that apply to your next release.
 </Note>
 
 ---
 
-## Updating Metadata
+## Image guidelines
 
-After launch, your Safe can update app metadata by calling the appropriate registry function. Token metadata updates follow the ERC-4906 pattern: set a new URI and emit the `MetadataUpdate` event so marketplaces and indexers refresh.
+| Asset | Recommended size | Formats |
+| --- | --- | --- |
+| App icon | 512×512 px | PNG, JPG, WebP |
+| Header image | 1920×600 px | PNG, JPG, WebP |
+| Desktop screenshot | 1920×1080 px (16:9) | PNG, JPG, WebP |
+| Mobile screenshot | 1080×1920 px (9:16) | PNG, JPG, WebP |
+
+Image uploads are limited to 5 MB each.
+
+<Tip>
+  Your icon is also used for home-screen installs when your bundle doesn't
+  ship its own web manifest. Use a square icon that reads well at small sizes.
+</Tip>
+
+---
+
+## Your app's URLs
+
+| URL | What it is |
+| --- | --- |
+| `app.elata.bio/app/<slug>` | Your store page |
+| `app.elata.bio/app/<slug>/play` | Where users play your app |
+| `app.elata.bio/app/<slug>.md` | A plain-text Markdown version of your listing, useful for sharing with AI tools |
 
 ---
 
 ## Next
 
-<CardGroup cols={3}>
-  <Card title="Launch Your App" icon="rocket" iconType="light" href="/apps/build/launch-your-app">
-    Deploy your app on-chain
+<CardGroup cols={2}>
+  <Card title="Review and Policy" icon="shield-check" href="/apps/build/review-and-policy">
+    What reviewers check
   </Card>
-  <Card title="Post-Launch Checklist" icon="list-check" iconType="light" href="/apps/build/post-launch-checklist">
-    What to do after launch
-  </Card>
-  <Card title="Items and Unlocks" icon="gem" iconType="light" href="/apps/operate/items-and-unlocks">
-    Create in-app items
+  <Card title="Post-Launch Checklist" icon="list-check" href="/apps/build/post-launch-checklist">
+    What to do once you're live
   </Card>
 </CardGroup>

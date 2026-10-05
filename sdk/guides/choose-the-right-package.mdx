@@ -1,98 +1,65 @@
 ---
 title: "Choosing the right package"
-description: "Pick the right Elata SDK package for your use case and avoid common setup mistakes."
+description: "Pick the right Elata SDK package for what you're building."
 ---
 
-## Recommended Decision Order
+## Start here
 
-1. If you are evaluating the SDK or starting a new app, use [`create-elata-demo`](/sdk/create-elata-demo) first.
-2. If you already have an app and know which capability you need, add the published package for that capability.
-3. Only drop to repo-internal workflows if you are actively modifying the SDK inside the monorepo.
-
----
-
-## New Project Or Evaluation
-
-<Card title="create-elata-demo" icon="wand-magic-sparkles" iconType="light" href="/sdk/create-elata-demo">
-  The best starting point when you want a working app quickly.
-</Card>
+1. **New app or just evaluating?** Use [`create-elata-demo`](/sdk/create-elata-demo). You'll have a working app in minutes.
+2. **Existing app?** Add the package for the capability you need, from the table below.
+3. **Publishing to the App Store?** Add the [App Store packages](#app-store-packages) for purchases, storage, and scores.
 
 ---
 
-## EEG In A Browser App
+## By goal
 
-Use `@elata-biosciences/eeg-web` when you need:
-
-- browser-side EEG WASM APIs
-- signal processing and model functions
-- shared types used by browser integrations
-
-<Card title="EEG Web SDK" icon="brain" iconType="light" href="/sdk/eeg-web/getting-started">
-  Signal processing, band powers, and analysis models
-</Card>
-
----
-
-## Browser BLE For Muse-Compatible Devices
-
-Use `@elata-biosciences/eeg-web-ble` when you need:
-
-- browser BLE discovery and streaming
-- normalized headband frames
-- a transport layer for Muse-compatible EEG devices
-
-You should generally install `@elata-biosciences/eeg-web` alongside it.
-
-<Card title="EEG BLE Web SDK" icon="bluetooth" iconType="light" href="/sdk/eeg-web-ble/getting-started">
-  Connect to headband devices over Web Bluetooth
-</Card>
+| I want to... | Use | Install with |
+| --- | --- | --- |
+| Measure heart rate from a webcam | [`rppg-web`](/sdk/rppg-web/getting-started) | |
+| Process EEG in the browser (band powers, models) | [`eeg-web`](/sdk/eeg-web/getting-started) | |
+| Connect an EEG headband over Bluetooth | [`eeg-web-ble`](/sdk/eeg-web-ble/getting-started) | `eeg-web` |
+| Get heart rate and HRV from a headband's PPG sensor | [`ppg-web`](/sdk/ppg-web/getting-started) | `eeg-web`, `eeg-web-ble`, `rppg-web` |
+| Record a session from one or more sensors | [`biosignal-session`](/sdk/biosignal-session/getting-started) | the sensor packages you record from |
+| Compute features, HRV, and headline scores | [`biosignal-analytics`](/sdk/biosignal-analytics/getting-started) | |
+| Experiment with learned rPPG waveform reconstruction | `rppg-models-web` (experimental) | `rppg-web` |
 
 ---
 
-## Camera-Based rPPG
+## App Store packages
 
-Use `@elata-biosciences/rppg-web` when you need:
+These only work when your app runs inside the [Elata App Store](/apps/build/overview):
 
-- browser-side rPPG processing
-- packaged WASM backend loading
-- demo helpers for camera-driven prototypes
-
-<Card title="Camera Web SDK" icon="heart-pulse" iconType="light" href="/sdk/rppg-web/getting-started">
-  Heart rate from camera via face detection
-</Card>
+| I want to... | Use |
+| --- | --- |
+| Sell one-time items | [`app-payments`](/apps/platform/in-app-purchases) |
+| Save settings and progress per user | [`app-state`](/apps/platform/app-state) |
+| Record sessions and scores, or contribute to the biometric Score | [`app-metrics`](/apps/platform/metrics-and-scores) |
 
 ---
 
-## Local Repo Development
-
-Use `./run.sh sync-to` only if you are modifying `packages/eeg-web` inside the monorepo and want to link the local package into another app.
-
-Do not use `sync-to` as the normal onboarding path for new SDK consumers.
-
----
-
-## Paths To Avoid
+## Common mistakes
 
 <Warning>
-  These paths create unnecessary friction for most consumers. Only use them if you have a specific reason.
+  These cause most first-run problems.
 </Warning>
 
-- **Avoid starting from `./run.sh sync-to` for new apps.** It is a local `eeg-web` development helper, not a general setup flow.
-- **Avoid treating in-repo dev demos as the normal install path.** They are useful references, but `create-elata-demo` is the cleaner consumer starting point.
-- **Avoid assuming a scaffolded app is broken if `pnpm install` behaves strangely inside another workspace.** Check the `pnpm --ignore-workspace` workflow first.
+- **Installing `eeg-web-ble` without `eeg-web`.** The Bluetooth transport depends on it.
+- **Expecting Web Bluetooth in Safari or on iOS.** Use Chrome or Edge on desktop or Android. See [Compatibility](/sdk/operations/compatibility).
+- **Serving over plain `http://`.** Camera and Bluetooth need `https://` or `localhost`.
+- **Assuming a scaffolded app is broken inside another pnpm workspace.** Install it with `pnpm --dir my-app --ignore-workspace install`.
 
 ---
 
 ## Next
 
 <CardGroup cols={3}>
-  <Card title="Quickstart" icon="rocket" iconType="light" href="/sdk/tutorials/first-app">
+  <Card title="Your First App" icon="rocket" href="/sdk/tutorials/first-app">
     Scaffold your first app
   </Card>
-  <Card title="Example Apps" icon="grid-2" iconType="light" href="/sdk/guides/example-apps">
+  <Card title="Example Apps" icon="grid-2x2" href="/sdk/guides/example-apps">
     Full reference implementations
   </Card>
-  <Card title="Compatibility" icon="circle-check" iconType="light" href="/sdk/operations/compatibility">
+  <Card title="Compatibility" icon="circle-check" href="/sdk/operations/compatibility">
     Browser, device, and tooling support
   </Card>
 </CardGroup>

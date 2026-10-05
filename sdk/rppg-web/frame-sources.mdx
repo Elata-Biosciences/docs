@@ -35,7 +35,8 @@ Captures camera frames and uses MediaPipe for face detection, providing a face R
 ```typescript
 import { MediaPipeFrameSource } from "@elata-biosciences/rppg-web";
 
-const source = new MediaPipeFrameSource();
+const video = document.querySelector("video")!; // a playing camera <video>
+const source = new MediaPipeFrameSource(video);
 
 source.onFrame = (frame) => {
   // frame.roi contains the detected face bounding box
@@ -52,13 +53,14 @@ await source.stop();
 
 ## MediaPipeFaceFrameSource
 
-A more specialized variant that uses MediaPipe FaceMesh for precise facial landmark detection. Provides multiple ROIs for forehead, cheeks, etc.:
+A more specialized variant that uses MediaPipe FaceLandmarker for facial landmark detection. Each frame carries the face ROI plus forehead and cheek sub-ROIs, landmarks, and blendshapes:
 
 ```typescript
-import { MediaPipeFaceFrameSource, loadFaceMesh } from "@elata-biosciences/rppg-web";
+import { MediaPipeFaceFrameSource, loadFaceLandmarker } from "@elata-biosciences/rppg-web";
 
-const faceMesh = await loadFaceMesh();
-const source = new MediaPipeFaceFrameSource(faceMesh);
+const faceLandmarker = await loadFaceLandmarker();
+if (!faceLandmarker) throw new Error("Face tracking unavailable");
+const source = new MediaPipeFaceFrameSource(video, faceLandmarker);
 
 source.onFrame = (frame) => {
   // frame.rois may contain multiple face regions
@@ -70,14 +72,18 @@ await source.start();
 
 ---
 
-## loadFaceMesh
+## loadFaceLandmarker
 
-Helper to load the MediaPipe FaceMesh model:
+Loads MediaPipe FaceLandmarker (with blendshapes) from a CDN. Returns `null`
+when face tracking is unavailable, so you can fall back to `MediaPipeFrameSource`:
 
 ```typescript
-import { loadFaceMesh } from "@elata-biosciences/rppg-web";
+import { loadFaceLandmarker } from "@elata-biosciences/rppg-web";
 
-const faceMesh = await loadFaceMesh();
+const faceLandmarker = await loadFaceLandmarker({
+  // all optional:
+  // visionCdnBase, wasmBase, modelAssetPath
+});
 ```
 
 ---
@@ -87,11 +93,13 @@ const faceMesh = await loadFaceMesh();
 `DemoRunner` orchestrates a frame source and `RppgProcessor` together, handling ROI extraction, skin masking, and stats reporting:
 
 ```typescript
-import { DemoRunner, MediaPipeFrameSource, RppgProcessor } from "@elata-biosciences/rppg-web";
+import { DemoRunner, MediaPipeFrameSource, RppgProcessor, loadWasmBackend } from "@elata-biosciences/rppg-web";
 import type { DemoRunnerOptions } from "@elata-biosciences/rppg-web";
 
-const source = new MediaPipeFrameSource();
-const processor = new RppgProcessor("wasm", 30);
+const backend = await loadWasmBackend();
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const source = new MediaPipeFrameSource(video);
+const processor = new RppgProcessor(backend, 30);
 
 const options: DemoRunnerOptions = {
   useSkinMask: true,

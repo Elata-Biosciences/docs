@@ -1,0 +1,65 @@
+---
+title: "App State"
+description: "Per-user, per-app key-value storage with @elata-biosciences/app-state."
+---
+
+## Overview
+
+`@elata-biosciences/app-state` stores small JSON values per user and per app:
+save games, settings, progress. You don't need a backend, and your app never
+sees the user's identity. Values follow the user across devices.
+
+```bash
+npm install @elata-biosciences/app-state
+```
+
+```ts
+import { getState, setState, deleteState } from '@elata-biosciences/app-state';
+
+// null if nothing was ever stored
+const save = await getState('save_slot_1');
+
+await setState('save_slot_1', { level: 7, hp: 100 });
+
+// idempotent: no error if the key was never set
+await deleteState('save_slot_1');
+```
+
+---
+
+## Limits
+
+| Limit | Value |
+| --- | --- |
+| Key | 1 to 256 characters from `A-Z a-z 0-9 . _ : / -` |
+| Value | Any JSON-serializable value, up to 64 KB once encoded |
+| Scope | One namespace per (user, app). Apps can't read each other's data. |
+
+---
+
+## Errors
+
+All three functions reject with `AppStateError`, which has a `code`:
+
+| Code | Where it comes from | Meaning |
+| --- | --- | --- |
+| `no_parent` | Local | Not running inside the store's frame |
+| `timeout` | Local | No reply in time |
+| `invalid_input` | Local or store | Bad key or value |
+| `not_authenticated` | Store | The user isn't signed in |
+| `value_too_large` | Store | Value is over 64 KB |
+| `fetch_failed` | Store | The store couldn't reach storage |
+
+<Tip>
+  Players who aren't signed in get `not_authenticated`. Keep a local fallback,
+  such as `localStorage`, and sync to `app-state` once they sign in.
+</Tip>
+
+---
+
+## app-state or app-metrics?
+
+| Use | Package |
+| --- | --- |
+| The latest value of something: settings, a save slot, unlocked levels | `app-state` |
+| A history of events or scores you want to query and chart | [`app-metrics`](/apps/platform/metrics-and-scores) |

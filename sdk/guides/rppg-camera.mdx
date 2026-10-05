@@ -92,10 +92,14 @@ import {
   RppgProcessor,
   MediaPipeFrameSource,
   DemoRunner,
+  loadWasmBackend,
 } from "@elata-biosciences/rppg-web";
 
-const source = new MediaPipeFrameSource();
-const processor = new RppgProcessor("wasm", 30);
+const video = document.querySelector("video")!; // a playing camera <video>
+const backend = await loadWasmBackend(); // null if the packaged WASM can't be loaded
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const source = new MediaPipeFrameSource(video);
+const processor = new RppgProcessor(backend, 30);
 
 const runner = new DemoRunner(source, processor, {
   useSkinMask: true,
@@ -106,7 +110,7 @@ const runner = new DemoRunner(source, processor, {
       metrics.bpm?.toFixed(0) ?? "--";
 
     document.getElementById("quality")!.textContent =
-      `${((metrics.quality ?? 0) * 100).toFixed(0)}%`;
+      `${(metrics.confidence * 100).toFixed(0)}%`;
   },
 });
 
@@ -114,7 +118,7 @@ await runner.start();
 ```
 
 <Tip>
-Show BPM only when signal quality is above your app's threshold. A threshold around `0.5` is a practical starting point.
+Show BPM only when `metrics.confidence` is above your app's threshold. A threshold around `0.5` is a practical starting point.
 </Tip>
 
 ## Manual pipeline
@@ -127,11 +131,13 @@ Use the manual path when you want tighter control over face tracking, sampling, 
   ```ts
   import {
     MediaPipeFaceFrameSource,
-    loadFaceMesh,
+    loadFaceLandmarker,
   } from "@elata-biosciences/rppg-web";
 
-  const faceMesh = await loadFaceMesh();
-  const source = new MediaPipeFaceFrameSource(faceMesh);
+  // Loads MediaPipe FaceLandmarker from a CDN; returns null if unavailable.
+  const faceLandmarker = await loadFaceLandmarker();
+  if (!faceLandmarker) throw new Error("Face tracking unavailable");
+  const source = new MediaPipeFaceFrameSource(video, faceLandmarker);
   ```
 
   </Step>
@@ -139,9 +145,11 @@ Use the manual path when you want tighter control over face tracking, sampling, 
   <Step title="Create the processor">
 
   ```ts
-  import { RppgProcessor } from "@elata-biosciences/rppg-web";
+  import { RppgProcessor, loadWasmBackend } from "@elata-biosciences/rppg-web";
 
-  const processor = new RppgProcessor("wasm", 30, 10);
+  const backend = await loadWasmBackend();
+  if (!backend) throw new Error("rPPG WASM backend unavailable");
+  const processor = new RppgProcessor(backend, 30, 10);
   ```
 
   The third argument sets a 10-second analysis window.
@@ -175,7 +183,7 @@ Use the manual path when you want tighter control over face tracking, sampling, 
 
   setInterval(() => {
     const metrics = processor.getMetrics();
-    console.log("BPM:", metrics.bpm, "quality:", metrics.quality);
+    console.log("BPM:", metrics.bpm, "confidence:", metrics.confidence);
   }, 1000);
   ```
 
@@ -187,10 +195,7 @@ Use the manual path when you want tighter control over face tracking, sampling, 
 If a Muse device is available, you can use its PPG as a reference signal to improve camera-based estimates.
 
 ```ts
-import { RppgProcessor } from "@elata-biosciences/rppg-web";
-
-const processor = new RppgProcessor("wasm", 30);
-
+// `processor` is the RppgProcessor created above
 processor.updateMuseMetrics(museBpm, 0.9, performance.now());
 ```
 

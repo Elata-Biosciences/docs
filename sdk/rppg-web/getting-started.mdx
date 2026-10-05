@@ -80,9 +80,11 @@ Every session diagnostics payload includes state, issue codes, sampling stats, a
 For custom orchestration, drop to `RppgProcessor` directly. Only use this when you need something `createRppgSession()` does not provide. If you are debugging, compare against `createRppgSession()` first.
 
 ```typescript
-import { RppgProcessor } from "@elata-biosciences/rppg-web";
+import { RppgProcessor, loadWasmBackend } from "@elata-biosciences/rppg-web";
 
-const processor = new RppgProcessor("wasm", 30); // backend, sampleRate
+const backend = await loadWasmBackend(); // null if the packaged WASM can't be loaded
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const processor = new RppgProcessor(backend, 30); // backend, sampleRate
 
 // Feed green-channel intensity from face ROI each frame
 processor.pushSample(performance.now(), greenIntensity);
@@ -99,9 +101,9 @@ new RppgProcessor(backend: Backend, sampleRate: number, windowSeconds?: number)
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `backend` | `"wasm"` or `"native"` | Processing backend |
+| `backend` | `Backend` | A backend object, usually from `loadWasmBackend()` |
 | `sampleRate` | `number` | Expected frames per second (e.g., 30) |
-| `windowSeconds` | `number` | Analysis window length (default: 10) |
+| `windowSeconds` | `number` | Analysis window length in seconds (default: 5) |
 
 ### Pushing Samples
 

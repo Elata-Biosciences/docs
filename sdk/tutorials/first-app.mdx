@@ -21,8 +21,10 @@ You will scaffold one of the published starter apps with
 Pick the template that matches your goal:
 
 - `rppg-demo`: **primary**: camera-based pulse/rPPG app
-- `eeg-demo`: **optional**: browser EEG processing with synthetic data
-- `eeg-ble` alias: **Bluetooth**: use the EEG starter app with the BLE-focused alias when you want a Muse-compatible headset flow
+- `eeg-demo`: browser EEG processing, with Muse Web Bluetooth support
+- `eeg-ble`: Bluetooth-first EEG starter for a Muse-compatible headset
+- `ppg-demo`: heart rate and HRV from a Muse headband's PPG sensor
+- `pulse-game`: an rPPG game that runs in a sandboxed iframe and saves scores, the way apps run in the Elata App Store
 
 ## Why Start Here
 
@@ -32,7 +34,7 @@ This is the recommended default because it gives you:
 - pinned compatible package versions
 - a reference implementation you can compare your own app against
 
-Do this before cloning repo demos or using internal maintainer workflows.
+Do this before integrating the SDK into an existing app.
 
 ## Step 1: Choose A Template
 
@@ -42,7 +44,9 @@ Use this decision table:
 | --- | --- |
 | Build the default camera-based app (no extra hardware) | `rppg-demo` |
 | Add browser EEG only (synthetic or offline samples first) | `eeg-demo` |
-| Enable a Muse-compatible headset over Bluetooth (Chrome/Edge) | `eeg-ble` alias for `eeg-demo` |
+| Enable a Muse-compatible headset over Bluetooth (Chrome/Edge) | `eeg-ble` |
+| Read heart rate and HRV from a Muse headband | `ppg-demo` |
+| See the full App Store pattern (sandboxed iframe + saved scores) | `pulse-game` |
 
 If you are unsure, start with `rppg-demo`.
 
