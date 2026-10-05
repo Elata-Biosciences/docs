@@ -59,9 +59,31 @@ description: "Current browser, device, and Node.js expectations for the Elata SD
 
 ---
 
+## Package Versions
+
+The packages are versioned independently, and the latest releases aren't
+automatically compatible with each other. When you combine packages, use the set
+`create-elata-demo` pins:
+
+| Package | Version |
+| --- | --- |
+| `@elata-biosciences/eeg-web` | 0.12.0 |
+| `@elata-biosciences/eeg-web-ble` | 0.12.0 |
+| `@elata-biosciences/ppg-web` | 0.12.0 |
+| `@elata-biosciences/rppg-web` | 0.14.0 |
+| `@elata-biosciences/app-metrics` | 0.5.0 |
+
+<Warning>
+  `eeg-web-ble@0.12.0` and `ppg-web@0.12.0` still declare outdated peer ranges (`eeg-web ^0.2.1`, `rppg-web ^0.3.0`). npm stops with an `ERESOLVE` error when you install them next to the versions above. Until the ranges are updated, install with `npm install --legacy-peer-deps`. pnpm only prints a warning.
+</Warning>
+
+---
+
 ## Package Manager Notes
 
-Generated demo apps work with `pnpm` or `npm`.
+Generated demo apps work with `pnpm` or `npm`. For the `eeg-demo`, `eeg-ble`,
+and `ppg-demo` templates, npm currently needs `--legacy-peer-deps` (see
+[Package Versions](#package-versions)).
 
 If you scaffold a demo app inside another `pnpm` workspace and do not add it to
 that workspace, use:
