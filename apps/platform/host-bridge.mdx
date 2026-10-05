@@ -33,7 +33,7 @@ and errors for you:
 | Feature | Package | Page |
 | --- | --- | --- |
 | One-time purchases and ownership | `@elata-biosciences/app-payments` | [In-app purchases](/apps/platform/in-app-purchases) |
-| Per-user key-value storage | `@elata-biosciences/app-state` | [App state](/apps/platform/app-state) |
+| Per-user key-value storage | `@elata-biosciences/app-state` (not yet on npm) | [App state](/apps/platform/app-state) |
 | Event records, scores, `reportAffect` | `@elata-biosciences/app-metrics` | [Metrics and scores](/apps/platform/metrics-and-scores) |
 
 Consent, insights, notifications, navigation, and feedback use plain
@@ -71,7 +71,7 @@ Use [`app-payments`](/apps/platform/in-app-purchases) instead of sending these b
 | `elata:state:set` `{ requestId, key, value }` | `elata:state:set:result` `{ requestId, ok }` or `{ requestId, error }` |
 | `elata:state:delete` `{ requestId, key }` | `elata:state:delete:result` `{ requestId, ok }` or `{ requestId, error }` |
 
-Use [`app-state`](/apps/platform/app-state) instead of sending these by hand.
+Once `@elata-biosciences/app-state` is on npm, prefer it over sending these by hand. See [App state](/apps/platform/app-state).
 
 ### Metrics
 

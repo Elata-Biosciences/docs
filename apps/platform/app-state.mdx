@@ -3,6 +3,10 @@ title: "App State"
 description: "Per-user, per-app key-value storage with @elata-biosciences/app-state."
 ---
 
+<Warning>
+  `@elata-biosciences/app-state` is not published to npm yet. Until it is, you can call the store directly with the `elata:state:*` messages shown below; the store already supports them.
+</Warning>
+
 ## Overview
 
 `@elata-biosciences/app-state` stores small JSON values per user and per app:
@@ -54,6 +58,33 @@ All three functions reject with `AppStateError`, which has a `code`:
   Players who aren't signed in get `not_authenticated`. Keep a local fallback,
   such as `localStorage`, and sync to `app-state` once they sign in.
 </Tip>
+
+---
+
+## Without the package
+
+The store answers these messages directly. Send them to `window.parent` with a unique `requestId` and wait for the matching `…:result` reply:
+
+```js
+function stateCall(type, payload) {
+  return new Promise((resolve, reject) => {
+    const requestId = crypto.randomUUID();
+    const onMessage = (e) => {
+      if (e.data?.type !== `${type}:result` || e.data.requestId !== requestId) return;
+      window.removeEventListener('message', onMessage);
+      e.data.error ? reject(new Error(e.data.error)) : resolve(e.data);
+    };
+    window.addEventListener('message', onMessage);
+    window.parent.postMessage({ type, requestId, ...payload }, '*');
+  });
+}
+
+const { value } = await stateCall('elata:state:get', { key: 'save_slot_1' });
+await stateCall('elata:state:set', { key: 'save_slot_1', value: { level: 7 } });
+await stateCall('elata:state:delete', { key: 'save_slot_1' });
+```
+
+Add a timeout in production: outside the store nothing replies.
 
 ---
 

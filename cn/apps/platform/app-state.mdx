@@ -3,6 +3,10 @@ title: "应用状态"
 description: "使用 @elata-biosciences/app-state 实现按用户、按应用的键值存储。"
 ---
 
+<Warning>
+  `@elata-biosciences/app-state` 尚未发布到 npm。在此之前，你可以直接使用下文所示的 `elata:state:*` 消息调用商店；商店已经支持这些消息。
+</Warning>
+
 ## 概述
 
 `@elata-biosciences/app-state` 为每个用户和每个应用存储小型 JSON 值：存档、设置、进度。你不需要后端，你的应用也永远看不到用户的身份。数据会跟随用户跨设备同步。
@@ -51,6 +55,33 @@ await deleteState('save_slot_1');
 <Tip>
   未登录的用户会得到 `not_authenticated`。请保留本地备用方案（例如 `localStorage`），并在用户登录后同步到 `app-state`。
 </Tip>
+
+---
+
+## 不使用该包
+
+商店会直接响应这些消息。将它们连同唯一的 `requestId` 发送到 `window.parent`，并等待对应的 `…:result` 回复：
+
+```js
+function stateCall(type, payload) {
+  return new Promise((resolve, reject) => {
+    const requestId = crypto.randomUUID();
+    const onMessage = (e) => {
+      if (e.data?.type !== `${type}:result` || e.data.requestId !== requestId) return;
+      window.removeEventListener('message', onMessage);
+      e.data.error ? reject(new Error(e.data.error)) : resolve(e.data);
+    };
+    window.addEventListener('message', onMessage);
+    window.parent.postMessage({ type, requestId, ...payload }, '*');
+  });
+}
+
+const { value } = await stateCall('elata:state:get', { key: 'save_slot_1' });
+await stateCall('elata:state:set', { key: 'save_slot_1', value: { level: 7 } });
+await stateCall('elata:state:delete', { key: 'save_slot_1' });
+```
+
+生产环境中请加上超时：在商店之外没有人会回复。
 
 ---
 

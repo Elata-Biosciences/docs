@@ -29,7 +29,7 @@ description: "沙箱中的应用如何与 Elata 应用商店通信，以及它�
 | 功能 | 包 | 页面 |
 | --- | --- | --- |
 | 一次性购买和所有权 | `@elata-biosciences/app-payments` | [应用内购买](/cn/apps/platform/in-app-purchases) |
-| 按用户的键值存储 | `@elata-biosciences/app-state` | [应用状态](/cn/apps/platform/app-state) |
+| 按用户的键值存储 | `@elata-biosciences/app-state`（尚未发布到 npm） | [应用状态](/cn/apps/platform/app-state) |
 | 事件记录、分数、`reportAffect` | `@elata-biosciences/app-metrics` | [指标与分数](/cn/apps/platform/metrics-and-scores) |
 
 同意、洞察、通知、导航和反馈使用普通的 `postMessage` 调用，在下文及各自的页面中说明。
@@ -66,7 +66,7 @@ description: "沙箱中的应用如何与 Elata 应用商店通信，以及它�
 | `elata:state:set` `{ requestId, key, value }` | `elata:state:set:result` `{ requestId, ok }` 或 `{ requestId, error }` |
 | `elata:state:delete` `{ requestId, key }` | `elata:state:delete:result` `{ requestId, ok }` 或 `{ requestId, error }` |
 
-请使用 [`app-state`](/cn/apps/platform/app-state)，而不是手动发送这些消息。
+`@elata-biosciences/app-state` 发布到 npm 后，建议优先使用它，而不是手动发送这些消息。参见[应用状态](/cn/apps/platform/app-state)。
 
 ### 指标
 

@@ -39,9 +39,9 @@ iframe in the store.
 - @elata-biosciences/rppg-web: camera heart rate (use createRppgSession)
 - @elata-biosciences/eeg-web + eeg-web-ble: EEG over Web Bluetooth (Muse built in)
 - @elata-biosciences/ppg-web: headband PPG heart rate and HRV
-- @elata-biosciences/biosignal-session / biosignal-analytics: recording and analysis
+- @elata-biosciences/biosignal-session / biosignal-analytics: recording and analysis (not yet on npm)
 - @elata-biosciences/app-payments: in-app purchases (store checkout)
-- @elata-biosciences/app-state: per-user key-value storage
+- @elata-biosciences/app-state: per-user key-value storage (not yet on npm; use the elata:state:* messages)
 - @elata-biosciences/app-metrics: event records, scores, reportAffect
 
 ## Store rules
@@ -88,8 +88,8 @@ benefits on startup.
 ### 保存进度
 
 ```text
-Persist the player's settings and best score with @elata-biosciences/app-state.
-Fall back to localStorage when getState rejects with not_authenticated.
+Persist the player's settings and best score with the store's elata:state:get/set messages.
+Fall back to localStorage when the store replies with not_authenticated.
 ```
 
 ### 准备上传

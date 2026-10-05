@@ -3,6 +3,10 @@ title: "快速上手"
 description: "使用 @elata-biosciences/biosignal-session 在本地录制多传感器生物信号会话。"
 ---
 
+<Warning>
+  `@elata-biosciences/biosignal-session` 尚未发布到 npm。以下 API 基于 [SDK 仓库](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-session)中的源码，在首次发布前可能会有变化。
+</Warning>
+
 ## 功能
 
 `@elata-biosciences/biosignal-session` 将生物信号会话（EEG、PPG、rPPG 指标等）录制为一组类型化的数据流，并分块为自包含的 [Apache Arrow](https://arrow.apache.org/) 文件。录制**仅限本地**：该包不包含任何网络客户端。
