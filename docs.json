@@ -5,11 +5,11 @@
   "colors": {
     "primary": "#7D66D9",
     "light": "#7D66D9",
-    "dark": "#607274"
+    "dark": "#7D66D9"
   },
   "favicon": "/favicon.svg",
   "background": {
-    "decoration": "grid",
+    "decoration": "gradient",
     "color": {
       "light": "#f7f7f7",
       "dark": "#171717"
@@ -589,14 +589,14 @@
   "navbar": {
     "links": [
       {
-        "label": "Start Building",
+        "label": "Build",
         "href": "https://app.elata.bio/build-app"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Main Site",
-      "href": "https://elata.bio/"
+      "label": "Launch",
+      "href": "https://app.elata.bio/"
     }
   },
   "contextual": {
@@ -1416,5 +1416,6 @@
       "source": "/learn",
       "destination": "/overview/welcome"
     }
-  ]
+  ],
+  "description": "Documentation, learning, and information hub for the Elata platform and ecosystem."
 }
