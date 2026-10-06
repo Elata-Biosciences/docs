@@ -595,7 +595,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Launch",
+      "label": "Go",
       "href": "https://app.elata.bio/"
     }
   },
