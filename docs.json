@@ -621,7 +621,7 @@
   },
   "fonts": {
     "family": "Söhne",
-    "source": "https://app.elata.bio/fonts/soehne/soehne-buch.woff2",
+    "source": "/fonts/soehne/soehne-buch.woff2",
     "format": "woff2"
   },
   "styling": {
