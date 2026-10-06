@@ -620,13 +620,9 @@
     }
   },
   "fonts": {
-    "body": {
-      "family": "Inter"
-    },
-    "heading": {
-      "family": "Söhne",
-      "weight": 300
-    }
+    "family": "Söhne Leicht",
+    "source": "https://app.elata.bio/fonts/soehne/soehne-leicht.woff2",
+    "format": "woff2"
   },
   "styling": {
     "latex": true
