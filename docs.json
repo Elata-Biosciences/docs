@@ -620,12 +620,13 @@
     }
   },
   "fonts": {
-    "family": "Söhne",
-    "format": "woff2",
     "body": {
       "family": "Inter"
     },
-    "source": "https://app.elata.bio/fonts/soehne/soehne-buch.woff2"
+    "heading": {
+      "family": "Soehne",
+      "weight": 300
+    }
   },
   "styling": {
     "latex": true
