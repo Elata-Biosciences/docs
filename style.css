@@ -1,0 +1,73 @@
+/* Elata Söhne type system -- mirrors elata-appstore (src/lib/soehne-font.ts,
+   src/app/elata.tokens.css, src/app/globals.css).
+   Buch (400) is declared by Mintlify via docs.json `fonts`; the rest live here. */
+
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/soehne/soehne-leicht.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/soehne/soehne-kraftig.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/soehne/soehne-halbfett.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Söhne Mono";
+  src: url("/fonts/soehne/soehne-mono-buch.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-sans: "Söhne", "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Söhne Mono", "IBM Plex Mono", ui-monospace, "Cascadia Code", "Source Code Pro", monospace;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+}
+
+/* Swiss heading system: weight 600, tighter tracking at larger sizes */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+}
+h1 { letter-spacing: -0.03em; }
+h2 { letter-spacing: -0.025em; }
+h3, h4 { letter-spacing: -0.015em; }
+
+/* Body copy: Buch 400 */
+.prose,
+article p,
+article li {
+  font-weight: 400;
+}
+
+/* Labels, titles, nav: Kräftig 500 */
+nav a,
+#sidebar a,
+th {
+  font-weight: 500;
+}
