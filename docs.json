@@ -620,11 +620,12 @@
     }
   },
   "fonts": {
-    "family": "Inter",
-    "format": "woff",
+    "family": "Söhne",
+    "format": "woff2",
     "body": {
       "family": "Inter"
-    }
+    },
+    "source": "https://app.elata.bio/fonts/soehne/soehne-buch.woff2"
   },
   "styling": {
     "latex": true
@@ -1417,5 +1418,10 @@
       "destination": "/overview/welcome"
     }
   ],
-  "description": "Documentation, learning, and information hub for the Elata platform and ecosystem."
+  "description": "Documentation, learning, and information hub for the Elata platform and ecosystem.",
+  "thumbnails": {
+    "fonts": {
+      "family": "Inter"
+    }
+  }
 }
