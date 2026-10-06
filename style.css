@@ -61,24 +61,17 @@ samp {
 }
 
 /* Swiss heading tracking -- tighter at larger sizes.
-   !important is needed to beat the theme's per-element utility classes. */
-h1 { letter-spacing: -0.03em !important; }
-h2 { letter-spacing: -0.025em !important; }
-h3, h4 { letter-spacing: -0.015em !important; }
+   Scoped to page content (not the sidebar); !important is needed to beat
+   the theme's per-element utility classes. */
+h1:not(#sidebar *) { letter-spacing: -0.03em !important; }
+h2:not(#sidebar *) { letter-spacing: -0.025em !important; }
+h3:not(#sidebar *),
+h4:not(#sidebar *) { letter-spacing: -0.015em !important; }
 
 /* Headings: Halbfett 600; sub-titles: Kräftig 500 */
-h1, h2, h3 { font-weight: 600 !important; }
-h4, h5, h6 { font-weight: 500 !important; }
-
-/* Body copy: Buch 400 */
-article p,
-article li {
-  font-weight: 400;
-}
-
-/* Labels, nav, table headers: Kräftig 500 */
-nav a,
-#sidebar a,
-th {
-  font-weight: 500;
-}
+h1:not(#sidebar *),
+h2:not(#sidebar *),
+h3:not(#sidebar *) { font-weight: 600 !important; }
+h4:not(#sidebar *),
+h5:not(#sidebar *),
+h6:not(#sidebar *) { font-weight: 500 !important; }
