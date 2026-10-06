@@ -1,6 +1,11 @@
-/* Elata Söhne type system -- mirrors elata-appstore (src/lib/soehne-font.ts,
-   src/app/elata.tokens.css, src/app/globals.css).
-   Buch (400) is declared by Mintlify via docs.json `fonts`; the rest live here. */
+/* Elata Söhne type system.
+   Buch (400) is declared by Mintlify via docs.json `fonts`; the other weights live here.
+
+   Weight-to-role mapping:
+   - Leicht (300): display text, overlines
+   - Buch (400): body, descriptions
+   - Kräftig (500): labels, titles, nav
+   - Halbfett (600): headings, strong emphasis */
 
 @font-face {
   font-family: "Söhne";
@@ -41,31 +46,37 @@
 
 body {
   font-family: var(--font-sans);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01', 'ss03', 'kern';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Monospace: code, addresses, values */
 code,
 pre,
 kbd,
 samp {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono) !important;
+  font-feature-settings: 'tnum' 1;
 }
 
-/* Swiss heading system: weight 600, tighter tracking at larger sizes */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-}
-h1 { letter-spacing: -0.03em; }
-h2 { letter-spacing: -0.025em; }
-h3, h4 { letter-spacing: -0.015em; }
+/* Swiss heading tracking -- tighter at larger sizes.
+   !important is needed to beat the theme's per-element utility classes. */
+h1 { letter-spacing: -0.03em !important; }
+h2 { letter-spacing: -0.025em !important; }
+h3, h4 { letter-spacing: -0.015em !important; }
+
+/* Headings: Halbfett 600; sub-titles: Kräftig 500 */
+h1, h2, h3 { font-weight: 600 !important; }
+h4, h5, h6 { font-weight: 500 !important; }
 
 /* Body copy: Buch 400 */
-.prose,
 article p,
 article li {
   font-weight: 400;
 }
 
-/* Labels, titles, nav: Kräftig 500 */
+/* Labels, nav, table headers: Kräftig 500 */
 nav a,
 #sidebar a,
 th {
