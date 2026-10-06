@@ -621,7 +621,7 @@
   },
   "fonts": {
     "family": "Söhne",
-    "source": "https://app.elata.bio/fonts/soehne/soehne-leicht.woff2, https://app.elata.bio/fonts/soehne/soehne-buch.woff2, https://app.elata.bio/fonts/soehne/soehne-kraftig.woff2, https://app.elata.bio/fonts/soehne/soehne-halbfett.woff2",
+    "source": "https://app.elata.bio/fonts/soehne/soehne-buch.woff2",
     "format": "woff2"
   },
   "styling": {
