@@ -5,22 +5,40 @@ description: "What Elata is, who it's for, and how to find your way around these
 
 ## What Elata is
 
-Elata is a marketplace and an open-source toolkit for **privacy-respecting
-biosignal apps**: apps that respond to your heart rate, your brain activity, and
-other signals from your body.
+Elata is a platform for building and using consumer-friendly biosensing, neuroscience, and cognitive applications that respect your privacy.
 
 - **Elata** ([app.elata.bio](https://app.elata.bio)) is where people find and play these apps in the browser, and where builders publish them.
-- **The Elata SDK** is a set of open-source packages that turn a webcam or a consumer headband into a biosignal sensor, with processing that runs on the user's own device.
-- **Privacy is built in.** Raw signals stay on the device. Anything shared beyond an app, such as the cross-app biometric Score, is opt-in and can be turned off.
+- **The [Elata SDK](/overview/elata-sdk)** is a set of open-source packages that turn a webcam or a consumer headband into a biosignal sensor, with processing that runs on the user's own device.
+- **Privacy is built in.** Collected information stays on the users device. Anything shared beyond an app, such as the cross-app biometric Score, is opt-in and _can be turned off or deleted_ fully at the discretion of the user.
 
-You don't need special hardware to start. Many apps work with an ordinary
-webcam. Apps that read brain activity use a consumer EEG headband such as Muse.
+One thing that makes Elata vastly different than any other product on the market today is that you _don't need special hardware_ to begin using applications on the platform. 
+
+Apps on Elata can turn an ordinary webcam or phone camera into a biosensor, using subtle changes in your face and behavior to measure or estimate signals like heart rate, heart rate variability, breathing rate, blink rate, affective state, and more.
+
+We also support applications that can read brain activity over the web. These applications rely on consumer-grade EEG devices, such as [Muse](choosemuse.com).
 
 <Note>
   Elata apps are for wellness, games, learning, and research. They are not
   medical devices and don't diagnose or treat any condition. See
   [Safety and limitations](/users/safety-and-limitations).
 </Note>
+
+---
+
+## Building technology that’s open, transparent, and private
+
+Elata is built around open-source software, transparent experimentation, and the idea that biosensing technology should be understandable, inspectable, extensible, and privacy-focused to the people using it.
+
+Much of the technology behind Elata is developed publicly on GitHub, from the SDKs that power today’s apps to earlier experiments that helped shape what Elata has become.
+
+A couple notable examples:
+
+- [**Elata EEG**](https://github.com/Elata-Biosciences/elata-eeg) is our open-source effort to build a low-cost, right-to-repair EEG hardware device for neuroscience research and fun DIY Brain-Computer Interface (BCI) projects, such as the [brain-controlled gaming competition](https://x.com/DeSciWorld/status/1978762697022865576?s=20) we did in Singapore in 2025.
+- [**ZORP**](https://github.com/Elata-Biosciences/zorp) is an experiment we did to initiate permissionless research infrastructure for collecting data, coordinating scientific studies, and rewarding participants.
+
+Not every experiment becomes part of the current Elata product, but we keep this work public because useful ideas, code, and research shouldn’t disappear when a project changes direction.
+
+You can explore our current and past work on [GitHub](https://github.com/Elata-Biosciences).
 
 ---
 
@@ -37,7 +55,7 @@ webcam. Apps that read brain activity use a consumer EEG headband such as Muse.
     How the measurements work and where they fall short
   </Card>
   <Card title="Partners" icon="handshake" href="/overview/partners">
-    How to work with Elata
+    Work together with the Elata community or team
   </Card>
   <Card title="Device makers" icon="cpu" href="/integrate">
     Bring your hardware to the Elata SDK
