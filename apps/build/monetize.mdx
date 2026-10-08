@@ -1,59 +1,66 @@
 ---
 title: "Monetize Your App"
-description: "The ways to earn from an app on Elata, what each one needs, and how revenue reaches you."
+description: "Configure products and subscriptions, track sales, and access your proceeds."
 ---
+
+Manage your app's monetization from **My Apps → your app → Edit → Commerce**. This section contains products, the monthly subscription plan, revenue, recent transactions, and payout-wallet funds.
 
 <Info>
-  **Status.** In-app purchases are live on a test network (Ethereum Sepolia).
-  App subscriptions and membership are experimental. See
-  [What's live](/overview/status).
+  Payments must be enabled and configured in the deployment. See [What's live](/overview/status). The app checkout and Funds flow described here uses USDC on Base. Verify the checkout network before making a test purchase.
 </Info>
 
-## Your options
+## Choose what to sell
 
-| Option | Best for | Code needed | Status |
-| --- | --- | --- | --- |
-| [In-app purchases](/apps/platform/in-app-purchases) | One-time unlocks: level packs, features, cosmetics | Yes, a few lines with `app-payments` | Live on testnet |
-| [Subscriptions](/apps/platform/subscriptions) | Ongoing access to the whole app, with an optional free trial | No: Elata gates the app for you | Experimental |
+| Model | Suitable for | What you build |
+| --- | --- | --- |
+| [In-app purchases](/apps/platform/in-app-purchases) | One-time feature, level, or cosmetic unlocks | Create products, then integrate `app-payments` and apply the purchased benefit |
+| [App subscription](/apps/platform/subscriptions) | Monthly access to the whole app | Configure a monthly plan; Elata handles the access gate |
 
-You can combine them: for example, a subscription for the app plus one-time
-items inside it.
+You can offer both. A subscription or Elata membership provides app access, while item ownership remains separate. A single item identifier does not support repeated consumable purchases.
 
----
+## Set up monetization
 
-## How revenue reaches you
+<Steps>
+  <Step title="Check who receives the proceeds">
+    Open **Commerce → Funds** and inspect the payout wallet. Direct app payments use the app creator's wallet as their destination. Confirm you control it before offering paid content. Adding team members does not create payout shares.
+  </Step>
+  <Step title="Create products or a monthly plan">
+    Under **Products**, create a title, description, price, optional image, and active state. Elata assigns the stable `contentId` your app uses. Under **Monthly subscription**, set a positive monthly USDC price, trial length, and active state. Each section has its own save action.
+  </Step>
+  <Step title="Connect items to your app">
+    For items, read the catalog and ownership through `app-payments`, request checkout, and apply the benefit after success. Restore owned benefits when the app loads. See [In-app purchases](/apps/platform/in-app-purchases) for the integration.
+  </Step>
+  <Step title="Test the customer experience">
+    Use a separate user account to test a purchase or subscription. Owners and team members bypass the app subscription gate. Test signed-out, wallet connection, cancellation, owned-item, trial, paid-period, and expired-access states as applicable.
+  </Step>
+  <Step title="Track sales and move proceeds">
+    Review **Revenue** and **Transactions**, then use **Funds → Manage funds** to access the payout wallet. Follow [Revenue and payouts](/apps/operate/revenue-and-payouts) to send USDC or move it to a service with bank withdrawals.
+  </Step>
+</Steps>
 
-- Users pay through Elata's checkout in USDC. Your app never handles payment details.
-- Elata records ownership only after payment is verified, so your app can trust what Elata tells it.
-- Revenue is paid to the app owner's wallet after Elata's platform fee.
+## How money reaches you
 
----
+The buyer pays USDC through the splitter. The splitter deducts the configured platform fee and routes your share directly to the payout wallet. Elata does not keep a separate creator balance that you later claim.
 
-## Elata membership
+The Funds card displays the wallet's current USDC balance on Base. It can include other deposits and proceeds from other apps using that wallet, and it decreases when you send funds out. It is not an app-specific earnings total.
 
-Elata members can open **every** subscription-gated app without subscribing to
-each one. If your app has a subscription plan, members count as subscribers.
-See [Subscriptions](/apps/platform/subscriptions#who-gets-access).
+## Fees and reporting
 
----
+Registration has a one-time fee shown in the registration wizard. Direct app sales have a configured platform fee deducted by the splitter. Network and service fees may also apply. This guide does not fix a percentage: use the active payment configuration and transaction records.
 
-## Costs
+Commerce reports show **gross** amounts before the split. Product revenue is estimated using current product prices; subscription payments retain their recorded payment amounts. Do not use the gross estimate as your net payout balance.
 
-| Cost | When |
-| --- | --- |
-| Registration fee | Once per app, in USDC, shown in the [Build an App wizard](https://app.elata.bio/build-app) |
-| Platform fee | Deducted from sales and subscription revenue |
+## Membership and credits
 
----
+An active Elata membership lets a user enter subscription-gated apps. That access does not create a separate direct app payment for every app they open. Treat membership access and direct subscription revenue separately.
 
-## Points
+User credits cover supported metered features; they are not your app's payout balance. Points are also separate from USDC revenue.
 
-You also earn [Elata Points](/overview/points) for publishing an app and when
-it reaches 100 and 1,000 plays. Points aren't money and can't be sold.
+## Next steps
 
----
-
-## The bigger picture
-
-[Monetization](/overview/monetization) explains how money moves across Elata
-for users, builders, and Elata.
+<CardGroup cols={2}>
+  <Card title="In-App Purchases" href="/apps/platform/in-app-purchases">Create items and connect checkout to app benefits.</Card>
+  <Card title="Subscriptions" href="/apps/platform/subscriptions">Configure monthly app access and trials.</Card>
+  <Card title="Revenue and Payouts" href="/apps/operate/revenue-and-payouts">Read your reports and get your money out.</Card>
+  <Card title="Post-Launch Checklist" href="/apps/build/post-launch-checklist">Verify the published customer experience.</Card>
+</CardGroup>

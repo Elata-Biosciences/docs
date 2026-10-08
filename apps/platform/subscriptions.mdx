@@ -1,64 +1,66 @@
 ---
 title: "Subscriptions"
 tag: "Experimental"
-description: "Charge a monthly subscription for your app, with an optional free trial."
+description: "Configure monthly app access, trials, and manual renewal through Elata."
 ---
 
-## Overview
+An active subscription plan gates your whole app. Elata checks access before opening the app, so you do not need subscription checkout code inside it. You can also sell [one-time items](/apps/platform/in-app-purchases); their ownership is separate.
 
-You can put your app behind a monthly subscription. Users pay in USDC through
-Elata's checkout, and revenue is paid to the app owner's wallet after the
-platform fee.
+<Info>
+  Paid checkout requires the deployment's payment configuration. See [What's live](/overview/status). App subscription checkout uses a connected wallet paying USDC on Base and renews manually; it is not an automatic recurring charge.
+</Info>
 
-Unlike in-app purchases, subscriptions need **no code in your app**. Elata
-gates the whole app: users without access see a subscribe screen instead of
-your app.
+## Configure your plan
 
----
+Open **My Apps → your app → Edit → Commerce → Monthly subscription**.
 
-## Set up a plan
-
-From your app's **Edit** page, open the subscription settings and set:
-
-| Setting | Rules |
+| Setting | Behavior |
 | --- | --- |
-| **Monthly price** | Amount in USDC |
-| **Free trial** | 0 to 365 days. 0 means no trial. |
-| **Active** | Turn the plan on or off. Turning it off makes the app free. |
+| Monthly price | A positive amount in USDC; enter the human-readable amount in the form |
+| Free trial | A whole number from 0 to 365 days; 0 means no trial |
+| Active | An inactive plan does not gate the app or offer renewal |
 
-Each app has one plan. Changing the price only affects future months; past
-payments keep the price they were made at.
-
----
+Each app has one plan. Save using the plan's own action. Owners and authorized team members can manage it. Price edits do not rewrite previously recorded paid periods; review the current price when making a new checkout.
 
 ## Who gets access
 
-| Person | Access |
+| User | Access |
 | --- | --- |
-| The app owner and team members | Always. You're never gated out of your own app. |
-| Users with a paid month or an active trial | Yes |
-| [Elata members](/users/membership-and-purchases) | Yes. Membership unlocks every gated app. |
-| Everyone else | Sees the subscribe screen |
+| App owner or authorized team member | Access without buying the app's plan |
+| User with valid paid-period coverage | Access during that coverage |
+| User with a valid trial | Access until the trial ends |
+| Active Elata member | Access through membership |
+| User without any of these | Subscription prompt while the plan is active |
 
-Apps without an active plan are free to play.
+With no active plan, the app is free to enter. These rules concern app access; they do not grant paid in-app items.
 
----
+## The customer's flow
 
-## How users subscribe
+1. The user opens the app's subscription prompt from its page or locked play screen.
+2. If eligible, they start the offered trial without payment. Otherwise they proceed to **Settings → Billing → Subscriptions**.
+3. They choose available current-month or next-month coverage and review the cart.
+4. Elata checks settlement and records access after payment. Multiple apps can be paid for in one cart.
 
-1. The user opens your app and sees the subscribe screen with your price and trial.
-2. They start a trial or pay for the month through Elata's checkout.
-3. They manage their subscriptions at `app.elata.bio/profile/subscriptions`.
+Periods use calendar months in UTC. Next-month coverage starts on the first; current-month catch-up access, when offered, uses the coverage and prorated price shown in the cart. A trial does not cause an automatic charge when it ends.
 
-Users can pay for several apps in a single checkout.
+The user must complete checkout to renew. An unpaid cart selection does not extend access. Leaving the next month unpaid lets paid access expire; removing a cart selection does not refund an already-paid period.
 
----
+The previous `/profile/subscriptions` route redirects to the current [Billing → Subscriptions](https://app.elata.bio/settings/billing/subscriptions) page.
 
-## Subscriptions or in-app items?
+## Earnings and subscribers
 
-| Model | Use it for |
-| --- | --- |
-| Subscription | Ongoing access to the whole app |
-| [In-app items](/apps/platform/in-app-purchases) | One-time unlocks inside an otherwise free app |
+Paid app periods retain their payment amounts. The **Commerce** report shows those subscription payments as gross revenue before the splitter fee. Your share settles directly to the creator's payout wallet. See [Revenue and payouts](/apps/operate/revenue-and-payouts).
 
-You can use both.
+The plan's subscriber count is an access signal, not an exact recurring revenue metric. Trials can contribute to the current-period count. Membership access is a separate path and does not mean an individual app subscription was purchased.
+
+## Test before enabling
+
+Use a separate user account to check the trial, paid-current-period, paid-next-period, lapsed, and unavailable-checkout states. Owners and team members bypass the gate, so testing only as yourself will miss it.
+
+Tell users what the subscription includes and show the relevant end date. Avoid describing it as autopay or promising a refund action the billing UI does not provide.
+
+## Next
+
+- [Monetize your app](/apps/build/monetize)
+- [Membership and purchases](/users/membership-and-purchases)
+- [Revenue and payouts](/apps/operate/revenue-and-payouts)
