@@ -1,0 +1,96 @@
+---
+title: "Revenue and Payouts"
+description: "Understand your sales reports, access your payout wallet, and move your USDC."
+---
+
+Your share of direct app sales goes to your app's payout wallet after the splitter deducts the configured platform fee. You access that wallet to move the money; there is no separate Elata creator balance to withdraw.
+
+## Open your commerce dashboard
+
+Go to **My Apps → your app → Edit → Commerce**, at `/app/<slug>/edit#commerce` on the appstore.
+
+| Panel | What it shows |
+| --- | --- |
+| Products | Your catalog and active state |
+| Monthly subscription | The app's price, trial settings, active state, and subscriber signal |
+| Revenue | Product sales and estimated product revenue, recorded subscription payments, and estimated total gross revenue |
+| Transactions | Recent product and subscription records, with transaction links when available |
+| Funds | The payout address and that wallet's current USDC balance on Base |
+
+## Understand the numbers
+
+**Product revenue is estimated.** Product purchase records do not store a historical paid amount. The report multiplies purchase counts by each item's current price. Editing a price can change the estimate for earlier sales without changing what anyone actually paid.
+
+**Subscription revenue uses recorded amounts.** Paid periods store the amount charged at payment time. Free trials are not paid subscription revenue.
+
+**Revenue is gross.** The report does not calculate your exact net earnings after platform fees. If it says the source records were limited, totals may also be partial. Use transaction records to reconcile actual payments and recipient amounts.
+
+**Funds is a wallet balance.** It includes other USDC deposited in that wallet and excludes funds already sent out. Several apps can share a wallet. A zero balance does not mean the app has never earned revenue.
+
+## Where payouts go
+
+The current app payment destination is the app creator's wallet, displayed as the payout wallet in **Funds**. Products and the monthly plan do not have their own editable payout-address field.
+
+Before selling, compare the displayed address with the wallet you control. If it is wrong or inaccessible, resolve it with [support](/users/help) before accepting payments. Adding a team member does not transfer ownership or configure automatic revenue sharing.
+
+## Access your funds
+
+<Steps>
+  <Step title="Open Funds">
+    In **Commerce**, find **Funds**, check the full payout address, and read **USDC balance (Base)**. Refresh or retry if the balance cannot be loaded.
+  </Step>
+  <Step title="Use the payout wallet">
+    Sign in as the app owner and connect the wallet associated with the payout address. The console offers **Manage funds** only when its owner and wallet checks pass. A team member can view the report but does not get this owner-only action.
+  </Step>
+  <Step title="Open Manage funds">
+    This opens wallet controls. Available send, receive, and export options depend on the wallet type. Check the wallet address inside the opened interface against the payout address before transferring anything.
+  </Step>
+</Steps>
+
+The dashboard's permissions control its own buttons. Anyone who independently controls the payout wallet can also manage that wallet outside Elata.
+
+## Send USDC to another wallet
+
+1. Open the payout wallet, using **Manage funds** or your wallet's own application.
+2. Select **USDC on Base** and the send action.
+3. Enter the destination address and amount. Confirm that the destination accepts USDC on Base.
+4. Review any network fee or sponsorship details and confirm the transfer.
+5. Save the transaction hash and check the destination balance after confirmation.
+
+An external wallet may require ETH on Base for network fees. Embedded or smart wallets may handle fees differently; use the details shown by the wallet. Export, when supported, exports wallet access rather than converting USDC to cash.
+
+## Get money into a bank account
+
+Elata's Funds card does not provide a bank withdrawal or convert USDC to fiat. To cash out:
+
+1. Use an exchange or cash-out service available to you that explicitly accepts **USDC deposits on Base** and offers withdrawals to your bank.
+2. Obtain its USDC deposit address with **Base** selected as the deposit network.
+3. Send USDC from your payout wallet to that address.
+4. After the service credits the deposit, follow its conversion and bank withdrawal steps.
+
+Check that service's current deposit minimums, fees, verification requirements, and bank withdrawal options before sending. A deposit address for a different network is not enough. Those steps happen with the receiving service, outside Elata.
+
+## Pay collaborators
+
+Team access lets collaborators help manage the app. It does not automatically split direct app revenue among them. The current flow sends the creator's share to one payout wallet. To pay collaborators from those proceeds, make transfers from that wallet according to your own agreed arrangement.
+
+## Troubleshooting
+
+| Problem | What to check |
+| --- | --- |
+| Manage funds is missing | Owner status, wallet connection, and the displayed payout address |
+| The wallet opened on a different address | Close it and select the actual payout wallet before sending |
+| Balance does not match Revenue | Gross versus net, estimated item prices, funds already sent, other deposits, and shared wallets |
+| A customer's payment is missing from reports | Settlement and recording state; compare the transaction hash with the app's records |
+| Balance cannot be loaded | Retry the balance query; a read failure is not evidence funds are gone |
+| You need a payout-address change | Contact support; product and plan settings do not change the payout destination |
+
+For missing or disputed payments, keep the app identifier, date, item or paid period, and transaction hash. Use [Help](/users/help). The dashboard does not provide self-service refunds, payout-address replacement, or a bank cash-out button.
+
+## Related guides
+
+- [Monetize your app](/apps/build/monetize)
+- [In-app purchases](/apps/platform/in-app-purchases)
+- [Subscriptions](/apps/platform/subscriptions)
+- [Analytics](/apps/operate/analytics-and-health)
+- [The user billing experience](/users/membership-and-purchases)

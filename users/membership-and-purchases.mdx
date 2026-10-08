@@ -1,65 +1,90 @@
 ---
 title: "Membership and Purchases"
-description: "In-app items, app subscriptions, and Elata membership from the user's side."
+description: "Buy app items, manage monthly access, and understand your wallet and credits."
 ---
+
+Some apps offer one-time items or paid monthly access. Elata handles checkout and keeps your purchase and access records on your account.
 
 <Info>
-  **Status.** In-app purchases are live on a test network (Ethereum Sepolia).
-  App subscriptions and membership are experimental and may show "Coming soon"
-  until they're enabled. See [What's live](/overview/status).
+  Paid features may be unavailable until configured for the deployment. Check [What's live](/overview/status) and the network shown at checkout. App items and app subscriptions use USDC on Base in this flow; testnet funds on another network cannot pay for them.
 </Info>
 
-Browsing and playing apps is free. Some apps offer optional purchases. Every
-payment goes through Elata's checkout; apps never see your payment details.
+## Find your billing settings
 
----
+Open [Settings → Billing](https://app.elata.bio/settings/billing).
 
-## In-app items
+| Section | What you can do |
+| --- | --- |
+| [Purchases](https://app.elata.bio/settings/billing/purchases) | View the app items you own and return to their apps |
+| [Subscriptions](https://app.elata.bio/settings/billing/subscriptions) | Review app access, choose periods to pay for, and manage membership |
+| [History](https://app.elata.bio/settings/billing/history) | Review recorded product, subscription, membership, and credit payments |
+| [Wallet](https://app.elata.bio/settings/billing/wallet) | Check your account wallet, connected wallet, and credit balance |
 
-Some apps sell one-time unlocks, such as a level pack or an extra feature.
+## Buy an in-app item
 
-- Buy from inside the app; Elata shows the checkout.
-- Prices are in USDC, a dollar-pegged stablecoin.
-- Once bought, the item is yours on that account, on any device.
+<Steps>
+  <Step title="Sign in and choose the item">
+    Open the app's available purchases or its own store. Check the item description and price. One-time items are permanent unlocks on the purchasing account, rather than spend-per-use consumables.
+  </Step>
+  <Step title="Complete Elata checkout">
+    Connect or open the wallet requested by checkout. App items are paid from a wallet with enough USDC on Base. Confirm the requested payment actions and wait for settlement and recording.
+  </Step>
+  <Step title="Use your purchase">
+    After Elata confirms success, the app applies the unlock. You can find it again under **Billing → Purchases** and restore it by returning to the app on the same account.
+  </Step>
+</Steps>
 
----
+An already-owned item should show an owned state instead of requiring another payment. If the benefit is missing, reopen the app on the purchasing account and check Purchases before trying checkout again.
 
-## App subscriptions
+## Subscribe to an app
 
-Some apps are behind a monthly subscription. If you don't have access, you see
-a subscribe screen instead of the app. Builders can offer a free trial.
+An app with an active monthly plan shows its price and any available trial on its app page or locked play screen. An eligible free trial starts without a payment; paid access is managed in **Billing → Subscriptions**.
 
-Manage your subscriptions at `app.elata.bio/profile/subscriptions`.
+1. Open **Subscriptions** from the app's subscription prompt.
+2. Select the offered period: current-month access, next-month access, or both when available.
+3. Review the coverage dates and total in the cart. Several apps can be paid for together.
+4. Complete checkout and wait for the periods to show as paid.
 
----
+App subscription periods follow **calendar months in UTC**, rather than 30 days from purchase. Next-month access begins on the first of that month. When current-month access is offered, the cart shows its coverage and prorated price.
+
+### Renew or stop renewing
+
+There is **no autopay** for app subscriptions. Selecting an app for next month adds it to your cart; payment is still required.
+
+To stop renewing, leave the next month unpaid. Unchecking an unpaid selection removes it from the cart. It does not cancel or refund a month you already purchased. Access continues through the paid coverage or trial end date, then expires unless another form of access applies.
 
 ## Elata membership
 
-Membership is a single monthly plan that unlocks **every subscription-gated
-app** on Elata for as long as it's active, including Elata's own flagship apps.
+[Elata membership](https://app.elata.bio/membership) provides access to subscription-gated apps while active. It does not automatically buy their one-time items.
 
-- **Pay monthly** by card or with USDC.
-- **Renew manually.** Membership doesn't auto-charge. You get a reminder near the end of each month.
-- **Lapsing is safe.** If you don't renew, gated apps lock again, and your saved progress stays.
-
-See pricing and included apps at
-[app.elata.bio/membership](https://app.elata.bio/membership).
-
----
-
-## Membership vs. app subscriptions
+Membership also renews manually. Review the period shown before paying. Card and crypto options depend on the deployment; card payment is offered for Base mainnet membership checkout, rather than testnet checkout. An unconfigured membership shows **Coming soon**.
 
 | | App subscription | Elata membership |
 | --- | --- | --- |
-| Covers | One app | Every gated app |
-| Free trial | Set by the developer | No |
-| Managed at | `app.elata.bio/profile/subscriptions` | `app.elata.bio/membership` |
+| Coverage | One app | Subscription-gated apps across Elata |
+| Trial | If the app offers one and you are eligible | No app-specific trial |
+| Renewal | Manual payment | Manual payment |
+| One-time items included | No | No |
 
----
+## Google sign-in, wallets, and credits
 
-## Points for purchases
+Signing in identifies your Elata account. Completing a payment requires an active wallet capable of approving it. A Google sign-in may use an embedded wallet; the payment confirmation then happens in that wallet's interface. Follow the wallet connection prompt if no wallet is active.
 
-Buying in-app items earns [Elata Points](/overview/points). Points themselves
-can't be bought.
+**Billing → Wallet** shows both your account wallet and your currently connected wallet. If they differ, check the account and wallet before paying. Wallet connection alone does not guarantee that a different payer can be verified for your account.
 
-Builders: see [Monetize your app](/apps/build/monetize).
+Credits cover supported metered features. Topping up credits does not fund your wallet's USDC balance or automatically pay an item or app subscription. [Points](/overview/points) are also a separate participation system.
+
+## Payment problems and history
+
+| State | What to do |
+| --- | --- |
+| Not signed in | Sign in to the account that should own the purchase |
+| No connected wallet | Follow checkout's wallet connection prompt |
+| Insufficient funds | Add USDC on Base to the paying wallet, then retry |
+| Waiting for confirmation or recording | Keep checkout open while it finishes |
+| Payment settled but access is missing | Save the transaction hash, check History and your access, and contact support before sending another payment |
+| Checkout unavailable | The deployment may not have payments configured; check back or contact support |
+
+History is a record of payments, not a refund or invoice portal. Product amounts marked **≈** are estimates using the item's current price; use the transaction record for the amount actually paid. A limited history may show only recent records.
+
+For a billing problem, use [Help](/users/help) and include the app, item or period, purchasing account, transaction hash if available, and error shown. Do not share wallet secrets. These settings do not provide a self-service refund workflow.

@@ -20,10 +20,25 @@ npm install @elata-biosciences/app-payments
 | `hasItem(contentId, opts?)` | `Promise<boolean>` | Check one item |
 | `requestPurchase(input)` | `Promise<PurchaseResult>` | Open checkout for an item |
 
-<Note>
-  Your item catalog is set up by the Elata team. Contact us with the items,
-  titles, and prices you want to sell.
-</Note>
+## Create your catalog
+
+Open **My Apps → your app → Edit → Commerce → Products**. Owners and authorized team members can create and manage the catalog themselves.
+
+| Field | What to enter |
+| --- | --- |
+| Title | A clear item name, up to 100 characters |
+| Description | What the buyer receives, up to 500 characters |
+| Image URL | Optional HTTP or HTTPS image URL |
+| Price | A positive human-readable USDC amount in the dashboard form |
+| Active | Whether the item is available in the active catalog |
+
+Save the product, then copy its assigned `contentId` into your integration. The identifier is stable and cannot be edited. Products can be edited or deactivated rather than deleted. Deactivation stops new sales; keep applying existing owners' benefits, including when the item no longer appears in the active catalog.
+
+The dashboard accepts ordinary amounts such as `1.00`. Product APIs and catalog responses use integer USDC base units: `"1000000"` means 1 USDC. Creating a catalog entry does not implement its benefit in your app.
+
+<Info>
+  Checkout must be configured for the deployment. The app checkout described here pays USDC on Base through the splitter. See [What's live](/overview/status) before testing payments.
+</Info>
 
 ---
 
@@ -89,7 +104,7 @@ owning it *does*.
     Each item is bought once. Consumables (spend-per-use balances) and recurring billing aren't supported through items. For recurring revenue use a [subscription plan](/apps/platform/subscriptions).
   </Accordion>
   <Accordion title="Timeouts">
-    `requestPurchase` waits up to 5 minutes for the user to finish checkout. `getCatalog`, `getOwnedItems`, and `hasItem` default to 10 seconds. Outside Elata nothing answers, so handle `timeout` by showing items as available.
+    `requestPurchase` waits up to 5 minutes for the user to finish checkout. `getCatalog`, `getOwnedItems`, and `hasItem` default to 10 seconds. Outside Elata, use a mock host for local tests. Treat an ownership-query failure as unknown ownership: offer a retry or sign-in action, and never grant a paid benefit merely because the query timed out.
   </Accordion>
 </AccordionGroup>
 
@@ -115,10 +130,10 @@ A normal `cancelled` or `error` purchase outcome resolves; it doesn't reject.
 
 ## Security model
 
-- Your app **can't fake ownership**. Ownership is recorded by Elata only after payment is verified.
+- Elata's purchase records are created after server-side payment verification. Your UI should use host ownership queries as its source of truth.
 - Your app **never sees** payment details, wallet keys, or session tokens.
-- Repeating a request with the same `requestId` won't charge twice.
-- Revenue from item sales is paid to the app owner's wallet.
+- Replaying a recording request with the same `requestId` is idempotent. This does not make sending a second on-chain payment safe.
+- The splitter deducts the configured platform fee and sends the creator's share to the payout wallet. See [Revenue and payouts](/apps/operate/revenue-and-payouts).
 
 ---
 
@@ -126,3 +141,23 @@ A normal `cancelled` or `error` purchase outcome resolves; it doesn't reject.
 
 - [`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo): one self-contained HTML file with a built-in mock store, so you can run the full flow locally.
 - [Package README on npm](https://www.npmjs.com/package/@elata-biosciences/app-payments)
+
+## Payment and UI states
+
+Handle success, cancellation, and errors separately. Prevent overlapping purchase attempts. A successful payment and a recorded entitlement are separate steps; unlock only after Elata reports success.
+
+If a payment settles but recording fails, keep the transaction details and direct the user to [billing help](/users/membership-and-purchases#payment-problems-and-history). Do not automatically send another payment. The checkout retries temporary indexing delays, but recovery from every recording failure is not guaranteed.
+
+Ownership queries can require authentication. On `not_authenticated`, ask the user to sign in; on a lookup failure, show a retry state. Do not silently treat unknown ownership as a confirmed non-owner.
+
+The app does not connect wallets itself. Elata checkout manages wallet connection and payment confirmation, including the embedded-wallet interface when used. Credits for metered features are not an alternative payment balance for these items.
+
+## Test your integration
+
+- Reopen the app and restore already-owned benefits from host ownership.
+- Show **Use** or **Owned** for purchased items and **Buy** for available unowned items.
+- Handle a successful already-owned response with an empty transaction hash.
+- Handle signed-out, cancelled, insufficient-funds, unavailable-checkout, and lookup-error states.
+- Deactivate an item and verify that existing owners can still use its benefit.
+
+For subscription access, use [Subscriptions](/apps/platform/subscriptions), rather than simulating recurring billing with repeated item purchases.
