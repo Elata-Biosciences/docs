@@ -26,7 +26,7 @@ const best = await metrics.loadScores({ order: 'value_desc', limit: 10 });
 const recent = await metrics.query({ type: 'level_complete', limit: 20 });
 ```
 
-Los datos tienen como alcance el par (usuario, aplicación) y nunca cruzan los límites de la aplicación. Elata guarda una copia local y, para los usuarios que han iniciado sesión, la sincroniza con la cuenta del usuario para seguirlos en todos los dispositivos. Estos registros también impulsan sus análisis [](/es/apps/operate/analytics-and-health).
+Los datos tienen como alcance el par (usuario, aplicación) y nunca cruzan los límites de la aplicación. Elata guarda una copia local y, para los usuarios que han iniciado sesión, la sincroniza con la cuenta del usuario para seguirlos en todos los dispositivos. Estos registros también impulsan sus análisis [Analítica](/es/apps/operate/analytics-and-health).
 
 ---
 

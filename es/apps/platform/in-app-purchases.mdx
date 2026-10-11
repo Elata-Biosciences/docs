@@ -106,7 +106,7 @@ Si el usuario ya posee el artículo, Elata omite el pago y devuelve `{ status: "
 `CatalogItem.priceUsdc` está en USDC **unidades base** (6 decimales): `"50000"` es $0,05. `RequestPurchaseInput.priceUsdc` es una sugerencia de visualización de formato libre que Elata ignora. Elata siempre cobra el precio del catálogo.
   </Accordion>
   <Accordion title="Los artículos se desbloquean una sola vez.">
-Cada artículo se compra una vez. Los consumibles (saldos de gasto por uso) y la facturación recurrente no se admiten a través de artículos. Para obtener ingresos recurrentes, utilice un plan de suscripción [](/es/apps/platform/subscriptions).
+Cada artículo se compra una vez. Los consumibles (saldos de gasto por uso) y la facturación recurrente no se admiten a través de artículos. Para obtener ingresos recurrentes, utilice un plan de suscripción [Suscripciones](/es/apps/platform/subscriptions).
   </Accordion>
   <Accordion title="Tiempos de espera">
 `requestPurchase` espera hasta 5 minutos para que el usuario finalice el pago. `getCatalog`, `getOwnedItems`y `hasItem` tienen un valor predeterminado de 10 segundos. Fuera de Elata, utilice un host simulado para las pruebas locales. Trate un error en la consulta de propiedad como propiedad desconocida: ofrezca un reintento o una acción de inicio de sesión, y nunca otorgue un beneficio pagado simplemente porque se agotó el tiempo de espera de la consulta.
