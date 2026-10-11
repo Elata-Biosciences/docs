@@ -10,7 +10,8 @@ That shapes what data exists:
 
 | Data | Exists? | Where |
 | --- | --- | --- |
-| Raw camera frames, raw EEG, raw PPG | Not collected by Elata | Processed and discarded on the user's device |
+| Raw camera frames | Not collected by Elata's server pipeline | Processed locally |
+| Raw EEG and PPG | Not collected by Elata's server pipeline; local experimental recordings are possible | The user's browser storage when a compatible recording host is enabled |
 | Derived session results for the biometric Score | Yes, with consent | Elata, for users who opt in |
 | App saves, records, and scores | Yes | The user's account, scoped to each app |
 | Aggregate app analytics | Yes | Visible to each app's builder, anonymized |
@@ -33,8 +34,7 @@ Researchers can use the open-source tools directly:
 ## Recording sessions (experimental)
 
 <Warning>
-  Experimental. `biosignal-session` is available as source code only, and
-  Elata does not host session recordings yet.
+  Experimental. The SDK supplies the recording contract. The appstore's `feat/long-local-analytics` branch implements a local recording host, session pages, and storage controls, but explicitly disables them in production.
 </Warning>
 
 `biosignal-session` records multi-sensor sessions (EEG, PPG, rPPG metrics, and

@@ -110,9 +110,10 @@
                   "users/explore-apps",
                   "users/devices",
                   "users/score-and-insights",
+                  "users/local-sessions-and-insights",
                   "users/your-data",
                   "users/points-and-quests",
-                  "users/membership-and-purchases",
+                  "users/billing-and-purchases",
                   "users/safety-and-limitations",
                   "users/help"
                 ]
@@ -377,9 +378,10 @@
                   "cn/users/explore-apps",
                   "cn/users/devices",
                   "cn/users/score-and-insights",
+                  "cn/users/local-sessions-and-insights",
                   "cn/users/your-data",
                   "cn/users/points-and-quests",
-                  "cn/users/membership-and-purchases",
+                  "cn/users/billing-and-purchases",
                   "cn/users/safety-and-limitations",
                   "cn/users/help"
                 ]
@@ -1397,11 +1399,11 @@
     },
     {
       "source": "/apps/users/membership",
-      "destination": "/users/membership-and-purchases"
+      "destination": "/users/billing-and-purchases"
     },
     {
       "source": "/cn/apps/users/membership",
-      "destination": "/cn/users/membership-and-purchases"
+      "destination": "/cn/users/billing-and-purchases"
     },
     {
       "source": "/quickstart",
@@ -1414,6 +1416,14 @@
     {
       "source": "/learn",
       "destination": "/overview/welcome"
+    },
+    {
+      "source": "/users/membership-and-purchases",
+      "destination": "/users/billing-and-purchases"
+    },
+    {
+      "source": "/cn/users/membership-and-purchases",
+      "destination": "/cn/users/billing-and-purchases"
     }
   ],
   "description": "Documentation, learning, and information hub for the Elata platform and ecosystem.",

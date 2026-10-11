@@ -12,8 +12,8 @@ default):
 | Metric | What it counts |
 | --- | --- |
 | **Users** | Distinct players who recorded data in your app |
-| **Sessions** | Play sessions |
-| **Events** | Records your app wrote with `app-metrics` |
+| **Sessions** | Score submissions through `saveScore`, rather than independently counted play sessions |
+| **Events** | All stored `app-metrics` rows in the window, including event records and score rows |
 | **Avg score** | The average of scores saved with `saveScore` |
 
 A usage chart shows the trend over the window.
@@ -25,7 +25,8 @@ A usage chart shows the trend over the window.
 Analytics are aggregate and anonymized:
 
 - No individual users or raw payloads are ever shown.
-- Results are suppressed when the cohort is too small to stay anonymous, so very new apps may show no data at first.
+- Results are suppressed below five distinct users, so very new apps may show no data at first.
+- Totals and trends are computed from at most 20,000 recent rows; the distinct-user count is computed separately. Treat very high-volume totals as potentially partial.
 
 ---
 
@@ -35,7 +36,7 @@ Analytics are built from what your app records through
 [`app-metrics`](/apps/platform/metrics-and-scores). To get meaningful numbers:
 
 - **Record meaningful events**, for example `session_complete` or `level_complete`, not every frame.
-- **Save scores** with `saveScore` when a session produces a result. This drives **Avg score**.
+- **Save scores** with `saveScore` when a session produces a result. This drives **Avg score** and the current **Sessions** count. Multiple score submissions in one play session increase that count multiple times.
 - **Keep event types stable** across releases so trends stay comparable.
 
 ---
@@ -54,7 +55,7 @@ Your app page also shows plays, saves, votes, reviews, and comments.
 
 ## Compare usage with sales
 
-Open **Edit → Commerce** for product sales, subscription payments, and recent transactions. Use **Edit → Analytics** to understand usage. These panels answer different questions: paid access does not guarantee someone played, and trial or membership access does not imply a direct app payment.
+Open **Edit → Commerce** for product sales, subscription payments, and recent transactions. Use **Edit → Analytics** to understand usage. These panels answer different questions: paid access does not guarantee someone played, and trial access does not imply a direct app payment.
 
 Usage analytics remain aggregate and subject to the minimum-cohort rule. Commerce transaction records are a separate operational view and may display shortened buyer wallet addresses.
 

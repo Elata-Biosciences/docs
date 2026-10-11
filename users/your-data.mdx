@@ -6,8 +6,8 @@ description: "What stays on your device, what apps and Elata keep, and how to ac
 ## The short version
 
 - **Raw signals stay on your device.** Camera video, raw EEG, and raw heart signals are processed in your browser.
-- **Apps never learn who you are.** They run in a sandbox and can't see your email, wallet, or account.
-- **Sharing beyond an app is opt-in.** Only derived results, and only if you turn on the [biometric Score](/users/score-and-insights).
+- **Elata's bridge withholds account credentials.** Sandboxed apps do not receive your email, wallet keys, or session tokens through it. Public activity, commerce records, and information you enter can still identify you.
+- **Biometric Score contributions are opt-in.** This consent is separate from cloud storage of app saves, records, scores, usage information, and payments.
 - **You can ask for your data or its deletion** at any time.
 
 ---
@@ -16,11 +16,13 @@ description: "What stays on your device, what apps and Elata keep, and how to ac
 
 | What | Where | Who can see it |
 | --- | --- | --- |
-| Raw camera frames and biosignals | Nowhere: processed and discarded on your device | No one |
+| Raw camera frames | Processed locally; not collected by Elata's server pipeline | The local processing app |
+| Raw biosignals | Processed locally; compatible experimental apps can retain local session recordings | You and the local recording/analysis software |
 | Saves, settings, and scores an app stores | Your Elata account, separately for each app | You and that app only |
 | Derived results for your Score (if you opt in) | Elata | You; apps you allow can read your own insights |
 | Your profile, reviews, and comments | Elata | Public, as on any community site |
-| Usage analytics | Elata | Elata; builders see only anonymized totals for their app |
+| Usage analytics | Elata | Elata; builders see aggregates for their app, with small-cohort suppression |
+| Purchase and subscription records | Elata and the payment network | You, Elata, and authorized app managers; commerce can show shortened buyer wallets and transaction links |
 
 Retention periods for usage data are listed in the
 [privacy policy](https://elata.bio/privacy).
@@ -34,6 +36,10 @@ Retention periods for usage data are listed in the
 - **Reminders:** apps can only remind you through Elata, reminders are off until you allow them, and your choice is remembered per app.
 
 ---
+
+## Experimental recordings on this device
+
+The [local-session integration](/users/local-sessions-and-insights) is a developer-only experiment, disabled in production. Its raw biosignal recordings use browser storage and are not mirrored to Elata's server. They do not automatically follow you to another device. Clearing browser storage can remove them. Local deletion and server-account deletion are separate operations.
 
 ## Access, export, and deletion
 

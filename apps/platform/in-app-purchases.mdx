@@ -146,7 +146,7 @@ A normal `cancelled` or `error` purchase outcome resolves; it doesn't reject.
 
 Handle success, cancellation, and errors separately. Prevent overlapping purchase attempts. A successful payment and a recorded entitlement are separate steps; unlock only after Elata reports success.
 
-If a payment settles but recording fails, keep the transaction details and direct the user to [billing help](/users/membership-and-purchases#payment-problems-and-history). Do not automatically send another payment. The checkout retries temporary indexing delays, but recovery from every recording failure is not guaranteed.
+If a payment settles but recording fails, keep the transaction details and direct the user to [billing help](/users/billing-and-purchases#payment-problems-and-history). Do not automatically send another payment. The checkout retries temporary indexing delays, but recovery from every recording failure is not guaranteed.
 
 Ownership queries can require authentication. On `not_authenticated`, ask the user to sign in; on a lookup failure, show a retry state. Do not silently treat unknown ownership as a confirmed non-owner.
 

@@ -9,11 +9,13 @@ Elata is a platform for building and using consumer-friendly biosensing, neurosc
 
 - **Elata** ([app.elata.bio](https://app.elata.bio)) is where people find and play these apps in the browser, and where builders publish them.
 - **The [Elata SDK](/overview/elata-sdk)** is a set of open-source packages that turn a webcam or a consumer headband into a biosignal sensor, with processing that runs on the user's own device.
-- **Privacy is built in.** Collected information stays on the users device. Anything shared beyond an app, such as the cross-app biometric Score, is opt-in and _can be turned off or deleted_ fully at the discretion of the user.
+- **Privacy starts on your device.** Raw signal processing runs locally. App saves, event records, scores, and payment records can be stored by Elata; derived results contribute to the cross-app biometric Score only with consent. You can revoke that consent and request deletion. [Your data](/users/your-data) explains the different storage and deletion paths.
 
-One thing that makes Elata vastly different than any other product on the market today is that you _don't need special hardware_ to begin using applications on the platform. 
+You _don't need special hardware_ to begin: camera-based apps can use the webcam or phone camera you already have. 
 
 Apps on Elata can turn an ordinary webcam or phone camera into a biosensor, using subtle changes in your face and behavior to measure or estimate signals like heart rate, heart rate variability, breathing rate, blink rate, affective state, and more.
+
+Available outputs and reliability depend on the app, sensor, package version, signal quality, and algorithm. Heart rate, HRV, respiration estimates, and face-derived affect are different signals; a physiological activation score is not a direct measurement of emotion. See [Biosignals explained](/overview/biosignals) and [SDK output guidance](/sdk/rppg-web/getting-started#output-and-quality-guidance).
 
 We also support applications that can read brain activity over the web. These applications rely on consumer-grade EEG devices, such as [Muse](https://choosemuse.com/).
 

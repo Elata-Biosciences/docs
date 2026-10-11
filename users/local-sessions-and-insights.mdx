@@ -1,0 +1,42 @@
+---
+title: "Local Sessions and Insights"
+description: "The experimental on-device recording flow, its storage controls, and how it differs from cloud app records."
+tag: "Experimental"
+---
+
+<Warning>
+  Developer-only experiment on the appstore's `feat/long-local-analytics` branch. The branch explicitly disables this feature in production, including production-mode previews. It is not a live consumer feature.
+</Warning>
+
+## What it adds
+
+Compatible apps can record typed biosignal streams through `biosignal-session`. The trusted Elata host stores payloads in OPFS and a catalog in IndexedDB, on the user's device. The recording path has no server mirror.
+
+This is separate from [app-metrics](/apps/platform/metrics-and-scores), whose event and score records can sync to the signed-in user's account, and from the consent-gated [platform biometric Score](/users/score-and-insights).
+
+## Development flow
+
+1. Run the branch in a non-production development environment with `NEXT_PUBLIC_LOCAL_BIOSIGNALS=true`.
+2. Sign in and open an app that implements the biosignal recording protocol. Ordinary apps do not automatically create recordings.
+3. Complete a recording. A compatible app must handle recorder startup, quality and connection failures, and finalization.
+4. Open **Insights** to see on-device summaries and recent recordings.
+5. Open [Sessions](https://app.elata.bio/insights/sessions) to browse the local catalog, then choose a session to inspect its details.
+6. Open [Local data](https://app.elata.bio/settings/local-data) to inspect storage, request persistent storage, or delete one or all local sessions.
+
+The links above describe development routes; enabling an environment variable cannot override the production lockout.
+
+## Read the results
+
+On-device scores are interpretations relative to personal baselines. They are separate from the platform biometric Score. Quality, missing inputs, and insufficient baseline can cause a value to be withheld; absence of a value should not be presented as poor health or poor performance.
+
+The current on-device dashboard includes Measurement Quality and Activation, metric trends, and recent sessions. Some contributors can be unavailable. The SDK's full set of score formulas is not a promise that every score appears in the appstore UI.
+
+## Storage and deletion
+
+Recordings belong to this browser and device. Signing into another device does not download them. Clearing site data or browser eviction can remove them. A persistent-storage request can improve retention, but should not be described as a cloud backup.
+
+Local-data deletion removes local payloads, catalog entries, and their rollup contributions. It is separate from deleting cloud app records or revoking platform Score consent. The current local-data panel provides storage and deletion controls; this guide does not promise a complete recording export workflow.
+
+## Builder integration
+
+Use [biosignal-session](/sdk/biosignal-session/getting-started) for capture and recording contracts and [biosignal-analytics](/sdk/biosignal-analytics/getting-started) for analysis. Keep [app-state](/apps/platform/app-state) for small saves and settings, and `app-metrics` for event/score history. These serve different data needs.

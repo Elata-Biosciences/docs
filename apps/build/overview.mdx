@@ -3,6 +3,10 @@ title: "Builder Overview"
 description: "What Elata gives you and what you avoid building yourself."
 ---
 
+<Warning>
+  The repository's `create-elata-demo` 0.12.1 has a packaging blocker: missing `app-metrics` version metadata prevents startup. Check [scaffolder status](/sdk/create-elata-demo) before using the commands below; for now, follow [manual rPPG integration](/sdk/tutorials/rppg-existing-app).
+</Warning>
+
 ## What You Get
 
 You ship a static web app. Elata provides the rest:
@@ -21,7 +25,7 @@ You ship a static web app. Elata provides the rest:
 
 | You would otherwise need | Elata handles it |
 | --- | --- |
-| Auth, sessions, wallets | Users sign in to Elata. Your app never sees their identity or session. |
+| Auth, sessions, wallets | Users sign in to Elata. Your app does not receive their account credentials or session tokens through the bridge. |
 | Checkout and payment processing | Elata runs checkout and records ownership. You read entitlements. |
 | A backend for saves and settings | [`app-state`](/apps/platform/app-state) and [`app-metrics`](/apps/platform/metrics-and-scores) store per-user data for you. |
 | Consent flows for biometric data | Elata shows consent in its own trusted frame and enforces it server-side. |
