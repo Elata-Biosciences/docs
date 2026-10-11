@@ -19,7 +19,7 @@ description: "基于摄像头的心率测量， @elata-biosciences/rppg-web"
 
 - 浏览器中基于摄像头的生物信号处理
 - 更高级别的 rPPG 会话API而不是原始的 WASM 编排
-- 大约 rPPG 次会话的诊断和面向应用程序的帮助程序
+- 围绕 rPPG 会话的诊断工具与应用集成辅助功能
 
 ---
 
@@ -45,7 +45,7 @@ npm install @elata-biosciences/rppg-web
 
 <a id="recommended-usage-createrppgsession"></a>
 
-## 推荐用量： `createRppgSession`
+## 推荐用法： `createRppgSession`
 
 对于大多数浏览器应用程序，以 `createRppgSession()`开头。它处理 WASM 初始化、帧捕获、ROI 编排、诊断和清理。
 
@@ -73,7 +73,7 @@ for (const track of (videoEl.srcObject as MediaStream | null)?.getTracks() ?? []
 }
 ```
 
-如果您还希望在终端处理器出现故障后自动重新启动，请使用 `createManagedRppgSession()` 。
+如果您还希望在处理器发生不可恢复故障后自动重新启动，请使用 `createManagedRppgSession()` 。
 
 ---
 
@@ -83,7 +83,7 @@ for (const track of (videoEl.srcObject as MediaStream | null)?.getTracks() ?? []
 
 每个会话诊断有效负载包括状态、问题代码、采样统计数据和处理器故障信息。
 
-- 如果 `session.state.status` 变为 `failed`，则将底层处理器视为终端并重新创建会话。
+- 如果 `session.state.status` 变为 `failed`，则将底层处理器视为已发生不可恢复故障并重新创建会话。
 - 如果 `backend: "auto"` 回退到不可用的后端模式，诊断程序会报告该状态，而不是静默失败。
 
 ---
@@ -124,7 +124,7 @@ new RppgProcessor(backend: Backend, sampleRate: number, windowSeconds?: number)
 
 <a id="pushing-samples"></a>
 
-### 推样
+### 输入样本
 
 ```typescript
 processor.pushSample(timestampMs, intensity);           // green channel only
@@ -140,7 +140,7 @@ processor.pushSampleRgbMeta(timestampMs, r, g, b, skinRatio?, motion?, clipRatio
 |-------|------|-------------|
 | `bpm` | `number \| null` | 最终心率估计。 `null` 预热期间（约 10 秒）或后端不可用时。 |
 | `confidence` | `number` | 0 到 1。在此控制您的 UI：仅显示高于阈值（例如 0.5）的 BPM。 |
-| `signal_quality` | `number` | 0 比 1 原始相机信号质量，来自皮肤比例、运动和剪切 |
+| `signal_quality` | `number` | 0 至 1 的原始相机信号质量，基于皮肤占比、运动和信号截幅 |
 | `spectral_bpm` | `number \| null` | 频域 (FFT) 估计 |
 | `acf_bpm` | `number \| null` | 自相关估计 |
 | `reason_codes` | `string[]` | 为什么置信度较低，例如 `low_skin_ratio` 或 `high_motion` |
@@ -149,19 +149,19 @@ processor.pushSampleRgbMeta(timestampMs, r, g, b, skinRatio?, motion?, clipRatio
 
 <a id="output-and-quality-guidance"></a>
 
-## 产量和质量指导
+## 输出与质量指导
 
 对于消费者应用程序，保留面部跟踪（`faceMesh: "auto"`，或忽略该选项），除非您故意需要视频帧后备。上面的例子使用 `"off"` 来明确后备；该模式不定位面部皮肤区域。
 
-当前的 SDK 源还提供 `CaptureConfidenceScorer`：用于捕获和校准的运动和照明置信度，与脉冲域置信度分开。使用质量和发布门控，而不是将每个数字估计都呈现为可靠的。
+当前的 SDK 源还提供 `CaptureConfidenceScorer`：用于捕获和校准的运动和照明置信度，与脉搏信号领域的置信度分开。使用质量和发布门控，而不是将每个数字估计都呈现为可靠的。
 
-高级源 API 包括基线相关生理学特征、通用激活/恢复解释、可选波形重建和实验形态学代理。生理激活评分不是情绪效价、面部情感、压力诊断或临床测量。面部衍生影响是一个单独的 API。学习波形重建需要调用者提供的模型工件，并且仍然是可选的诊断路径。
+高级源 API 包括基线相关生理学特征、通用激活/恢复解释、可选波形重建和实验性的形态学替代指标。生理激活评分不是情绪效价、面部情感、压力诊断或临床测量。基于面部推导的情感指标属于独立 API。基于学习模型的波形重建需要调用者提供模型文件，并且仍然是可选的诊断路径。
 
 这些 API 应与实际安装的软件包版本相关联；当前存储库源可以包含比 npm 版本更新的功能。请参阅 [当前包自述文件](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/packages/rppg-web/README.md)。
 
 <a id="key-exports"></a>
 
-## 主要出口产品
+## 主要导出
 
 - `createRppgSession`
 - `createManagedRppgSession`

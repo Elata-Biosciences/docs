@@ -6,7 +6,7 @@ description: "Compre elementos de aplicaciones, administre el acceso mensual y c
 Algunas aplicaciones ofrecen artículos únicos o acceso mensual pago. Elata maneja el pago y mantiene sus registros de compra y acceso en su cuenta.
 
 <Info>
-Es posible que las funciones pagas no estén disponibles hasta que se configuren para la implementación. Verifique [Qué hay en vivo](/es/overview/status) y la red que se muestra al finalizar la compra. Los elementos de aplicaciones y las suscripciones a aplicaciones utilizan USDC en Base en este flujo; Los fondos de testnet en otra red no pueden pagarlos.
+Es posible que las funciones pagas no estén disponibles hasta que se configuren para la implementación. Verifique [Estado actual](/es/overview/status) y la red que se muestra al finalizar la compra. Los elementos de aplicaciones y las suscripciones a aplicaciones utilizan USDC en Base en este flujo; Los fondos de testnet en otra red no pueden pagarlos.
 </Info>
 
 <a id="find-your-billing-settings"></a>
@@ -15,12 +15,12 @@ Es posible que las funciones pagas no estén disponibles hasta que se configuren
 
 Abra [Configuración → Facturación](https://app.elata.bio/settings/billing).
 
-| Sección | que puedes hacer |
+| Sección | Qué puedes hacer |
 | --- | --- |
 | [Compras](https://app.elata.bio/settings/billing/purchases) | Ver los elementos de la aplicación que posee y volver a sus aplicaciones |
 | [Suscripciones](https://app.elata.bio/settings/billing/subscriptions) | Revise el acceso a la aplicación y elija los períodos para pagar |
-| [Historia](https://app.elata.bio/settings/billing/history) | Revisar los pagos registrados de productos, suscripciones y créditos. |
-| [Cartera](https://app.elata.bio/settings/billing/wallet) | Verifique la billetera de su cuenta, la billetera conectada y el saldo de crédito |
+| [Historial](https://app.elata.bio/settings/billing/history) | Revisar los pagos registrados de productos, suscripciones y créditos. |
+| [Billetera](https://app.elata.bio/settings/billing/wallet) | Verifique la billetera de su cuenta, la billetera conectada y el saldo de crédito |
 
 <a id="buy-an-in-app-item"></a>
 
@@ -57,7 +57,7 @@ Los períodos de suscripción de la aplicación siguen **meses calendario en UTC
 
 ### Renovar o dejar de renovar
 
-No hay **sin pago automático** para las suscripciones a aplicaciones. Al seleccionar una aplicación para el próximo mes, la agrega a su carrito; todavía se requiere el pago.
+Las suscripciones a aplicaciones **no tienen pago automático**. Al seleccionar una aplicación para el próximo mes, la agrega a su carrito; todavía se requiere el pago.
 
 Para dejar de renovar, dejar el mes siguiente sin pagar. Al desmarcar una selección no pagada, se elimina del carrito. No cancela ni reembolsa un mes que ya compraste. El acceso continúa hasta la cobertura paga o la fecha de finalización de la prueba y luego vence a menos que se aplique otra forma de acceso.
 
@@ -65,7 +65,7 @@ Para dejar de renovar, dejar el mes siguiente sin pagar. Al desmarcar una selecc
 
 ## Inicio de sesión de Google, billeteras y créditos
 
-Iniciar sesión identifica su cuenta de Elata. Para completar un pago se requiere una billetera activa capaz de aprobarlo. El inicio de sesión de Google o de correo electrónico puede utilizar una billetera integrada. El pago actual intenta restaurar esa billetera automáticamente, por lo que no es necesario traer una billetera criptográfica externa solo para iniciar sesión o comenzar a pagar. Es posible que aún tengas que agregar USDC en la Base. Siga las indicaciones de recuperación o conexión si no se puede restaurar la billetera de la cuenta; La confirmación del pago ocurre en la interfaz de la billetera.
+Iniciar sesión identifica su cuenta de Elata. Para completar un pago se requiere una billetera activa capaz de aprobarlo. El inicio de sesión de Google o de correo electrónico puede utilizar una billetera integrada. El pago actual intenta restaurar esa billetera automáticamente, por lo que no es necesario traer una billetera criptográfica externa solo para iniciar sesión o comenzar a pagar. Es posible que aún tengas que agregar USDC en Base. Siga las indicaciones de recuperación o conexión si no se puede restaurar la billetera de la cuenta; La confirmación del pago ocurre en la interfaz de la billetera.
 
 **Facturación → Billetera** muestra tanto la billetera de su cuenta como su billetera actualmente conectada. Si difieren, verifique la cuenta y la billetera antes de pagar. La conexión de Wallet por sí sola no garantiza que se pueda verificar un pagador diferente para su cuenta.
 
@@ -75,13 +75,13 @@ Los créditos cubren funciones medidas admitidas. Recargar créditos no financia
 
 ## Problemas de pago e historial.
 
-| Estado | que hacer |
+| Estado | Qué hacer |
 | --- | --- |
 | No iniciado sesión | Inicie sesión en la cuenta que debería ser propietaria de la compra. |
 | Restauración de billetera de cuenta | Espere a que se restaure la billetera integrada; siga la recuperación si falla |
 | No hay billetera de pago utilizable | Siga el mensaje de conexión de la billetera del proceso de pago |
 | Fondos insuficientes | Agregue USDC en Base a la billetera de pago y luego vuelva a intentarlo |
-| Esperando confirmación o grabación | Mantenga la caja abierta mientras finaliza |
+| Esperando confirmación o registro | Mantenga abierto el proceso de pago hasta que termine |
 | Pago liquidado pero falta acceso | Guarde el hash de la transacción, verifique el Historial y su acceso, y comuníquese con el soporte antes de enviar otro pago |
 | Pagar no disponible | Es posible que la implementación no tenga pagos configurados; Vuelve a consultar o contacta con soporte. |
 

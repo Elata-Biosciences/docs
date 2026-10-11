@@ -16,8 +16,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Translate public documentation and validate structural parity
-        run: node scripts/localize-docs.cjs
       - name: Install temporary MDX validation dependencies
         run: npm install --prefix "$RUNNER_TEMP/elata-docs-qa" --no-save --ignore-scripts @mdx-js/mdx@3 yaml@2 github-slugger@2 remark-gfm@4
       - name: Compile every page and verify locale parity
