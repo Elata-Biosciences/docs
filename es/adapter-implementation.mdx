@@ -5,18 +5,15 @@ description: "Construya un adaptador de dispositivo que se conecte a BleTranspor
 
 Una vez que su inventario de protocolo esté completo, cree el adaptador.
 
-El objetivo es aislar la lógica de paquetes y BLE específica del dispositivo preservando al mismo tiempo la
-contrato de transporte compartido Elata para apps.
+El objetivo es aislar la lógica de paquetes y BLE específica del dispositivo y al mismo tiempo preservar el contrato de transporte compartido de Elata para las aplicaciones.
 
 <a id="recommended-shape"></a>
 
 ## Forma recomendada
 
-Para integraciones BLE del navegador, el adaptador debe cumplir con la forma `BleDeviceLike`
-esperada por `@elata-biosciences/eeg-web-ble`.
+Para integraciones BLE del navegador, el adaptador debe cumplir con la forma `BleDeviceLike` esperada por `@elata-biosciences/eeg-web-ble`.
 
-Eso significa que la capa del dispositivo maneja el descubrimiento, la configuración de la sesión, la suscripción y
-decodificación de paquetes, mientras que `BleTransport` maneja la superficie de transporte orientada a la aplicación.
+Eso significa que la capa del dispositivo maneja el descubrimiento, la configuración de la sesión, la suscripción y la decodificación de paquetes, mientras que `BleTransport` maneja la superficie de transporte orientada a la aplicación.
 
 <a id="implementation-order"></a>
 
@@ -24,24 +21,19 @@ decodificación de paquetes, mientras que `BleTransport` maneja la superficie de
 
 <Steps>
   <Step title="Implementar descubrimiento">
-Defina los filtros `requestDevice` y los servicios opcionales necesarios para encontrar
-    el dispositivo limpiamente en el selector del navegador.
+Defina los filtros `requestDevice` y cualquier servicio opcional necesario para encontrar el dispositivo limpiamente en el selector del navegador.
   </Step>
   <Step title="preparar la sesión">
-Conéctese a GATT, resuelva características y realice cualquier escritura inicial que sea necesaria.
-    requerido antes de que pueda comenzar la transmisión.
+Conéctese a GATT, resuelva características y realice las escrituras de inicio necesarias antes de que pueda comenzar la transmisión.
   </Step>
   <Step title="Decodificar paquetes en EEG filas">
-Convierta los paquetes de proveedores en `number[][]` donde cada fila es un paso de tiempo y
-    el ancho de la fila coincide con `numEegChannels`.
+Convierta los paquetes de proveedores en `number[][]` donde cada fila es un paso de tiempo y el ancho de la fila coincide con `numEegChannels`.
   </Step>
   <Step title="Emitir metadatos estables">
-Exponer `samplingRate`, `eegNames`, `numEegChannels`y el dispositivo relacionado
-    metadatos con precisión.
+Exponga `samplingRate`, `eegNames`, `numEegChannels`y los metadatos del dispositivo relacionados con precisión.
   </Step>
   <Step title="Manejar el tope y soltar limpiamente">
-Cancelar la suscripción, detener la transmisión de forma segura y liberar la sesión sin fugas
-    recursos.
+Cancele la suscripción, detenga la transmisión de forma segura y libere la sesión sin perder recursos.
   </Step>
 </Steps>
 
@@ -88,16 +80,16 @@ export class VendorBleDevice implements BleDeviceLike {
 
 <a id="what-the-adapter-must-own"></a>
 
-## Qué debe poseer el adaptador
+## Lo que debe poseer el adaptador
 
-| Responsabilidad | ¿Es propietario del adaptador? |
+| Responsabilidad | ¿El adaptador lo posee? |
 | --- | --- |
-| Descubrimiento de dispositivos | sí |
-| Conexión GATT y configuración de características | sí |
-| Decodificación de paquetes | sí |
-| Metadatos precisos | sí |
-| Ciclo de vida del transporte orientado a la aplicación | generalmente hasta `BleTransport` |
-| Entrega de cuadros normalizada a apps | mediante el contrato de transporte compartido |
+| Descubrimiento de dispositivos | si |
+| Conexión GATT y configuración de características. | si |
+| decodificación de paquetes | si |
+| Metadatos precisos | si |
+| Ciclo de vida del transporte orientado a la aplicación | generalmente a través de `BleTransport` |
+| Entrega de fotogramas normalizada a aplicaciones | a través del contrato de transporte compartido |
 
 <a id="packet-decoding-rules"></a>
 
@@ -105,13 +97,13 @@ export class VendorBleDevice implements BleDeviceLike {
 
 Mantenga el decodificador aburrido y determinista.
 
-| Regla | Por qué es importante |
+| regla | Por qué es importante |
 | --- | --- |
-| Rechaza anticipadamente paquetes con formato incorrecto | Evita que las filas incorrectas lleguen a las aplicaciones |
-| Preserva el orden de los canales | Mantiene las características y modelos posteriores consistentes |
-| Filas por lotes solo cuando sea necesario | Evita la latencia oculta y la confusión de marcas de tiempo |
-| Realice un seguimiento de los contadores de paquetes cuando estén disponibles | Ayuda a detectar caídas o daños |
-| Separa EEG de la lógica auxiliar limpiamente | Facilita la depuración y las pruebas |
+| Rechazar paquetes mal formados temprano | Evita que las filas incorrectas lleguen a las aplicaciones |
+| Preservar el orden de los canales | Mantiene las características y modelos posteriores consistentes |
+| Hileras por lotes solo cuando sea necesario | Evita la latencia oculta y la confusión de marcas de tiempo. |
+| Seguimiento de los contadores de paquetes cuando estén disponibles | Ayuda a detectar caídas o corrupción. |
+| Separe EEG de la lógica auxiliar limpiamente | Facilita la depuración y las pruebas |
 
 <a id="session-lifecycle-rules"></a>
 
@@ -119,36 +111,32 @@ Mantenga el decodificador aburrido y determinista.
 
 Su adaptador debería hacer que estas transiciones no sean sorprendentes:
 
-| Etapa | Buen comportamiento |
+| etapa | Buen comportamiento |
 | --- | --- |
-| Descubrir | solo se muestran los dispositivos coincidentes |
+| Descubrir | sólo se muestran los dispositivos coincidentes |
 | Conectar | los servicios y características requeridos se resuelven claramente |
-| Iniciar | la transmisión comienza una vez, sin suscripciones duplicadas |
+| Empezar | La transmisión comienza una vez, sin suscripciones duplicadas. |
 | Detener | las notificaciones se detienen limpiamente |
-| Libere | la sesión se puede iniciar nuevamente más tarde |
+| Lanzamiento | la sesión se puede volver a iniciar más tarde |
 
 <a id="reliability-notes"></a>
 
 ## Notas de confiabilidad
 
 <Info>
-  `startStreaming()` es el valor predeterminado más seguro para los consumidores de aplicaciones porque combina
-  conectarse y comenzar. Su adaptador aún debería hacer que los pasos subyacentes `connect()`
-  y `start()` sean confiables por sí solos.
+`startStreaming()` es el valor predeterminado más seguro para los consumidores de aplicaciones porque combina conectar e iniciar. Su adaptador aún debería hacer que los pasos subyacentes `connect()` y `start()` sean confiables por sí solos.
 </Info>
 
-Si el dispositivo expone señales auxiliares como PPG, óptica, IMU o batería,
-mapearlos sólo cuando la semántica sea clara. No fuerces Muse-específico
-suposiciones en hardware que no esMuse .
+Si el dispositivo expone señales auxiliares como PPG, óptica, IMU o batería, asócielas solo cuando la semántica sea clara. No fuerce suposiciones específicas de Muse en hardware que no sea de Muse.
 
 <a id="related-docs"></a>
 
 ## Documentos relacionados
 
 - [EEG Introducción a BLE](/es/sdk/eeg-web-ble/getting-started)
-- [Contrato de transporte](./transport-contract)
+- [Contrato de Transporte](./transport-contract)
 - [Pruebas y Validación](./testing-and-validation)
-- [Muse Dispositivo](/es/sdk/eeg-web-ble/muse-device)
+- [Dispositivo Muse](/es/sdk/eeg-web-ble/muse-device)
 
 <a id="next"></a>
 

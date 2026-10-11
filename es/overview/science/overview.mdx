@@ -1,22 +1,19 @@
 ---
 title: "Ciencia en Elata"
-description: "Postura científica deElata: para qué sirven las mediciones, cómo se clasifican las reclamaciones y dónde leer más."
+description: "La postura científica de Elata: para qué sirven las mediciones, cómo se clasifican las reclamaciones y dónde leer más."
 ---
 
 <a id="our-stance"></a>
 
 ## Nuestra postura
 
-Elata crea herramientas para **bienestar, juegos, aprendizaje e investigación**. el
-Las señales Elata que usan las aplicaciones (frecuencia cardíaca de la cámara, consumidor EEGy diadema PPG) son
-mediciones fisiológicas reales, pero provienen de dispositivos de consumo en
-entornos no controlados. Son estimaciones, no lecturas clínicas.
+Elata crea herramientas para **bienestar, juegos, aprendizaje e investigación**. Las señales que utilizan las aplicaciones de Elata (frecuencia cardíaca de la cámara, consumidor EEGy diadema PPG) son mediciones fisiológicas reales, pero provienen de dispositivos de consumo en entornos no controlados. Son estimaciones, no lecturas clínicas.
 
 De esto se siguen tres reglas:
 
-1. **Sin diagnóstico. Las aplicaciones** Elata y Elata no diagnostican, tratan ni monitorean condiciones médicas.
+1. **Sin diagnóstico.** Las aplicaciones Elata y Elata no diagnostican, tratan ni monitorean condiciones médicas.
 2. **Muestra la incertidumbre.** Las medidas vienen con valores de confianza y calidad de la señal, y las puntuaciones se retienen cuando los datos no son lo suficientemente buenos en lugar de adivinar.
-3. **Califique cada reclamo.** Una frecuencia cardíaca medida y una puntuación de "concentración" son diferentes tipos de reclamos, y el SDK los etiqueta de manera diferente.
+3. **Califica cada reclamo.** Una frecuencia cardíaca medida y una puntuación de "concentración" son diferentes tipos de afirmaciones y el SDK las etiqueta de manera diferente.
 
 ---
 
@@ -24,32 +21,27 @@ De esto se siguen tres reglas:
 
 ## Cómo se califican las reclamaciones
 
-El paquete de análisis de SDK(`biosignal-analytics`, actualmente
-[experimental](/es/overview/status)) proporciona a cada métrica una definición registrada
-con dos etiquetas.
+El paquete de análisis del SDK (`biosignal-analytics`, actualmente [experimental](/es/overview/status)) proporciona a cada métrica una definición registrada con dos etiquetas.
 
 **Clase de medida:** qué tipo de número es.
 
-| Clase | Significado | Ejemplo |
+| clase | Significado | Ejemplo |
 | --- | --- | --- |
-| Medido | Leer más o menos directamente de la señal | Frecuencia cardíaca |
-| Derivado (determinista) | Calculado a partir de valores medidos mediante una fórmula fija | HRV (RMSSD), potencia de banda |
-| Inferido por el modelo | Estimado mediante un modelo estadístico o aprendido | Una reconstrucción de forma de onda aprendida |
-| Producto compuesto | Una interpretación del producto que combina varias entradas | Enfoque, preparación |
+| medido | Leer más o menos directamente de la señal. | frecuencia cardiaca |
+| Derivado (determinista) | Calculado a partir de valores medidos mediante una fórmula fija. | HRV (RMSSD), potencia de banda |
+| Inferido por el modelo | Estimado por un modelo estadístico o aprendido | Una reconstrucción de forma de onda aprendida |
+| compuesto de producto | Una interpretación del producto que combina varios insumos. | Enfoque, preparación |
 
 **Nivel de evidencia:** qué tan fuertemente se respalda la métrica.
 
 | Nivel | Significado |
 | --- | --- |
-| Beta predeterminada | Bien soportado; mostrado por defecto |
-| Avanzado | Compatible, pero para usuarios informados |
-| Experimental | Temprano; puede cambiar o eliminarse |
-| Rechazado | Evaluado y deliberadamente no utilizado |
+| Predeterminado beta | Bien apoyado; mostrado por defecto |
+| Avanzado | Compatible, pero para usuarios informados. |
+| Experimental | Temprano; puede cambiar o ser eliminado |
+| Rechazado | Evaluado y deliberadamente no utilizado. |
 
-Cada valor también registra el algoritmo exacto y la versión que lo produjo, por lo que
-se puede rastrear y recalcular cuando mejora un algoritmo. El código de característica es
-probado contra implementaciones de referencia (NumPy/SciPy) para que los números concuerden
-en las versiones Rust, WebAssemblyy JavaScript .
+Cada valor también registra el algoritmo exacto y la versión que lo produjo, de modo que se pueda rastrear y volver a calcular cuando un algoritmo mejora. El código de característica se prueba con implementaciones de referencia (NumPy/SciPy), por lo que los números coinciden en las versiones de Rust, WebAssemblyy JavaScript.
 
 ---
 
@@ -84,4 +76,4 @@ Trabajo de investigación planificado y archivado.
 
 ## Fuentes
 
-- [`biosignal-analytics` README y registro](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) (repositorio público SDK )
+- [`biosignal-analytics` README y registro](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) (repositorio público de SDK)

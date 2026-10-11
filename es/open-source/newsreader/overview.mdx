@@ -1,17 +1,17 @@
 ---
 title: "Descripción general del lector de noticias"
-tag: "Archived"
-description: "Escáner ambiental impulsado por IA para el Elata DAO - news.elata.bio"
+tag: "Archivado"
+description: "Escáner ambiental impulsado por IA para Elata DAO - news.elata.bio"
 ---
 
 <a id="what-is-the-newsreader"></a>
 
-## ¿Qué es el Lector de Noticias?
+## ¿Qué es el lector de noticias?
 
 El Elata Newsreader implementa el **Sistema 4** del [Modelo de sistema viable](https://kelsienabben.substack.com/p/aligning-the-concept-of-decentralized) de Stafford Beer: el órgano sensor "exterior y futuro" del DAO. Monitorea el entorno externo en neurociencia, psiquiatría, DeSci y campos adyacentes, luego transforma la información sin procesar en inteligencia procesable para los poseedores de tokens y contribuyentes.
 
 <Info>
-  **En vivo en**: [news.elata.bio](https://news.elata.bio)
+**En vivo en**: [news.elata.bio](https://news.elata.bio)
 </Info>
 
 El sistema agrega contenido de **más de 400 fuentes** que abarcan revistas académicas, noticias farmacéuticas, empresas de neurotecnología, comunidades DeSci, organismos reguladores y más. Cada artículo se califica según su relevancia utilizando OpenAI, se etiqueta en 86 etiquetas específicas de dominio y se muestra a través de una interfaz Next.js con búsqueda y filtrado de texto completo.
@@ -24,13 +24,13 @@ El sistema agrega contenido de **más de 400 fuentes** que abarcan revistas acad
 
 | Categoría | Ejemplos |
 |----------|---------|
-| **Revistas de neurociencia** | Nature Neuroscience, Cell Neuron, Frontiers, Journal of Neuroscience |
-| **Psiquiatría y clínica** | Medscape, Psychiatric News, Lancet Psychiatry, MedPage Today |
+| **Revistas de neurociencia** | Neurociencia de la naturaleza, Neurona celular, Fronteras, Revista de neurociencia |
+| **Psiquiatría y clínica** | Medscape, Noticias psiquiátricas, Lancet Psychiatry, MedPage Today |
 | **Hardware y BCI** | OpenBCI, Neuralink, Synchron, Kernel, NeuroTechX |
-| **Farmacia y biotecnología** | Noticias STAT, Fierce Pharma, BioPharma Dive, Endpoints |
+| **Farmacéutica y biotecnológica** | STAT News, Fierce Pharma, BioPharma Dive, Puntos finales |
 | **DeSci y Web3** | CoinDesk, Decrypt, molecula.xyz, VitaDAO |
 | **Preimpresiones y archivos** | arXiv (q-bio.NC, cs.AI), PubMed, bioRxiv |
-| **Regulador** | FDA, EMA, NIH, NSF |
+| **Regulatorio** | FDA, EMA, NIH, NSF |
 | **Comunidad** | Canales Warpcast, Reddit, Discord |
 
 ---
@@ -40,27 +40,27 @@ El sistema agrega contenido de **más de 400 fuentes** que abarcan revistas acad
 ## Características clave
 
 - **Integración de NewsAPI** para agregación basada en palabras clave en noticias globales
-- **Web scraping** de fuentes científicas y de la industria seleccionadas
-- **Puntuación de relevancia basada en GPT** : cada artículo se evalúa según la misión Elata 
+- **Raspado web** de fuentes científicas e industriales seleccionadas
+- **Puntuación de relevancia basada en GPT** : cada artículo se evalúa según la misión de Elata
 - **86 etiquetas específicas de dominio** que cubren EEG, BCI, psiquiatría de precisión, DeSci, farmacología, biohacking y más
 - **Generación de podcasts** — Resúmenes de audio narrados por IA a través de ElevenLabs
 - **Notificaciones de discordia** para artículos de alta relevancia
-- **REST API** sirviendo `current.json` con consultas filtradas por fecha
+- **API REST** que sirve `current.json` con consultas filtradas por fecha
 
 ---
 
 <a id="tech-stack"></a>
 
-## Pila tecnológica
+## Pila de tecnología
 
 | Componente | Tecnología |
 |-----------|-----------|
-| Motor raspador | Node.js, Express, TypeScript |
+| Motor raspador | Node.js, expreso, mecanografiado |
 | Gestión de procesos | PM2 |
-| Análisis de IA | OpenAI API |
-| Agregación de noticias | NewsAPI |
-| Generación de audio | ElevenLabs |
-| Validación de datos | Esquemas Zod |
+| análisis de IA | API abierta de IA |
+| Agregación de noticias | API de noticias |
+| Generación de audio | oncelabs |
+| Validación de datos | esquemas zod |
 | Interfaz | Next.js 15, enrutador de aplicaciones, SSR |
 
 ---
@@ -70,5 +70,5 @@ El sistema agrega contenido de **más de 400 fuentes** que abarcan revistas acad
 ## Enlaces
 
 - [Sitio en vivo — news.elata.bio](https://news.elata.bio)
-- [GitHub repositorio](https://github.com/Elata-Biosciences/elata-vsm-system-4)
+- [Repositorio de GitHub](https://github.com/Elata-Biosciences/elata-vsm-system-4)
 - [Discordia](https://discord.gg/VmkH5JfxMC)

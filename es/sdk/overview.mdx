@@ -1,16 +1,14 @@
 ---
 title: "Empezando"
-description: "SDK de navegador para cámara rPPG, EEG y Web Bluetooth, diadema PPG, grabación de sesiones y análisis."
+description: "SDK de navegador para cámara rPPG, EEG a través de Web Bluetooth, diadema PPG, grabación de sesiones y análisis."
 ---
 
 ## Elata SDK
 
-El Elata SDK es un conjunto de npm paquetes para capturar y procesar bioseñales en el
-navegador. Los paquetes se construyen en cajas Rust compiladas en WebAssembly, por lo que indica
-el procesamiento se ejecuta en el dispositivo del usuario.
+Elata SDK es un conjunto de paquetes npm para capturar y procesar bioseñales en el navegador. Los paquetes se crean en cajas Rust compiladas en WebAssembly, por lo que el procesamiento de señales se ejecuta en el dispositivo del usuario.
 
 <Info>
-  **Repositorio**: [github.com/Elata-Biosciences/elata-bio-sdk](https://github.com/Elata-Biosciences/elata-bio-sdk) · **npm**: [`@elata-biosciences`](https://www.npmjs.com/org/elata-biosciences)
+**Repositorio**: [github.com/Elata-Biosciences/elata-bio-sdk](https://github.com/Elata-Biosciences/elata-bio-sdk) · **npm**: [`@elata-biosciences`](https://www.npmjs.com/org/elata-biosciences)
 </Info>
 
 ---
@@ -43,49 +41,47 @@ Consulte [create-elata-demo](/es/sdk/create-elata-demo) para ver las cinco plant
 
 ## Paquetes
 
-Los paquetes "en vivo" están en npm. Los paquetes "experimentales" están disponibles como fuente
-código en el repositorio [SDK ](https://github.com/Elata-Biosciences/elata-bio-sdk)
-y aún no en npm. Ver [Qué hay en vivo](/es/overview/status).
+Los paquetes "en vivo" están en npm. Los paquetes "experimentales" están disponibles como código fuente en el [repositorio SDK](https://github.com/Elata-Biosciences/elata-bio-sdk) y aún no en npm. Ver [Qué hay en vivo](/es/overview/status).
 
 <a id="sensors"></a>
 
 ### Sensores
 
-| Paquete | Qué hace | Estado |
+| Paquete | que hace | Estado |
 | --- | --- | --- |
-| [`@elata-biosciences/rppg-web`](/es/sdk/rppg-web/getting-started) | Señales de frecuencia cardíaca y pulso desde una cámara web (rPPG). El punto de partida predeterminado: no se necesita hardware. | En vivo |
-| [`@elata-biosciences/eeg-web`](/es/sdk/eeg-web/getting-started) | EEG procesamiento de señal, potencias de banda y modelos (WASM), más el contrato de marco de diadema compartido. | En vivo |
-| [`@elata-biosciences/eeg-web-ble`](/es/sdk/eeg-web-ble/getting-started) | Conecte las diademas EEG sobre Web Bluetooth. Muse incorporado; extensible a otros dispositivos. | En vivo |
-| [`@elata-biosciences/ppg-web`](/es/sdk/ppg-web/getting-started) | Frecuencia cardíaca y HRV del sensor óptico de una diadema (PPG). | En vivo |
+| [`@elata-biosciences/rppg-web`](/es/sdk/rppg-web/getting-started) | Señales de frecuencia cardíaca y pulso desde una cámara web (rPPG). El punto de partida predeterminado: no se necesita hardware. | Disponible |
+| [`@elata-biosciences/eeg-web`](/es/sdk/eeg-web/getting-started) | EEG procesamiento de señal, potencias de banda y modelos (WASM), más el contrato de marco de diadema compartido. | Disponible |
+| [`@elata-biosciences/eeg-web-ble`](/es/sdk/eeg-web-ble/getting-started) | Conecte diademas EEG a través de Web Bluetooth. Musa incorporada; extensible a otros dispositivos. | Disponible |
+| [`@elata-biosciences/ppg-web`](/es/sdk/ppg-web/getting-started) | Frecuencia cardíaca y HRV del sensor óptico (PPG) de una diadema. | Disponible |
 
 <a id="recording-and-analysis"></a>
 
 ### Grabación y análisis
 
-| Paquete | Qué hace | Estado |
+| Paquete | que hace | Estado |
 | --- | --- | --- |
-| [`@elata-biosciences/biosignal-session`](/es/sdk/biosignal-session/getting-started) | Grabe sesiones de múltiples sensores en el almacenamiento local con un protocolo tolerante a fallas y Arrow fragmentos. | Experimental |
-| [`@elata-biosciences/biosignal-analytics`](/es/sdk/biosignal-analytics/getting-started) | EEG características de ventana, HRV, estadísticas sólidas y puntuaciones de titulares transparentes. | Experimental |
+| [`@elata-biosciences/biosignal-session`](/es/sdk/biosignal-session/getting-started) | Registre sesiones de múltiples sensores en el almacenamiento local con un protocolo tolerante a fallas y fragmentos de Arrow. | Experimental |
+| [`@elata-biosciences/biosignal-analytics`](/es/sdk/biosignal-analytics/getting-started) | EEG características de la ventana, HRV, estadísticas sólidas y puntuaciones de titulares transparentes. | Experimental |
 | `@elata-biosciences/rppg-models-web` | Reconstrucción opcional de forma de onda aprendida para `rppg-web`. Usted proporciona el archivo del modelo. | Experimental |
 
 ### Elata
 
-| Paquete | Qué hace | Estado |
+| Paquete | que hace | Estado |
 | --- | --- | --- |
-| [`@elata-biosciences/app-payments`](/es/apps/platform/in-app-purchases) | Compras dentro de la aplicación a través de Elata pago | En vivo |
-| [`@elata-biosciences/app-state`](/es/apps/platform/app-state) | Almacenamiento de valores-clave por usuario. Hasta que esté en npm, usa los mensajes [`elata:state:*` ](/es/apps/platform/app-state). | Experimental |
-| [`@elata-biosciences/app-metrics`](/es/apps/platform/metrics-and-scores) | Registros de eventos, puntuaciones y contribución de puntuación biométrica | En vivo |
+| [`@elata-biosciences/app-payments`](/es/apps/platform/in-app-purchases) | Compras dentro de la aplicación a través del pago de Elata | Disponible |
+| [`@elata-biosciences/app-state`](/es/apps/platform/app-state) | Almacenamiento de valores-clave por usuario. Hasta que esté en npm, use los mensajes [`elata:state:*` ](/es/apps/platform/app-state). | Experimental |
+| [`@elata-biosciences/app-metrics`](/es/apps/platform/metrics-and-scores) | Registros de eventos, puntuaciones y contribución de puntuación biométrica | Disponible |
 
 <a id="tooling"></a>
 
 ### Herramientas
 
-| Paquete | Qué hace | Estado |
+| Paquete | que hace | Estado |
 | --- | --- | --- |
-| [`@elata-biosciences/create-elata-demo`](/es/sdk/create-elata-demo) | Crear una aplicación inicial a partir de una plantilla | Problema conocido y en vivo |
+| [`@elata-biosciences/create-elata-demo`](/es/sdk/create-elata-demo) | Armado de una aplicación inicial a partir de una plantilla | Problema conocido y activo |
 
 <Warning>
-  **Problema conocido:** el `create-elata-demo` 0.12.1 del repositorio falla cuando se empaqueta sin metadatos del espacio de trabajo hermano: "Faltan metadatos de la versión SDK empaquetada para @elata-biosciences/app-metrics". Verifique una versión fija antes de usarla. Por ahora, agregue paquetes a una aplicación directamente (a continuación).
+**Problema conocido:** el `create-elata-demo` 0.12.1 del repositorio falla cuando se empaqueta sin metadatos del espacio de trabajo hermano: "Faltan metadatos de la versión del SDK empaquetado para @elata-biosciences/app-metrics". Verifique una versión fija antes de usarla. Por ahora, agregue paquetes a una aplicación directamente (a continuación).
 </Warning>
 
 ---
@@ -115,10 +111,10 @@ npm install @elata-biosciences/ppg-web @elata-biosciences/eeg-web @elata-bioscie
 
 | Dispositivo | Protocolo | Señales | Estado |
 | --- | --- | --- | --- |
-| Muse 2 | BLE clásico | 4 EEG (TP9, AF7, AF8, TP10), PPG | Compatible |
-| Muse S | BLE clásico | 4 EEG, PPG | Compatible |
-| Muse S (Athena) | Athena | 8 EEG, óptica, acelerómetro/giroscopio | Compatible |
-| Cualquier cámara web | Cámara | rPPG pulso | Compatible |
+| musa 2 | BLE clásico | 4 EEG (TP9, AF7, AF8, TP10), PPG | Compatible |
+| musa | BLE clásico | 4 EEG, PPG | Compatible |
+| Musa S (Atenea) | Atenea | 8 EEG, óptica, acelerómetro/giroscopio | Compatible |
+| Cualquier cámara web | cámara | rPPG pulso | Compatible |
 
 ¿Quieres agregar unos auriculares? Consulte [Integración de dispositivos](/es/integrate).
 
@@ -126,17 +122,17 @@ npm install @elata-biosciences/ppg-web @elata-biosciences/eeg-web @elata-bioscie
 
 <a id="rust-crates"></a>
 
-## Rust cajas
+## cajas de óxido
 
-Los paquetes se crean en cajas Rust públicas que también puedes usar directamente:
+Los paquetes se crean en cajas públicas de Rust que también puedes usar directamente:
 
-| Caja | Propósito |
+| caja | Propósito |
 | --- | --- |
 | `elata-eeg-hal` | Rasgos principales del dispositivo: `EegDevice`, `SampleBuffer` |
 | `elata-eeg-signal` | FFT, potencia de banda, filtrado |
-| `elata-eeg-models` | Detector de golpes alfa, modelo calma |
+| `elata-eeg-models` | Detector de golpes alfa, modelo de calma. |
 | `elata-rppg` | rPPG núcleo de tubería |
-| `elata-muse-proto` | Muse decodificación de protocolo clásico y Athena  |
+| `elata-muse-proto` | Decodificación del protocolo Muse classic y Athena |
 
 ---
 
@@ -152,6 +148,6 @@ Guía de decisión de paquetes
 Armado y ejecución de una aplicación de inicio
   </Card>
   <Card title="Publicar en Elata" icon="store" href="/es/apps/build/overview">
-Envíalo al Elata
+Envíalo en Elata
   </Card>
 </CardGroup>

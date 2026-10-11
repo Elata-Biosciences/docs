@@ -1,19 +1,18 @@
 ---
 title: "Estado de la aplicación"
 tag: "Experimental"
-description: "Almacenamiento de valores clave por usuario y por aplicación con @elata-biosciences/app-state."
+description: "Almacenamiento de valores-clave por usuario y por aplicación con @elata-biosciences/app-state."
 ---
 
 <Warning>
-  `@elata-biosciences/app-state` aún no está publicado en npm . Hasta que lo sea, puedes llamar al Elata directamente con los mensajes `elata:state:*` que se muestran a continuación; Elata ya los admite.
+`@elata-biosciences/app-state` aún no está publicado en npm. Hasta que así sea, puedes llamar a Elata directamente con los mensajes `elata:state:*` que se muestran a continuación; Elata ya los apoya.
 </Warning>
 
 <a id="overview"></a>
 
-## Descripción general
+## Información general
 
-`@elata-biosciences/app-state` almacena pequeños valores JSON por usuario y por aplicación:
-guardar juegos, configuraciones, progreso. No necesita un backend y el puente no revela las credenciales de la cuenta del usuario. Los valores siguen al usuario a través de los dispositivos.
+`@elata-biosciences/app-state` almacena pequeños valores JSON por usuario y por aplicación: guardar juegos, configuraciones, progreso. No necesita un backend y el puente no revela las credenciales de la cuenta del usuario. Los valores siguen al usuario a través de los dispositivos.
 
 ```bash
 # Not on npm yet. This command works after the first release.
@@ -40,8 +39,8 @@ await deleteState('save_slot_1');
 
 | Límite | Valor |
 | --- | --- |
-| Clave | 1 a 256 caracteres de `A-Z a-z 0-9 . _ : / -` |
-| Valor | Cualquier JSON-valor serializable, hasta 64 KB una vez codificado |
+| clave | 1 a 256 caracteres de `A-Z a-z 0-9 . _ : / -` |
+| Valor | Cualquier valor serializable en JSON, hasta 64 KB una vez codificado |
 | Alcance | Un espacio de nombres por (usuario, aplicación). Las aplicaciones no pueden leer los datos de otras. |
 
 ---
@@ -52,25 +51,24 @@ await deleteState('save_slot_1');
 
 Las tres funciones se rechazan con `AppStateError`, que tiene un `code`:
 
-| Código | De donde viene | Significado |
+| Código | de donde viene | Significado |
 | --- | --- | --- |
-| `no_parent` | Local | No se ejecuta dentro del marco de Elata |
-| `timeout` | Local | No hay respuesta a tiempo |
-| `invalid_input` | Local o Elata | Clave o valor incorrecto |
+| `no_parent` | locales | No correr dentro del marco de Elata |
+| `timeout` | locales | No hay respuesta a tiempo |
+| `invalid_input` | Local o Elata | Clave o valor incorrectos |
 | `not_authenticated` | Elata | El usuario no ha iniciado sesión |
-| `value_too_large` | Elata | El valor es superior a 64 KB |
-| `fetch_failed` | Elata | Elata no se pudo alcanzar el almacenamiento |
+| `value_too_large` | Elata | El valor es superior a 64 KB. |
+| `fetch_failed` | Elata | Elata no pudo alcanzar el almacenamiento |
 
 <Tip>
-Los jugadores que no hayan iniciado sesión obtienen `not_authenticated`. Mantenga un respaldo local,
-  como `localStorage`y sincronizar con `app-state` una vez que inician sesión.
+Los jugadores que no hayan iniciado sesión obtienen `not_authenticated`. Mantenga un respaldo local, como `localStorage`, y sincronícelo con `app-state` una vez que inicien sesión.
 </Tip>
 
 ---
 
 <a id="without-the-package"></a>
 
-## Sin el paquete
+## sin el paquete
 
 Elata responde estos mensajes directamente. Envíelos a `window.parent` con un `requestId` único y espere la respuesta `…:result` coincidente:
 
@@ -99,9 +97,9 @@ Agregue un tiempo de espera en producción: fuera de Elata nada responde.
 
 <a id="app-state-or-app-metrics"></a>
 
-## ¿estado de aplicación o métricas de aplicación?
+## ¿Estado de la aplicación o métricas de la aplicación?
 
-| Usar | Paquete |
+| uso | Paquete |
 | --- | --- |
 | El último valor de algo: configuración, un espacio para guardar, niveles desbloqueados | `app-state` |
 | Un historial de eventos o puntuaciones que desea consultar y registrar | [`app-metrics`](/es/apps/platform/metrics-and-scores) |

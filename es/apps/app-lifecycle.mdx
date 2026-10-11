@@ -5,11 +5,9 @@ description: "Cómo pasa una aplicación desde la carga hasta una lista activa y
 
 <a id="overview"></a>
 
-## Descripción general
+## Información general
 
-Cada versión de la aplicación que publicas es una versión ****. Una liberación se mueve a través de uno
-canalización: lo subes, lo envías, Elata lo escanea y un moderador
-lo aprueba.
+Cada versión de la aplicación que publicas es una versión ****. Un lanzamiento pasa por un proceso: usted lo carga, lo envía, Elata lo escanea y un moderador lo aprueba.
 
 ```
 DRAFT ──submit──▶ SUBMITTED ──scan + review──▶ APPROVED (live)
@@ -21,21 +19,17 @@ DRAFT ──submit──▶ SUBMITTED ──scan + review──▶ APPROVED (liv
 
 <a id="step-1-upload"></a>
 
-## Paso 1: Subir
+## Paso 1: cargar
 
-Cargue un `.zip` (o un solo archivo `.html` ) desde el asistente o la edición de su aplicación
-página. Elata lo comprueba inmediatamente:
+Cargue un `.zip` (o un único archivo `.html` ) desde el asistente o la página de edición de su aplicación. Elata lo comprueba inmediatamente:
 
 - el tipo y tamaño del archivo están dentro de los límites [](/es/apps/build/upload-and-hosting#limits)
 - el paquete tiene una entrada `index.html` y rutas de archivo seguras
-- el paquete utiliza un Elata sensor SDK
+- el paquete utiliza un SDK de sensor Elata
 
-Si falta algo, aparecerá un mensaje claro que dice "No se cumplen los requisitos de la aplicación".
-enumerando qué arreglar. Una carga exitosa se convierte en una versión **borrador** y su
-La versión se lee desde su [`elata.json`](/es/apps/build/elata-json).
+Si falta algo, recibirá un mensaje claro que dice "No se cumplen los requisitos de la aplicación" que indica qué solucionar. Una carga exitosa se convierte en un **borrador** y su versión se lee desde su [`elata.json`](/es/apps/build/elata-json).
 
-Puedes probar un borrador en la ventana de reproducción de Elatay compartirlo con hasta 10 personas.
-amigos de prueba, antes de que nadie más pueda verlo.
+Puedes probar un borrador en la ventana de juego de Elata y compartirlo con hasta 10 amigos de prueba antes de que nadie más pueda verlo.
 
 ---
 
@@ -43,10 +37,7 @@ amigos de prueba, antes de que nadie más pueda verlo.
 
 ## Paso 2: enviar para revisión
 
-Cuando envía, Elata verifica que su listado esté completo. Necesita un
-**ícono de aplicación** y una **imagen de encabezado**. Las capturas de pantalla son opcionales pero recomendadas.
-Los detalles de la lista están congelados en el lanzamiento en este momento, por lo que las ediciones posteriores
-no cambie lo que se revisó.
+Cuando envía, Elata verifica que su listado esté completo. Necesita un **ícono de aplicación** y una **imagen de encabezado**. Las capturas de pantalla son opcionales pero recomendadas. Los detalles de la lista están congelados en el lanzamiento en este punto, por lo que las ediciones posteriores no cambian lo que se revisó.
 
 Puede retirar un envío mientras esté pendiente.
 
@@ -56,25 +47,19 @@ Puede retirar un envío mientras esté pendiente.
 
 ## Paso 3: análisis de seguridad automatizado
 
-Cada versión enviada se escanea automáticamente. El escaneo busca cosas
-como código que agota la billetera, intentos de escapar de la zona de pruebas, acceso a credenciales,
-código ofuscado y falta el uso de SDK . Se lleva a cabo una versión que falla el escaneo.
-De regreso de Elata.
+Cada versión enviada se escanea automáticamente. El escaneo busca cosas como código que drena la billetera, intentos de escapar del entorno limitado, acceso a credenciales, código ofuscado y uso faltante de SDK. Una versión que falla en el análisis se retiene de Elata.
 
 <Note>
-Los resultados del escaneo son revisados por el equipo Elata y no se muestran en detalle para
-  cargadores. Si se retiene su liberación, tendrá noticias nuestras a través del Elata.
+Los resultados del escaneo son revisados por el equipo de Elata y no se muestran en detalle a quienes los suben. Si se lleva a cabo su liberación, tendrá noticias nuestras a través de Elata.
 </Note>
 
 ---
 
 <a id="step-4-moderator-approval"></a>
 
-## Paso 4: Aprobación del moderador
+## Paso 4: aprobación del moderador
 
-Un moderador Elata revisa el comunicado según la política de envío
-[](/es/apps/build/review-and-policy). Una vez aprobado, se convierte en
-el lanzamiento en vivo de su aplicación y se le notificará en Elata y por correo electrónico.
+Un moderador de Elata revisa el comunicado según la política de envío [](/es/apps/build/review-and-policy). Una vez aprobada, se convierte en la versión activa de su aplicación y se le notifica en Elata y por correo electrónico.
 
 Si se rechaza, solucione los problemas y envíelo nuevamente.
 
@@ -84,17 +69,15 @@ Si se rechaza, solucione los problemas y envíelo nuevamente.
 
 ## Después de que estés en vivo
 
-La aprobación hace que un lanzamiento sea elegible para reproducirse. Si la gente puede encontrar y
-jugar también depende de:
+La aprobación hace que un lanzamiento sea elegible para reproducirse. Que las personas puedan encontrarlo y jugarlo también depende de:
 
-| Configuración | Quién lo controla | Valores |
+| Configuración | quien lo controla | Valores |
 | --- | --- | --- |
-| **Visibilidad** | Usted | Público, No listado, Privado |
+| **Visibilidad** | tu | Público, no cotizado, privado |
 | **Moderación** | Elata | Activo, Suspendido, Prohibido |
-| **Descubrimiento** | Elata | Qué tan prominente es la clasificación de la aplicación. Las nuevas aplicaciones comienzan con una exposición limitada. |
+| **Descubrimiento** | Elata | Qué tan prominentemente se clasifica la aplicación. Las nuevas aplicaciones comienzan con una exposición limitada. |
 
-Para enviar una actualización, cargue una nueva compilación. Pasa por el mismo conducto y
-su versión en vivo actual permanece activa hasta que se apruebe la nueva.
+Para enviar una actualización, cargue una nueva compilación. Pasa por el mismo proceso y su versión actual permanece vigente hasta que se aprueba la nueva.
 
 ---
 

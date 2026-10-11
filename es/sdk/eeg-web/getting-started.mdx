@@ -10,10 +10,10 @@ description: "Instale e inicialice el paquete @elata-biosciences/eeg-web WASM "
 Utilice `@elata-biosciences/eeg-web` cuando su aplicación necesite:
 
 - EEG API de análisis en el navegador
-- compartido EEG contratos web utilizados por integraciones de nivel superior
-- acceso desde el navegador a Elata WASM modelos y ayudantes de procesamiento de señales
+- contratos web compartidos EEG utilizados por integraciones de nivel superior
+- acceso desde el navegador a los modelos Elata WASM y ayudantes de procesamiento de señales
 
-Este paquete no implementa la conexión de dispositivo Bluetooth. Agregue `@elata-biosciences/eeg-web-ble` si también necesita transporte de navegador compatible con Museen vivo.
+Este paquete no implementa la conexión de dispositivo Bluetooth. Agregue `@elata-biosciences/eeg-web-ble` si también necesita un transporte de navegador compatible con Live Muse.
 
 <Tip>
 ¿Nuevo en el SDK? Comience por crear una aplicación de demostración con `create-elata-demo` antes de cablear los paquetes manualmente. Consulte el tutorial de la primera aplicación [](/es/sdk/tutorials/first-app).
@@ -65,7 +65,7 @@ initEegWasmSync(wasmModule);
 
 <a id="basic-usage"></a>
 
-## Uso Básico
+## Uso básico
 
 Calcule las potencias de banda a partir de datos de EEG :
 
@@ -91,10 +91,10 @@ console.log("Gamma:", powers.gamma);
 
 ## Estructura del paquete
 
-`@elata-biosciences/eeg-web` es una delgada TypeScript envoltura alrededor de WASM enlaces generados por `wasm-bindgen`:
+`@elata-biosciences/eeg-web` es un contenedor delgado de TypeScript alrededor de enlaces WASM generados por `wasm-bindgen`:
 
 - `initEegWasm` / `initEegWasmSync`: WASM ayudantes de inicialización
-- Tipos de tramas de diadema: esquema de datos normalizado para EEG transportes
+- Tipos de tramas de diadema: esquema de datos normalizado para transportes EEG 
 - Todas las WASM API: reexportadas desde los enlaces generados
 
 <a id="key-exports"></a>
@@ -114,7 +114,7 @@ console.log("Gamma:", powers.gamma);
 - Errores: `ElataError`, `isElataError`, `asElataError`
 
 <Note>
-Las exportaciones `wasm-bindgen` generadas se reexportan por motivos de compatibilidad y SDK depuración. Evite crear instancias de contenedores generados directamente a menos que esté depurando intencionalmente el SDK .
+Las exportaciones `wasm-bindgen` generadas se reexportan por motivos de compatibilidad y depuración del SDK. Evite crear instancias de contenedores generados directamente a menos que esté depurando intencionalmente el SDK.
 </Note>
 
 ---

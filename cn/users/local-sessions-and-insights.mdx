@@ -1,7 +1,7 @@
 ---
 title: "本地会议和见解"
 description: "实验性设备上记录流程、其存储控制以及它与云应用程序记录的区别。"
-tag: "Experimental"
+tag: "实验性"
 ---
 
 <Warning>
@@ -10,7 +10,7 @@ tag: "Experimental"
 
 <a id="what-it-adds"></a>
 
-## 添加了什么
+## 它添加了什么
 
 兼容的应用程序可以通过 `biosignal-session`记录键入的生物信号流。受信任的 Elata 主机将有效负载存储在用户设备上的 OPFS 中，并将目录存储在 IndexedDB中。录制路径没有服务器镜像。
 
@@ -35,7 +35,7 @@ tag: "Experimental"
 
 设备上的分数是相对于个人基线的解释。它们与平台生物识别分数是分开的。质量、输入缺失和基线不足可能会导致值被保留；缺乏价值不应被视为健康状况不佳或表现不佳。
 
-当前的设备仪表板包括测量质量和激活、指标趋势和最近的会话。某些贡献者可能无法使用。 SDK的全套分数公式并不保证每个分数都会出现在应用商店UI中。
+当前的设备仪表板包括测量质量和激活、指标趋势和最近的会话。某些贡献者可能无法使用。 SDK 的全套分数公式并不保证每个分数都会出现在应用商店 UI 中。
 
 <a id="storage-and-deletion"></a>
 
@@ -49,4 +49,4 @@ tag: "Experimental"
 
 ## 构建器集成
 
-使用 [biosignal-session](/cn/sdk/biosignal-session/getting-started) 进行捕获和记录合约，并使用 [biosignal-analytics](/cn/sdk/biosignal-analytics/getting-started) 进行分析。保留 [应用程序状态](/cn/apps/platform/app-state) 用于小型保存和设置，并保留 `app-metrics` 用于事件/分数历史记录。这些满足不同的数据需求。
+使用 [biosignal-session](/cn/sdk/biosignal-session/getting-started) 来捕获和记录合约，并使用 [biosignal-analytics](/cn/sdk/biosignal-analytics/getting-started) 进行分析。保留 [应用程序状态](/cn/apps/platform/app-state) 用于小型保存和设置，并保留 `app-metrics` 用于事件/分数历史记录。这些满足不同的数据需求。

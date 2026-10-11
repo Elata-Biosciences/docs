@@ -1,58 +1,54 @@
 ---
 title: "Datos para la investigación"
-description: "Qué datos de bioseñales existen en el ecosistema Elata , cuáles no y las herramientas disponibles para realizar sus propios estudios."
+description: "Qué datos de bioseñales existen en el ecosistema de Elata, cuáles no y las herramientas disponibles para realizar sus propios estudios."
 ---
 
 <a id="what-data-exists"></a>
 
-## Qué datos existen
+## ¿Qué datos existen?
 
-Elata está diseñado para que las bioseñales sin procesar no necesiten salir del dispositivo del usuario.
-Eso da forma a los datos que existen:
+Elata está diseñado para que las bioseñales sin procesar no necesiten salir del dispositivo del usuario. Eso da forma a los datos que existen:
 
-| ¿Existen datos | ? | Dónde |
+| Datos | ¿Existe? | donde |
 | --- | --- | --- |
-| Fotogramas de cámara sin procesar | No recopilados por la canalización del servidor de Elata | Procesado localmente |
-| Sin procesar EEG y PPG | No recopilado por la canalización del servidor de Elata; Son posibles grabaciones experimentales locales | El almacenamiento del navegador del usuario cuando está habilitado un host de grabación compatible |
-| Resultados de sesión derivados para la puntuación biométrica | Sí, con consentimiento | Elata, para usuarios que opten por |
-| La aplicación guarda, registra y puntúa | Sí | La cuenta del usuario, con alcance para cada aplicación |
+| Marcos de cámara sin procesar | No recopilado por el canal del servidor de Elata | Procesado localmente |
+| Crudo EEG y PPG | No recopilado por el canal del servidor de Elata; Es posible realizar grabaciones experimentales locales. | El almacenamiento del navegador del usuario cuando se habilita un host de grabación compatible |
+| Resultados de sesión derivados para la puntuación biométrica | Si, con consentimiento | Elata, para usuarios que se inscriban |
+| La aplicación guarda, registra y puntúa | Sí | La cuenta del usuario, en el ámbito de cada aplicación. |
 | Análisis agregado de aplicaciones | Sí | Visible para el creador de cada aplicación, anónimo |
 
 <Note>
-  Elata actualmente no ofrece conjuntos de datos de investigación ni programas de acceso a datos.
+Actualmente, Elata no ofrece conjuntos de datos de investigación ni programas de acceso a datos.
 </Note>
 
 ---
 
 <a id="running-your-own-study"></a>
 
-## Realizando tu propio estudio
+## Realizar tu propio estudio
 
 Los investigadores pueden utilizar las herramientas de código abierto directamente:
 
-- **Cree un estudio como una aplicación de Elata.**Utilice el SDK para captura y procesamiento, y publíquelo en Elata para llegar a los participantes en su navegador. Su aplicación es responsable de su propio consentimiento y protocolo de estudio. Las aplicaciones no pueden enviar bioseñales sin procesar desde el dispositivo según la política de envío[](/es/apps/build/review-and-policy)de Elata.
+- **Cree un estudio como una aplicación de Elata.** Utilice el SDK para captura y procesamiento, y publíquelo en Elata para llegar a los participantes en su navegador. Su aplicación es responsable de su propio consentimiento y protocolo de estudio. Las aplicaciones no pueden enviar bioseñales sin procesar desde el dispositivo según la política de envío [](/es/apps/build/review-and-policy)de Elata.
 - **Utilice el SDK en sus propias herramientas.** Los paquetes de sensores funcionan en cualquier aplicación web, fuera de Elata, bajo el manejo de datos de su propia institución.
 
 ---
 
 <a id="recording-sessions-experimental"></a>
 
-## Sesiones de grabación (experimental)
+## Sesiones de grabación (experimentales)
 
 <Warning>
-Experimental. El SDK suministra el contrato de grabación. La rama `feat/long-local-analytics` de la tienda de aplicaciones implementa un host de grabación local, páginas de sesión y controles de almacenamiento, pero los deshabilita explícitamente en producción.
+Experimental. El SDK proporciona el contrato de grabación. La rama `feat/long-local-analytics` de la tienda de aplicaciones implementa un host de grabación local, páginas de sesión y controles de almacenamiento, pero los deshabilita explícitamente en producción.
 </Warning>
 
-`biosignal-session` registra sesiones multisensor (EEG, PPG, rPPG métricas y
-más) como secuencias escritas en archivos Apache Arrow , diseñados para brindar confiabilidad:
+`biosignal-session` registra sesiones multisensor (EEG, PPG, rPPG métricas y más) como secuencias escritas en archivos Apache Arrow, diseñados para brindar confiabilidad:
 
 - cada fragmento lleva una suma de verificación y una identidad estable, por lo que se puede almacenar y volver a intentar de forma segura
 - las brechas reales se registran como discontinuidades explícitas, nunca interpoladas
 - el tiempo es un reloj de sesión única en microsegundos enteros
 
-La grabación es local: el paquete no tiene cliente de red. La aplicación que
-incrusta decide dónde se almacenan los datos. Consulte
-[sesión de bioseñal](/es/sdk/biosignal-session/getting-started).
+La grabación es local: el paquete no tiene cliente de red. La aplicación que lo incorpora decide dónde se almacenan los datos. Consulte [sesión de bioseñal](/es/sdk/biosignal-session/getting-started).
 
 ---
 
@@ -60,6 +56,4 @@ incrusta decide dónde se almacenan los datos. Consulte
 
 ## Herramientas de análisis (experimentales)
 
-`biosignal-analytics` proporciona funciones reproducibles y puntuaciones transparentes,
-con cada valor rastreable hasta el algoritmo y la versión que lo produjo. Consulte
-[Métricas y puntuaciones](/es/overview/science/metrics-and-scores).
+`biosignal-analytics` proporciona características reproducibles y puntuaciones transparentes, con cada valor rastreable hasta el algoritmo y la versión que lo produjo. Consulte [Métricas y puntuaciones](/es/overview/science/metrics-and-scores).

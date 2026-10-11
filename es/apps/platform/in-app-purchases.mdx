@@ -1,15 +1,13 @@
 ---
 title: "Compras dentro de la aplicación"
-description: "Vende artículos únicos en tu aplicación con @elata-biosciences/app-paids."
+description: "Vende artículos únicos en tu aplicación con @elata-biosciences/app-payments."
 ---
 
 <a id="overview"></a>
 
-## Descripción general
+## Información general
 
-`@elata-biosciences/app-payments` permite que tu aplicación abra el pago de Elatay
-comprobar lo que posee el usuario. Elata realiza el pago, recibe el pago en USDCy
-propiedad de los registros. Su aplicación nunca toca billeteras ni detalles de pago.
+`@elata-biosciences/app-payments` permite que su aplicación abra la caja de Elata y verifique lo que posee el usuario. Elata realiza el pago, recibe el pago en USDCy registra la propiedad. Su aplicación nunca toca billeteras ni detalles de pago.
 
 ```bash
 npm install @elata-biosciences/app-payments
@@ -18,8 +16,8 @@ npm install @elata-biosciences/app-payments
 | Función | Devuelve | Úselo para |
 | --- | --- | --- |
 | `getCatalog(opts?)` | `Promise<CatalogItem[]>` | Enumere los elementos de su aplicación con precio, título y descripción |
-| `getOwnedItems(opts?)` | `Promise<number[]>` | Enumere cada `contentId` que el usuario posee |
-| `hasItem(contentId, opts?)` | `Promise<boolean>` | Marque un elemento |
+| `getOwnedItems(opts?)` | `Promise<number[]>` | Enumere cada `contentId` que posee el usuario |
+| `hasItem(contentId, opts?)` | `Promise<boolean>` | Marque un artículo |
 | `requestPurchase(input)` | `Promise<PurchaseResult>` | Abrir caja para un artículo |
 
 <a id="create-your-catalog"></a>
@@ -28,12 +26,12 @@ npm install @elata-biosciences/app-payments
 
 Abra **Mis aplicaciones → su aplicación → Editar → Comercio → Productos**. Los propietarios y los miembros autorizados del equipo pueden crear y administrar el catálogo ellos mismos.
 
-| Campo | Qué ingresar |
+| Campo | que entrar |
 | --- | --- |
 | Título | Un nombre de elemento claro, hasta 100 caracteres |
 | Descripción | Lo que recibe el comprador, hasta 500 caracteres |
-| URL de imagen | URL de imagen HTTP o HTTPS opcional |
-| Precio | Una cantidad positiva y legible por humanos USDC en el formulario del panel |
+| URL de la imagen | URL de imagen HTTP o HTTPS opcional |
+| Precio | Una cantidad positiva legible por humanos USDC en el formulario del panel |
 | Activo | Si el artículo está disponible en el catálogo activo |
 
 Guarde el producto y luego copie el `contentId` asignado en su integración. El identificador es estable y no se puede editar. Los productos se pueden editar o desactivar en lugar de eliminarlos. La desactivación detiene nuevas ventas; siga aplicando los beneficios para propietarios existentes, incluso cuando el artículo ya no aparezca en el catálogo activo.
@@ -41,7 +39,7 @@ Guarde el producto y luego copie el `contentId` asignado en su integración. El 
 El tablero acepta cantidades ordinarias como `1.00`. Las API de productos y las respuestas del catálogo utilizan unidades base enteras USDC : `"1000000"` significa 1 USDC. La creación de una entrada de catálogo no implementa su beneficio en su aplicación.
 
 <Info>
-El pago debe configurarse para la implementación. El pago de la aplicación que se describe aquí paga USDC el Base a través del divisor. Consulte [Qué hay en vivo](/es/overview/status) antes de probar los pagos.
+El pago debe configurarse para la implementación. El pago de la aplicación que se describe aquí paga USDC en Base a través del divisor. Consulte [Qué hay en vivo](/es/overview/status) antes de probar los pagos.
 </Info>
 
 ---
@@ -92,8 +90,7 @@ async function buy(item) {
 }
 ```
 
-`requestPurchase` registra *que* el usuario posee un artículo. Tu aplicación decide qué
-poseerlo *lo hace*.
+`requestPurchase` registra *que* el usuario posee un artículo. Tu aplicación decide lo que *hace* poseerla.
 
 ---
 
@@ -103,16 +100,16 @@ poseerlo *lo hace*.
 
 <AccordionGroup>
   <Accordion title="Rama en estado, nunca en txHash">
-Si el usuario ya posee el artículo, Elata omite el pago y devuelve `{ status: "success", txHash: "" }`. El código que verifica `if (result.txHash)` manejará mal esto.
+Si el usuario ya posee el artículo, Elata omite el pago y devuelve `{ status: "success", txHash: "" }`. El código que verifica `if (result.txHash)` manejará esto mal.
   </Accordion>
   <Accordion title="Dos formatos de precios">
-    `CatalogItem.priceUsdc` está en USDC **unidades base** (6 decimales): `"50000"` es $0,05. `RequestPurchaseInput.priceUsdc` es una sugerencia de visualización de formato libre que Elata ignora. Elata siempre cobra el precio de catálogo.
+`CatalogItem.priceUsdc` está en USDC **unidades base** (6 decimales): `"50000"` es $0,05. `RequestPurchaseInput.priceUsdc` es una sugerencia de visualización de formato libre que Elata ignora. Elata siempre cobra el precio del catálogo.
   </Accordion>
   <Accordion title="Los artículos se desbloquean una sola vez.">
 Cada artículo se compra una vez. Los consumibles (saldos de gasto por uso) y la facturación recurrente no se admiten a través de artículos. Para obtener ingresos recurrentes, utilice un plan de suscripción [](/es/apps/platform/subscriptions).
   </Accordion>
   <Accordion title="Tiempos de espera">
-    `requestPurchase` espera hasta 5 minutos para que el usuario finalice el pago. `getCatalog`, `getOwnedItems`y `hasItem` tienen un valor predeterminado de 10 segundos. Fuera de Elata, utilice un host simulado para las pruebas locales. Trate un error en la consulta de propiedad como propiedad desconocida: ofrezca un reintento o una acción de inicio de sesión, y nunca otorgue un beneficio pagado simplemente porque se agotó el tiempo de espera de la consulta.
+`requestPurchase` espera hasta 5 minutos para que el usuario finalice el pago. `getCatalog`, `getOwnedItems`y `hasItem` tienen un valor predeterminado de 10 segundos. Fuera de Elata, utilice un host simulado para las pruebas locales. Trate un error en la consulta de propiedad como propiedad desconocida: ofrezca un reintento o una acción de inicio de sesión, y nunca otorgue un beneficio pagado simplemente porque se agotó el tiempo de espera de la consulta.
   </Accordion>
 </AccordionGroup>
 
@@ -128,11 +125,11 @@ Llamadas rechazadas solo con `AppPaymentsError`, que tiene un `code`:
 | --- | --- |
 | `invalid_input` | `contentId` no es un número entero no negativo o una opción tiene el tipo incorrecto |
 | `no_window` | No se ejecuta en un navegador |
-| `no_parent` | No se ejecuta dentro del marco de Elata |
+| `no_parent` | No correr dentro del marco de Elata |
 | `no_crypto` | `crypto.randomUUID` no está disponible |
 | `timeout` | No hay respuesta a tiempo |
 | `not_authenticated` | El usuario no ha iniciado sesión (consultas de propiedad) |
-| `fetch_failed` | Elata no pude buscar la propiedad |
+| `fetch_failed` | Elata no pudo buscar la propiedad |
 
 Se resuelve un resultado de compra normal `cancelled` o `error` ; no rechaza.
 
@@ -154,28 +151,28 @@ Se resuelve un resultado de compra normal `cancelled` o `error` ; no rechaza.
 ## Pruébalo
 
 - [`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo): un archivo HTML autónomo con un almacén simulado incorporado, para que pueda ejecutar el flujo completo localmente.
-- [Paquete LÉAME en npm](https://www.npmjs.com/package/@elata-biosciences/app-payments)
+- [Paquete README en npm](https://www.npmjs.com/package/@elata-biosciences/app-payments)
 
 <a id="payment-and-ui-states"></a>
 
 ## Estados de pago y UI
 
-Maneje el éxito, la cancelación y los errores por separado. Evite la superposición de intentos de compra. Un pago exitoso y un derecho registrado son pasos separados; desbloquee solo después de que Elata informe que se realizó correctamente.
+Maneje el éxito, la cancelación y los errores por separado. Evite la superposición de intentos de compra. Un pago exitoso y un derecho registrado son pasos separados; desbloquear sólo después de que Elata informe de éxito.
 
 Si se liquida un pago pero falla el registro, conserve los detalles de la transacción y dirija al usuario a [ayuda de facturación](/es/users/billing-and-purchases#payment-problems-and-history). No envíe automáticamente otro pago. El proceso de pago vuelve a intentar retrasos temporales en la indexación, pero no se garantiza la recuperación de cada error de grabación.
 
 Las consultas de propiedad pueden requerir autenticación. En `not_authenticated`, solicite al usuario que inicie sesión; en caso de error de búsqueda, muestra un estado de reintento. No trate silenciosamente a un propietario desconocido como si fuera un no propietario confirmado.
 
-La aplicación no conecta billeteras por sí misma. Elata checkout administra la conexión de la billetera y la confirmación del pago, incluida la interfaz de la billetera integrada cuando se usa. Los créditos por funciones medidas no son un saldo de pago alternativo para estos artículos.
+La aplicación no conecta billeteras por sí misma. Elata checkout gestiona la conexión de la billetera y la confirmación del pago, incluida la interfaz de la billetera integrada cuando se utiliza. Los créditos por funciones medidas no son un saldo de pago alternativo para estos artículos.
 
 <a id="test-your-integration"></a>
 
 ## Prueba tu integración
 
-- Vuelva a abrir la aplicación y restaure los beneficios que ya posee desde la propiedad del host.
+- Vuelva a abrir la aplicación y restaure los beneficios que ya posee de la propiedad del host.
 - Mostrar **Utilice** o **Propiedad** para artículos comprados y **Comprar** para artículos disponibles sin propietario.
-- Maneja una respuesta exitosa que ya se posee con un hash de transacción vacío.
-- Maneja los estados de cierre de sesión, cancelación, fondos insuficientes, pago no disponible y error de búsqueda.
-- Desactiva un artículo y verifica que los propietarios existentes aún puedan utilizar su beneficio.
+- Maneje una respuesta exitosa que ya sea de propiedad con un hash de transacción vacío.
+- Maneje los estados de cierre de sesión, cancelación, fondos insuficientes, pago no disponible y error de búsqueda.
+- Desactive un artículo y verifique que los propietarios existentes aún puedan utilizar su beneficio.
 
 Para acceder a la suscripción, utilice [Suscripciones](/es/apps/platform/subscriptions), en lugar de simular facturación recurrente con compras repetidas de artículos.

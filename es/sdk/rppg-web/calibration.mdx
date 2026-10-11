@@ -5,15 +5,15 @@ description: "Muse PPG calibración y fusión de frecuencia cardíaca de múltip
 
 <a id="overview"></a>
 
-## Descripción general
+## Información general
 
-Cuando una diadema Muse con PPG está disponible junto con la rPPGbasada en cámara, la SDK admite la fusión del sensor ****, usando el contacto PPG como referencia para calibrar y mejorar las estimaciones de frecuencia cardíaca basadas en cámaras.
+Cuando una diadema Muse con PPG está disponible junto con rPPGbasado en cámara, el SDK admite la fusión de sensores ****, utilizando el contacto PPG como referencia para calibrar y mejorar las estimaciones de frecuencia cardíaca basadas en cámara.
 
 ---
 
 <a id="musefusioncalibrator"></a>
 
-## Calibrador MuseFusion
+## MuseFusionCalibrador
 
 Fusibles Muse PPG lecturas con cámara rPPG estimaciones para mejorar la precisión:
 
@@ -45,9 +45,9 @@ processor.updateMuseMetrics(museBpm, quality, timestampMs);
 
 <a id="musecalibrationmodel"></a>
 
-## Modelo de calibración de Muse
+## MuseCalibraciónModelo
 
-Un modelo de regresión simple que aprende la relación entre la cámara y el contacto BPM a lo largo del tiempo:
+Un modelo de regresión simple que aprende la relación entre la cámara y el BPM de contacto a lo largo del tiempo:
 
 ```typescript
 import { MuseCalibrationModel } from "@elata-biosciences/rppg-web";
@@ -72,7 +72,7 @@ model.reset();
 
 <a id="bpm-evidence-types"></a>
 
-## BPM Tipos de evidencia
+## Tipos de evidencia BPM
 
 El procesador produce evidencia a partir de múltiples métodos de análisis:
 
@@ -100,9 +100,9 @@ type FusionSource = "camera" | "muse" | "blend" | "none";
 
 <a id="muse-ppg-filter"></a>
 
-## Muse PPG Filtro
+## Musa PPG Filtro
 
-Aplique filtrado de paso de banda estilo Musea muestras PPG :
+Aplique filtrado de paso de banda estilo Muse a PPG muestras:
 
 ```typescript
 import { museStyleFilter } from "@elata-biosciences/rppg-web";
@@ -126,10 +126,10 @@ flowchart TD
     MOD -->|"predict()"| CALIBRATED["Calibrated Camera BPM"]
 ```
 
-1. Comience solo con cámara rPPG
-2. Cuando se conecta una diadema Muse , alimente su PPG como verdad de tierra
-3. El modelo de calibración aprende el mapeo de cámara a contacto
-4. Una vez entrenadas, las estimaciones de solo la cámara se corrigen utilizando el modelo aprendido
+1. Comience con solo cámara rPPG
+2. Cuando se conecta una diadema Muse, alimenta su PPG como verdad básica
+3. El modelo de calibración aprende el mapeo de cámara a contacto.
+4. Una vez entrenadas, las estimaciones realizadas únicamente con la cámara se corrigen utilizando el modelo aprendido.
 5. El calibrador de fusión combina ambas fuentes para una máxima precisión
 
 ---

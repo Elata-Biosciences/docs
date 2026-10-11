@@ -5,29 +5,25 @@ description: "Elija el paquete y el modelo de propiedad adecuados para la integr
 
 Utilice esta página antes de escribir el código del adaptador.
 
-El camino correcto depende de si la integración es ampliamente útil, si
-necesita SDK de proveedor o puentes nativos, y si se mantendrá como un
-superficie pública SDK .
+El camino correcto depende de si la integración es ampliamente útil, si necesita SDK de proveedor o puentes nativos y si se mantendrá como una superficie de SDK pública.
 
 <a id="recommended-default"></a>
 
 ## Valor predeterminado recomendado
 
-Si es probable que el dispositivo sea útil para una audiencia más amplia Elata SDK , colóquelo
-aguas arriba en `@elata-biosciences/eeg-web-ble`.
+Si es probable que el dispositivo sea útil para una audiencia más amplia del SDK de Elata, colóquelo en `@elata-biosciences/eeg-web-ble`.
 
-Esto mantiene el comportamiento de transporte centralizado y evita adaptadores paralelos entre sí.
-múltiples aplicaciones.
+Esto mantiene el comportamiento de transporte centralizado y evita adaptadores paralelos entre múltiples aplicaciones.
 
 <a id="choose-by-outcome"></a>
 
 ## Elija por resultado
 
-| Ruta | Mejor cuando | Por qué |
+| Camino | mejor cuando | ¿Por qué? |
 | --- | --- | --- |
-| Módulo de dispositivo ascendente en `eeg-web-ble` | El dispositivo es muy útil y funciona a través del navegador BLE | Mejor valor predeterminado para público SDK soporte |
-| Paquete separado en `packages/` | Necesita un proveedor SDK, una puerta de licencia o un puente localhost/nativo | Mantiene aisladas las integraciones más pesadas |
-| Adaptador local de aplicación | Estás probando un concepto o enviando una integración privada | La ruta más rápida cuando no se necesita un paquete compartido |
+| Módulo de dispositivo ascendente en `eeg-web-ble` | El dispositivo es muy útil y funciona a través del navegador BLE. | El mejor valor predeterminado para la compatibilidad con SDK público |
+| Paquete separado bajo `packages/` | Necesita un SDK de proveedor, una puerta de licencia o un puente local/nativo | Mantiene aisladas las integraciones más pesadas |
+| Adaptador de aplicación local | Estás probando un concepto o enviando una integración privada. | Ruta más rápida cuando no se necesita ningún paquete compartido |
 
 <a id="path-1-upstream-in-eeg-web-ble"></a>
 
@@ -36,24 +32,23 @@ múltiples aplicaciones.
 Elija esto cuando:
 
 - el dispositivo puede funcionar a través de Web Bluetooth en un navegador
-- es probable que la integración sea reutilizada por más de una aplicación
-- desea una implementación compartida del comportamiento de transporte
+- Es probable que la integración sea reutilizada por más de una aplicación.
+- quieres una implementación compartida del comportamiento de transporte
 
 Este camino suele significar:
 
-1. agregue un módulo de dispositivo en el paquete BLE
+1. agregar un módulo de dispositivo bajo el paquete BLE
 2. reutilizar `BleTransport`
 3. agregar pruebas simuladas
 4. actualizar documentos del consumidor y notas del dispositivo
 
 <Check>
-Este es el mejor camino para una integración pública y duradera que debería sentirse como
-  una parte de primera clase del SDK.
+Este es el mejor camino para una integración pública y duradera que debería sentirse como una parte de primera clase del SDK.
 </Check>
 
 <a id="path-2-separate-package"></a>
 
-## Ruta 2: Paquete separado
+## Ruta 2: paquete separado
 
 Elija esto cuando el dispositivo necesite más que un flujo BLE de navegador limpio.
 
@@ -61,12 +56,11 @@ Razones típicas:
 
 | Situación | Por qué ayuda un paquete separado |
 | --- | --- |
-| Proveedor con licencia o pesado SDK | Mantiene dependencias adicionales fuera del paquete BLE principal |
-| Ayudante de localhost o puente nativo | Le permite enviar un transporte específico de puente de forma limpia |
-| Cadencia de lanzamiento independiente | Permite que el proveedor o socio tenga control de versiones y soporte |
+| SDK de proveedor pesado o con licencia | Mantiene dependencias adicionales fuera del paquete BLE principal |
+| Ayudante de localhost o puente nativo | Le permite enviar un transporte específico de un puente de forma limpia |
+| Cadencia de lanzamiento independiente | Permite que el proveedor o socio sea propietario de las versiones y el soporte |
 
-El paquete aún debería exponer un `HeadbandTransport`, o una envoltura delgada alrededor
-uno, para que el código de la aplicación se mantenga coherente con el resto de la pila Elata .
+El paquete aún debería exponer un `HeadbandTransport`, o una envoltura delgada alrededor de uno, para que el código de la aplicación se mantenga consistente con el resto de la pila de Elata.
 
 <a id="path-3-app-local-adapter"></a>
 
@@ -80,8 +74,7 @@ Esta es una buena opción para:
 - una prueba de concepto rápida
 - trabajo de evaluación antes de que exista un paquete público
 
-Mantenga el contrato igual incluso si el código permanece privado. Eso lo hace más fácil
-para avanzar río arriba más tarde.
+Mantenga el contrato igual incluso si el código permanece privado. Eso hace que sea más fácil avanzar hacia arriba más adelante.
 
 <a id="decision-order"></a>
 
@@ -92,16 +85,13 @@ para avanzar río arriba más tarde.
 Si varias aplicaciones se beneficiarían, comience por asumir una ruta ascendente.
   </Step>
   <Step title="Compruebe si hay bloqueadores BLE del navegador">
-Si Web Bluetooth no funciona, o si se requiere un puente nativo, pase a un
-    paquete separado.
+Si Web Bluetooth no funciona, o si se requiere un puente nativo, cambie a un paquete separado.
   </Step>
   <Step title="Decidir quién posee el apoyo a largo plazo">
-El apoyo compartido suele pertenecer a las fases anteriores. Las líneas de lanzamiento propiedad de los proveedores a menudo encajan
-    Mejor en un paquete separado.
+El apoyo compartido suele pertenecer a las fases anteriores. Las líneas de lanzamiento propiedad de los proveedores a menudo encajan mejor en un paquete separado.
   </Step>
   <Step title="Mantenga estable el contrato de la aplicación">
-No importa dónde se encuentre el código, el contrato de la aplicación debería seguir siendo
-    `HeadbandTransport` y `HeadbandFrameV1`.
+No importa dónde se encuentre el código, el contrato de la aplicación debería seguir siendo `HeadbandTransport` y `HeadbandFrameV1`.
   </Step>
 </Steps>
 
@@ -113,15 +103,14 @@ No elija un adaptador de aplicación local sólo porque sea fácil en la primera
 
 Esto normalmente genera trabajo extra más adelante si la integración se hace pública.
 
-No impulse una integración pesada, basada en puente o con licencia en el BLE compartido
-paquete tampoco. Mantenga el paquete público reducido.
+Tampoco impulse una integración pesada, basada en puente o con licencia en el paquete BLE compartido. Mantenga el paquete público reducido.
 
 <a id="related-docs"></a>
 
 ## Documentos relacionados
 
 - [EEG Introducción a BLE](/es/sdk/eeg-web-ble/getting-started)
-- [Contrato de transporte](./transport-contract)
+- [Contrato de Transporte](./transport-contract)
 - [Implementación del adaptador](./adapter-implementation)
 - [Compatibilidad](/es/sdk/operations/compatibility)
 

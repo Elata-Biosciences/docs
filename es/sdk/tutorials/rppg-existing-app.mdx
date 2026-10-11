@@ -9,11 +9,11 @@ Si desea la ruta del andamio, utilice [Inicio rápido](/es/sdk/tutorials/first-a
 
 Este tutorial muestra la ruta de integración de aplicaciones recomendada para `@elata-biosciences/rppg-web`.
 
-La cámara rPPG es la **integración principal del navegador** para muchos productos Elata . No se requieren auriculares.
+La cámara rPPG es la **principal integración del navegador** para muchos productos Elata. No se requieren auriculares.
 
 La idea central es simple: permita que `createRppgSession()` sea dueño del tiempo de ejecución del navegador, el bucle de procesamiento de video y los diagnósticos, mientras que su aplicación es dueña de la interfaz de usuario.
 
-Este es el siguiente tutorial habitual **** después de [Cree su primera Elata aplicación](/es/sdk/tutorials/first-app) cuando elige la rama **de aplicación existente** para cámara rPPG. Si está **extendiendo el andamio** , permanezca en `rppg-demo` y use [rPPG en una aplicación de navegador](/es/sdk/guides/rppg-browser) más [rppg-web](/es/sdk/rppg-web/getting-started).
+Este es el habitual **siguiente tutorial** después de [Cree su primera aplicación Elata](/es/sdk/tutorials/first-app) cuando elige la **aplicación existente** rama para cámara rPPG. Si está **extendiendo el andamio** , permanezca en `rppg-demo` y use [rPPG en una aplicación de navegador](/es/sdk/guides/rppg-browser) más [rppg-web](/es/sdk/rppg-web/getting-started).
 
 <a id="what-you-will-build"></a>
 
@@ -23,14 +23,14 @@ Usted:
 
 1. instalar `@elata-biosciences/rppg-web`
 2. solicitar acceso a la cámara
-3. adjunta la secuencia a un elemento `video` 
-4. inicio `createRppgSession()`
+3. adjunte la transmisión a un elemento `video` 
+4. empezar `createRppgSession()`
 5. leer métricas y diagnósticos
 6. detener la sesión durante la limpieza
 
 <a id="step-1-install-the-package"></a>
 
-## Paso 1: instalar el paquete
+## Paso 1: instale el paquete
 
 <CodeGroup>
 
@@ -46,7 +46,7 @@ npm install @elata-biosciences/rppg-web
 
 <a id="step-2-prepare-a-video-element"></a>
 
-## Paso 2: Prepare un elemento de video
+## Paso 2: prepare un elemento de video
 
 Su aplicación necesita un elemento `video` que pueda recibir la transmisión de la cámara.
 
@@ -56,13 +56,13 @@ Su aplicación necesita un elemento `video` que pueda recibir la transmisión de
 
 Las partes importantes son:
 
-- `autoplay` para que la reproducción pueda comenzar una vez que se adjunta la transmisión
+- `autoplay` para que la reproducción pueda comenzar una vez que se adjunte la transmisión
 - `playsinline` para el comportamiento del navegador móvil
 - `muted` para mantener las reglas de reproducción automática fuera del camino
 
 <a id="step-3-acquire-camera-access"></a>
 
-## Paso 3: Adquirir acceso a la cámara
+## Paso 3: adquirir acceso a la cámara
 
 ```ts camera setup
 const videoEl = document.getElementById("camera") as HTMLVideoElement;
@@ -110,11 +110,11 @@ Se encarga de:
 - captura de fotograma
 - ROI/orquestación de sesiones
 - emisión de diagnóstico
-- soporte de limpieza
+- apoyo de limpieza
 
 <a id="step-5-read-metrics-in-your-ui"></a>
 
-## Paso 5: Lea las métricas en su interfaz de usuario
+## Paso 5: lea las métricas en su interfaz de usuario
 
 ```ts
 const metrics = session.getMetrics();
@@ -229,7 +229,7 @@ export default function App() {
 }
 ```
 
-Este ejemplo utiliza un React `ref` en `<video>` en lugar de `getElementById("camera")` de los pasos anteriores.
+Este ejemplo utiliza React `ref` en `<video>` en lugar de `getElementById("camera")` de los pasos anteriores.
 
 <a id="what-to-do-with-diagnostics"></a>
 
@@ -238,7 +238,7 @@ Este ejemplo utiliza un React `ref` en `<video>` en lugar de `getElementById("ca
 El comportamiento útil más rápido de una aplicación es:
 
 1. muestra si la sesión es `running`, `degraded`o `failed`
-2. muestra una guía legible por humanos cuando aparece `issues` 
+2. mostrar una guía legible por humanos cuando aparezca `issues` 
 3. bloquear la publicación o puntuación hasta que su aplicación tenga suficientes muestras estables
 
 Si desea una capa de estado orientada a la aplicación de nivel superior más adelante, mire:
@@ -251,12 +251,12 @@ Pero comience primero con `createRppgSession()` simple.
 
 <a id="common-problems"></a>
 
-## Problemas Comunes
+## Problemas comunes
 
-- `session.getDiagnostics().backendMode` es `unavailable`: es probable que su aplicación no esté cargando los recursos empaquetados WASM correctamente
+- `session.getDiagnostics().backendMode` es `unavailable`: es probable que su aplicación no esté cargando correctamente los recursos WASM empaquetados
 - El acceso a la cámara falla: verifique los permisos del navegador y el soporte `getUserMedia` 
 - La sesión llega a la terminal `failed`: recrea la sesión en lugar de intentar seguir usando el mismo procesador envenenado
-- Primero está intentando depurar enlaces generados en niveles inferiores: comience con `createRppgSession()` a menos que esté depurando intencionalmente el SDK .
+- Primero está intentando depurar enlaces generados de nivel inferior: comience con `createRppgSession()` a menos que esté depurando intencionalmente el SDK.
 
 <a id="next"></a>
 

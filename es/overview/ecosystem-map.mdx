@@ -1,6 +1,6 @@
 ---
-title: "Cómo encaja Elata "
-description: "El mapa del ecosistema: dispositivos, el Elata SDK, las aplicaciones y el Elata en sí mismo, y cómo se mueven los datos y el valor entre ellos."
+title: "Cómo encaja Elata"
+description: "El mapa del ecosistema: dispositivos, Elata SDK, aplicaciones y Elata mismo, y cómo los datos y el valor se mueven entre ellos."
 ---
 
 <a id="the-big-picture"></a>
@@ -28,22 +28,17 @@ Elata tiene cuatro capas. Cada uno tiene su propia sección en estos documentos.
 Los sensores son cosas que la gente ya posee:
 
 - **Una cámara web** puede estimar el pulso a partir de pequeños cambios de color en la piel (fotopletismografía remota o rPPG).
-- **Una diadema EEG de consumo**, como Muse 2 o Muse S, mide la actividad eléctrica desde algunos puntos del cuero cabelludo y algunos modelos también tienen un óptico (PPG) sensor de frecuencia cardíaca.
+- **Una EEG diadema**de consumo, como Muse 2 o Muse S, mide la actividad eléctrica desde algunos puntos del cuero cabelludo y algunos modelos también tienen un sensor óptico de frecuencia cardíaca (PPG).
 
-Consulte [Dispositivos que puede utilizar](/es/users/devices) y, para fines científicos,
-[Explicación de las bioseñales](/es/overview/biosignals).
+Consulte [Dispositivos que puede utilizar](/es/users/devices) y, para fines científicos, [Explicación de las bioseñales](/es/overview/biosignals).
 
 ---
 
 <a id="2-the-elata-sdk"></a>
 
-## 2. El Elata SDK
+## 2. El SDK de Elata
 
-El [Elata SDK](/es/overview/elata-sdk) es un conjunto de paquetes de código abierto que
-conéctese a esos dispositivos y convierta las señales sin procesar en medidas utilizables, como el corazón
-frecuencia, variabilidad de la frecuencia cardíaca y potencias de banda EEG . El procesamiento se ejecuta en el
-navegador, en el dispositivo del usuario, usando WebAssembly. Los constructores usan el SDK para
-No es necesario escribir el procesamiento de señales desde cero.
+El [Elata SDK](/es/overview/elata-sdk) es un conjunto de paquetes de código abierto que se conectan a esos dispositivos y convierten señales sin procesar en medidas utilizables como frecuencia cardíaca, variabilidad de la frecuencia cardíaca y potencias de banda EEG . El procesamiento se ejecuta en el navegador, en el dispositivo del usuario, usando WebAssembly. Los constructores utilizan el SDK para no tener que escribir el procesamiento de señales desde cero.
 
 ---
 
@@ -51,9 +46,7 @@ No es necesario escribir el procesamiento de señales desde cero.
 
 ## 3. Aplicaciones
 
-Los constructores combinan el SDK con sus propias ideas: juegos que diriges con concentración o
-calma, guías de respiración que siguen tu ritmo cardíaco, paneles en vivo, investigaciones
-herramientas. Las aplicaciones son aplicaciones web normales. Consulte [Aplicaciones en Elata](/es/overview/apps-on-elata).
+Los desarrolladores combinan el SDK con sus propias ideas: juegos que usted dirige con concentración o calma, guías de respiración que siguen su ritmo cardíaco, paneles en vivo, herramientas de investigación. Las aplicaciones son aplicaciones web normales. Consulte [Aplicaciones en Elata](/es/overview/apps-on-elata).
 
 ---
 
@@ -61,7 +54,7 @@ herramientas. Las aplicaciones son aplicaciones web normales. Consulte [Aplicaci
 
 [Elata](https://app.elata.bio) es donde viven esas aplicaciones. Eso:
 
-- **Revisa** cada versión (un análisis de seguridad automatizado más un moderador humano)
+- **Reseñas** cada versión (un análisis de seguridad automatizado más un moderador humano)
 - **Aloja** cada aplicación en un entorno aislado, por lo que una aplicación no puede ver quién es el usuario ni tocar su cuenta
 - **Proporciona** inicio de sesión, compras, suscripciones y progreso guardado, para que los constructores no tengan que hacerlo
 - **Solicita consentimiento** en su propia interfaz antes de que el resultado de una sesión derivada contribuya a la puntuación biométrica de la plataforma
@@ -74,8 +67,8 @@ herramientas. Las aplicaciones son aplicaciones web normales. Consulte [Aplicaci
 
 Dos cosas abarcan cada aplicación en Elata:
 
-- **[Elata Puntos](/es/overview/points)** recompensa por participar: jugar, revisar, construir e invitar amigos.
-- **La puntuación biométrica** es una medida opcional entre aplicaciones creada solo a partir de los resultados de la sesión derivados, y solo si el usuario acepta. Consulte [Privacidad y consentimiento](/es/overview/privacy-and-consent).
+- **[Puntos Elata](/es/overview/points)** recompensa por participar: jugar, revisar, construir e invitar amigos.
+- **La puntuación biométrica** es una medida opcional entre aplicaciones creada solo a partir de los resultados de la sesión derivados y solo si el usuario acepta. Consulte [Privacidad y consentimiento](/es/overview/privacy-and-consent).
 
 ---
 
@@ -83,11 +76,11 @@ Dos cosas abarcan cada aplicación en Elata:
 
 ## Cómo se mueve el valor
 
-| Quien | Da | Recibe |
+| quien | da | Obtiene |
 | --- | --- | --- |
-| Usuarios | Atención, comentarios, compras opcionales | Aplicaciones que responden a su cuerpo, con privacidad integrada |
-| Constructores | Aplicaciones | Distribución, cuentas y pagos integrados e ingresos por compras y suscripciones |
-| Elata | La plataforma y el SDK | Una tarifa única de registro por aplicación y una tarifa de plataforma sobre ventas y suscripciones |
+| Usuarios | Atención, comentarios, compras opcionales. | Aplicaciones que responden a su cuerpo, con privacidad incorporada |
+| Constructores | Aplicaciones | Distribución, cuentas y pagos integrados e ingresos por compras y suscripciones. |
+| Elata | La plataforma y el SDK | Una tarifa única de registro por aplicación y una tarifa de plataforma sobre ventas y suscripciones. |
 
 Detalles: [Monetización](/es/overview/monetization).
 
@@ -97,9 +90,9 @@ Detalles: [Monetización](/es/overview/monetization).
 
 ## Donde viven los datos
 
-| Datos | Dónde permanece |
+| Datos | donde se queda |
 | --- | --- |
-| Marcos de cámara sin procesar y bioseñales | En el dispositivo del usuario |
-| Guarda, configura y califica las tiendas de una aplicación | La cuenta del usuario, limitada a esa aplicación |
-| Resultados de sesión derivados para la Puntuación | Compartidos con Elata solo con el consentimiento del usuario |
-| Qué ven los constructores | Análisis de uso agregado; Los informes comerciales también pueden mostrar billeteras de compradores abreviadas y enlaces de transacciones |
+| Fotogramas de cámara sin procesar y bioseñales. | En el dispositivo del usuario |
+| Guarda, configura y puntúa una tienda de aplicaciones. | La cuenta del usuario, limitada a esa aplicación. |
+| Resultados de sesión derivados para la puntuación | Compartido con Elata sólo con el consentimiento del usuario. |
+| Lo que ven los constructores | Análisis de uso agregado; Los informes comerciales también pueden mostrar billeteras de compradores y enlaces de transacciones acortados. |

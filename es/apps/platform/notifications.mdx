@@ -7,16 +7,14 @@ description: "Muestre recordatorios a los usuarios a través de Elata mientras s
 
 ## Por qué tu aplicación no puede notificar directamente
 
-Su aplicación se ejecuta en un iframe de origen cruzado en espacio aislado. Los navegadores bloquean el
-`Notification` API allí: el permiso está bloqueado en `denied` y
-`requestPermission()` nunca aparece.
+Su aplicación se ejecuta en un iframe de origen cruzado en espacio aislado. Los navegadores bloquean la API `Notification` allí: el permiso está bloqueado en `denied` y `requestPermission()` nunca aparece.
 
 Hay dos opciones compatibles:
 
-| Opción | Funciona cuando | Mejor para |
+| Opción | Funciona cuando | Lo mejor para |
 | --- | --- | --- |
-| **Elata-recordatorios gestionados** (esta página) | Elata la pestaña está abierta | "Sesión completa", "hora de tu descanso" |
-| **Envío en segundo plano** | Un trabajador de servicio, suscripción push y servicio de entrega implementados por separado | Notificaciones en segundo plano; la instalación sola no proporciona esto |
+| **Recordatorios gestionados por Elata** (esta página) | La pestaña Elata está abierta | "Sesión completa", "hora de tu descanso" |
+| **Empuje de fondo** | Un trabajador de servicio, una suscripción push y un servicio de entrega implementados por separado | Notificaciones de antecedentes; la instalación por sí sola no proporciona esto |
 
 ---
 
@@ -40,24 +38,24 @@ window.parent?.postMessage(
 
 Elata responde con `{ type: 'elata:notify:state', requestId?, status }`:
 
-| estado | Significado | UI sugerida |
+| estado | Significado | IU sugerida |
 | --- | --- | --- |
-| `shown` | Se mostró una notificación | Mostrar recordatorios como en |
-| `undecided` | El usuario aún no se ha suscrito; Elata muestra el mensaje "¿Permitir recordatorios?" mensaje | Un estado neutral y pendiente |
-| `blocked` | El usuario optó por no participar o el sistema operativo le negó el permiso | Deja de preguntar; explicar la configuración de notificaciones |
-| `rate_limited` | Más de 3 solicitudes en un minuto | Retrocede |
-| `unsupported` | Este navegador no tiene notificaciones API | Ocultar la configuración |
+| `shown` | Se mostró una notificación. | Mostrar recordatorios como en |
+| `undecided` | El usuario aún no se ha registrado; Elata muestra el mensaje "¿Permitir recordatorios?" rápido | Un Estado neutral y pendiente |
+| `blocked` | El usuario optó por no participar o el sistema operativo le negó el permiso. | Deja de preguntar; explicar la configuración de notificaciones |
+| `rate_limited` | Más de 3 solicitudes en un minuto | retroceder |
+| `unsupported` | Este navegador no tiene API de notificación | Ocultar la configuración |
 
 ---
 
 <a id="what-elata-guarantees"></a>
 
-## Qué garantiza Elata 
+## Lo que garantiza Elata
 
-- **Elata-título del autor.** Siempre `Elata · <your app name>`, tomado de tu lista Elata , para que las aplicaciones no puedan hacerse pasar por el sistema operativo, Elatani entre sí.
-- **Opción por aplicación.** Desactivado de forma predeterminada. La primera solicitud muestra un mensaje dentro del marco y la elección se recuerda por aplicación.
+- **Título de la autoría de Elata.** Siempre `Elata · <your app name>`, tomado de su lista de Elata, para que las aplicaciones no puedan hacerse pasar por el sistema operativo, Elata ni entre sí.
+- **Suscripción por aplicación.** Desactivado de forma predeterminada. La primera solicitud muestra un mensaje dentro del marco y la elección se recuerda por aplicación.
 - **Límite de tarifa.** Como máximo 3 recordatorios por aplicación por minuto.
-- **Solo primer plano.** Los recordatorios aparecen solo mientras la pestaña Elata está abierta. Al hacer clic en uno se enfoca Elata.
+- **Solo primer plano.** Los recordatorios aparecen solo mientras la pestaña Elata está abierta. Al hacer clic en uno, se enfoca Elata.
 
 ---
 
@@ -65,7 +63,7 @@ Elata responde con `{ type: 'elata:notify:state', requestId?, status }`:
 
 ## Detectando Elata
 
-Utilice el puente solo cuando se ejecute dentro de Elatay mantenga su ruta directa para uso independiente mientras se ejecuta la página. La instalación en la pantalla de inicio por sí sola no permite que este código se ejecute cuando la aplicación está cerrada:
+Utilice el puente solo cuando se ejecute dentro de Elata y mantenga su ruta directa para uso independiente mientras se ejecuta la página. La instalación en la pantalla de inicio por sí sola no permite que este código se ejecute cuando la aplicación está cerrada:
 
 ```js
 const inStore = window.parent !== window;

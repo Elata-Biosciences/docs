@@ -1,6 +1,6 @@
 ---
 title: "Conceptos básicos"
-tag: "Archived"
+tag: "Archivado"
 description: "Escenarios, agentes, ticks, paquetes y determinismo en AgentForge"
 ---
 
@@ -13,9 +13,9 @@ Un escenario es la configuración de nivel superior para una ejecución de simul
 - **`name`** — identificador del escenario
 - **`seed`** - semilla RNG determinista (misma semilla = mismos resultados)
 - **`ticks`** — número de pasos de simulación
-- **`tickSeconds`** — tiempo simulado por tick (p. ej., 3600 = 1 hora)
+- **`tickSeconds`** — tiempo simulado por tick (por ejemplo, 3600 = 1 hora)
 - **`pack`** — adaptador de protocolo que configura el estado mundial
-- **`agents`** — lista de tipos de agentes, recuentos y parámetros
+- **`agents`** — lista de tipos, recuentos y parámetros de agentes
 - **`assertions`** — comprobaciones de validación posteriores a la ejecución
 - **`gossip`** : definiciones de canales, presupuestos y configuraciones de confianza
 
@@ -45,8 +45,8 @@ export default defineScenario({
 
 Un tick es un paso de simulación. Durante cada tic:
 
-1. El motor llama `step(ctx)` a cada agente en orden
-2. Cada agente devuelve cero, una o hasta tres acciones
+1. El motor llama al `step(ctx)` a cada agente en orden
+2. Cada agente devuelve cero, una o hasta tres acciones.
 3. El paquete ejecuta cada acción contra el estado del protocolo.
 4. Se registran métricas, chismes y artefactos.
 
@@ -78,7 +78,7 @@ Cada tick, los agentes reciben un `TickContext` con:
 |----------|-------------|
 | `ctx.rng` | Generador de números aleatorios determinista |
 | `ctx.world` | Estado actual del protocolo |
-| `ctx.gossip` | Leer y publicar mensajes de chismes |
+| `ctx.gossip` | Leer y publicar mensajes de chismes. |
 | `ctx.capabilities` | Contratos, herramientas y plantillas de acción disponibles |
 | `ctx.tick` | Número de marca actual |
 | `ctx.tickSeconds` | Segundos simulados por tick |
@@ -90,7 +90,7 @@ Cada tick, los agentes reciben un `TickContext` con:
 Los agentes pueden persistir en el estado entre ticks:
 
 - **`this.remember(key, value)`** - almacenar un valor
-- **`this.recall(key)`** - recuperar un valor almacenado
+- **`this.recall(key)`** — recuperar un valor almacenado
 - **`this.setCooldown(name, ticks)`** — límite de velocidad de una acción
 - **`this.isOnCooldown(name)`** — comprobar el estado de enfriamiento
 
@@ -109,11 +109,11 @@ return [
 
 <a id="persona-llm-agents"></a>
 
-### Persona LLM Agentes
+### Agentes personales de LLM
 
 `PersonaLlmAgentBase` proporciona una base reutilizable para agentes impulsados por LLM con:
 
-- Perfil de persona (id, estilo, objetivos, perfil de riesgo, preferencias de herramientas)
+- Perfil de persona (identificación, estilo, objetivos, perfil de riesgo, preferencias de herramientas)
 - Conjunto de avisos estructurado con contexto de manifiesto de capacidad total
 - Bucle OODA de dos etapas: planifique y luego actúe, con respaldo al análisis de un solo disparo
 - Intenciones de acción validadas por esquema a través de Zod
@@ -128,7 +128,7 @@ Los paquetes son adaptadores de protocolo. Conectan AgentForge con sus contratos
 
 - **`setup()`** — implementar contratos, inicializar estado
 - **`executeAction(action)`** — ejecutar la acción de un agente contra el protocolo
-- **`getWorldState()`** — devuelve el estado actual del protocolo para que los agentes lo observen
+- **`getWorldState()`** : devuelve el estado actual del protocolo para que los agentes lo observen
 - **`getCapabilityManifest()`** : describe los contratos, funciones y plantillas de acción disponibles
 
 El `ToyPack` integrado proporciona un entorno sencillo de simulación de precios para empezar.
@@ -137,14 +137,14 @@ El `ToyPack` integrado proporciona un entorno sencillo de simulación de precios
 
 <a id="gossip"></a>
 
-## Chismes
+## chismes
 
 El bus de chismes permite la comunicación entre agentes:
 
-- **Canales** : transmisión global o canales de estrategia específicos con listas de miembros
+- **Canales** : canales de transmisión global o de estrategia específica con listas de miembros
 - **Mensajes de formato libre** : cargas de texto con puntuaciones `credibilityPrior` opcionales (0-1)
 - **Presupuestos** : configurables `maxPostsPerTick` y `maxReadsPerTick` por agente
-- **Enfriamientos** — por canal `postCooldownTicks` para limitar la velocidad de publicación
+- **Enfriamientos** - por canal `postCooldownTicks` para limitar la velocidad de publicación
 
 ```typescript
 gossip: {
@@ -166,7 +166,7 @@ Los canales estratégicos son útiles para la coordinación exclusiva de LLM sin
 
 Misma semilla + mismo escenario = resultados idénticos. Toda la aleatoriedad fluye a través de un RNG sembrado. Esto permite:
 
-- **CI reproducible** : las afirmaciones pasan o fallan consistentemente
+- **CI reproducible** : las afirmaciones se aprueban o fallan de manera consistente
 - **Repetir** : vuelva a ejecutar los seguimientos de exploración de forma determinista frente a contratos actualizados
 - **Comparación** - diferencia dos ejecuciones con `forge-sim compare`
 

@@ -1,21 +1,17 @@
 ---
-title: "Crear demostración Elata "
-description: "Cree una aplicación de inicio Elata lista para ejecutar a partir de una plantilla."
+title: "Crear demostración de Elata"
+description: "Cree una aplicación de inicio de Elata lista para ejecutar a partir de una plantilla."
 ---
 
 <Warning>
-  **Problema conocido:** el `create-elata-demo` 0.12.1 del repositorio tiene un bloqueador de empaquetado y no se inicia sin los metadatos del espacio de trabajo hermano. Verifique una versión fija antes de usarla. Por ahora, siga
-  [Agregar rPPG a una aplicación existente](/es/sdk/tutorials/rppg-existing-app) para configurar
-  el SDK en su propia aplicación web. Ver [Qué hay en vivo](/es/overview/status).
+**Problema conocido:** el `create-elata-demo` 0.12.1 del repositorio tiene un bloqueador de empaquetado y no se inicia sin los metadatos del espacio de trabajo hermano. Verifique una versión fija antes de usarla. Por ahora, siga [Agregar rPPG a una aplicación existente](/es/sdk/tutorials/rppg-existing-app) para configurar el SDK en su propia aplicación web. Ver [Qué hay en vivo](/es/overview/status).
 </Warning>
 
 <a id="what-it-is"></a>
 
-## Que es
+## que es
 
-`@elata-biosciences/create-elata-demo` genera una aplicación Vite + React que funciona
-cableado al Elata SDK. Es la forma más rápida de ejecutar una aplicación y
-una línea de base en buen estado antes de integrar los SDK en su propio proyecto.
+`@elata-biosciences/create-elata-demo` genera una aplicación Vite + React funcional conectada al SDK de Elata. Es la forma más rápida de ejecutar una aplicación y una base de referencia conocida antes de integrar los SDK en su propio proyecto.
 
 ---
 
@@ -23,18 +19,16 @@ una línea de base en buen estado antes de integrar los SDK en su propio proyect
 
 ## Plantillas
 
-| Plantilla | Alias | Lo que obtienes | Hardware |
+| Plantilla | Alias | lo que obtienes | Hardware |
 | --- | --- | --- | --- |
-| `rppg-demo` | `rppg` | Pulso de cámara y rPPG arrancador. **El valor predeterminado.** | Cámara web |
-| `eeg-demo` | `eeg` | Navegador EEG arrancador para cableado SDK , con Muse Web Bluetooth soporte | Muse (opcional) |
-| `eeg-ble` | `ble` | Bluetooth primero EEG iniciador con el flujo de emparejamiento del navegador | Muse |
-| `ppg-demo` | `ppg`, `muse-ppg` | Diadema PPG arrancador mostrando BPM, RMSSD y diagnóstico en vivo | Muse |
-| `pulse-game` | `pulse`, `recovery` | rPPG juego de recuperación que se ejecuta en un iframe de espacio aislado y guarda puntuaciones con `app-metrics`, de extremo a extremo | Cámara web |
+| `rppg-demo` | `rppg` | Pulso de cámara y arranque rPPG . **El valor predeterminado.** | cámara web |
+| `eeg-demo` | `eeg` | Navegador EEG iniciador para cableado SDK, con soporte Muse Web Bluetooth | Musa (opcional) |
+| `eeg-ble` | `ble` | Iniciador Bluetooth EEG primero con el flujo de emparejamiento del navegador | musa |
+| `ppg-demo` | `ppg`, `muse-ppg` | Arrancador de diadema PPG que muestra BPM, RMSSD y diagnóstico en vivo | musa |
+| `pulse-game` | `pulse`, `recovery` | rPPG juego de recuperación que se ejecuta en un iframe de espacio aislado y guarda puntuaciones con `app-metrics`, de principio a fin | cámara web |
 
 <Tip>
-¿Edificio para Elata? `pulse-game` muestra el patrón Elata completo:
-  la aplicación se ejecuta en un iframe y se comunica con un host a través del puente de métricas
-  [](/es/apps/platform/metrics-and-scores).
+¿Edificio para Elata? `pulse-game` muestra el patrón Elata completo: la aplicación se ejecuta en un iframe y habla con un host a través del puente de métricas [](/es/apps/platform/metrics-and-scores).
 </Tip>
 
 ---
@@ -72,24 +66,22 @@ pnpm dlx @elata-biosciences/create-elata-demo --list-templates
 | `--template <name>` o `--template=<name>` | Elija una plantilla o alias |
 | `--list-templates` | Imprime las plantillas disponibles |
 
-Sin `--template`, CLI le pide que elija uno cuando se ejecuta de forma interactiva, y
-usa `rppg-demo` en caso contrario. Si omite el directorio del proyecto, le solicitará
-un nombre.
+Sin `--template`, la CLI le pide que elija uno cuando se ejecuta de forma interactiva y usa `rppg-demo` en caso contrario. Si omite el directorio del proyecto, le pedirá un nombre.
 
 ---
 
 <a id="what-you-get"></a>
 
-## Lo que obtienes
+## lo que obtienes
 
 Cada aplicación generada incluye:
 
-- una aplicación Vite + React + TypeScript 
-- Elata paquetes anclados a un conjunto de versiones compatibles
+- una aplicación Vite + React + TypeScript
+- Paquetes de Elata anclados a un conjunto de versiones compatibles
 - una plantilla específica `README.md`
 - `npm run dev`: inicia el servidor de desarrollo
 - `npm run build`: escriba la verificación y construya en `dist/`
-- `npm run build:zip`: compila y escribe `app.zip`, listo para [cargar en Elata](/es/apps/build/launch-your-app)
+- `npm run build:zip`: construye y escribe `app.zip`, listo para [subir a Elata](/es/apps/build/launch-your-app)
 
 ```bash
 cd my-app
@@ -101,10 +93,9 @@ npm run dev
 
 <a id="inside-another-pnpm-workspace"></a>
 
-## Dentro de otro pnpm espacio de trabajo
+## Dentro de otro espacio de trabajo pnpm
 
-Si realiza un scaffolding dentro de un espacio de trabajo `pnpm` existente que no incluye el nuevo
-carpeta, instálelo y ejecútelo fuera del espacio de trabajo:
+Si realiza scaffolding dentro de un espacio de trabajo `pnpm` existente que no incluye la nueva carpeta, instálelo y ejecútelo fuera del espacio de trabajo:
 
 ```bash
 pnpm --dir my-app --ignore-workspace install
@@ -117,7 +108,7 @@ pnpm --dir my-app --ignore-workspace run dev
 
 ## ¿Andamio o aplicaciones de ejemplo?
 
-| Si quieres... | Utiliza |
+| Si quieres... | uso |
 | --- | --- |
 | Un inicio limpio con dependencias fijadas | `create-elata-demo` |
 | Aplicaciones completas en forma de producto con enrutamiento, bucles de juego y gráficos | [Aplicaciones de ejemplo](/es/sdk/guides/example-apps) |

@@ -2,50 +2,12 @@
   "englishPages": 108,
   "cnPages": 108,
   "esPages": 108,
-  "compiled": 315,
-  "codeParity": 210,
-  "componentParity": 210,
+  "compiled": 324,
+  "codeParity": 216,
+  "componentParity": 216,
   "localeLinkLeaks": [],
   "brokenLinks": [],
   "invalidAnchors": [],
-  "baselineIssues": [
-    {
-      "path": "apps/ai-tools/claude-code.mdx",
-      "error": "118:17: Unexpected character `2` (U+0032) before attribute value, expected a character that can start an attribute value, such as `\"`, `'`, or `{`"
-    },
-    {
-      "path": "apps/ai-tools/cursor.mdx",
-      "error": "118:17: Unexpected character `2` (U+0032) before attribute value, expected a character that can start an attribute value, such as `\"`, `'`, or `{`"
-    },
-    {
-      "path": "apps/ai-tools/windsurf.mdx",
-      "error": "118:17: Unexpected character `2` (U+0032) before attribute value, expected a character that can start an attribute value, such as `\"`, `'`, or `{`"
-    }
-  ],
-  "errors": [
-    {
-      "path": "cn/apps/ai-tools/claude-code.mdx",
-      "error": "136:17: Unexpected character `2` (U+0032) before attribute value, expected a character that can start an attribute value, such as `\"`, `'`, or `{`"
-    },
-    {
-      "path": "es/apps/ai-tools/claude-code.mdx",
-      "error": "140:17: Unexpected character `2` (U+0032) before attribute value, expected a character that can start an attribute value, such as `\"`, `'`, or `{`"
-    },
-    {
-      "path": "cn/apps/ai-tools/cursor.mdx",
-      "error": "136:17: Unexpected character `2` (U+0032) before attribute value, expected a character that can start an attribute value, such as `\"`, `'`, or `{`"
-    },
-    {
-      "path": "es/apps/ai-tools/cursor.mdx",
-      "error": "140:17: Unexpected character `2` (U+0032) before attribute value, expected a character that can start an attribute value, such as `\"`, `'`, or `{`"
-    },
-    {
-      "path": "cn/apps/ai-tools/windsurf.mdx",
-      "error": "136:17: Unexpected character `2` (U+0032) before attribute value, expected a character that can start an attribute value, such as `\"`, `'`, or `{`"
-    },
-    {
-      "path": "es/apps/ai-tools/windsurf.mdx",
-      "error": "140:17: Unexpected character `2` (U+0032) before attribute value, expected a character that can start an attribute value, such as `\"`, `'`, or `{`"
-    }
-  ]
+  "baselineIssues": [],
+  "errors": []
 }

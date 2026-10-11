@@ -1,14 +1,14 @@
 ---
-title: "CLI Referencia"
-tag: "Archived"
-description: "Referencia completa de comandos y opciones para AgentForge CLI"
+title: "Referencia CLI"
+tag: "Archivado"
+description: "Referencia completa de comandos y opciones para la CLI de AgentForge"
 ---
 
 <a id="installation"></a>
 
 ## Instalación
 
-El CLI está disponible como `forge-sim` (o `agentforge`) después de instalar el paquete:
+La CLI está disponible como `forge-sim` (o `agentforge`) después de instalar el paquete:
 
 ```bash
 pnpm add @elata-biosciences/agentforge
@@ -47,8 +47,8 @@ forge-sim run --toy                          # Run built-in demo scenario
 | `--out <dir>` | Directorio de salida para artefactos |
 | `--mode <mode>` | `deterministic` (predeterminado), `exploration`o `replay` |
 | `--replay-bundle <path>` | Ruta del paquete de reproducción (para `--mode replay`) |
-| `--capture-memory` | Instantáneas de memoria del agente persistente |
-| `--live` | Habilitar transmisión de eventos WebSocket en vivo |
+| `--capture-memory` | Persistir instantáneas de memoria del agente |
+| `--live` | Habilitar la transmisión de eventos WebSocket en vivo |
 | `--ci` | Modo CI: sin colores, denominación estable |
 | `--verbose` | Registro detallado |
 | `--json` | Resultados de salida como JSON |
@@ -132,7 +132,7 @@ forge-sim doctor
 
 ### `forge-sim types`
 
-Genere TypeScript tipos a partir de artefactos de Foundry.
+Genere tipos de TypeScript a partir de artefactos de Foundry.
 
 ```bash
 forge-sim types
@@ -148,11 +148,11 @@ AgentForge está diseñado para canalizaciones de CI. Códigos de salida:
 
 | Código | Significado |
 |------|---------|
-| `0` | Todas las afirmaciones fueron aprobadas |
-| `1` | Una o más aserciones fallaron |
+| `0` | Todas las afirmaciones pasaron |
+| `1` | Una o más afirmaciones fallaron |
 | `2` | Error de infraestructura |
 
-Ejemplo GitHub Flujo de trabajo de acciones:
+Ejemplo de flujo de trabajo de acciones de GitHub:
 
 ```yaml
 - name: Run simulations

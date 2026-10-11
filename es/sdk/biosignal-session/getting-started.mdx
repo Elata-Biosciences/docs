@@ -5,29 +5,26 @@ description: "Grabe sesiones de bioseñales multisensor localmente con @elata-bi
 ---
 
 <Warning>
-  `@elata-biosciences/biosignal-session` aún no está publicado en npm . El API a continuación refleja la fuente en el repositorio [SDK ](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-session) y puede cambiar antes del primer lanzamiento.
+`@elata-biosciences/biosignal-session` aún no está publicado en npm. La API a continuación refleja la fuente en el [repositorio SDK](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-session) y puede cambiar antes del primer lanzamiento.
 </Warning>
 
 <a id="what-it-does"></a>
 
-## Qué hace
+## que hace
 
-`@elata-biosciences/biosignal-session` registra una sesión de bioseñal (EEG, PPG,
-rPPG métricas y más) como un conjunto de flujos escritos, fragmentados en
-[Apache autónomo Arrow](https://arrow.apache.org/) archivos. La grabación es **solo local**:
-el paquete no tiene cliente de red.
+`@elata-biosciences/biosignal-session` registra una sesión de bioseñal (EEG, PPG, rPPG métricas y más) como un conjunto de flujos escritos, fragmentados en [Apache Arrow autónomo](https://arrow.apache.org/) archivos. La grabación es **solo local**: el paquete no tiene cliente de red.
 
 Está diseñado para brindar confiabilidad:
 
 - cada fragmento lleva una suma de comprobación CRC32C y una identidad `(session, stream, sequence)` idempotente
-- la grabadora vuelve a intentarlo, aplica contrapresión y nunca pierde datos en silencio
+- la grabadora vuelve a intentarlo, aplica contrapresión y nunca deja caer datos en silencio
 - las brechas reales se registran como discontinuidades explícitas, nunca interpoladas
 
 ---
 
 <a id="the-model"></a>
 
-## El modelo
+## el modelo
 
 ```
 Session ─┬─ Source   (headset, camera, synthetic)
@@ -36,21 +33,18 @@ Session ─┬─ Source   (headset, camera, synthetic)
          └─ Event    (markers and annotations)
 ```
 
-El tiempo es un entero relativo a la sesión **microsegundos**, anclado una vez cuando el
-comienza la sesión.
+El tiempo es un entero relativo a la sesión **microsegundos**, anclado una vez cuando comienza la sesión.
 
 ---
 
-<a id="roles"></a>
-
-## Funciones
+## Roles
 
 Una grabación tiene dos caras que hablan por un `MessagePort`:
 
 | Lado | Responsabilidad | Proporcionado por este paquete |
 | --- | --- | --- |
-| **Grabador** (su aplicación) | Almacena muestras, cierra fragmentos, codifica Arrow, sumas de verificación, reintentos | Sí: `RecorderCore`, adaptadores de dispositivos, un lanzador de trabajadores |
-| **Host** (incrustador confiable) | Almacena fragmentos de forma duradera y reconoce cada uno de ellos | Un host en memoria de referencia para pruebas (`createMemoryHost`) |
+| **Grabadora** (tu aplicación) | Almacena muestras, cierra fragmentos, codifica Arrow, sumas de comprobación, reintentos | Sí: `RecorderCore`, adaptadores de dispositivos, un lanzador de trabajadores |
+| **Anfitrión** (incrustador confiable) | Almacena fragmentos de forma duradera y reconoce cada uno de ellos. | Un host en memoria de referencia para pruebas (`createMemoryHost`) |
 
 <Note>
 La tienda de aplicaciones tiene un host local experimental en `feat/long-local-analytics`, deshabilitado en producción. Utilice su propia página de host o el host en memoria para el desarrollo y las pruebas, o siga las [sesiones e información local](/es/users/local-sessions-and-insights) para el flujo de desarrollo de la tienda de aplicaciones. Se trata de almacenamiento local del navegador, no de alojamiento en la nube.
@@ -60,17 +54,17 @@ La tienda de aplicaciones tiene un host local experimental en `feat/long-local-a
 
 <a id="install"></a>
 
-## Instalar
+## Instalación
 
 ```bash
 # Not on npm yet. This command works after the first release.
 npm install @elata-biosciences/biosignal-session
 ```
 
-| Importar | Contenido |
+| Importar | Contenidos |
 | --- | --- |
 | `@elata-biosciences/biosignal-session` | Contratos, tipos de protocolo, códigos de error, ayudantes de tiempo, CRC32C |
-| `@elata-biosciences/biosignal-session/browser` | `RecorderCore`, protocolo de enlace, Arrow codificar/decodificar, adaptadores de dispositivos, iniciador de trabajadores |
+| `@elata-biosciences/biosignal-session/browser` | `RecorderCore`, protocolo de enlace, codificación/decodificación de flechas, adaptadores de dispositivos, iniciador de trabajadores |
 | `@elata-biosciences/biosignal-session/testing` | Fuente sintética, host en memoria, reloj falso, arnés de grabadora |
 
 ---
@@ -79,7 +73,7 @@ npm install @elata-biosciences/biosignal-session
 
 ## Adaptadores de dispositivos
 
-Envuelve los SDK objetos que ya utilizas como fuentes de grabación:
+Ajusta los objetos del SDK que ya utilizas como fuentes de grabación:
 
 - `createHeadbandSource(transport)`: a `HeadbandTransport` de `eeg-web` / `eeg-web-ble`
 - `createRppgSource(options)`: una sesión `rppg-web` 
@@ -91,8 +85,7 @@ Envuelve los SDK objetos que ya utilizas como fuentes de grabación:
 
 ## Pruébalo sin hardware
 
-La entrada de prueba ejecuta una grabación completa en un host en memoria con un
-fuente sintética sembrada. Horas de señal virtual ejecutadas en segundos:
+La entrada de prueba ejecuta una grabación completa en un host en memoria con una fuente sintética inicializada. Horas de señal virtual ejecutadas en segundos:
 
 ```ts
 import {
@@ -119,9 +112,7 @@ h.core.state();               // "complete"
 
 ## Leer fragmentos atrás
 
-Cada fragmento es un archivo IPC Arrow completo que lleva su propio esquema y
-identidad, por lo que puedes decodificar una por sí sola, en JavaScript o en Python con
-`pyarrow`:
+Cada fragmento es un archivo Arrow IPC completo que lleva su propio esquema e identidad, por lo que puedes decodificar uno solo, en JavaScript o Python con `pyarrow`:
 
 ```ts
 import { decodeChunk, readFloat32Column } from '@elata-biosciences/biosignal-session/browser';
@@ -134,11 +125,8 @@ const tp9 = readFloat32Column(table, 'TP9');
 
 <a id="full-guide"></a>
 
-## Guía completa
+## guía completa
 
-El flujo de grabación paso a paso (ancla de reloj, apretón de manos, secuencias de apertura,
-enviar muestras, finalizar) y las garantías del anfitrión se encuentran en la
-[guía de grabación](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/guides/using-biosignal-sessions.md).
-Las herramientas de IA pueden leer `node_modules/@elata-biosciences/biosignal-session/llms.txt`.
+El flujo de grabación paso a paso (anclaje del reloj, apretón de manos, apertura de transmisiones, envío de muestras, finalización) y las garantías del anfitrión se encuentran en la [guía de grabación](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/guides/using-biosignal-sessions.md). Las herramientas de IA pueden leer `node_modules/@elata-biosciences/biosignal-session/llms.txt`.
 
 Para analizar lo que registra, consulte [biosignal-analytics](/es/sdk/biosignal-analytics/getting-started).

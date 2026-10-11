@@ -13,23 +13,23 @@ Los pagos deben estar habilitados y configurados en la implementación. Ver [Qu�
 
 ## Elige qué vender
 
-| Modelo | Adecuado para | Lo que construyes |
+| modelo | Adecuado para | lo que construyes |
 | --- | --- | --- |
-| [Compras dentro de la aplicación](/es/apps/platform/in-app-purchases) | Desbloqueo único de características, niveles o cosméticos | Crea productos, luego integra `app-payments` y aplica el beneficio comprado |
-| [Suscripción a la aplicación](/es/apps/platform/subscriptions) | Acceso mensual a toda la aplicación | Configure un plan mensual; Elata maneja la puerta de acceso |
+| [Compras dentro de la aplicación](/es/apps/platform/in-app-purchases) | Desbloqueos únicos de funciones, niveles o cosméticos | Cree productos, luego integre `app-payments` y aplique el beneficio comprado |
+| [Suscripción a la aplicación](/es/apps/platform/subscriptions) | Acceso mensual a toda la aplicación. | Configurar un plan mensual; Elata se encarga de la puerta de acceso |
 
 Puedes ofrecer ambos. Una suscripción a una aplicación proporciona acceso a la aplicación, mientras que la propiedad del artículo permanece separada. Un identificador de artículo único no admite compras repetidas de consumibles.
 
 <a id="set-up-monetization"></a>
 
-## Configurar monetización
+## Configurar la monetización
 
 <Steps>
   <Step title="Compruebe quién recibe las ganancias">
 Abra **Comercio → Fondos** e inspeccione la billetera de pagos. Los pagos directos de aplicaciones utilizan la billetera del creador de la aplicación como destino. Confirma que lo controlas antes de ofrecer contenido pago. Agregar miembros al equipo no crea pagos compartidos.
   </Step>
   <Step title="Crear productos o un plan mensual">
-En **Productos**, cree un título, una descripción, un precio, una imagen opcional y un estado activo. Elata asigna el estable `contentId` que usa tu aplicación. En **Suscripción mensual**, establezca un precio mensual USDC positivo, duración de la prueba y estado activo. Cada sección tiene su propia acción de guardar.
+En **Productos**, cree un título, una descripción, un precio, una imagen opcional y un estado activo. Elata asigna el establo `contentId` que utiliza tu aplicación. En **Suscripción mensual**, establezca un precio mensual USDC positivo, duración de la prueba y estado activo. Cada sección tiene su propia acción de guardar.
   </Step>
   <Step title="Conecta elementos a tu aplicación">
 Para los artículos, lea el catálogo y la propiedad a través de `app-payments`, solicite el pago y aplique el beneficio después del éxito. Restaura los beneficios propios cuando se carga la aplicación. Consulte [Compras dentro de la aplicación](/es/apps/platform/in-app-purchases) para conocer la integración.
@@ -48,7 +48,7 @@ Revise **Ingresos** y **Transacciones**, luego use **Fondos → Administrar fond
 
 El comprador paga USDC a través del divisor. El divisor deduce la tarifa de la plataforma configurada y envía su parte directamente a la billetera de pagos. Elata no mantiene un saldo de creador separado que luego reclamas.
 
-La tarjeta de fondos muestra el saldo actual de la billetera USDC en Base. Puede incluir otros depósitos e ingresos de otras aplicaciones que usan esa billetera, y disminuye cuando envías fondos. No es un total de ingresos específico de la aplicación.
+La tarjeta de Fondos muestra el saldo actual de la billetera USDC en Base. Puede incluir otros depósitos e ingresos de otras aplicaciones que usan esa billetera, y disminuye cuando envías fondos. No es un total de ingresos específico de la aplicación.
 
 <a id="fees-and-reporting"></a>
 

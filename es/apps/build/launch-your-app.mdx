@@ -5,11 +5,9 @@ description: "Paso a paso a través del asistente para crear una aplicación, de
 
 <a id="overview"></a>
 
-## Descripción general
+## Información general
 
-La publicación se realiza en el asistente **Crear una aplicación** en
-[app.elata.bio/build-app](https://app.elata.bio/build-app). Tiene cuatro pasos.
-Tu progreso se guarda como borrador, para que puedas salir y regresar.
+La publicación se realiza en el asistente **Crear una aplicación** en [app.elata.bio/build-app](https://app.elata.bio/build-app). Tiene cuatro pasos. Tu progreso se guarda como borrador, para que puedas salir y regresar.
 
 ```
 Build → Register → Upload → Publish
@@ -19,11 +17,11 @@ Build → Register → Upload → Publish
 
 <a id="1-build"></a>
 
-## 1. Construir
+## 1. construir
 
 El primer paso es una lista de verificación. Antes de continuar debes tener:
 
-- una aplicación creada con Elata SDK y probada localmente
+- una aplicación creada con un SDK de Elata y probada localmente
 - una producción `.zip` lista para subir
 
 Si realizó un scaffolding con `create-elata-demo`, ejecute:
@@ -32,8 +30,7 @@ Si realizó un scaffolding con `create-elata-demo`, ejecute:
 npm run build:zip
 ```
 
-Esto compila la aplicación y escribe `app.zip` con `index.html` en su raíz, que es
-el formato Elata espera.
+Esto compila la aplicación y escribe `app.zip` con `index.html` en su raíz, que es el formato que espera Elata.
 
 ---
 
@@ -41,12 +38,9 @@ el formato Elata espera.
 
 ## 2. Regístrate
 
-Elija el nombre de su aplicación (hasta 50 caracteres). Elata comprueba que el nombre sea
-disponible y le da a su aplicación una URL corta, utilizada en
-`app.elata.bio/app/<slug>`.
+Elija el nombre de su aplicación (hasta 50 caracteres). Elata verifica que el nombre esté disponible y le proporciona a su aplicación una URL corta, utilizada en `app.elata.bio/app/<slug>`.
 
-Luego paga la tarifa única de registro en USDC. La cantidad se muestra en el
-mago.
+Luego paga la tarifa única de registro en USDC. El importe se muestra en el asistente.
 
 ---
 
@@ -54,15 +48,12 @@ mago.
 
 ## 3. Subir
 
-Sube tu `app.zip`. Elata lo valida inmediatamente: tipo de archivo, tamaño,
-una entrada `index.html` , rutas seguras y un uso SDK . Si falta algo,
-ver exactamente qué arreglar.
+Sube tu `app.zip`. Elata lo valida inmediatamente: tipo de archivo, tamaño, una entrada `index.html` , rutas seguras y uso del SDK. Si falta algo, verás exactamente qué arreglar.
 
 Una vez que pase, prueba tu aplicación en la ventana de reproducción. Así lo verán los usuarios.
 
 <Tip>
-Agregue un [`elata.json`](/es/apps/build/elata-json) a su compilación para que el lanzamiento
-  muestra su número de versión.
+Agregue un [`elata.json`](/es/apps/build/elata-json) a su compilación para que la versión muestre su número de versión.
 </Tip>
 
 ---
@@ -71,15 +62,14 @@ Agregue un [`elata.json`](/es/apps/build/elata-json) a su compilación para que 
 
 ## 4. Publicar
 
-Complete su listado Elata :
+Complete su listado de Elata:
 
 - **Icono de aplicación** (obligatorio)
 - **Imagen de encabezado** (obligatorio)
 - **Descripción**, categoría y etiquetas
 - **Capturas de pantalla** (opcional, hasta 10)
 
-Luego haga clic en **Enviar para revisión**. Su liberación pasa por el proceso automatizado.
-escaneo de seguridad y revisión del moderador descritos en [Ciclo de vida de la aplicación](/es/apps/app-lifecycle).
+Luego haga clic en **Enviar para revisión**. Su lanzamiento pasa por el análisis de seguridad automatizado y la revisión del moderador que se describen en [Ciclo de vida de la aplicación](/es/apps/app-lifecycle).
 
 ---
 
@@ -88,8 +78,8 @@ escaneo de seguridad y revisión del moderador descritos en [Ciclo de vida de la
 ## Después de enviar
 
 - Realice un seguimiento del estado de la revisión en la página de su aplicación y en las notificaciones de Elata.
-- Invita hasta 10 amigos de prueba a probar el borrador antes de que se apruebe.
-- Envía actualizaciones más tarde desde la página **Editar** de tu aplicación. Cada nueva carga crea una nueva versión.
+- Invita a hasta 10 amigos de prueba a probar el borrador antes de que se apruebe.
+- Envíe actualizaciones más tarde desde la página **Editar** de su aplicación. Cada nueva carga crea una nueva versión.
 
 ---
 

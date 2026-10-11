@@ -7,13 +7,12 @@ description: "Límites de carga, URL autohospedadas, entorno de pruebas en el qu
 
 ## Dos formas de hospedar
 
-| Opción | Cómo funciona | Cuándo usarlo |
+| Opción | como funciona | Cuando usarlo |
 | --- | --- | --- |
-| **Elata-hosted** (predeterminado) | Cargue un archivo `.zip` o un único archivo `.html` . Elata lo sirve. | Casi siempre |
-| **Autohospedado** | Proporcione a Elata una URL pública `https://` . Elata lo incrusta. | Apps que necesitan su propio servidor. Requiere aprobación del Elata. |
+| **alojado en Elata** (predeterminado) | Cargue un archivo `.zip` o un único archivo `.html` . Elata lo sirve. | Casi siempre |
+| **Autohospedado** | Proporcione a Elata una URL pública `https://` . Elata lo incorpora. | Aplicaciones que necesitan su propio servidor. Requiere aprobación de Elata. |
 
-El código cargado se trata como contenido web estático (HTML, CSS, JS y activos). eso
-se ejecuta en el navegador del usuario y nunca se ejecuta en los servidores de Elata.
+El código cargado se trata como contenido web estático (HTML, CSS, JS y activos). Se ejecuta en el navegador del usuario y nunca se ejecuta en los servidores de Elata.
 
 ---
 
@@ -23,13 +22,12 @@ se ejecuta en el navegador del usuario y nunca se ejecuta en los servidores de E
 
 | Límite | Valor |
 | --- | --- |
-| Tamaño de carga | 200 MB |
-| Tamaño descomprimido | 500 MB |
-| Archivos en zip | 2,000 |
-| Tamaño de archivo único | 100 MB |
+| Tamaño de carga | 200 megas |
+| Tamaño descomprimido | 500 megas |
+| Archivos en un zip | 2,000 |
+| Tamaño de archivo único | 100 megas |
 
-El zip debe contener `index.html`. Las rutas de los archivos deben ser relativas y sencillas: no
-rutas absolutas, sin segmentos `..` y sin caracteres de control.
+El zip debe contener `index.html`. Las rutas de los archivos deben ser relativas y sencillas: sin rutas absolutas, sin segmentos `..` ni caracteres de control.
 
 ---
 
@@ -38,21 +36,20 @@ rutas absolutas, sin segmentos `..` y sin caracteres de control.
 ## Edificio para Elata
 
 - **Utilice URL relativas.** Las aplicaciones se sirven en una subruta, no en la raíz del dominio. Cargue activos y datos con rutas relativas (`./data.json`, no `/data.json`).
-- **Envíe los archivos WASM .** Mantenga los archivos `.wasm` empaquetados de SDKen la salida de su compilación.
+- **Envíe los archivos WASM .** Mantenga los archivos `.wasm` empaquetados del SDK en la salida de su compilación.
 - **Utilice el puente de Elata, no el almacenamiento del navegador, para cualquier cosa que importe.** Cada aplicación se ejecuta en su propio origen, por lo que `localStorage` funciona pero permanece en un dispositivo. Utilice [`app-state`](/es/apps/platform/app-state) para los datos que deben seguir al usuario.
-- **Solicite acceso a la cámara solo cuando sea necesario. Las aplicaciones** rPPG se ejecutan en el marco Elata y el navegador solicitará permiso para la cámara.
+- **Solicite acceso a la cámara solo cuando sea necesario.** rPPG las aplicaciones se ejecutan en el marco de Elata y el navegador solicitará permiso para la cámara.
 
 ---
 
 <a id="the-sandbox"></a>
 
-## El arenero
+## la caja de arena
 
-Cuando alguien reproduce su aplicación, Elata la carga en un iframe de espacio aislado en un
-origen aislado para su aplicación. En ese sandbox tu aplicación:
+Cuando alguien reproduce su aplicación, Elata la carga en un iframe de espacio aislado en un origen aislado para su aplicación. En ese sandbox tu aplicación:
 
 - **puede** ejecutar scripts, usar la cámara (con permiso), usar Web Bluetooth en navegadores compatibles, usar bloqueo de puntero y usar su propio almacenamiento
-- **no puede** leer las cookies o el almacenamiento de Elata, ver la billetera o la sesión del usuario o navegar por la página Elata 
+- **no puede** leer las cookies o el almacenamiento de Elata, ver la billetera o la sesión del usuario o navegar por la página de Elata
 
 Para hablar con Elata, utilice el [puente de host](/es/apps/platform/host-bridge).
 
@@ -62,14 +59,12 @@ Para hablar con Elata, utilice el [puente de host](/es/apps/platform/host-bridge
 
 ## Aplicaciones autohospedadas
 
-Para usar su propia URL, solicite alojamiento externo desde la página **Editar** de su aplicación.
-Una vez que Elata apruebe la solicitud, podrá publicar lanzamientos que apunten a una URL
-`https://` .
+Para usar su propia URL, solicite alojamiento externo desde la página **Editar** de su aplicación. Una vez que Elata apruebe la solicitud, podrá publicar lanzamientos que apunten a una URL `https://` .
 
 Las URL autohospedadas deben:
 
 - use `https://` y sea accesible públicamente
-- permite incrustarse en un marco (no envíe `X-Frame-Options: DENY` o un CSP `frame-ancestors` que excluya `app.elata.bio`)
+- permitir estar incrustado en un marco (no envíe `X-Frame-Options: DENY` o un CSP `frame-ancestors` que excluya `app.elata.bio`)
 
 Las URL autohospedadas también se comparan con un servicio de reputación de URL.
 
@@ -79,17 +74,14 @@ Las URL autohospedadas también se comparan con un servicio de reputación de UR
 
 ## Instalación de pantalla de inicio (PWA)
 
-Cuando alguien instala su aplicación desde su página de reproducción (**Agregar a la pantalla de inicio**), Elata
- hace que la instalación utilice **el nombre y el ícono de su** si su paquete incluye
-manifiesto web:
+Cuando alguien instala su aplicación desde su página de reproducción (**Agregar a la pantalla de inicio**), Elata hace que la instalación utilice **el nombre y el icono de su** aplicación si su paquete incluye un manifiesto web:
 
 1. Agregue `manifest.webmanifest` (o `manifest.json`) junto a `index.html`.
-2. Vincúlalo desde tu HTML: `<link rel="manifest" href="manifest.webmanifest">`. Utilice rutas relativas.
-3. Incluye al menos un ícono. Un PNG enmascarable de 512 × 512 funciona mejor.
+2. Enlázalo desde tu HTML: `<link rel="manifest" href="manifest.webmanifest">`. Utilice rutas relativas.
+3. Incluye al menos un icono. Un PNG enmascarable de 512 × 512 funciona mejor.
 4. Establezca `name`, `short_name`, `theme_color`y `background_color`.
 
-Elata administra `start_url`, `scope`y `display` para que la aplicación instalada
-se vuelve a abrir correctamente. Sin un manifiesto, la instalación utiliza su listado Elata nombre e imagen.
+Elata administra `start_url`, `scope`y `display` para que la aplicación instalada se vuelva a abrir correctamente. Sin un manifiesto, la instalación utiliza el nombre y la imagen de su listado de Elata.
 
 ---
 

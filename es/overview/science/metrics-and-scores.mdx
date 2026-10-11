@@ -5,19 +5,18 @@ description: "Cómo Elata convierte las señales en características y puntuacio
 
 Hay dos cosas diferentes en esta área, con estados diferentes:
 
-| | Qué es | Estado |
+|| que es | Estado |
 | --- | --- | --- |
-| **SDK puntuaciones de titulares** | Fórmulas de puntuación de código abierto en `biosignal-analytics` que los constructores pueden ejecutar con sus propios datos | Experimental (solo fuente, no en npm) |
-| **La puntuación biométrica en Elata** | Una puntuación entre aplicaciones por usuario, creada a partir de informes de aplicaciones de resultados derivados con consentimiento | En vivo |
+| **Puntuaciones de titulares del SDK** | Fórmulas de puntuación de código abierto en `biosignal-analytics` que los constructores pueden ejecutar con sus propios datos | Experimental (solo fuente, no en npm) |
+| **La puntuación biométrica en Elata** | Una puntuación entre aplicaciones por usuario, creada a partir de informes de aplicaciones de resultados derivados con consentimiento | Disponible |
 
 ---
 
 <a id="from-signals-to-features"></a>
 
-## De señales a funciones
+## De señales a características
 
-Antes de cualquier puntuación, el SDK calcula las **características**: bien definidas, reproducibles
-números.
+Antes de cualquier puntuación, el SDK calcula **características**: números reproducibles y bien definidos.
 
 - **EEG características de la ventana:** potencias de banda (absoluta, relativa, logarítmica), entropía espectral, frecuencia dominante, pico alfa, parámetros de Hjorth e indicadores de calidad
 - **Funciones de pulso:** frecuencia cardíaca, RMSSD, SDNN y calidad de la señal
@@ -28,35 +27,33 @@ números.
 
 <a id="sdk-headline-scores"></a>
 
-## SDK puntuaciones de titulares
+## Puntuaciones de titulares del SDK
 
 <Warning>
-Experimental. `biosignal-analytics` está disponible como código fuente y puede
-  cambiar antes de su primer lanzamiento npm .
+Experimental. `biosignal-analytics` está disponible como código fuente y puede cambiar antes de su primer lanzamiento de npm.
 </Warning>
 
 | Puntuación | Describe |
 | --- | --- |
 | **Calidad de medición** | La grabación, no la persona. Siempre disponible junto con cualquier otra partitura. |
-| **Activación** | Qué tan lejos se movió la excitación fisiológica desde la línea base de la persona |
-| **Recuperación** | Qué tan bien volvió a bajar la excitación después de una activación |
+| **Activación** | ¿Qué tan lejos se movió la excitación fisiológica desde la línea de base de la persona? |
+| **Recuperación** | ¿Qué tan bien volvió a bajar la excitación después de una activación? |
 | **Enfoque** | Compromiso durante una tarea |
-| **Preparación** | Estado diario frente a la línea de base personal |
-| **Resiliencia** | Con qué constancia alguien se recupera con el tiempo |
+| **Preparación** | Estado del día a día frente a la línea de base personal |
+| **Resiliencia** | Qué tan consistentemente alguien se recupera con el tiempo |
 
-Estas son **interpretaciones de productos, nunca mediciones**, y el SDK dice
-entonces. Dos reglas de diseño los mantienen honestos:
+Estas son **interpretaciones de productos, nunca mediciones**, y el SDK así lo dice. Dos reglas de diseño los mantienen honestos:
 
 1. **Todos los contribuyentes son visibles.** Cada puntaje expone sus insumos con sus pesos, valores estandarizados y calidad.
-2. **Las puntuaciones se retienen.** En lugar de adivinar, una puntuación no devuelve ningún valor más una razón por la que no se puede calcular de manera responsable:
+2. **Las puntuaciones se retienen.** En lugar de adivinar, una puntuación no devuelve ningún valor más una razón por la cual no se puede calcular de manera responsable:
 
 | Razón | Significado |
 | --- | --- |
-| Faltan entradas | No se realizó la medición |
-| Calidad insuficiente | Estaba hecho muy mal para leer |
-| Línea de base insuficiente | No hay una línea de base personal utilizable para comparar con |
+| Faltan entradas | La medida no fue hecha |
+| Calidad insuficiente | Fue hecho demasiado mal para leer. |
+| Línea de base insuficiente | No existe una línea de base personal utilizable con la que comparar |
 | Sin contexto de tarea | Enfoque: no se estaba atendiendo nada |
-| Historial insuficiente | La preparación necesita 14 días calificados; La resiliencia necesita 21 días más 6 activaciones recuperadas |
+| Historia insuficiente | La preparación necesita 14 días calificados; La resiliencia necesita 21 días más 6 activaciones recuperadas |
 
 Una entrada faltante nunca se convierte silenciosamente en un valor medio neutral.
 
@@ -66,19 +63,17 @@ Una entrada faltante nunca se convierte silenciosamente en un valor medio neutra
 
 ## La puntuación biométrica en Elata
 
-La puntuación es un número único del 0 al 100 que refleja los resultados de un usuario.
-en todas las aplicaciones que usan, **solo si optan por**.
+La puntuación es un número único del 0 al 100 que refleja los resultados de un usuario en todas las aplicaciones que utiliza, **solo si opta por**.
 
 Cómo está construido:
 
 - **Las aplicaciones informan resultados de sesión derivados, nunca señal sin procesar.** Un informe dice, por ejemplo, que el nivel de calma del usuario pasó de 0,42 al inicio a 0,61 durante una sesión de cinco minutos, con su calidad de señal y confianza.
-- **La mejora relativa a la línea de base del usuario importa**, no los valores absolutos que difieren entre las personas.
+- **La mejora relativa a la línea de base del propio usuario importa**, no los valores absolutos que difieren entre las personas.
 - **Las sesiones de baja calidad se eliminan**y la puntuación se muestra como "calibrando" hasta que haya suficientes sesiones buenas para ser estable.
 - **El consentimiento se verifica en el servidor** para cada informe, por lo que una aplicación no puede contribuir sin él.
 - **Solo las aplicaciones aprobadas pueden contribuir.** Una aplicación necesita un permiso otorgado por Elata antes de que sus informes cuenten.
 
-Consulte [Privacidad y consentimiento](/es/overview/privacy-and-consent) y, para constructores,
-[Consentimiento e información](/es/apps/platform/consent-and-insights).
+Consulte [Privacidad y consentimiento](/es/overview/privacy-and-consent) y, para constructores, [Consentimiento e información](/es/apps/platform/consent-and-insights).
 
 ---
 
@@ -86,5 +81,5 @@ Consulte [Privacidad y consentimiento](/es/overview/privacy-and-consent) y, para
 
 ## Fuentes
 
-- [`biosignal-analytics` LÉAME](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) (repositorio público SDK )
+- [`biosignal-analytics` README](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) (repositorio público de SDK)
 - [Métricas y puntuaciones](/es/apps/platform/metrics-and-scores) (documentos del creador)

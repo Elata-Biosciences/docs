@@ -1,27 +1,23 @@
 ---
 title: "EEG Diademas"
-description: "Qué miden las cintas para la cabeza del consumidor EEG , cómo lo procesa el Elata SDK y qué puntuaciones de calma y concentración pueden y no pueden reclamar."
+description: "Qué miden las diademas EEG del consumidor, cómo lo procesa el SDK de Elata y qué puntuaciones de calma y concentración pueden y no pueden reclamar."
 ---
 
 <a id="the-principle"></a>
 
 ## El principio
 
-Las neuronas se comunican con pequeñas corrientes eléctricas. Cuando grandes grupos disparan
-juntos, la actividad combinada puede ser detectada por sensores en el cuero cabelludo. eso
-La grabación es un electroencefalograma **(EEG)**. Está dominado por ritmos en
-diferentes frecuencias:
+Las neuronas se comunican con pequeñas corrientes eléctricas. Cuando grupos grandes disparan juntos, la actividad combinada puede ser detectada por sensores en el cuero cabelludo. Esa grabación es un electroencefalograma **(EEG)**. Está dominado por ritmos en diferentes frecuencias:
 
-| Banda | Aprox. rango | A menudo asociado con |
+| banda | Aprox. rango | A menudo asociado con |
 | --- | --- | --- |
-| Delta | 1–4 Hz | Sueño profundo |
-| Theta | 4–8 Hz | Somnolencia, algunas tareas de memoria |
-| Alfa | 8–12 Hz | Vigilia relajada, especialmente con los ojos cerrados |
-| Beta | 13–30 Hz | Pensamiento activo, estado de alerta |
-| Gamma | 30+ Hz | Procesamiento rápido; también muy contaminado por la actividad muscular |
+| delta | 1–4 Hz | sueño profundo |
+| theta | 4–8 Hz | Somnolencia, algunas tareas de memoria. |
+| Alfa | 8-12 Hz | Vigilia relajada, especialmente con los ojos cerrados. |
+| Beta | 13-30 Hz | Pensamiento activo, estado de alerta. |
+| gama | 30+Hz | Procesamiento rápido; también muy contaminado por la actividad muscular |
 
-Estas asociaciones son tendencias entre grupos de personas, no reglas para ningún grupo.
-momento único.
+Estas asociaciones son tendencias entre grupos de personas, no reglas para un momento determinado.
 
 ---
 
@@ -29,22 +25,20 @@ momento único.
 
 ## Diademas de consumo
 
-El Elata SDK apoya a la familia Muse durante Web Bluetooth:
+El SDK de Elata es compatible con la familia Muse a través de Web Bluetooth:
 
-| Dispositivo | EEG canales | Posiciones del sensor |
+| Dispositivo | EEG canales | Posiciones de los sensores |
 | --- | --- | --- |
-| Muse 2, Muse S | 4 | Detrás de las orejas (TP9, TP10) y en la frente (AF7, AF8) |
-| Muse S (Athena) | 8 | Canales adicionales en el protocolo más nuevo |
+| Musa 2, Musa S | 4 | Detrás de las orejas (TP9, TP10) y en la frente (AF7, AF8) |
+| Musa S (Atenea) | 8 | Canales adicionales en el protocolo más nuevo |
 
-Los sistemas aptos para investigación utilizan de 32 a 256 electrodos húmedos en una tapa. Una diadema utiliza un
-Un puñado de sensores secos en posiciones fijas. Eso lo hace cómodo y
-asequible y limita lo que puede medir.
+Los sistemas aptos para investigación utilizan de 32 a 256 electrodos húmedos en una tapa. Una diadema utiliza un puñado de sensores secos en posiciones fijas. Eso lo hace cómodo y asequible, y limita lo que puede medir.
 
 ---
 
 <a id="how-the-elata-sdk-processes-eeg"></a>
 
-## Cómo procesa el Elata SDK  EEG
+## Cómo procesa el SDK de Elata EEG
 
 `eeg-web` se ejecuta en el navegador usando WebAssembly:
 
@@ -57,35 +51,29 @@ asequible y limita lo que puede medir.
 
 <a id="what-affects-the-signal"></a>
 
-## Qué afecta la señal
+## ¿Qué afecta la señal?
 
-| Factor | Efecto |
+| factores | Efecto |
 | --- | --- |
-| **Parpadeos y movimientos oculares** | Grandes picos en los sensores de la frente |
-| **Apretar la mandíbula, hablar, fruncir el ceño** | Actividad muscular que abruma las frecuencias más altas |
-| **Mal contacto** | El cabello, la piel seca o un ajuste holgado causan ruido o canales planos |
-| **Movimiento** | El movimiento del cable y del sensor añade derivas y explosiones lentas |
+| **Parpadeos y movimientos oculares** | Grandes picos en los sensores de la frente. |
+| **Apretar la mandíbula, hablar, fruncir el ceño** | Actividad muscular que abruma las frecuencias más altas. |
+| **Mal contacto** | El cabello, la piel seca o un ajuste holgado provocan ruido o canales planos |
+| **Movimiento** | El movimiento del cable y del sensor añade derivas y ráfagas lentas |
 | **Pocos sensores fijos** | La actividad no se puede localizar con precisión y algunas áreas del cerebro no están cubiertas |
 
-Los estudios que comparan las cintas para la cabeza de los consumidores con los sistemas de investigación encuentran que pueden
-capturar señales cerebrales reales. Los potenciales relacionados con eventos se recuperaron con
-Musey cuatro electrodos Muse realizados cerca de un conjunto de datos de 32 electrodos en
-una tarea de clasificación de emociones. Pero la calidad de la señal varía según el dispositivo y
-configuración: se encontró una comparación de 2024 Muse S tenía la alineación más débil con un
-amplificador de grado de investigación de los dispositivos probados.
+Los estudios que comparan las cintas para la cabeza de los consumidores con los sistemas de investigación encuentran que pueden capturar señales cerebrales reales. Se recuperaron potenciales relacionados con eventos con Muse, y se realizaron cuatro electrodos de Muse cerca de un conjunto de datos de 32 electrodos en una tarea de clasificación de emociones. Pero la calidad de la señal varía según el dispositivo y la configuración: una comparación de 2024 encontró que Muse S tenía la alineación más débil con un amplificador de grado de investigación de los dispositivos probados.
 
 ---
 
 <a id="what-calm-and-focus-scores-can-claim"></a>
 
-## Lo que pueden reclamar las partituras de calma y concentración
+## Lo que pueden afirmar las partituras de calma y concentración
 
-Una puntuación de "calma" o "concentración" es una **interpretación del producto** construida a partir de una banda
-potencias y otros insumos. No es una lectura directa de un estado mental.
+Una puntuación de "calma" o "concentración" es una **interpretación del producto** construida a partir de poderes de banda y otras entradas. No es una lectura directa de un estado mental.
 
 - Las puntuaciones son más significativas **en relación con la línea de base de la misma persona**, no se comparan entre personas.
 - Deben venir con **información de calidad** y retenerse cuando la señal es deficiente.
-- Algunas medidas populares no se sostienen. Por ejemplo, la puntuación de enfoque de SDKdeliberadamente **no** utiliza la relación theta/beta, porque esa relación no es una medida válida de atención.
+- Algunas medidas populares no se sostienen. Por ejemplo, la puntuación Focus del SDK deliberadamente **no** utiliza la relación theta/beta, porque esa relación no es una medida válida de atención.
 
 Consulte [Métricas y puntuaciones](/es/overview/science/metrics-and-scores).
 
@@ -98,7 +86,7 @@ Consulte [Métricas y puntuaciones](/es/overview/science/metrics-and-scores).
 Literatura revisada por pares, recuperada a través de PubMed:
 
 - Krigolson OE, et al. Elección de MUSE: validación de un sistema EEG portátil y de bajo coste para la investigación de ERP. *Fronteras en Neurociencia*, 2017. [doi:10.3389/fnins.2017.00109](https://doi.org/10.3389/fnins.2017.00109)
-- Mikhaylov D, et al. Comparación de las características espectrales de la señal EEG obtenidas con dispositivos de consumo y de investigación. *Sensores*, 2024. [doi:10.3390/s24248108](https://doi.org/10.3390/s24248108)
+- Mikhaylov D, et al. Comparación de EEG características espectrales de señal obtenidas con dispositivos de consumo y de investigación. *Sensores*, 2024. [doi:10.3390/s24248108](https://doi.org/10.3390/s24248108)
 - García-Moreno FM, et al. EEG diademas vs gorros: ¿cuántos electrodos necesito para detectar emociones? El caso de la diadema MUSE. *Computadoras en Biología y Medicina*, 2024. [doi:10.1016/j.compbiomed.2024.109463](https://doi.org/10.1016/j.compbiomed.2024.109463)
 
-SDK implementación: [`eeg-web`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/eeg-web) y [`biosignal-analytics`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) (público SDK repositorio).
+Implementación de SDK: [`eeg-web`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/eeg-web) y [`biosignal-analytics`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) (repositorio público de SDK).

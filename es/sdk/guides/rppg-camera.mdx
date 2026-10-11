@@ -5,7 +5,7 @@ sidebarTitle: "Integración de cámara"
 ---
 
 <Note>
-Utilice esta guía cuando desee un control de nivel inferior sobre la frecuencia cardíaca basada en la cámara en una aplicación de navegador. Para el nivel alto recomendado API, comience con [rPPG en una aplicación de navegador](/es/sdk/guides/rppg-browser).
+Utilice esta guía cuando desee un control de nivel inferior sobre la frecuencia cardíaca basada en la cámara en una aplicación de navegador. Para obtener la API de alto nivel recomendada, comience con [rPPG en una aplicación de navegador](/es/sdk/guides/rppg-browser).
 </Note>
 
 <a id="what-this-guide-covers"></a>
@@ -16,8 +16,8 @@ Esta guía muestra cómo:
 
 - capturar fotogramas de la cámara web en el navegador
 - detectar una cara y extraer una región de la cara
-- introduce muestras en el procesador rPPG 
-- leer en vivo BPM y calidad de señal
+- introducir muestras en el procesador rPPG 
+- leer BPM en vivo y calidad de la señal
 - mejorar las estimaciones con Muse PPG cuando esté disponible
 
 <a id="before-you-start"></a>
@@ -60,7 +60,7 @@ Cree una aplicación de navegador que funcione si desea la ruta más rápida hac
   </Card>
 
   <Card title="rPPG Web iniciándose" href="/es/sdk/rppg-web/getting-started">
-Conozca los puntos de entrada del paquete y el navegador de nivel superior API.
+Conozca los puntos de entrada del paquete y la API del navegador de nivel superior.
   </Card>
 
   <Card title="Fuentes de fotogramas" href="/es/sdk/rppg-web/frame-sources">
@@ -68,7 +68,7 @@ Consulte las primitivas de detección de rostros y cámara de nivel inferior uti
   </Card>
 
   <Card title="Calibración y fusión" href="/es/sdk/rppg-web/calibration">
-Agregue calibración basada en Musecuando desee estimaciones más sólidas.
+Agregue calibración basada en Muse cuando desee estimaciones más sólidas.
   </Card>
 </Columns>
 
@@ -185,7 +185,7 @@ El tercer argumento establece una ventana de análisis de 10 segundos.
 
 <a id="add-muse-calibration"></a>
 
-## Agregar Muse calibración
+## Agregar calibración de Muse
 
 Si hay un dispositivo Muse disponible, puede utilizar su PPG como señal de referencia para mejorar las estimaciones basadas en cámaras.
 
@@ -204,11 +204,11 @@ Para obtener un flujo de trabajo de fusión más completo, que incluye `MuseFusi
 
 Utilice esta lista de verificación antes de depurar la canalización:
 
-- mantiene la iluminación uniforme en toda la cara
+- mantener la iluminación uniforme en toda la cara
 - reducir el movimiento de la cabeza
-- espere de 5 a 10 segundos antes de confiar en la salida temprana BPM 
-- asegúrese de que realmente se esté detectando el ROI de una cara
-- habilita `useSkinMask` cuando usas `DemoRunner`
+- espere de 5 a 10 segundos antes de confiar en la salida inicial de BPM
+- asegúrese de que realmente se esté detectando un ROI facial
+- habilite `useSkinMask` cuando use `DemoRunner`
 
 <a id="where-to-go-next"></a>
 
@@ -216,7 +216,7 @@ Utilice esta lista de verificación antes de depurar la canalización:
 
 <Columns cols={2}>
   <Card title="rPPG Web iniciándose" href="/es/sdk/rppg-web/getting-started">
-Conozca la superficie del paquete y la sesión del navegador de nivel superior API.
+Conozca la superficie del paquete y la API de sesión del navegador de nivel superior.
   </Card>
 
   <Card title="Fuentes de fotogramas" href="/es/sdk/rppg-web/frame-sources">
@@ -224,7 +224,7 @@ Comprenda las primitivas de cámara y detección de rostros con más detalle.
   </Card>
 
   <Card title="Calibración y fusión" href="/es/sdk/rppg-web/calibration">
-Mejore las estimaciones con calibración basada en Musey fusión de múltiples fuentes.
+Mejore las estimaciones con calibración basada en Muse y fusión de múltiples fuentes.
   </Card>
 
   <Card title="crear-elata-demo" href="/es/sdk/create-elata-demo">

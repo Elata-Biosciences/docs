@@ -5,11 +5,9 @@ description: "El manifiesto de la aplicación que declara su versión de lanzami
 
 <a id="overview"></a>
 
-## Descripción general
+## Información general
 
-`elata.json` es un pequeño manifiesto que incluyes en tu carga. Hoy Elata
-lo usa para leer su **versión de lanzamiento**, por lo que su listado muestra `v1.2.3`
-en lugar de `Release #4`.
+`elata.json` es un pequeño manifiesto que incluyes en tu carga. Hoy, Elata lo usa para leer su **versión de lanzamiento**, por lo que su listado muestra `v1.2.3` en lugar de `Release #4`.
 
 ```json elata.json
 {
@@ -20,9 +18,7 @@ en lugar de `Release #4`.
 ```
 
 <Note>
-  `elata.json` es opcional hoy. Si falta o no es válido, Elata cae
-  volver a otras fuentes de versiones (ver más abajo). Será necesario en un
-  actualización futura, así que agréguela ahora.
+`elata.json` es opcional hoy. Si falta o no es válido, Elata recurre a otras fuentes de versión (ver más abajo). Será necesario en una actualización futura, así que agréguelo ahora.
 </Note>
 
 ---
@@ -31,7 +27,7 @@ en lugar de `Release #4`.
 
 ## Campos
 
-| Campo | Obligatorio | Reglas |
+| Campo | Requerido | Reglas |
 | --- | --- | --- |
 | `version` | Sí | De 1 a 32 caracteres. Comienza con una letra o un dígito, luego letras, dígitos, `.`, `-`o `+`. Se recomienda algo como `1.2.3` o `1.2.3-beta.1` . |
 | `entry` | No | El archivo HTML de entrada, hasta 256 caracteres. Utilice `index.html`. |
@@ -41,7 +37,7 @@ en lugar de `Release #4`.
 
 <a id="file-name-and-location"></a>
 
-## Nombre y ubicación del archivo
+## Nombre del archivo y ubicación
 
 - Nombra el archivo `elata.json` (`elata.manifest.json` también funciona).
 - Ponlo en la raíz de tu zip, al lado de `index.html`.

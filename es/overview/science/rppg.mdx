@@ -1,29 +1,26 @@
 ---
 title: "Frecuencia cardíaca de la cámara (rPPG)"
-description: "Cómo estima una cámara web el pulso, cómo lo hace el Elata SDK y las condiciones que limitan la precisión."
+description: "Cómo una cámara web estima el pulso, cómo lo hace el SDK de Elata y las condiciones que limitan la precisión."
 ---
 
 <a id="the-principle"></a>
 
 ## El principio
 
-Con cada latido del corazón, el volumen de sangre en la piel aumenta y disminuye. sangre
-Absorbe la luz, por lo que el color de la piel cambia muy ligeramente al mismo tiempo que la
-pulso. Una cámara puede detectar este cambio aunque sea invisible a la vista.
-Medirlo sin contacto se llama **fotopletismografía remota (rPPG)**.
+Con cada latido del corazón, el volumen de sangre en la piel aumenta y disminuye. La sangre absorbe la luz, por lo que el color de la piel cambia muy ligeramente al ritmo del pulso. Una cámara puede detectar este cambio aunque sea invisible a la vista. Medirlo sin contacto se llama **fotopletismografía remota (rPPG)**.
 
 ---
 
 <a id="how-the-elata-sdk-does-it"></a>
 
-## Cómo lo hace el Elata SDK 
+## Cómo lo hace el SDK de Elata
 
 `rppg-web` ejecuta esta canalización en el navegador, en el dispositivo del usuario:
 
 1. **Encuentra la cara.** Un modelo de rostro emblemático localiza regiones de la piel como la frente y las mejillas.
-2. **Promedia el color.** Para cada fotograma de vídeo, SDK promedia los valores de rojo, verde y azul en esas regiones.
+2. **Promediar el color.** Para cada fotograma de vídeo, el SDK promedia los valores de rojo, verde y azul en esas regiones.
 3. **Extrae la señal de pulso.** Los métodos establecidos combinan los canales de color para cancelar la iluminación y el movimiento: el método del canal verde, CHROM (basado en crominancia) y POS (plano ortogonal a la piel).
-4. **Estima la tasa.** El SDK estima las pulsaciones por minuto de dos maneras, a partir del espectro de frecuencia de la señal y de su autocorrelación, y comprueba que coinciden.
+4. **Estima la tarifa.** El SDK estima las pulsaciones por minuto de dos maneras, a partir del espectro de frecuencia de la señal y de su autocorrelación, y comprueba que coincidan.
 5. **Calidad del informe.** Cada estimación viene con un valor de calidad de la señal y un valor de confianza, por lo que una aplicación puede distinguir una lectura limpia de una suposición.
 
 Los fotogramas de vídeo sin procesar nunca salen del dispositivo.
@@ -32,30 +29,29 @@ Los fotogramas de vídeo sin procesar nunca salen del dispositivo.
 
 <a id="what-affects-accuracy"></a>
 
-## Qué afecta la precisión
+## ¿Qué afecta la precisión?
 
-rPPG funciona bien en buenas condiciones y se degrada en malas. Publicado
-Las revisiones identifican constantemente los mismos desafíos:
+rPPG funciona bien en buenas condiciones y se degrada en malas. Las revisiones publicadas identifican constantemente los mismos desafíos:
 
-| Factor | Por qué es importante |
+| factores | Por qué es importante |
 | --- | --- |
-| **Movimiento** | El movimiento de la cabeza cambia la forma en que la luz llega a la piel, lo que puede inundar la señal del pulso |
-| **Iluminación** | La luz tenue, desigual o parpadeante (algunas luces LED y fluorescentes) agrega ruido |
+| **Moción** | El movimiento de la cabeza cambia la forma en que la luz llega a la piel, lo que puede inundar la señal del pulso. |
+| **Iluminación** | La luz tenue, desigual o parpadeante (algunas luces LED y fluorescentes) añade ruido |
 | **Tono de piel** | La piel más oscura absorbe más luz, lo que reduce la amplitud de la señal para los métodos ópticos |
-| **Cámara y compresión** | Las bajas velocidades de cuadros y la fuerte compresión de video eliminan los pequeños cambios de color rPPG depende de |
-| **Distancia y encuadre** | Menos píxeles de la piel significan una señal más débil |
+| **Cámara y compresión** | Las velocidades de cuadro bajas y la compresión de video intensa eliminan los pequeños cambios de color rPPG depende de |
+| **Distancia y encuadre** | Menos píxeles de piel significan una señal más débil |
 
-Las sugerencias para los usuarios se encuentran en [Dispositivos](/es/users/devices). Los constructores pueden utilizar los SDKvalores de calidad y confianza para indicar a los usuarios o retrasar una lectura.
+Los consejos para los usuarios se encuentran en [Dispositivos](/es/users/devices). Los desarrolladores pueden utilizar los valores de calidad y confianza del SDK para avisar a los usuarios o retrasar una lectura.
 
 ---
 
 <a id="what-rppg-can-and-cant-claim"></a>
 
-## Qué rPPG puede y no puede reclamar
+## Qué puede y no puede reclamar rPPG 
 
 - **Puede:** estimar la frecuencia del pulso en reposo en condiciones razonables y mostrar qué tan estable es la señal.
 - **Con precaución:** la variabilidad del ritmo cardíaco de una cámara necesita grabaciones muy limpias y más largas.
-- **No puede:** diagnosticar problemas del ritmo cardíaco o reemplazar un dispositivo médico. Incluso el contacto PPG, utilizado en relojes inteligentes, necesita confirmación de ECG para el diagnóstico.
+- **No puede:** diagnosticar problemas del ritmo cardíaco ni reemplazar un dispositivo médico. Incluso el contacto PPG, utilizado en relojes inteligentes, necesita confirmación de ECG para el diagnóstico.
 
 ---
 
@@ -69,4 +65,4 @@ Literatura revisada por pares, recuperada a través de PubMed:
 - Chen W, et al. El aprendizaje profundo y la fotopletismografía remota impulsaron avances en la medición fisiológica sin contacto. *Fronteras en Bioingeniería y Biotecnología*, 2024. [doi:10.3389/fbioe.2024.1420100](https://doi.org/10.3389/fbioe.2024.1420100)
 - De Wever M, et al. Fotopletismografía para la monitorización de la frecuencia y el ritmo cardíacos: evidencia actual y aplicaciones clínicas. *JACC: Electrofisiología Clínica*, 2026. [doi:10.1016/j.jacep.2026.06.034](https://doi.org/10.1016/j.jacep.2026.06.034)
 
-SDK implementación: [`rppg-web`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/rppg-web) (repositorio público SDK ).
+Implementación del SDK: [`rppg-web`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/rppg-web) (repositorio público de SDK).

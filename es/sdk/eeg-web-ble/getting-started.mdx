@@ -1,6 +1,6 @@
 ---
 title: "Empezando"
-description: "Conéctese a EEG dispositivos de diadema a través de Web Bluetooth"
+description: "Conéctese a dispositivos de diadema EEG a través de Web Bluetooth"
 ---
 
 <a id="when-to-use-this-package"></a>
@@ -9,9 +9,9 @@ description: "Conéctese a EEG dispositivos de diadema a través de Web Bluetoot
 
 Utilice `@elata-biosciences/eeg-web-ble` cuando su aplicación necesite:
 
-- descubrimiento en el navegador de dispositivos compatibles con Muse
-- en vivo EEG transmitiendo por Web Bluetooth
-- marcos de diadema normalizados para lógica de aplicaciones o análisis posteriores
+- descubrimiento en el lado del navegador de dispositivos compatibles con Muse
+- en vivo EEG streaming a través de Web Bluetooth
+- marcos de diadema normalizados para la lógica de la aplicación o el análisis posterior
 
 Instálalo junto a `@elata-biosciences/eeg-web`.
 
@@ -33,9 +33,9 @@ npm install @elata-biosciences/eeg-web-ble @elata-biosciences/eeg-web
 
 ## Requisitos
 
-- Navegador con soporte **Web Bluetooth** (Chrome/Edge en escritorio o Android)
+- Navegador compatible con **Web Bluetooth** (Chrome/Edge en escritorio o Android)
 - Servido desde un **contexto seguro** (`https://` o `localhost`)
-- Safari/iOS **no** admite Web Bluetooth. Consulte [Muse dispositivo](/es/sdk/eeg-web-ble/muse-device) para conocer alternativas
+- Safari/iOS **no** admite Web Bluetooth. Consulte [Dispositivo Muse](/es/sdk/eeg-web-ble/muse-device) para conocer alternativas
 
 Verifique el soporte antes de mostrar el botón "Conectar":
 
@@ -52,7 +52,7 @@ if (!support.supported) {
 
 <a id="basic-usage"></a>
 
-## Uso Básico
+## Uso básico
 
 `startStreaming()` es el valor predeterminado recomendado. Envuelve `connect()` y `start()` juntos y evita el error común de conectarse exitosamente pero nunca comenzar a transmitir.
 
@@ -94,11 +94,11 @@ await transport.stop();
 
 ## Ciclo de vida de BleTransport
 
-| Método | Qué hace |
+| Método | que hace |
 | --- | --- |
-| `startStreaming()` | Recomendado: se conecta e inicia el streaming en una sola llamada |
-| `connect()` | Abre el selector de dispositivos Bluetooth, empareja y prepara la sesión |
-| `start()` | Comienza el flujo de datos EEG ; `onFrame` devoluciones de llamada activadas |
+| `startStreaming()` | Recomendado: se conecta e inicia la transmisión en una sola llamada |
+| `connect()` | Abre el selector de dispositivos Bluetooth, los empareja y prepara la sesión. |
+| `start()` | Comienza el flujo de datos EEG ; `onFrame` fuego de devoluciones de llamada |
 | `stop()` | Detiene el flujo de datos; la conexión permanece abierta |
 | `disconnect()` | Libera la sesión de Bluetooth |
 
@@ -106,7 +106,7 @@ await transport.stop();
 
 <a id="bletransportoptions"></a>
 
-## Opciones de transporte Ble
+## Opciones de transporte de Ble
 
 ```typescript
 const transport = new BleTransport({
@@ -129,9 +129,9 @@ const transport = new BleTransport({
 
 <a id="athena-support"></a>
 
-## Athena Soporte
+## Soporte de Atenas
 
-Las diademasMuse S con firmware Athena requieren un decodificador Athena de fábrica. Inclúyalo desde el principio para mantener cubiertos tanto los flujos clásicos como los Athena :
+Las diademas Muse S con firmware Athena requieren un decodificador Athena de fábrica. Inclúyalo desde el principio para mantener cubiertos tanto los flujos clásicos como los de Athena:
 
 ```typescript
 import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
@@ -144,7 +144,7 @@ const transport = new BleTransport({
 });
 ```
 
-Las diademasAthena proporcionan 8 EEG canales, óptica, acelerómetro/giroscopio y datos de batería en cada cuadro.
+Las diademas Athena proporcionan 8 EEG canales, óptica, acelerómetro/giroscopio y datos de batería en cada cuadro.
 
 ---
 
@@ -168,7 +168,7 @@ const channelNames = transport.getEegNames();
 
 ## Advertencias sobre la plataforma
 
-- Safari e iOS no brindan soporte utilizable Web Bluetooth para este flujo de trabajo.
+- Safari e iOS no proporcionan compatibilidad con Bluetooth web utilizable para este flujo de trabajo.
 - Para Safari e iOS, utilice un shell BLE nativo, un puente complementario o una estrategia WebView híbrida con contratos de marco `@elata-biosciences/eeg-web` como límite.
 - Las variantes de firmware pueden diferir en el comportamiento del comando.
 
@@ -182,7 +182,7 @@ const channelNames = transport.getEegNames();
   <Card title="Tutorial de transmisión en vivo" icon="circle-play" href="/es/sdk/tutorials/eeg-ble-live-stream">
 Guía de transmisión BLE paso a paso
   </Card>
-  <Card title="Muse Detalles del dispositivo" icon="microchip" href="/es/sdk/eeg-web-ble/muse-device">
+  <Card title="Detalles del dispositivo Muse" icon="microchip" href="/es/sdk/eeg-web-ble/muse-device">
 Detalles del protocolo, características y compatibilidad.
   </Card>
 

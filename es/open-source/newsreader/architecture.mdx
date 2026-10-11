@@ -1,6 +1,6 @@
 ---
 title: "Arquitectura del lector de noticias"
-tag: "Archived"
+tag: "Archivado"
 description: "Cómo funciona el proceso de raspado impulsado por IA"
 ---
 
@@ -21,7 +21,7 @@ elata-vsm-system-4/
 
 <a id="scraper-pipeline"></a>
 
-## Tubería Rascadora
+## Tubería raspadora
 
 El raspador se ejecuta como un proceso programado a través de PM2. Cada ciclo ejecuta la siguiente canalización:
 
@@ -49,19 +49,19 @@ flowchart TD
 
 ### Fase 2: Análisis
 
-- **El procesador GPT** evalúa cada artículo según la misión Elata y asigna una puntuación de relevancia (0-1)
+- **Procesador GPT** evalúa cada artículo según la misión de Elata y asigna una puntuación de relevancia (0-1)
 - **Validador GPT** filtra contenido irrelevante o de baja calidad
 - **La asignación de etiquetas** se aplica desde un vocabulario controlado de 86 etiquetas específicas de dominio en todas las categorías: neurociencia, hardware, IA/ML, farmacología, biohacking, biomarcadores, DeSci e industria.
 
 <a id="phase-3-enrichment-and-output"></a>
 
-### Fase 3: Enriquecimiento y Salida
+### Fase 3: Enriquecimiento y Resultados
 
 - **Raspador de contenido** extrae el texto completo, el recuento de palabras y el tiempo de lectura
-- **Generación de incrustación** vía OpenAI para búsqueda semántica
+- **Generación de incrustación** mediante OpenAI para búsqueda semántica
 - **Generación de podcasts** produce resúmenes de audio narrados por IA utilizando ElevenLabs con dos narradores (Nova y Dr. Renn)
-- **Notificaciones de discordia** alertan a la comunidad sobre artículos de alta relevancia
-- Los resultados se escriben en `current.json` y se entregan a través de REST API
+- **Notificaciones de Discord** alertan a la comunidad sobre artículos de alta relevancia
+- Los resultados se escriben en `current.json` y se entregan a través de la API REST
 
 ---
 
@@ -115,7 +115,7 @@ Las 86 etiquetas están organizadas en dominios:
 | Hardware y dispositivos | 16 | `bci`, `neural-interfaces`, `openbci`, `muse`, `eeg-headsets` |
 | Computacional e IA | 12 | `precision-psychiatry`, `machine-learning`, `neural-decoding` |
 | Neurofarmacología | 8 | `neuropharmacology`, `clinical-trials`, `drug-discovery` |
-| Biohacking y experimental | 12 | `nootropics`, `psychedelics`, `neurofeedback`, `meditation` |
+| Biohacking y experimentación | 12 | `nootropics`, `psychedelics`, `neurofeedback`, `meditation` |
 | Biomarcadores y mecanismos | 10 | `biomarkers`, `neuroinflammation`, `gut-brain-axis` |
 | DeSci y Web3 | 7 | `desci`, `daos`, `tokenomics`, `on-chain-governance` |
 | Industria y Negocios | 6 | `pharma`, `biotech`, `startups`, `regulatory` |

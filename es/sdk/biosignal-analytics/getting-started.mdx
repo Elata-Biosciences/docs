@@ -5,23 +5,21 @@ description: "EEG características, HRV, estadísticas sólidas y puntuaciones d
 ---
 
 <Warning>
-  `@elata-biosciences/biosignal-analytics` aún no está publicado en npm . El API a continuación refleja la fuente en el repositorio [SDK ](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) y puede cambiar antes del primer lanzamiento.
+`@elata-biosciences/biosignal-analytics` aún no está publicado en npm. La API a continuación refleja la fuente en el [repositorio SDK](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) y puede cambiar antes del primer lanzamiento.
 </Warning>
 
 <a id="what-it-does"></a>
 
-## Qué hace
+## que hace
 
-`@elata-biosciences/biosignal-analytics` convierte los datos de bioseñales en funciones y
-puntuaciones en el navegador, sin servidor ni conexión de red:
+`@elata-biosciences/biosignal-analytics` convierte los datos de bioseñales en funciones y puntuaciones en el navegador, sin servidor ni conexión de red:
 
 - **EEG características de la ventana** (WASM): potencias de banda, entropía espectral, frecuencia dominante, pico alfa, parámetros de Hjorth e indicadores de calidad
 - **HRV y estadísticas sólidas**: dominio del tiempo HRV, medianas y MAD, líneas de base personales móviles
 - **Puntajes principales**: Medición de calidad, activación, recuperación, enfoque, preparación y resiliencia, cada uno con sus contribuyentes expuestos
 - **Un registro de métricas**: cada métrica tiene una definición, unidad, nivel de evidencia y versión de algoritmo registrados
 
-Se combina naturalmente con [`biosignal-session`](/es/sdk/biosignal-session/getting-started),
-pero no lo requiere.
+Se empareja naturalmente con [`biosignal-session`](/es/sdk/biosignal-session/getting-started), pero no lo requiere.
 
 ```bash
 # Not on npm yet. This command works after the first release.
@@ -46,8 +44,7 @@ const result = await analyzeEeg({
 });
 ```
 
-Una llamada por ventana mantiene barato el límite JavaScript/WASM . El resultado
-Incluye la configuración y las versiones del algoritmo que lo produjeron.
+Una llamada por ventana mantiene barato el límite de JavaScript/WASM . El resultado incluye la configuración y las versiones del algoritmo que lo produjeron.
 
 ---
 
@@ -61,23 +58,20 @@ Las puntuaciones son interpretaciones, no medidas, y así lo dicen:
 - **Activación, Recuperación, Enfoque, Preparación y Resiliencia** cada uno enumera a cada contribuyente con su peso, puntuación z y calidad.
 - Una puntuación **se retiene** (devuelve `null` con una razón) en lugar de adivinar cuando faltan entradas, la calidad es mala o aún no existe una línea de base personal.
 
-| Motivo de retención | Significado |
+| Retener motivo | Significado |
 | --- | --- |
-| `inputs_missing` | No se realizó la medición |
-| `insufficient_quality` | Fue hecho demasiado mal para leerlo |
+| `inputs_missing` | La medida no fue hecha |
+| `insufficient_quality` | Fue hecho demasiado mal para leer. |
 | `insufficient_baseline` | Aún no hay una base personal utilizable |
 | `no_activation_detected` | Recuperación: nada calificado como activación |
-| `recovery_incomplete` | Recuperación: la grabación finalizó antes de la recuperación |
+| `recovery_incomplete` | Recuperación: la grabación finalizó antes de la recuperación. |
 | `no_task_context` | Enfoque: no había ninguna tarea que atender |
 | `insufficient_history` | Preparación y resiliencia: todavía no hay suficientes días de datos |
 
-`insufficient_history` incluye recuentos, por lo que puede indicarle al usuario exactamente
-Se necesitan muchos días más. La preparación necesita 14 días calificados; Necesidades de resiliencia
-21 más 6 episodios de activación recuperados.
+`insufficient_history` incluye recuentos, por lo que puede decirle al usuario exactamente cuántos días más se necesitan. La preparación necesita 14 días calificados; La resiliencia necesita 21 más 6 episodios de activación recuperados.
 
 <Note>
-El enfoque no se basa deliberadamente en la relación theta/beta, que no es una medida válida.
-  medida de atención.
+El enfoque no se basa deliberadamente en la proporción theta/beta, que no es una medida de atención válida.
 </Note>
 
 ---
@@ -101,13 +95,12 @@ const client = createAnalyticsWorkerClient({ createWorker: launchAnalyticsWorker
 
 ## Puntos de entrada
 
-| Importar | Contenido |
+| Importar | Contenidos |
 | --- | --- |
-| `@elata-biosciences/biosignal-analytics` | Todo, reexportado |
+| `@elata-biosciences/biosignal-analytics` | Todo, reexportado. |
 | `…/registry` | Definiciones de métricas, niveles de evidencia, versiones de algoritmos |
 | `…/insights` | Líneas de base personales y fórmulas de puntuación de titulares |
-| `…/worker` | La entrada del trabajador de análisis |
-| `…/testing` | Cargadores de luminarias y ayudantes de señales sintéticas |
+| `…/worker` | La entrada del trabajador analítico |
+| `…/testing` | Cargadores de dispositivos y ayudantes de señales sintéticas. |
 
-El código de característica se verifica con los dispositivos de referencia de Python (NumPy/SciPy), por lo que las implementaciones
-Rust, WASMy TypeScript concuerdan.
+El código de característica se verifica con los dispositivos de referencia de Python (NumPy/SciPy), por lo que las implementaciones de Rust, WASMy TypeScript concuerdan.

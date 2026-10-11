@@ -1,9 +1,9 @@
 ---
 title: "Aportando EEG Transportes"
-description: "Cómo agregar transportes de auriculares más allá de la ruta integrada Muse para la pila Elata del navegador EEG ."
+description: "Cómo agregar transportes de auriculares más allá de la ruta Muse incorporada para la pila EEG del navegador Elata."
 ---
 
-La guía canónica y detallada se encuentra en el SDK monorepo:
+La guía canónica y detallada se encuentra en el monorepo del SDK:
 
 **[docs/contributing-eeg-transports.md](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/contributing-eeg-transports.md)**
 
@@ -11,9 +11,9 @@ La guía canónica y detallada se encuentra en el SDK monorepo:
 
 ## Resumen
 
-- **`@elata-biosciences/eeg-web-ble`** es el **Web Bluetooth** paquete de transporte compartido. Incluye una implementación **integrada Muse** y no está **limitada a Muse** para contribuciones.
-- **Diseño:** `src/transport/` (`BleTransport`) vs `src/devices/muse/` (Muse protocolo). Agregue nuevos proveedores en `src/devices/<vendor>/`.
-- El nuevo hardware debería converger en **`HeadbandTransport`** y **`HeadbandFrameV1`** de **`@elata-biosciences/eeg-web`**.
+- **`@elata-biosciences/eeg-web-ble`** es el paquete de transporte compartido **Web Bluetooth** . Incluye una implementación **integrada de Muse** y **no se limita a Muse** para contribuciones.
+- **Diseño:** `src/transport/` (`BleTransport`) vs `src/devices/muse/` (protocolo Muse). Agregue nuevos proveedores en `src/devices/<vendor>/`.
+- El nuevo hardware debería converger en **`HeadbandTransport`** y **`HeadbandFrameV1`** desde **`@elata-biosciences/eeg-web`**.
 - Prefiere un **nuevo módulo de dispositivo** en `eeg-web-ble`, un **`BleTransport` `device` adaptador**, o un **paquete hermano** bajo `packages/` cuando la integración es grande o necesita un puente.
 
 <a id="recommended-default-for-generally-useful-devices"></a>
@@ -23,13 +23,13 @@ La guía canónica y detallada se encuentra en el SDK monorepo:
 Utilice una contribución ascendente **dentro de `eeg-web-ble`**:
 
 - `packages/eeg-web-ble/src/devices/<vendor>/...` para protocolo, GATT y lógica de decodificación
-- reutilización `src/transport/bleTransport.ts` para transporte y comportamiento del marco
-Adaptadores tipo- contra `BleDeviceLike` exportados desde `@elata-biosciences/eeg-web-ble`
-- agregar pruebas Web Bluetooth simuladas en `src/__tests__/`
-- actualizar los documentos del paquete, los documentos del mantenedor y los documentos SDK juntos
+- reutilizar `src/transport/bleTransport.ts` para transporte y comportamiento del marco
+- adaptadores de tipo contra exportados `BleDeviceLike` desde `@elata-biosciences/eeg-web-ble`
+- agregue pruebas web Bluetooth simuladas en `src/__tests__/`
+- actualizar los documentos del paquete, los documentos del mantenedor y los documentos del SDK juntos
 - agregue un conjunto de cambios si el cambio debe enviarse
 
-Abra un problema GitHub antes de cambios importantes en el protocolo o el paquete. Siga el repositorio **[Guía de CONTRIBUCIÓN](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/CONTRIBUTING.md)** para relaciones públicas, pruebas y conjuntos de cambios.
+Abra una incidencia de GitHub antes de cambios importantes en el protocolo o el paquete. Siga el repositorio **[Guía de CONTRIBUCIÓN](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/CONTRIBUTING.md)** para relaciones públicas, pruebas y conjuntos de cambios.
 
 Si necesita una lista de verificación lista para entregar a socios externos, utilice:
 

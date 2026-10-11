@@ -28,7 +28,7 @@ const powers = band_powers(samples, sampleRateHz);
 
 <a id="individual-band-functions"></a>
 
-## Funciones de banda individual
+## Funciones de banda individuales
 
 Para un análisis específico, utilice funciones de banda individuales:
 
@@ -79,7 +79,7 @@ Todas las funciones de procesamiento de señales esperan:
 
 | Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `samples` | `Float32Array` | Serie temporal monocanal EEG . No se aceptan matrices simples. |
+| `samples` | `Float32Array` | Serie temporal EEG monocanal. No se aceptan matrices simples. |
 | `sampleRateHz` | `number` | Frecuencia de muestreo en Hz (por ejemplo, 256 para Muse) |
 
 Para datos multicanal (por ejemplo, de `HeadbandFrameV1.eeg.samples`), extraiga canales individuales y procéselos por separado:

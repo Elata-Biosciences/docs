@@ -1,27 +1,23 @@
 ---
 title: "Web Bluetooth con dispositivos compatibles"
-description: "Transmita dispositivos Musecompatibles con EEG desde navegadores Chromium compatibles."
+description: "Transmita dispositivos EEG compatibles con Muse desde navegadores Chromium compatibles."
 ---
 
-Utilice esta página si desea conocer el modelo de transporte y las restricciones de la plataforma, no una
-tutorial completo.
+Utilice esta página si desea conocer el modelo de transporte y las restricciones de la plataforma, no un tutorial completo.
 
-Si desea pasos numerados para una aplicación existente, use
-[Stream Muse-Compatible EEG Over Web Bluetooth](/es/sdk/tutorials/eeg-ble-live-stream).
-Si desea la ruta de andamio, use [Cree su primera Elata aplicación](/es/sdk/tutorials/first-app).
+Si desea pasos numerados para una aplicación existente, use [Compatible con Stream Muse EEG a través de Web Bluetooth](/es/sdk/tutorials/eeg-ble-live-stream). Si desea la ruta de andamio, use [Cree su primera aplicación Elata](/es/sdk/tutorials/first-app).
 
 <Info>
-  **Función en la SDK:** cámara **rPPG** es la primera aplicación habitual. **EEG** es opcional cuando necesitas señales cerebrales. **Web Bluetooth** (`eeg-web-ble` con `eeg-web`) habilita un auricular compatible con Museen vivo. Es transporte para EEG, no un producto primario paralelo a rPPG.
+**Función en el SDK:** cámara **rPPG** es la primera aplicación habitual. **EEG** es opcional cuando necesitas señales cerebrales. **Web Bluetooth** (`eeg-web-ble` con `eeg-web`) habilita un auricular compatible con Muse en vivo. Es transporte para EEG, no un producto primario paralelo a rPPG.
 </Info>
 
 ---
 
 <a id="start-with-a-known-good-scaffolded-app"></a>
 
-## Comience con una aplicación con andamios conocida y buena
+## Comience con una aplicación andamiada conocida y buena
 
-Si desea la ruta más rápida a un ejemplo BLE de navegador que funcione, primero cree la aplicación de inicio EEG
-:
+Si desea la ruta más rápida a un ejemplo BLE de navegador que funcione, primero cree la aplicación de inicio EEG :
 
 <CodeGroup>
 
@@ -49,26 +45,26 @@ Utilice el resto de esta guía cuando desee agregar el mismo flujo BLE del naveg
 
 ## Requisitos
 
-- Chrome, Edgeo Bluefy en iOS
+- Chrome, Edge o Bluefy en iOS
 - `https://` o `localhost`
 - Bluetooth habilitado en la máquina
-- Un dispositivo Musecompatible con EEG 
+- Un dispositivo compatible con Muse EEG 
 
 Clases de dispositivos compatibles:
 
-- Muse 2 y Muse S dispositivos BLE clásicos
-- Muse S Athena dispositivos con protocolo v2
-- El puente BLE sintético compatible con Museutilizado para las pruebas
+- Dispositivos BLE clásicos Muse 2 y Muse S
+- Dispositivos Muse S Athena protocolo v2
+- El puente BLE sintético compatible con Muse utilizado para las pruebas
 
 <Note>
-Para el navegador BLE, utilice Chrome en escritorio o Android, o Bluefy en iOS. No espere que Safari maneje este flujo de trabajo por sí solo.
+Para el navegador BLE, utilice Chrome en escritorio o Android, o Bluefy en iOS. No espere que Safari se encargue de este flujo de trabajo.
 </Note>
 
 ---
 
 <a id="install"></a>
 
-## Instalar
+## Instalación
 
 <CodeGroup>
 
@@ -118,8 +114,8 @@ await transport.start();
 
 1. Confirme que la aplicación se esté ejecutando en un contexto seguro.
 2. Construir `BleTransport`.
-3. Proporcione `athenaDecoderFactory` si necesita soporte Athena .
-4. Suscríbase a devoluciones de llamada de marco y estado.
+3. Proporcione `athenaDecoderFactory` si necesita soporte de Athena.
+4. Suscríbase a devoluciones de llamadas de marcos y estados.
 5. Llama al `connect()` y luego al `start()`.
 
 ---
@@ -131,7 +127,7 @@ await transport.start();
 Prefiere la aplicación `eeg-demo` estructurada o el iniciador `eeg-ble` dedicado, cuando quieras:
 
 - una comprobación rápida del entorno para comprobar la compatibilidad con BLE del navegador
-- una referencia para el inicio y manejo de estados del transporte
+- una referencia para el inicio del transporte y el manejo del estado
 - un punto de partida más sencillo que cablear las devoluciones de llamada desde cero
 
 ---
@@ -142,7 +138,7 @@ Prefiere la aplicación `eeg-demo` estructurada o el iniciador `eeg-ble` dedicad
 
 - Si falta `navigator.bluetooth` , es probable que se encuentre en un navegador no compatible o en un contexto no seguro.
 - Si el selector de dispositivo nunca aparece, confirme que Bluetooth esté habilitado y que la página se proporcione desde `https://` o `localhost`.
-- Si los dispositivos Athena no se pueden decodificar, asegúrese de pasar un `athenaDecoderFactory` respaldado por `@elata-biosciences/eeg-web`.
+- Si los dispositivos Athena no logran decodificar, asegúrese de pasar un `athenaDecoderFactory` respaldado por `@elata-biosciences/eeg-web`.
 - Si necesita una ruta de navegador iOS normal, planifique un puente nativo o una estrategia híbrida en lugar de Safari. La guía BLE del navegador aquí asume Bluefy en iOS.
 
 ---
@@ -159,7 +155,7 @@ Guía de transmisión paso a paso
 Navegador EEG modelo de paquete
   </Card>
   <Card title="eeg-web-ble Referencia" icon="bluetooth" iconType="light" href="/es/sdk/eeg-web-ble/getting-started">
-Transporte API y opciones
+API de transporte y opciones
   </Card>
   <Card title="Solución de problemas" icon="wrench" iconType="light" href="/es/sdk/operations/troubleshooting">
 Fallos y soluciones comunes

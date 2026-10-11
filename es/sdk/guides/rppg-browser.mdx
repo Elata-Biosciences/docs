@@ -1,11 +1,11 @@
 ---
 title: "Teledetección en una aplicación de navegador"
-description: "Agregue una cámara basada en navegador rPPG con los ayudantes de sesión Elata compatibles."
+description: "Agregue una cámara basada en navegador rPPG con los asistentes de sesión de Elata compatibles."
 ---
 
 Utilice esta página si desea el modelo de integración para el navegador rPPG.
 
-Si desea pasos numerados para una aplicación existente, use [Agregar rPPG basado en cámara a una aplicación de navegador existente](/es/sdk/tutorials/rppg-existing-app). Si desea la ruta de andamio, use [Cree su primera Elata aplicación](/es/sdk/tutorials/first-app).
+Si desea pasos numerados para una aplicación existente, use [Agregar rPPG basado en cámara a una aplicación de navegador existente](/es/sdk/tutorials/rppg-existing-app). Si desea la ruta de andamio, use [Cree su primera aplicación Elata](/es/sdk/tutorials/first-app).
 
 <Info>
 Esta es la ruta de bioseñal del navegador **principal** para la mayoría de los productos: no se requieren auriculares antes de enviar una señal significativa de UX.
@@ -17,16 +17,16 @@ En las aplicaciones de navegador, los desarrolladores suelen utilizar rPPG para 
 
 Los ejemplos de aplicaciones concretas incluyen:
 
-- juegos de engaño o farol que reaccionan a los cambios de pulso en momentos clave
-- retroalimentación de estrés o excitación en entrenamiento y experiencias sociales
-- flujos de respiración y relajación que muestran respuesta fisiológica a lo largo del tiempo
-- aplicaciones de salud o bienestar orientadas a la biorretroalimentación que desean señales de pulso basadas en cámaras sin hardware adicional
+- Juegos de engaño o farol que reaccionan a los cambios de pulso durante los momentos clave.
+- Retroalimentación de estrés o excitación en el entrenamiento y las experiencias sociales.
+- Flujos de respiración y relajación que muestran una respuesta fisiológica a lo largo del tiempo.
+- Aplicaciones de salud o bienestar orientadas a la biorretroalimentación que requieren señales de pulso basadas en cámaras sin hardware adicional.
 
 ---
 
 <a id="install"></a>
 
-## Instalar
+## Instalación
 
 <CodeGroup>
 
@@ -44,10 +44,10 @@ npm install @elata-biosciences/rppg-web
 
 <a id="recommended-vs-advanced"></a>
 
-## Recomendado versus Avanzado
+## Recomendado versus avanzado
 
 <Tip>
-Utilice `createRppgSession()` para aplicaciones de navegador. Maneja WASM inicio, captura de cuadros, orquestación de ROI, diagnóstico y limpieza.
+Utilice `createRppgSession()` para aplicaciones de navegador. Maneja WASM inicio, captura de fotogramas, orquestación de ROI, diagnóstico y limpieza.
 </Tip>
 
 **Recomendado:**
@@ -106,7 +106,7 @@ Utilice `session.state` o `diagnostics.state` para distinguir:
 
 - normal `running`
 - respaldo de inicio o configuración degradada a través de `degraded`
-- falla del procesador de tiempo de ejecución del terminal a través de `failed`
+- Fallo del procesador de tiempo de ejecución del terminal a través de `failed`
 
 Si elige intencionalmente `faceMesh: "off"`, la sesión permanece en el modo `video_frame` compatible y no se informa como una falla de FaceMesh de manera predeterminada.
 
@@ -128,7 +128,7 @@ Las aplicaciones avanzadas también pueden proporcionar `wasmImporter` directame
 
 ## Flujo de reinicio administrado
 
-Si desea que SDK sea propietario del tiempo de reinicio después de fallas en el procesador del terminal, use el contenedor administrado:
+Si desea que el SDK sea el propietario del tiempo de reinicio después de fallas en el procesador del terminal, use el contenedor administrado:
 
 ```ts
 import { createManagedRppgSession } from "@elata-biosciences/rppg-web";
@@ -216,7 +216,7 @@ Si desea una única instantánea de la aplicación con estado de reinicio, publi
   </Accordion>
 
   <Accordion title="Monitor de aplicaciones">
-Si desea que SDK también sea propietario del bucle de instantánea recurrente, use `createRppgAppMonitor()`:
+Si desea que el SDK también sea propietario del bucle de instantáneas recurrente, utilice `createRppgAppMonitor()`:
 
     ```ts
     import {
@@ -238,7 +238,7 @@ Si desea que SDK también sea propietario del bucle de instantánea recurrente, 
   </Accordion>
 
   <Accordion title="Ayudante de reproducción de vídeo">
-    `createRppgSession()` ahora espera a que el elemento de vídeo comience a reproducirse de forma predeterminada. Si necesitas coordinar ese paso tú mismo llama directamente al `ensureVideoPlaying()` :
+`createRppgSession()` ahora espera a que el elemento de vídeo comience a reproducirse de forma predeterminada. Si necesitas coordinar ese paso tú mismo llama directamente al `ensureVideoPlaying()` :
 
     ```ts
     import { ensureVideoPlaying } from "@elata-biosciences/rppg-web";
@@ -258,7 +258,7 @@ Prefiere la plantilla con andamios `rppg-demo` cuando quieras:
 
 - una aplicación de cámara de navegador en buen estado
 - una referencia para la carga de activos empaquetados WASM 
-- un punto de comparación más rápido al depurar tu propia integración
+- un punto de comparación más rápido al depurar su propia integración
 
 ---
 
@@ -266,14 +266,14 @@ Prefiere la plantilla con andamios `rppg-demo` cuando quieras:
 
 ## Problemas comunes
 
-- Si `session.backendMode` es `unavailable`, su aplicación probablemente no esté entregando correctamente los recursos empaquetados `pkg/` .
+- Si `session.backendMode` es `unavailable`, su aplicación probablemente no esté entregando correctamente los activos `pkg/` empaquetados.
 - Si `session.state.status` es `failed`, trate ese procesador como terminal y vuelva a crear la sesión en lugar de continuar sondeando métricas de él.
-- Si ve "la canalización de backend no tiene push\_muestra API", probablemente omitió la ruta de contenedor seguro. Comience con `createRppgSession()` para aplicaciones de navegador o `initEegWasm()` más `createRppgPipeline()` para ingesta de bajo nivel.
+- Si ve "la canalización de backend no tiene push\_API de muestra", probablemente haya omitido la ruta de contenedor seguro. Comience con `createRppgSession()` para aplicaciones de navegador o `initEegWasm()` más `createRppgPipeline()` para ingesta de bajo nivel.
 - Si presiona `wasmrppgpipeline_new`, inicialice el módulo WASM antes de crear canalizaciones de bajo nivel y evite llamar directamente a los constructores generados.
 - Si ve advertencias de inicio obsoletas, dirija el inicio a través de `initEegWasm()` en lugar de reenviar cadenas sin formato, URL o buffers a las exportaciones de inicio generadas.
 - Si falla el acceso a la cámara, confirme que la página tiene permiso para usar `getUserMedia`.
-- Si `session.lastError` no es nulo, use `code` y `message` para sacar a la luz la captura real o la falla del procesador en lugar de volver a intentarlo a ciegas.
-- Si solo está evaluando SDK, la aplicación con scaffolding es mucho más rápida que crear todo el proceso del navegador usted mismo.
+- Si `session.lastError` no es nulo, use `code` y `message` para mostrar la captura real o la falla del procesador en lugar de volver a intentarlo a ciegas.
+- Si solo está evaluando el SDK, la aplicación con scaffolding es mucho más rápida que crear usted mismo todo el proceso del navegador.
 
 ---
 
@@ -282,7 +282,7 @@ Prefiere la plantilla con andamios `rppg-demo` cuando quieras:
 ## Guía de versión
 
 <Note>
-Los paquetes tienen versiones independientes, por lo que `rppg-web` y `eeg-web` no compartirán un número de versión y las últimas versiones no son automáticamente compatibles entre sí. Si usa varios paquetes Elata juntos, use el conjunto de pines `create-elata-demo` . Consulte [Compatibilidad](/es/sdk/operations/compatibility#package-versions).
+Los paquetes tienen versiones independientes, por lo que `rppg-web` y `eeg-web` no compartirán un número de versión y las últimas versiones no son automáticamente compatibles entre sí. Si utiliza varios paquetes de Elata juntos, utilice el conjunto de pines `create-elata-demo` . Consulte [Compatibilidad](/es/sdk/operations/compatibility#package-versions).
 </Note>
 
 ---

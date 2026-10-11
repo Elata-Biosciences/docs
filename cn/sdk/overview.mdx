@@ -1,16 +1,14 @@
 ---
 title: "快速上手"
-description: "用于相机 rPPG、 EEG 超过 Web Bluetooth、头带 PPG、会话记录和分析的浏览器 SDK。"
+description: "用于摄像头 rPPG、 EEG 通过网络蓝牙、头带 PPG、会话记录和分析的浏览器 SDK。"
 ---
 
 ## Elata SDK
 
- Elata SDK 是一组 npm 包，用于捕获和处理生物信号
-浏览器。这些包构建在编译为 WebAssembly的 Rust 包上，因此发出信号
-处理在用户的设备上运行。
+Elata SDK 是一组用于在浏览器中捕获和处理生物信号的 npm 包。这些包构建在编译为 WebAssembly的 Rust 箱上，因此信号处理在用户的设备上运行。
 
 <Info>
-  **存储库**： [github.com/Elata-Biosciences/elata-bio-sdk](https://github.com/Elata-Biosciences/elata-bio-sdk) · **npm**: [`@elata-biosciences`](https://www.npmjs.com/org/elata-biosciences)
+**存储库**: [github.com/Elata-Biosciences/elata-bio-sdk](https://github.com/Elata-Biosciences/elata-bio-sdk) · **npm**: [`@elata-biosciences`](https://www.npmjs.com/org/elata-biosciences)
 </Info>
 
 ---
@@ -43,8 +41,7 @@ npm run dev
 
 ## 套餐
 
-“Live”套餐的价格为 npm。 “实验”包可作为源 [SDK 存储库](https://github.com/Elata-Biosciences/elata-bio-sdk)
-中的代码，尚未在 npm上。请参阅 [直播内容](/cn/overview/status)。
+“Live”包位于 npm 上。 “实验”包可作为源代码在 [SDK 存储库](https://github.com/Elata-Biosciences/elata-bio-sdk) 中获取，但尚未在 npm 上获取。请参阅 [直播内容](/cn/overview/status)。
 
 <a id="sensors"></a>
 
@@ -52,10 +49,10 @@ npm run dev
 
 | 软件包 | 它的作用 | 状态 |
 | --- | --- | --- |
-| [`@elata-biosciences/rppg-web`](/cn/sdk/rppg-web/getting-started) | 来自网络摄像头的心率和脉搏信号 (rPPG)。默认起点：不需要硬件。 | 直播 |
-| [`@elata-biosciences/eeg-web`](/cn/sdk/eeg-web/getting-started) | EEG 信号处理、频段功率和型号 (WASM)，以及共享头带框架合同。 | 直播 |
-| [`@elata-biosciences/eeg-web-ble`](/cn/sdk/eeg-web-ble/getting-started) | 将 EEG 头带连接到 Web Bluetooth上。 Muse 内置；可扩展到其他设备。 | 直播 |
-| [`@elata-biosciences/ppg-web`](/cn/sdk/ppg-web/getting-started) | 心率和 HRV 来自头带光学 (PPG) 传感器。 | 直播 |
+| [`@elata-biosciences/rppg-web`](/cn/sdk/rppg-web/getting-started) | 来自网络摄像头的心率和脉搏信号 (rPPG)。默认起点：不需要硬件。 | 已上线 |
+| [`@elata-biosciences/eeg-web`](/cn/sdk/eeg-web/getting-started) | EEG 信号处理、频段功率和模型 (WASM)，以及共享头带框架合同。 | 已上线 |
+| [`@elata-biosciences/eeg-web-ble`](/cn/sdk/eeg-web-ble/getting-started) | 通过网络蓝牙连接 EEG 头带。内置缪斯；可扩展到其他设备。 | 已上线 |
+| [`@elata-biosciences/ppg-web`](/cn/sdk/ppg-web/getting-started) | 来自头带光学 (PPG) 传感器的心率和 HRV 。 | 已上线 |
 
 <a id="recording-and-analysis"></a>
 
@@ -63,17 +60,17 @@ npm run dev
 
 | 软件包 | 它的作用 | 状态 |
 | --- | --- | --- |
-| [`@elata-biosciences/biosignal-session`](/cn/sdk/biosignal-session/getting-started) | 使用容错协议和 Arrow 块将多传感器会话记录到本地存储。 | 实验 |
-| [`@elata-biosciences/biosignal-analytics`](/cn/sdk/biosignal-analytics/getting-started) | EEG 窗口功能， HRV，强大的统计数据和透明的标题分数。 | 实验 |
-| `@elata-biosciences/rppg-models-web` |  `rppg-web`的可选学习波形重建。您提供模型文件。 | 实验 |
+| [`@elata-biosciences/biosignal-session`](/cn/sdk/biosignal-session/getting-started) | 使用容错协议和 Arrow 块将多传感器会话记录到本地存储。 | 实验性 |
+| [`@elata-biosciences/biosignal-analytics`](/cn/sdk/biosignal-analytics/getting-started) | EEG 窗口功能， HRV，强大的统计数据和透明的标题分数。 | 实验性 |
+| `@elata-biosciences/rppg-models-web` |  `rppg-web`的可选学习波形重建。您提供模型文件。 | 实验性 |
 
 ### Elata
 
 | 软件包 | 它的作用 | 状态 |
 | --- | --- | --- |
-| [`@elata-biosciences/app-payments`](/cn/apps/platform/in-app-purchases) | 通过 Elata 结帐 | 直播进行应用内购买 |
-| [`@elata-biosciences/app-state`](/cn/apps/platform/app-state) | 每用户键值存储。在 npm之前，使用 [`elata:state:*` 消息](/cn/apps/platform/app-state)。 | 实验 |
-| [`@elata-biosciences/app-metrics`](/cn/apps/platform/metrics-and-scores) | 事件记录、分数和生物识别 分数贡献 | 直播 |
+| [`@elata-biosciences/app-payments`](/cn/apps/platform/in-app-purchases) | 通过 Elata 结账进行应用内购买 | 已上线 |
+| [`@elata-biosciences/app-state`](/cn/apps/platform/app-state) | 每用户键值存储。在 npm 上之前，请使用 [`elata:state:*` 消息](/cn/apps/platform/app-state)。 | 实验性 |
+| [`@elata-biosciences/app-metrics`](/cn/apps/platform/metrics-and-scores) | 事件记录、分数和生物识别分数贡献 | 已上线 |
 
 <a id="tooling"></a>
 
@@ -84,14 +81,14 @@ npm run dev
 | [`@elata-biosciences/create-elata-demo`](/cn/sdk/create-elata-demo) | 从模板搭建入门应用程序 | 实时已知问题 |
 
 <Warning>
-  **已知问题：** 存储库的 `create-elata-demo` 0.12.1在没有同级工作区元数据的情况下打包时失败：“缺少@elata-biosciences/app-metrics的打包 SDK 版本元数据”。在使用之前验证固定版本。现在，直接将包添加到应用程序中（如下）。
+**已知问题：** 在没有同级工作区元数据的情况下打包时，存储库的 `create-elata-demo` 0.12.1 失败：“缺少 @elata-biosciences/app-metrics的打包 SDK 版本元数据”。在使用之前验证固定版本。现在，直接将包添加到应用程序中（如下）。
 </Warning>
 
 ---
 
 <a id="add-packages-to-an-existing-app"></a>
 
-## 将软件包添加到现有应用程序
+## 将包添加到现有应用程序
 
 ```bash
 # Camera heart rate
@@ -114,10 +111,10 @@ npm install @elata-biosciences/ppg-web @elata-biosciences/eeg-web @elata-bioscie
 
 | 设备 | 协议 | 信号 | 状态 |
 | --- | --- | --- | --- |
-| Muse 2 | 经典 BLE | 4 EEG （TP9、AF7、AF8、TP10）、 PPG | 支持 |
-| Muse S | 经典 BLE | 4 EEG, PPG | 支持 |
-| Muse S (Athena) | Athena | 8 EEG, 光学器件，加速度计/陀螺仪 | 支持 |
-| 任何网络摄像头 | 摄像头 | rPPG 脉冲 | 支持 |
+| 缪斯2 | 经典BLE | 4 EEG （TP9、AF7、AF8、TP10）、 PPG | 支持 |
+| 缪斯小号 | 经典BLE | 4 EEG, PPG | 支持 |
+| 缪斯S（雅典娜） | 雅典娜 | 8 EEG，光学器件，加速度计/陀螺仪 | 支持 |
+| 任何网络摄像头 | 相机 | rPPG 脉冲 | 支持 |
 
 想要添加耳机吗？请参阅 [设备集成](/cn/integrate)。
 
@@ -125,17 +122,17 @@ npm install @elata-biosciences/ppg-web @elata-biosciences/eeg-web @elata-bioscie
 
 <a id="rust-crates"></a>
 
-## Rust 板条箱
+## 生锈的板条箱
 
-这些软件包构建在公共 Rust 板条箱上，您也可以直接使用：
+这些包构建在公共 Rust 板条箱上，您也可以直接使用：
 
-| 箱子 | 用途 |
+| 板条箱 | 目的 |
 | --- | --- |
 | `elata-eeg-hal` | 核心设备特征： `EegDevice`、 `SampleBuffer` |
 | `elata-eeg-signal` | FFT、频带功率、滤波 |
 | `elata-eeg-models` | Alpha 碰撞探测器，平静模型 |
 | `elata-rppg` | rPPG 管道核心 |
-| `elata-muse-proto` | Muse 经典和 Athena 协议解码 |
+| `elata-muse-proto` | Muse经典和Athena协议解码 |
 
 ---
 
@@ -150,7 +147,7 @@ npm install @elata-biosciences/ppg-web @elata-biosciences/eeg-web @elata-bioscie
   <Card title="你的第一个应用" icon="rocket" href="/cn/sdk/tutorials/first-app">
 搭建并运行入门应用程序
   </Card>
-  <Card title="发布于 Elata" icon="store" href="/cn/apps/build/overview">
- Elata发货
+  <Card title="在 Elata 上发布" icon="store" href="/cn/apps/build/overview">
+通过 Elata 运送
   </Card>
 </CardGroup>

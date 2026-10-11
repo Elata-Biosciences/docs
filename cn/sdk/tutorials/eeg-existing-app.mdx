@@ -3,21 +3,15 @@ title: "在现有浏览器应用中添加 EEG"
 description: "逐步将 Elata EEG 处理连接到浏览器应用程序中，并验证 WASM 路径是否有效。"
 ---
 
-如果您已经有浏览器应用程序并需要推荐的应用程序，请使用此页面
-现有应用程序 EEG 集成路径。
+如果您已经有浏览器应用程序并需要推荐的现有应用程序 EEG 集成路径，请使用此页面。
 
-如果您想要脚手架路径，请使用 [快速入门](/cn/sdk/tutorials/first-app)。如果你
-只需要先包模型，使用 [EEG In A Browser App](/cn/sdk/guides/eeg-browser)。
+如果您想要脚手架路径，请使用 [快速入门](/cn/sdk/tutorials/first-app)。如果您首先只需要包模型，请使用 [EEG 在浏览器应用程序中](/cn/sdk/guides/eeg-browser)。
 
-本教程展示了将
-`@elata-biosciences/eeg-web` 添加到现有浏览器应用程序的推荐路径。
+本教程展示了将 `@elata-biosciences/eeg-web` 添加到现有浏览器应用程序的推荐路径。
 
-在典型的 Elata 旅程中，EEG 是 **可选** 。 **相机 rPPG** 是平常的
-除非您的产品需要大脑信号功能，否则主要集成。
+在典型的 Elata 旅程中，EEG 是 **可选** 。 **相机 rPPG** 是通常的主要集成，除非您的产品需要大脑信号功能。
 
-当您的应用程序需要浏览器中的 EEG 分析 API 时，请使用此选项。
-如果您还需要实时耳机传输，请在本教程后添加
-`@elata-biosciences/eeg-web-ble` 。
+当您的应用程序需要浏览器中的 EEG 分析 API 时，请使用此选项。如果您还需要实时耳机传输，请在本教程后添加 `@elata-biosciences/eeg-web-ble` 。
 
 <a id="what-you-will-build"></a>
 
@@ -27,7 +21,7 @@ description: "逐步将 Elata EEG 处理连接到浏览器应用程序中，并�
 
 1. 安装 `@elata-biosciences/eeg-web`
 2. 初始化 EEG WASM 运行时
-3. 运行简单的分析调用
+3. 运行一个简单的分析调用
 4. 验证您的应用程序可以提供打包的 WASM 资产
 
 <a id="step-1-install-the-package"></a>
@@ -48,10 +42,9 @@ npm install @elata-biosciences/eeg-web
 
 <a id="step-2-create-a-small-eeg-module"></a>
 
-## 步骤 2：创建一个小 EEG 模块
+## 第 2 步：创建一个小 EEG 模块
 
-在您的应用程序中创建一个小模块，以便集成保持隔离且易于集成
-测试（例如 `src/eeg.ts`）：
+在您的应用程序中创建一个小模块，以便集成保持隔离且易于测试（例如 `src/eeg.ts`）：
 
 ```ts eeg.ts
 import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
@@ -83,7 +76,7 @@ export async function analyzeExampleEeg() {
 
 <a id="step-3-call-it-from-your-ui"></a>
 
-## 步骤 3：从 UI 中调用它
+## 第 3 步：从 UI 中调用它
 
 例如，在组件或入口文件中：
 
@@ -95,37 +88,33 @@ console.log("alpha", powers.alpha);
 console.log("beta", powers.beta);
 ```
 
-在这个阶段，您还没有使用真正的耳机。你正在证明
-浏览器应用程序可以加载运行时并正确执行 EEG 函数。
+在这个阶段，您还没有使用真正的耳机。您正在证明浏览器应用程序可以加载运行时并正确执行 EEG 函数。
 
 <a id="step-4-verify-the-wasm-asset-path"></a>
 
-## 步骤 4：验证 WASM 资产路径
+## 第4步：验证 WASM 资产路径
 
 在开发中运行您的应用程序并确认模块初始化没有错误。
 
-如果 `initEegWasm()` 失败，最有可能的问题是您的捆绑程序或应用程序
-部署未正确服务打包的 `wasm/` 资产。
+如果 `initEegWasm()` 失败，最可能的问题是您的捆绑程序或应用程序部署未正确提供打包的 `wasm/` 资产。
 
 这是添加更多产品逻辑之前首先要解决的问题。
 
 如果您使用 Vite，两个常见的修复方法是：
 
 1. 添加 `vite-plugin-wasm` 和 `vite-plugin-top-level-await`，然后继续使用
-   `await initEegWasm()`
+`await initEegWasm()`
 2. 直接导入 WASM 资产URL并将其传递给 `initEegWasm(wasmUrl)`
 
 有关这两个修复的更多信息，请参阅 [故障排除](/cn/sdk/operations/troubleshooting) 。
 
-如果您遇到困难，请先将您的应用程序与脚手架的 `eeg-demo`
-应用程序进行比较，然后再假设包本身已损坏。
+如果您遇到困难，请先将您的应用程序与脚手架的 `eeg-demo` 应用程序进行比较，然后再假设包本身已损坏。
 
 <a id="step-5-replace-example-data-with-real-app-data"></a>
 
-## 步骤 5：将示例数据替换为真实应用程序数据
+## 第 5 步：将示例数据替换为真实应用程序数据
 
-示例调用工作后，将占位符数组与实际的 EEG 样本交换
-来自您的应用程序的缓冲区。
+示例调用工作后，将占位符数组与应用程序中的实际 EEG 示例缓冲区交换。
 
 常见的模式是：
 
@@ -140,10 +129,9 @@ console.log("beta", powers.beta);
 
 ## 何时添加 `eeg-web-ble`
 
-当您需要实时浏览器传输时添加 `@elata-biosciences/eeg-web-ble` 支持的 Muse兼容耳机。
+当您需要从受支持的 Muse 兼容耳机进行实时浏览器传输时，请添加 `@elata-biosciences/eeg-web-ble` 。
 
-如果普通的 EEG 运行时尚未运行，请不要从这里开始。首先让 WASM
-加载工作，然后添加传输。
+如果普通的 EEG 运行时尚未运行，请不要从这里开始。首先让 WASM 加载工作，然后添加传输。
 
 <a id="common-problems"></a>
 
@@ -151,14 +139,14 @@ console.log("beta", powers.beta);
 
 - `initEegWasm()` 抛出：您的应用程序可能未正确加载打包的 `wasm/` 资源
 - 您期望的设备发现： `eeg-web` 本身不进行蓝牙传输
-- 您正在从头开始评估 SDK ：从 [构建您的第一个 Elata 应用程序](/cn/sdk/tutorials/first-app) 而不是手动设置
+- 您正在从头开始评估 SDK：从 [构建您的第一个 Elata 应用程序](/cn/sdk/tutorials/first-app) 开始，而不是手动设置
 
 <a id="next"></a>
 
 ## 下一步
 
 <CardGroup cols={3}>
-  <Card title="添加 Web Bluetooth" icon="bluetooth" href="/cn/sdk/tutorials/eeg-ble-live-stream">
+  <Card title="添加网络蓝牙" icon="bluetooth" href="/cn/sdk/tutorials/eeg-ble-live-stream">
 通过 BLE 传输 Muse EEG 
   </Card>
   <Card title="eeg-web 参考" icon="brain" href="/cn/sdk/eeg-web/getting-started">

@@ -1,25 +1,22 @@
 ---
 title: "Contrato de transporte"
-description: "Implemente las interfaces de marco y transporte compartidas Elata para su dispositivo."
+description: "Implemente las interfaces de marco y transporte compartidas de Elata para su dispositivo."
 ---
 
 Este es el contrato que debe cumplir su integración.
 
-Las aplicaciones deberían ver una superficie de transporte estable Elata , no un paquete específico del proveedor
-formatos o detalles de Bluetooth.
+Las aplicaciones deberían ver una superficie de transporte Elata estable, no formatos de paquetes específicos del proveedor ni detalles de Bluetooth.
 
 <a id="the-core-rule"></a>
 
-## La regla básica
+## La regla central
 
-El adaptador de su dispositivo debe emitir `HeadbandFrameV1` fotogramas a través de un
-`HeadbandTransport`.
+El adaptador de su dispositivo debe emitir `HeadbandFrameV1` fotogramas a través de un `HeadbandTransport`.
 
 Ese es el límite de compatibilidad para las aplicaciones del navegador y el análisis posterior.
 
 <Info>
-Si el contrato marco es correcto, el código de la aplicación puede seguir siendo simple. si el marco
-  El contrato es inestable, todo lo que está encima se vuelve más difícil de confiar.
+Si el contrato marco es correcto, el código de la aplicación puede seguir siendo simple. Si el contrato marco es inestable, resulta más difícil confiar en todo lo que está encima.
 </Info>
 
 ## `HeadbandFrameV1`
@@ -40,8 +37,7 @@ interface HeadbandFrameV1 {
 }
 ```
 
-En la práctica, la mayoría de las integraciones deberían tratar `eeg` como el bloque requerido y agregar
-otros bloques sólo cuando el dispositivo los exponga claramente.
+En la práctica, la mayoría de las integraciones deberían tratar `eeg` como el bloque requerido y agregar otros bloques solo cuando el dispositivo los exponga claramente.
 
 ## `HeadbandSignalBlock`
 
@@ -62,15 +58,15 @@ interface HeadbandSignalBlock {
 
 ## Lo que debe permanecer estable
 
-| Campo | Qué bien se ve |
+| Campo | que bien se ve |
 | --- | --- |
 | `source` | Un identificador estable y legible como `vendor-ble` |
-| `sequenceId` | Monótono dentro de la sesión de carrera |
+| `sequenceId` | Monótono dentro de la sesión de carrera. |
 | `sampleRateHz` | Coincide con el comportamiento real del dispositivo |
 | `channelNames` | Estable y documentado |
 | `channelCount` | Siempre coincide con el ancho de fila real |
-| `samples` | Cada fila es un paso de tiempo y utiliza el mismo orden de canales |
-| `timestampsMs` | Opcional, pero alineado con las filas emitidas cuando están presentes |
+| `samples` | Cada fila es un paso de tiempo y utiliza el mismo orden de canales. |
+| `timestampsMs` | Opcional, pero alineado con las filas emitidas cuando está presente |
 | `clockSource` | Documentado explícitamente como `device` o `local` |
 
 ## `HeadbandTransport`
@@ -94,14 +90,12 @@ interface HeadbandTransport {
 
 | Método | Comportamiento esperado |
 | --- | --- |
-| `connect()` | Empareja o conecta al dispositivo y prepara la sesión |
-| `start()` | Comenzar a transmitir fotogramas válidos |
+| `connect()` | Empareje o conéctelo al dispositivo y prepare la sesión |
+| `start()` | Comience a transmitir fotogramas válidos |
 | `stop()` | Detener la transmisión sin corromper la sesión |
-| `disconnect()` | Liberar la sesión y los recursos subyacentes |
+| `disconnect()` | Liberar la sesión y los recursos subyacentes. |
 
-Las reglas de transición importan tanto como los métodos mismos. un limpio
-La integración debería hacer evidente si el transporte está inactivo, conectado,
-streaming, degradado, reconectándose, desconectado o con error.
+Las reglas de transición importan tanto como los métodos mismos. Una integración limpia debería dejar claro si el transporte está inactivo, conectado, transmitiendo, degradado, reconectándose, desconectado o presenta un error.
 
 ## `HeadbandTransportStatus`
 
@@ -120,12 +114,11 @@ interface HeadbandTransportStatus {
 
 <a id="practical-rules-for-integrators"></a>
 
-## Reglas Prácticas para Integradores
+## Reglas prácticas para integradores
 
 <Steps>
   <Step title="Mantener el orden de los canales fijo">
-Si el dispositivo transmite `TP9, AF7, AF8, TP10`, cada fila emitida debe usar
-    ese orden consistentemente.
+Si el dispositivo transmite `TP9, AF7, AF8, TP10`, cada fila emitida debe usar ese orden de manera consistente.
   </Step>
   <Step title="Hacer que el ancho de fila coincida con el número de canales">
 Una fila nunca debe contener más o menos valores EEG que `channelCount`.

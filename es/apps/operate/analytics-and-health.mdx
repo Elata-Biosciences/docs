@@ -7,15 +7,13 @@ description: "Los análisis de uso que le ofrece Elata y cómo aprovecharlos al 
 
 ## Tu página de análisis
 
-Abra **Mis aplicaciones → su aplicación → Editar → Análisis** mientras ha iniciado sesión como propietario de la aplicación
-o un miembro del equipo. La ruta anterior `/app/<slug>/analytics` redirige a la sección Análisis de la consola de edición. Muestra el uso agregado durante un período de tiempo (90 días por
-predeterminado):
+Abra **Mis aplicaciones → su aplicación → Editar → Análisis** mientras ha iniciado sesión como propietario de la aplicación o miembro del equipo. La ruta anterior `/app/<slug>/analytics` redirige a la sección Análisis de la consola de edición. Muestra el uso agregado durante un período de tiempo (90 días de forma predeterminada):
 
-| Métrica | Lo que cuenta |
+| Métrica | lo que cuenta |
 | --- | --- |
-| **Usuarios** | Jugadores distintos que registraron datos en tu aplicación |
+| **Usuarios** | Distintos jugadores que registraron datos en tu aplicación |
 | **Sesiones** | Envíos de puntajes a través de `saveScore`, en lugar de sesiones de juego contadas de forma independiente |
-| **Eventos** | Todas las `app-metrics` filas almacenadas en la ventana, incluidos registros de eventos y filas de puntuación |
+| **Eventos** | Todas las filas `app-metrics` almacenadas en la ventana, incluidos registros de eventos y filas de puntuación |
 | **Puntuación promedio** | El promedio de puntuaciones guardadas con `saveScore` |
 
 Un gráfico de uso muestra la tendencia en la ventana.
@@ -24,13 +22,13 @@ Un gráfico de uso muestra la tendencia en la ventana.
 
 <a id="privacy-built-in"></a>
 
-## Privacidad integrada
+## Privacidad incorporada
 
 Los análisis son agregados y anónimos:
 
 - Nunca se muestran usuarios individuales ni cargas útiles sin procesar.
 - Los resultados se suprimen debajo de cinco usuarios distintos, por lo que es posible que las aplicaciones muy nuevas no muestren datos al principio.
-- Los totales y las tendencias se calculan a partir de un máximo de 20 000 filas recientes; el recuento de usuarios distintos se calcula por separado. Trate los totales de muy alto volumen como potencialmente parciales.
+- Los totales y las tendencias se calculan a partir de un máximo de 20.000 filas recientes; el recuento de usuarios distintos se calcula por separado. Trate los totales de muy alto volumen como potencialmente parciales.
 
 ---
 
@@ -38,24 +36,23 @@ Los análisis son agregados y anónimos:
 
 ## Haga que sus análisis sean útiles
 
-Los análisis se crean a partir de lo que registra su aplicación a través de
-[`app-metrics`](/es/apps/platform/metrics-and-scores). Para obtener números significativos:
+Los análisis se crean a partir de lo que registra su aplicación a través de [`app-metrics`](/es/apps/platform/metrics-and-scores). Para obtener números significativos:
 
 - **Registre eventos significativos**, por ejemplo `session_complete` o `level_complete`, no todos los fotogramas.
-- **Guarda puntuaciones** con `saveScore` cuando una sesión produce un resultado. Esto impulsa **Puntuación promedio** y el recuento actual de **Sesiones** . Múltiples presentaciones de puntajes en una sesión de juego aumentan y cuentan varias veces.
+- **Guarde puntuaciones** con `saveScore` cuando una sesión produzca un resultado. Esto impulsa **Puntuación promedio** y el recuento actual de **Sesiones** . Múltiples presentaciones de puntajes en una sesión de juego aumentan y cuentan varias veces.
 - **Mantenga estables los tipos de eventos** en todas las versiones para que las tendencias sigan siendo comparables.
 
 ---
 
 <a id="what-to-watch"></a>
 
-## Qué mirar
+## que mirar
 
-| Señal | Qué puede significar |
+| señal | lo que puede significar |
 | --- | --- |
-| Usuarios en aumento, sesiones por usuario fijas | Llegan nuevos jugadores pero no regresan. Mire la incorporación y el progreso guardado. |
-| Las sesiones aumentan, la puntuación promedio aumenta | Los jugadores están mejorando. Considere el contenido más difícil. |
-| Caída después de un lanzamiento | Verifique la nueva versión en la ventana de reproducción y lea reseñas recientes. |
+| Usuarios en aumento, sesiones por usuario planas | Llegan nuevos jugadores pero no regresan. Mire la incorporación y el progreso guardado. |
+| Sesiones en aumento, puntuación promedio en aumento | Los jugadores están mejorando. Considere el contenido más difícil. |
+| Caer después de un lanzamiento | Consulta la nueva versión en la ventana de reproducción y lee reseñas recientes. |
 
 La página de su aplicación también muestra reproducciones, guardados, votos, reseñas y comentarios.
 
@@ -63,7 +60,7 @@ La página de su aplicación también muestra reproducciones, guardados, votos, 
 
 <a id="compare-usage-with-sales"></a>
 
-## Comparar uso con ventas
+## Comparar el uso con las ventas
 
 Abra **Editar → Comercio** para ventas de productos, pagos de suscripciones y transacciones recientes. Utilice **Editar → Análisis** para comprender el uso. Estos paneles responden a diferentes preguntas: el acceso pago no garantiza que alguien haya jugado y el acceso de prueba no implica un pago directo a la aplicación.
 

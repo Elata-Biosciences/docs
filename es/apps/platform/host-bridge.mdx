@@ -1,16 +1,13 @@
 ---
 title: "Puente anfitrión"
-description: "Cómo habla su aplicación de espacio aislado con Elatay cada mensaje que admite."
+description: "Cómo se comunica su aplicación de espacio aislado con Elata y cada mensaje que admite."
 ---
 
 <a id="overview"></a>
 
-## Descripción general
+## Información general
 
-Su aplicación se ejecuta en un iframe aislado sin acceso a las cookies de Elata,
-backend o la billetera del usuario. Cuando necesita algo de la plataforma, como
-como compra, datos guardados o consentimiento, envía un `postMessage` al padre
-marco. Elata hace el trabajo con la sesión del usuario y responde.
+Su aplicación se ejecuta en un iframe de espacio aislado sin acceso a las cookies, al backend o a la billetera del usuario de Elata. Cuando necesita algo de la plataforma, como una compra, datos guardados o consentimiento, envía un `postMessage` al marco principal. Elata hace el trabajo con la sesión del usuario y responde.
 
 El puente no expone las credenciales de la cuenta ni los tokens de sesión. La actividad pública, los registros comerciales y la información que ingresa un usuario están separados de este aislamiento.
 
@@ -29,19 +26,17 @@ El puente no expone las credenciales de la cuenta ni los tokens de sesión. La a
 
 <a id="use-the-sdk-packages"></a>
 
-## Utilice los paquetes SDK 
+## Utilice los paquetes SDK
 
-Para la mayoría de las funciones hay un pequeño paquete que envuelve los mensajes, tiempos de espera,
-y errores para ti:
+Para la mayoría de las funciones, existe un pequeño paquete que incluye los mensajes, los tiempos de espera y los errores:
 
 | Característica | Paquete | Página |
 | --- | --- | --- |
 | Compras únicas y propiedad | `@elata-biosciences/app-payments` | [Compras dentro de la aplicación](/es/apps/platform/in-app-purchases) |
-| Almacenamiento de valores-clave por usuario | `@elata-biosciences/app-state` (aún no en npm) | [Estado de la aplicación](/es/apps/platform/app-state) |
+| Almacenamiento de valores clave por usuario | `@elata-biosciences/app-state` (aún no en npm) | [Estado de la aplicación](/es/apps/platform/app-state) |
 | Registros de eventos, puntuaciones, `reportAffect` | `@elata-biosciences/app-metrics` | [Métricas y puntuaciones](/es/apps/platform/metrics-and-scores) |
 
-El consentimiento, los conocimientos, las notificaciones, la navegación y los comentarios utilizan llamadas simples
-`postMessage` . Están documentados a continuación y en sus propias páginas.
+El consentimiento, los conocimientos, las notificaciones, la navegación y los comentarios utilizan llamadas simples `postMessage` . Están documentados a continuación y en sus propias páginas.
 
 ---
 
@@ -49,10 +44,10 @@ El consentimiento, los conocimientos, las notificaciones, la navegación y los c
 
 ## Reglas básicas
 
-- **Enviar a los padres.** Publicar en `window.parent`. Utilice el origen del host conocido como destino cuando esté disponible. SDK los clientes manejan su propio transporte. Los oyentes escritos a mano deben verificar la ventana de respuesta y, cuando se conozca, su origen; No asuma que todos los manejadores de puentes aplican controles idénticos.
+- **Enviar a los padres.** Publicar en `window.parent`. Utilice el origen del host conocido como destino cuando esté disponible. Los clientes del SDK manejan su propio transporte. Los oyentes escritos a mano deben verificar la ventana de respuesta y, cuando se conozca, su origen; No asuma que todos los manejadores de puentes aplican controles idénticos.
 - **Utilice un `requestId`.** Cuando se espera una respuesta, incluya un `requestId` único (de 8 a 128 caracteres; `crypto.randomUUID()` funciona) y compárelo en la respuesta.
-- **No maneja respuesta.** Afuera Elata (por ejemplo en desarrollo local) nadie contesta. Utilice un tiempo de espera y degrade con gracia. Los paquetes SDK hacen esto por usted.
-- **Elata es la fuente de la verdad.** Los precios, la propiedad y el consentimiento siempre provienen de Elata, nunca de los valores que envía tu aplicación.
+- **No maneja respuesta.** Fuera de Elata (por ejemplo en desarrollo local) nadie responde. Utilice un tiempo de espera y degrade con gracia. Los paquetes SDK hacen esto por usted.
+- **Elata es la fuente de la verdad.** Los precios, la propiedad y el consentimiento siempre provienen de Elata, nunca de los valores que envía su aplicación.
 
 ---
 
@@ -83,19 +78,17 @@ Utilice [`app-payments`](/es/apps/platform/in-app-purchases) en lugar de enviarl
 | `elata:state:set` `{ requestId, key, value }` | `elata:state:set:result` `{ requestId, ok }` o `{ requestId, error }` |
 | `elata:state:delete` `{ requestId, key }` | `elata:state:delete:result` `{ requestId, ok }` o `{ requestId, error }` |
 
-Una vez que `@elata-biosciences/app-state` esté activado npm, prefiérelo a enviarlos manualmente. Consulte [Estado de la aplicación](/es/apps/platform/app-state).
+Una vez que `@elata-biosciences/app-state` esté en npm, prefiérelo a enviarlos manualmente. Consulte [Estado de la aplicación](/es/apps/platform/app-state).
 
 <a id="metrics"></a>
 
 ### Métricas
 
-`app-metrics` utiliza una configuración `MessageChannel` dedicada con un protocolo de enlace
-`__elata_metrics_init` , no mensajes de ventana individuales. Utilice siempre
-el paquete [](/es/apps/platform/metrics-and-scores).
+`app-metrics` utiliza una configuración `MessageChannel` dedicada con un protocolo de enlace `__elata_metrics_init` , no mensajes de ventana individuales. Utilice siempre el paquete [](/es/apps/platform/metrics-and-scores).
 
 <a id="consent-and-insights"></a>
 
-### Consentimiento y opiniones
+### Consentimiento y conocimientos
 
 | Aplicación → Elata | Elata → aplicación |
 | --- | --- |
@@ -119,22 +112,19 @@ Ver [Notificaciones](/es/apps/platform/notifications).
 
 ### Navegación
 
-Envía al usuario a la página de reproducción de otra aplicación en Elata:
+Enviar al usuario a la página de reproducción de otra aplicación en Elata:
 
 ```js
 window.parent?.postMessage({ type: 'elata:navigate', slug: 'calm-runner' }, '*');
 ```
 
-`slug` debe ser un slug de aplicación Elata : letras minúsculas, dígitos y guiones, hasta
-64 caracteres. No hay respuesta.
+`slug` debe ser un slug de la aplicación Elata: letras minúsculas, dígitos y guiones, hasta 64 caracteres. No hay respuesta.
 
 <a id="feedback"></a>
 
 ### Comentarios
 
-El botón de comentarios flotante deElataestá oculto mientras se reproduce una aplicación, por lo que
-no cubre tus controles. Abra el panel de comentarios de Elatadesde su propia interfaz de usuario
-en lugar de:
+El botón de comentarios flotante de Elata está oculto mientras se reproduce una aplicación, por lo que no cubre sus controles. En su lugar, abra el panel de comentarios de Elata desde su propia interfaz de usuario:
 
 ```js
 window.parent?.postMessage({ type: 'elata:feedback:open', mode: 'feature' }, '*');

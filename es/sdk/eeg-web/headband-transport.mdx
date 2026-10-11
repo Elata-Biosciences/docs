@@ -5,7 +5,7 @@ description: "Esquema de marco normalizado e interfaz de transporte para disposi
 
 <a id="headbandframev1"></a>
 
-## DiademaFrameV1
+## DiademaMarcoV1
 
 El marco de datos canónico emitido por todos los transportes de diadema. Cada implementación (BLE, puente nativo, sintética) produce esta misma forma:
 
@@ -27,7 +27,7 @@ interface HeadbandFrameV1 {
 
 <a id="headbandsignalblock"></a>
 
-## DiademaBloque de señal
+## DiademaSeñalBloque
 
 Un bloque de muestras de series temporales para uno o más canales:
 
@@ -46,26 +46,26 @@ interface HeadbandSignalBlock {
 
 <a id="headbandtransportstate"></a>
 
-## Estado de transporte de diadema
+## DiademaTransporteEstado
 
 Estados del ciclo de vida del transporte. `HeadbandTransportState` es una enumeración de cadena: `HeadbandTransportState.Streaming === "streaming"`.
 
 | Estado | Descripción |
 |-------|-------------|
-| `Idle` | Transporte creado, no conectado |
-| `Connecting` | Conexión en curso |
-| `Connected` | Conectado, sin transmisión |
-| `Streaming` | Recibiendo fotogramas activamente |
+| `Idle` | Transporte creado, no conectado. |
+| `Connecting` | Conexión en progreso |
+| `Connected` | Conectado, no transmitiendo |
+| `Streaming` | Recibir fotogramas activamente |
 | `Degraded` | Conectado pero experimentando problemas |
-| `Reconnecting` | Intentando volver a conectarse |
+| `Reconnecting` | Intentando volver a conectar |
 | `Disconnected` | Desconectado del dispositivo |
-| `Error` | Error irrecuperable |
+| `Error` | error irrecuperable |
 
 ---
 
 <a id="headbandtransport-interface"></a>
 
-## Interfaz de transporte con diadema
+## Interfaz de transporte
 
 Todos los transportes implementan esta interfaz:
 
@@ -101,7 +101,7 @@ stateDiagram-v2
 
 <a id="headbandtransportstatus"></a>
 
-## Estado de transporte de la diadema
+## DiademaTransporteEstado
 
 Actualizaciones de estado emitidas a través de `onStatus`:
 
@@ -150,7 +150,7 @@ await transport.disconnect();
 
 `@elata-biosciences/eeg-web` incluye ayudas para remodelar marcos:
 
-| Ayudante | Devoluciones |
+| ayudante | Devuelve |
 | --- | --- |
 | `getEegChannelSamples(frame, channelIndex)` | Un canal como `Float32Array`, listo para `band_powers` |
 | `getEegInterleavedSamples(frame)` | Todos los canales entrelazados `[s0_ch0, s0_ch1, …]`, para modelos como `WasmCalmnessModel` |

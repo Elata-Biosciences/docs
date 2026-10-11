@@ -1,6 +1,6 @@
 ---
 title: "Descripción general de AgentForge"
-tag: "Archived"
+tag: "Archivado"
 description: "Simulación adversaria basada en agentes de mecanismos EVM"
 ---
 
@@ -11,15 +11,15 @@ description: "Simulación adversaria basada en agentes de mecanismos EVM"
 AgentForge es un marco de simulación basado en agentes para contratos inteligentes de Foundry y EVM. Llena la brecha entre las pruebas unitarias aisladas y la producción al simular cómo se comporta un protocolo cuando muchos agentes autónomos (comerciantes, arbitrajistas, liquidadores, estrategas impulsados ​​por LLM) actúan simultáneamente con estrategias competitivas a lo largo del tiempo.
 
 <Info>
-  **Paquete**: [`@elata-biosciences/agentforge`](https://www.npmjs.com/package/@elata-biosciences/agentforge) en npm
+**Paquete**: [`@elata-biosciences/agentforge`](https://www.npmjs.com/package/@elata-biosciences/agentforge) en npm
 </Info>
 
-| Capa | Lo que prueba | Ejemplo |
+| capa | lo que prueba | Ejemplo |
 |-------|--------------|---------|
 | Pruebas unitarias | Funciones individuales | `test_transfer()` |
-| Pruebas fuzz | Entradas aleatorias | `testFuzz_transfer(uint256 amount)` |
-| **AgentForge** | **Comportamiento emergente multiactor** | **Comerciantes, arbitrajistas, liquidadores competidores** |
-| Mainnet | Usuarios reales | Producción |
+| Pruebas de fuzz | Entradas aleatorias | `testFuzz_transfer(uint256 amount)` |
+| **AgentForge** | **Comportamiento emergente de múltiples actores** | **Comerciantes, arbitrajistas, liquidadores competidores** |
+| red principal | Usuarios reales | Producción |
 
 ---
 
@@ -29,12 +29,12 @@ AgentForge es un marco de simulación basado en agentes para contratos inteligen
 
 - **Simulación determinista** — misma semilla + mismo escenario = resultados idénticos
 - **Agentes de acción múltiple** : los agentes pueden ejecutar hasta 3 acciones por tick (por ejemplo, intercambiar + chismes)
-- **Agentes impulsados por LLM** : agentes basados en personas con ensamblaje estructurado y bucle OODA
+- **Agentes basados en LLM** : agentes basados en personas con ensamblaje de mensajes estructurados y bucle OODA
 - **Bus de chismes** : comunicación limitada entre agentes con canales, presupuestos y primitivas de confianza
 - **Flujo de trabajo de exploración/reproducción** : descubra comportamientos con agentes LLM y luego reproduzca de forma determinista
-- **Panel de Studio** : interfaz de usuario inspirada en la terminal Bloomberg con gráficos, cronograma, análisis de chismes y kit de herramientas de aprendizaje automático
-- **Adaptadores de protocolo (paquetes)** : conéctese a cualquier protocolo EVM a través de la interfaz `Pack` 
-- **Listo para CI** : códigos de salida, denominación de artefactos estable e integración de acciones GitHub 
+- **Panel de Studio** : interfaz de usuario inspirada en la terminal Bloomberg con gráficos, línea de tiempo, análisis de chismes y kit de herramientas de aprendizaje automático
+- **Adaptadores de protocolo (paquetes)** : conéctelos a cualquier protocolo EVM a través de la interfaz `Pack` 
+- **Listo para CI** : códigos de salida, denominación de artefactos estable e integración de GitHub Actions
 
 ---
 
@@ -141,7 +141,7 @@ results/market-stress-ci/
 ## Integraciones de demostración
 
 - [Demostración de bifurcación Uniswap v4](https://github.com/wkyleg/v4-core/tree/main/sim/agentforge-demo) : agentes deterministas + LLM que simulan mecanismos de grupo v4
-- [Elata Protocolo](https://github.com/Elata-Biosciences/elata-protocol) — plataforma de lanzamiento de aplicaciones con curvas de vinculación
+- [Protocolo Elata](https://github.com/Elata-Biosciences/elata-protocol) : plataforma de lanzamiento de aplicaciones con curvas de vinculación
 
 ---
 
@@ -149,8 +149,8 @@ results/market-stress-ci/
 
 ## Enlaces
 
-- [npm paquete](https://www.npmjs.com/package/@elata-biosciences/agentforge)
-- [GitHub repositorio](https://github.com/Elata-Biosciences/agentforge)
-- [Completo CLI Referencia](/es/open-source/agentforge/cli)
+- [paquete npm](https://www.npmjs.com/package/@elata-biosciences/agentforge)
+- [Repositorio de GitHub](https://github.com/Elata-Biosciences/agentforge)
+- [Referencia CLI completa](/es/open-source/agentforge/cli)
 - [Conceptos básicos](/es/open-source/agentforge/concepts)
 - [Panel de estudio](/es/open-source/agentforge/studio)

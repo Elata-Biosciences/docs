@@ -4,18 +4,14 @@ description: "从模板搭建一个可立即运行的 Elata 入门应用程序�
 ---
 
 <Warning>
-  **已知问题：** 存储库的 `create-elata-demo` 0.12.1 具有打包阻止程序，并且在没有同级工作区元数据的情况下无法启动。在使用之前验证固定版本。现在，按照
-  [添加 rPPG 到现有应用程序](/cn/sdk/tutorials/rppg-existing-app) 进行设置
-  而是在您自己的网络应用程序中使用 SDK 。请参阅 [直播内容](/cn/overview/status)。
+**已知问题：** 存储库的 `create-elata-demo` 0.12.1 具有打包阻止程序，并且在没有同级工作区元数据的情况下无法启动。在使用之前验证固定版本。现在，请按照 [将 rPPG 添加到现有应用程序](/cn/sdk/tutorials/rppg-existing-app) ，在您自己的 Web 应用程序中设置 SDK。请参阅 [直播内容](/cn/overview/status)。
 </Warning>
 
 <a id="what-it-is"></a>
 
-## 这是什么
+## 它是什么
 
-`@elata-biosciences/create-elata-demo` 生成一个工作的 Vite + React 应用程序
-连接到 Elata SDK。这是运行应用程序的最快方式，并且
-在将 SDK 集成到您自己的项目之前，请确定已知良好的基准。
+`@elata-biosciences/create-elata-demo` 生成一个连接到 Elata SDK 的工作 Vite + React 应用程序。这是运行应用程序的最快方式，也是将 SDK 集成到您自己的项目之前的已知良好基准。
 
 ---
 
@@ -23,25 +19,23 @@ description: "从模板搭建一个可立即运行的 Elata 入门应用程序�
 
 ## 模板
 
-| 模板 | 别名 | 您将获得什么 | 硬件 |
+| 模板 | 别名 | 你得到什么 | 硬件 |
 | --- | --- | --- | --- |
 | `rppg-demo` | `rppg` | 相机脉冲和 rPPG 启动器。 **默认值。** | 网络摄像头 |
-| `eeg-demo` | `eeg` | 浏览器 EEG  SDK 接线启动器，带 Muse Web Bluetooth 支持 | Muse （可选） |
-| `eeg-ble` | `ble` | 蓝牙优先 EEG 浏览器配对流程入门 | Muse |
-| `ppg-demo` | `ppg`, `muse-ppg` | 头带 PPG 入门展示 BPM、RMSSD 和实时诊断 | Muse |
-| `pulse-game` | `pulse`, `recovery` | rPPG 在沙盒 iframe 中运行并保存分数的恢复游戏 `app-metrics`，端到端 | 网络摄像头 |
+| `eeg-demo` | `eeg` | 用于 SDK 接线的浏览器 EEG 启动器，支持 Muse Web 蓝牙 | 缪斯（可选） |
+| `eeg-ble` | `ble` | 蓝牙优先 EEG 启动器以及浏览器配对流程 | 缪斯 |
+| `ppg-demo` | `ppg`, `muse-ppg` | 头带 PPG 启动器显示 BPM、RMSSD 和实时诊断 | 缪斯 |
+| `pulse-game` | `pulse`, `recovery` | rPPG 恢复游戏，在沙盒 iframe 中运行并使用 `app-metrics`保存分数，端到端 | 网络摄像头 |
 
 <Tip>
-建造 Elata？ `pulse-game` 显示完整的 Elata 模式：
-  该应用程序在 iframe 中运行，并通过
-  [指标桥](/cn/apps/platform/metrics-and-scores)与主机进行通信。
+为Elata建造？ `pulse-game` 显示了完整的 Elata 模式：应用程序在 iframe 中运行，并通过 [指标桥](/cn/apps/platform/metrics-and-scores)与主机对话。
 </Tip>
 
 ---
 
 <a id="usage"></a>
 
-## 使用情况
+## 用途
 
 <CodeGroup>
 
@@ -67,14 +61,12 @@ pnpm dlx @elata-biosciences/create-elata-demo --list-templates
 
 </CodeGroup>
 
-| 标志 | 含义 |
+| 旗帜 | 含义 |
 | --- | --- |
 | `--template <name>` 或 `--template=<name>` | 选择模板或别名 |
-| `--list-templates` | 打印可用模板 |
+| `--list-templates` | 打印可用的模板 |
 
-如果没有 `--template`， CLI 会要求您在交互运行时选择一个，并且
-否则使用 `rppg-demo` 。如果您省略了项目目录，它会要求
-一个名字。
+如果没有 `--template`，CLI 会要求您在交互运行时选择一个，否则使用 `rppg-demo` 。如果您省略项目目录，它会要求输入名称。
 
 ---
 
@@ -84,12 +76,12 @@ pnpm dlx @elata-biosciences/create-elata-demo --list-templates
 
 每个生成的应用程序都包括：
 
--  Vite + React + TypeScript 应用程序
+- 一个 Vite + React + TypeScript 应用程序
 - Elata 软件包固定到一组兼容的版本
 - 特定于模板的 `README.md`
 - `npm run dev`：启动开发服务器
 - `npm run build`：类型检查并构建为 `dist/`
-- `npm run build:zip`：构建并编写 `app.zip`，准备 [上传到 Elata](/cn/apps/build/launch-your-app)
+- `npm run build:zip`：构建并编写 `app.zip`，准备 [上传到Elata](/cn/apps/build/launch-your-app)
 
 ```bash
 cd my-app
@@ -101,10 +93,9 @@ npm run dev
 
 <a id="inside-another-pnpm-workspace"></a>
 
-## 在另一个 pnpm 工作空间内
+## 在另一个 pnpm 工作区中
 
-如果您在现有 `pnpm` 工作空间内搭建脚手架，但不包含新的
-文件夹，在工作区之外安装并运行它：
+如果您在不包含新文件夹的现有 `pnpm` 工作区中搭建脚手架，请在工作区外安装并运行它：
 
 ```bash
 pnpm --dir my-app --ignore-workspace install
@@ -117,10 +108,10 @@ pnpm --dir my-app --ignore-workspace run dev
 
 ## 脚手架或示例应用程序？
 
-| 如果你想要... | 使用 |
+| 如果你想... | 使用 |
 | --- | --- |
 | 具有固定依赖项的干净启动器 | `create-elata-demo` |
-| 完整的产品型应用程序，带有路由、游戏循环和图表 | [示例应用程序](/cn/sdk/guides/example-apps) |
+| 具有路由、游戏循环和图表的完整产品型应用程序 | [示例应用程序](/cn/sdk/guides/example-apps) |
 
 ---
 
@@ -135,7 +126,7 @@ pnpm --dir my-app --ignore-workspace run dev
   <Card title="选择合适的包" icon="compass" href="/cn/sdk/guides/choose-the-right-package">
     包选择指南
   </Card>
-  <Card title="发布于 Elata" icon="store" href="/cn/apps/build/launch-your-app">
+  <Card title="在 Elata 上发布" icon="store" href="/cn/apps/build/launch-your-app">
 上传您的应用程序
   </Card>
 </CardGroup>
