@@ -25,14 +25,14 @@ function extract(b){
  function protect(s) {
   const held=[];
   const tokenPattern=new RegExp("\\s*(?:"+literals.source+")\\s*",literals.flags);
-  const text=s.replace(tokenPattern,m=>{let i=held.length;held.push(m);return " ELATAZX"+i+"XZ ";});
+  const text=s.replace(tokenPattern,m=>{let i=held.length;held.push(m);return " ⟦"+(9100000+i)+"⟧ ";});
   return {text,held};
  }
  function restore(text,held) {
   let remaining=text;
   const seen=new Set();
-  remaining=remaining.replace(/\s*ELATA\s*ZX\s*(\d+)\s*XZ\s*/gi,(m,id)=>{
-   id=Number(id);if(id>=held.length)throw Error("Unknown literal "+id);
+  remaining=remaining.replace(/\s*⟦\s*(910\d{4})\s*⟧\s*/g,(m,id)=>{
+   id=Number(id)-9100000;if(id>=held.length)throw Error("Unknown literal "+id);
    if(seen.has(id))throw Error("Duplicated literal "+id);seen.add(id);return held[id];
   });
   if(seen.size!==held.length)throw Error("Translation lost protected literal");
@@ -52,12 +52,12 @@ function extract(b){
   }
  }
  async function batchTranslate(entries,tl) {
-  const text=entries.map((e,i)=>"ELATASEG"+i+"END\n"+e.protected.text).join("\n\n");
+  const text=entries.map((e,i)=>"⟦"+(9000000+i)+"⟧\n"+e.protected.text).join("\n\n");
   const translated=await service(text,tl);
-  const marker=/ELATA\s*SEG\s*(\d+)\s*END/gi;
+  const marker=/⟦\s*(900\d{4})\s*⟧/g;
   const matches=[...translated.matchAll(marker)];
   const results=[];
-  if(matches.length===entries.length&&matches.every((m,i)=>Number(m[1])===i)){
+  if(matches.length===entries.length&&matches.every((m,i)=>Number(m[1])-9000000===i)){
    try{
     for(let i=0;i<entries.length;i++){
      const start=matches[i].index+matches[i][0].length;
@@ -150,7 +150,7 @@ function extract(b){
     if(locale==="cn"&&chinese[text]!==undefined){map[text]=chinese[text];continue;}
     if(cache[key]!==undefined){map[text]=cache[key];continue;}
     const protectedText=protect(text);
-    if(!/[A-Za-z]{2}/.test(protectedText.text.replace(/ELATAZX\d+XZ/g,""))){map[text]=text;continue;}
+    if(!/[A-Za-z]{2}/.test(protectedText.text.replace(/⟦\d+⟧/g,""))){map[text]=text;continue;}
     pending.push({text,key,protected:protectedText});
    }
    console.log(locale+": "+pending.length+" untranslated segments");

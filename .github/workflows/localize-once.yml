@@ -18,6 +18,10 @@ jobs:
           node-version: '24'
       - name: Translate public documentation and validate structural parity
         run: node scripts/localize-docs.cjs
+      - name: Install temporary MDX validation dependencies
+        run: npm install --prefix "$RUNNER_TEMP/elata-docs-qa" --no-save --ignore-scripts @mdx-js/mdx@3 yaml@2 github-slugger@2 remark-gfm@4
+      - name: Compile every page and verify locale parity
+        run: node scripts/validate-locales.cjs
       - name: Persist translation progress on the task branch
         if: always()
         run: |
@@ -25,6 +29,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add cn es docs.json
           if [ -f scripts/localization-cache.json ]; then git add scripts/localization-cache.json; fi
+          if [ -f scripts/localization-qa.json ]; then git add scripts/localization-qa.json; fi
           if ! git diff --cached --quiet; then
             git commit -m 'docs: synchronize Chinese and add Spanish translations'
             git push origin HEAD:docs/chinese-spanish-2026-10-11
