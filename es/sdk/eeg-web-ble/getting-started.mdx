@@ -1,0 +1,192 @@
+---
+title: "Empezando"
+description: "Conéctese a EEG dispositivos de diadema a través de Web Bluetooth"
+---
+
+<a id="when-to-use-this-package"></a>
+
+## Cuándo utilizar este paquete
+
+Utilice `@elata-biosciences/eeg-web-ble` cuando su aplicación necesite:
+
+- descubrimiento en el navegador de dispositivos compatibles con Muse
+- en vivo EEG transmitiendo por Web Bluetooth
+- marcos de diadema normalizados para lógica de aplicaciones o análisis posteriores
+
+Instálalo junto a `@elata-biosciences/eeg-web`.
+
+---
+
+<a id="installation"></a>
+
+## Instalación
+
+```bash
+npm install @elata-biosciences/eeg-web-ble @elata-biosciences/eeg-web
+```
+
+`eeg-web-ble` depende de `eeg-web` para los tipos de marcos compartidos y el módulo WASM .
+
+---
+
+<a id="requirements"></a>
+
+## Requisitos
+
+- Navegador con soporte **Web Bluetooth** (Chrome/Edge en escritorio o Android)
+- Servido desde un **contexto seguro** (`https://` o `localhost`)
+- Safari/iOS **no** admite Web Bluetooth. Consulte [Muse dispositivo](/es/sdk/eeg-web-ble/muse-device) para conocer alternativas
+
+Verifique el soporte antes de mostrar el botón "Conectar":
+
+```typescript
+import { checkWebBluetooth } from "@elata-biosciences/eeg-web-ble";
+
+const support = checkWebBluetooth();
+if (!support.supported) {
+  showMessage(support.message); // explains why, including iOS-specific guidance
+}
+```
+
+---
+
+<a id="basic-usage"></a>
+
+## Uso Básico
+
+`startStreaming()` es el valor predeterminado recomendado. Envuelve `connect()` y `start()` juntos y evita el error común de conectarse exitosamente pero nunca comenzar a transmitir.
+
+```typescript
+import { initEegWasm, AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+
+// Initialize WASM first
+await initEegWasm();
+
+// Create transport
+const transport = new BleTransport({
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),
+  },
+});
+
+// Handle incoming EEG frames
+transport.onFrame = (frame) => {
+  console.log(`EEG samples: ${frame.eeg.samples.length} rows`);
+  console.log(`Channels: ${frame.eeg.channelNames.join(", ")}`);
+};
+
+// Handle connection status changes
+transport.onStatus = (status) => {
+  console.log(`Transport: ${status.state}`, status.reason || "");
+};
+
+// Connect and start streaming (triggers Bluetooth device picker)
+await transport.startStreaming();
+
+// ... later
+await transport.stop();
+```
+
+---
+
+<a id="bletransport-lifecycle"></a>
+
+## Ciclo de vida de BleTransport
+
+| Método | Qué hace |
+| --- | --- |
+| `startStreaming()` | Recomendado: se conecta e inicia el streaming en una sola llamada |
+| `connect()` | Abre el selector de dispositivos Bluetooth, empareja y prepara la sesión |
+| `start()` | Comienza el flujo de datos EEG ; `onFrame` devoluciones de llamada activadas |
+| `stop()` | Detiene el flujo de datos; la conexión permanece abierta |
+| `disconnect()` | Libera la sesión de Bluetooth |
+
+---
+
+<a id="bletransportoptions"></a>
+
+## Opciones de transporte Ble
+
+```typescript
+const transport = new BleTransport({
+  sourceName: "my-app-ble",           // name tag in frame.source
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),  // for Athena headbands
+    logger: (msg) => console.debug(msg),
+    onDisconnected: () => console.warn("Device disconnected"),
+  },
+});
+```
+
+| Opción | Tipo | Descripción |
+| --- | --- | --- |
+| `sourceName` | `string` | Identificador incluido en `HeadbandFrameV1.source` |
+| `deviceOptions` | `MuseDeviceOptions` | Pasado al subyacente `MuseBleDevice` |
+| `device` | `BleDeviceLike` | Inyectar una implementación de dispositivo personalizada |
+
+---
+
+<a id="athena-support"></a>
+
+## Athena Soporte
+
+Las diademasMuse S con firmware Athena requieren un decodificador Athena de fábrica. Inclúyalo desde el principio para mantener cubiertos tanto los flujos clásicos como los Athena :
+
+```typescript
+import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+
+const transport = new BleTransport({
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),
+  },
+});
+```
+
+Las diademasAthena proporcionan 8 EEG canales, óptica, acelerómetro/giroscopio y datos de batería en cada cuadro.
+
+---
+
+<a id="device-info"></a>
+
+## Información del dispositivo
+
+Después de conectarse, puede consultar los metadatos del dispositivo:
+
+```typescript
+await transport.connect();
+
+const isAthena = transport.getIsAthena();
+const boardInfo = transport.getBoardInfo();
+const channelNames = transport.getEegNames();
+```
+
+---
+
+<a id="platform-caveats"></a>
+
+## Advertencias sobre la plataforma
+
+- Safari e iOS no brindan soporte utilizable Web Bluetooth para este flujo de trabajo.
+- Para Safari e iOS, utilice un shell BLE nativo, un puente complementario o una estrategia WebView híbrida con contratos de marco `@elata-biosciences/eeg-web` como límite.
+- Las variantes de firmware pueden diferir en el comportamiento del comando.
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="Tutorial de transmisión en vivo" icon="circle-play" href="/es/sdk/tutorials/eeg-ble-live-stream">
+Guía de transmisión BLE paso a paso
+  </Card>
+  <Card title="Muse Detalles del dispositivo" icon="microchip" href="/es/sdk/eeg-web-ble/muse-device">
+Detalles del protocolo, características y compatibilidad.
+  </Card>
+
+  <Card title="EEG + Integración BLE" icon="link" href="/es/sdk/guides/eeg-ble-integration">
+Guía de procesamiento y transmisión de un extremo a otro
+  </Card>
+</CardGroup>

@@ -1,0 +1,108 @@
+---
+title: "Procesamiento de señales"
+description: "Análisis de potencia de banda, FFT y cálculo de espectro."
+---
+
+<a id="band-powers"></a>
+
+## Poderes de banda
+
+Calcule las potencias de banda de frecuencia estándar EEG a partir de una matriz de muestra:
+
+```typescript
+import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
+
+await initEegWasm();
+
+const powers = band_powers(samples, sampleRateHz);
+// powers.delta  0.5-4 Hz
+// powers.theta  4-8 Hz
+// powers.alpha  8-13 Hz
+// powers.beta   13-30 Hz
+// powers.gamma  30-100 Hz
+```
+
+`band_powers` devuelve un objeto `WasmBandPowers` con campos con nombre para cada banda estándar.
+
+---
+
+<a id="individual-band-functions"></a>
+
+## Funciones de banda individual
+
+Para un análisis específico, utilice funciones de banda individuales:
+
+```typescript
+import {
+  alpha_power,
+  beta_power,
+  theta_power,
+  delta_power,
+  gamma_power,
+  custom_band_power,
+} from "@elata-biosciences/eeg-web";
+
+const alpha = alpha_power(samples, sampleRateHz);
+const beta = beta_power(samples, sampleRateHz);
+const theta = theta_power(samples, sampleRateHz);
+const delta = delta_power(samples, sampleRateHz);
+const gamma = gamma_power(samples, sampleRateHz);
+
+// Custom frequency range
+const mu = custom_band_power(samples, sampleRateHz, 8.0, 12.0);
+```
+
+---
+
+<a id="power-spectrum"></a>
+
+## Espectro de energía
+
+Calcule el espectro de potencia completo mediante FFT:
+
+```typescript
+import { compute_power_spectrum, get_fft_frequencies } from "@elata-biosciences/eeg-web";
+
+const spectrum = compute_power_spectrum(samples); // samples: Float32Array
+const frequencies = get_fft_frequencies(samples.length, sampleRateHz);
+
+// spectrum[i] is the power at frequencies[i] Hz
+```
+
+---
+
+<a id="input-format"></a>
+
+## Formato de entrada
+
+Todas las funciones de procesamiento de señales esperan:
+
+| Parámetro | Tipo | Descripción |
+|-----------|------|-------------|
+| `samples` | `Float32Array` | Serie temporal monocanal EEG . No se aceptan matrices simples. |
+| `sampleRateHz` | `number` | Frecuencia de muestreo en Hz (por ejemplo, 256 para Muse) |
+
+Para datos multicanal (por ejemplo, de `HeadbandFrameV1.eeg.samples`), extraiga canales individuales y procéselos por separado:
+
+```typescript
+const frame: HeadbandFrameV1 = /* ... from transport ... */;
+const channelIndex = 0; // TP9
+
+const channelSamples = frame.eeg.samples.map(row => row[channelIndex]);
+const powers = band_powers(new Float32Array(channelSamples), frame.eeg.sampleRateHz);
+```
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="Modelos de análisis" icon="chart-mixed" href="/es/sdk/eeg-web/models">
+Detección de golpes alfa, puntuación de calma.
+  </Card>
+  <Card title="EEG Primeros pasos" icon="brain" href="/es/sdk/eeg-web/getting-started">
+Instalar e inicializar eeg-web
+  </Card>
+</CardGroup>

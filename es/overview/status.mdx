@@ -22,14 +22,14 @@ Revisión del código: 11 de octubre de 2026. Las guías de facturación y Comme
 
 | Función | Estado | Notas |
 | --- | --- | --- |
-| Explorar, usar, guardar, reseñar y seguir aplicaciones | Disponible | [Explorar aplicaciones](/users/explore-apps) |
-| Publicar aplicaciones web (asistente, revisión y alojamiento aislado) | Disponible | [Inicio rápido](/apps/quickstart) |
+| Explorar, usar, guardar, reseñar y seguir aplicaciones | Disponible | [Explorar aplicaciones](/es/users/explore-apps) |
+| Publicar aplicaciones web (asistente, revisión y alojamiento aislado) | Disponible | [Inicio rápido](/es/apps/quickstart) |
 | Iniciar sesión con acceso social o una cartera existente | Disponible | |
-| Elata Points, misiones, invitaciones y clasificación | Disponible | [Puntos](/overview/points) |
-| Puntuación biométrica, consentimiento e Insights | Disponible | Activación voluntaria. [Privacidad y consentimiento](/overview/privacy-and-consent) |
+| Elata Points, misiones, invitaciones y clasificación | Disponible | [Puntos](/es/overview/points) |
+| Puntuación biométrica, consentimiento e Insights | Disponible | Activación voluntaria. [Privacidad y consentimiento](/es/overview/privacy-and-consent) |
 | Recordatorios de aplicaciones (notificaciones) | Disponible | Los envía Elata, nunca la aplicación directamente |
-| Compras dentro de aplicaciones (USDC) | Implementadas; despliegue sin verificar | El nuevo pago usa el contrato de reparto de USDC en Base y requiere configuración. Comprueba la red del pago. [Compras dentro de aplicaciones](/apps/platform/in-app-purchases) |
-| Suscripciones de aplicaciones | Experimental | Pagos manuales por mes natural mediante el contrato de reparto en Base; verifica configuración y despliegue. [Facturación y compras](/users/billing-and-purchases) |
+| Compras dentro de aplicaciones (USDC) | Implementadas; despliegue sin verificar | El nuevo pago usa el contrato de reparto de USDC en Base y requiere configuración. Comprueba la red del pago. [Compras dentro de aplicaciones](/es/apps/platform/in-app-purchases) |
+| Suscripciones de aplicaciones | Experimental | Pagos manuales por mes natural mediante el contrato de reparto en Base; verifica configuración y despliegue. [Facturación y compras](/es/users/billing-and-purchases) |
 
 ---
 
@@ -39,12 +39,12 @@ Las API del repositorio y los paquetes publicados pueden diferir. Antes de usar 
 
 | Función | Estado | Notas |
 | --- | --- | --- |
-| `rppg-web`, `eeg-web`, `eeg-web-ble`, `ppg-web` | Disponible | En npm. [Información del SDK](/sdk/overview) |
+| `rppg-web`, `eeg-web`, `eeg-web-ble`, `ppg-web` | Disponible | En npm. [Información del SDK](/es/sdk/overview) |
 | `app-metrics`, `app-payments` | Disponible | En npm |
 | `create-elata-demo` (aplicaciones iniciales) | Error de empaquetado en la versión 0.12.1 del repositorio | Falta el metadato de versión de `app-metrics` y la CLI empaquetada no arranca. Comprueba una versión corregida antes de usarla. |
-| `app-state` | Experimental | Aún no está en npm. Las aplicaciones pueden usar directamente los [mensajes `elata:state:*`](/apps/platform/app-state). |
+| `app-state` | Experimental | Aún no está en npm. Las aplicaciones pueden usar directamente los [mensajes `elata:state:*`](/es/apps/platform/app-state). |
 | `biosignal-session`, `biosignal-analytics`, `rppg-models-web` | Experimental | Solo código fuente, todavía no en npm; las API pueden cambiar. |
-| Muse 2, Muse S y Muse S (Athena) por Web Bluetooth | Disponible | Chrome o Edge. [Dispositivos](/users/devices) |
+| Muse 2, Muse S y Muse S (Athena) por Web Bluetooth | Disponible | Chrome o Edge. [Dispositivos](/es/users/devices) |
 | Cámara web para rPPG | Disponible | |
 
 ---
@@ -56,8 +56,8 @@ Las API del repositorio y los paquetes publicados pueden diferir. Antes de usar 
 | Función | Estado | Notas |
 | --- | --- | --- |
 | Procesamiento de señales sin procesar en el dispositivo | Disponible | Las señales no necesitan salir del dispositivo |
-| Almacenamiento local de sesiones, detalles y análisis en el dispositivo | Experimental; desactivado en producción | Implementado en `feat/long-local-analytics` con una opción de desarrollo. Las grabaciones permanecen en ese navegador. [Sesiones e información local](/users/local-sessions-and-insights) |
-| Aprendizaje federado (entrenar sin recoger datos originales) | Planificado | Dirección de investigación, fuera del producto disponible. [Direcciones de investigación](/overview/science/research-directions) |
+| Almacenamiento local de sesiones, detalles y análisis en el dispositivo | Experimental; desactivado en producción | Implementado en `feat/long-local-analytics` con una opción de desarrollo. Las grabaciones permanecen en ese navegador. [Sesiones e información local](/es/users/local-sessions-and-insights) |
+| Aprendizaje federado (entrenar sin recoger datos originales) | Planificado | Dirección de investigación, fuera del producto disponible. [Direcciones de investigación](/es/overview/science/research-directions) |
 
 ---
 
@@ -67,7 +67,7 @@ Las API del repositorio y los paquetes publicados pueden diferir. Antes de usar 
 
 | Función | Estado | Notas |
 | --- | --- | --- |
-| Token ELTA en Base | Disponible | Desplegado, aún sin un fondo oficial de liquidez. [Token ELTA](/overview/elta-token) |
+| Token ELTA en Base | Disponible | Desplegado, aún sin un fondo oficial de liquidez. [Token ELTA](/es/overview/elta-token) |
 
 El protocolo más amplio de Elata (staking, tokens de aplicaciones y gobernanza) no forma parte del producto disponible. Su código está en el repositorio público [elata-protocol](https://github.com/Elata-Biosciences/elata-protocol), que indica que está pendiente de auditoría externa.
 
@@ -83,6 +83,6 @@ Los tokens de aplicaciones, el staking y la gobernanza se retiran por ahora y se
 | --- | --- |
 | Lanzar un token por aplicación, curvas de vinculación y negociación de tokens de aplicaciones | Registro con una tarifa única, sin lanzar tokens |
 | Staking de aplicaciones, torneos y páginas de veELTA | Fuera del producto disponible |
-| «Contenido prémium» | [Compras dentro de aplicaciones](/apps/platform/in-app-purchases) y [suscripciones](/apps/platform/subscriptions) |
-| Pestaña API Reference | [Puente del anfitrión](/apps/platform/host-bridge) para creadores |
-| Hardware ElataEEG, ZORP, AgentForge y NewsReader | Proyectos archivados. Consulta [Archivo](/archive/overview). |
+| «Contenido prémium» | [Compras dentro de aplicaciones](/es/apps/platform/in-app-purchases) y [suscripciones](/es/apps/platform/subscriptions) |
+| Pestaña API Reference | [Puente del anfitrión](/es/apps/platform/host-bridge) para creadores |
+| Hardware ElataEEG, ZORP, AgentForge y NewsReader | Proyectos archivados. Consulta [Archivo](/es/archive/overview). |

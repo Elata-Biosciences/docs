@@ -1,0 +1,136 @@
+---
+title: "Compatibilidad"
+description: "Navegador actual, dispositivo y expectativas de Node.js para Elata SDK."
+---
+
+<a id="package-and-tooling-expectations"></a>
+
+## Expectativas de paquete y herramientas
+
+| Superficie | Tiempo de ejecución del navegador | Node.js | Notas |
+| --- | --- | --- | --- |
+| `@elata-biosciences/create-elata-demo` | n/a | `>= 18` | CLI solo andamio |
+| `@elata-biosciences/eeg-web` | navegador moderno con WebAssembly | `>= 20` | el uso del navegador depende del servicio empaquetado WASM activos |
+| `@elata-biosciences/eeg-web-ble` | Chrome o Edge con Web Bluetooth | `>= 20` | depende de `@elata-biosciences/eeg-web` |
+| `@elata-biosciences/rppg-web` | navegador moderno con cámara y WebAssembly | `>= 20` | empaquetado WASM los activos deben ser accesibles mediante el navegador |
+| `@elata-biosciences/ppg-web` | Chrome o Edge con Web Bluetooth | `>= 20` | circula en el `eeg-web-ble` transporte |
+| `@elata-biosciences/biosignal-session` | navegador moderno con Web Workers | `>= 20` | la grabación necesita un host que proporcione el lado de almacenamiento |
+| `@elata-biosciences/biosignal-analytics` | navegador moderno con WebAssembly | `>= 20` | empaquetado WASM Los activos deben ser accesibles mediante el navegador |
+| `@elata-biosciences/app-payments`, `app-state`, `app-metrics` | cualquier navegador moderno | `>= 20` | solo funciona dentro del Elata marco |
+
+---
+
+<a id="browser-support"></a>
+
+## Soporte del navegador
+
+| Flujo de trabajo | Chrome / Edge | Safari macOS | Safari iOS | Notas |
+| --- | --- | --- | --- | --- |
+| `create-elata-demo` | n/a | n/a | n/a | el andamio se ejecuta en Node |
+| EEG WASM con `eeg-web` | Compatible | Compatible | Compatible | requiere activos `wasm/` empaquetados |
+| Muse navegador BLE con `eeg-web-ble` | Compatible en contexto seguro | No compatible | No compatible | requiere Web Bluetooth |
+| rPPG con `rppg-web` | Compatible | Compatible | Compatible con permisos de cámara | requiere empaquetado `pkg/` activos |
+| Diadema PPG con `ppg-web` | Compatible en contexto seguro | No compatible | No compatible | requiere Web Bluetooth |
+
+---
+
+<a id="web-bluetooth-expectations"></a>
+
+## Web Bluetooth Expectativas
+
+- Utilice Chrome o Edge.
+- Ejecute en `https://` o `localhost`.
+- Habilite Bluetooth en la máquina.
+- Se espera que Safari y el navegador iOS BLE no sean compatibles con este flujo de trabajo.
+
+<Warning>
+  `eeg-web-ble` requiere Web Bluetooth y un origen `https://` o `localhost`. Safari e iOS no admiten Web Bluetooth para los flujos de trabajo del navegador Muse .
+</Warning>
+
+---
+
+<a id="supported-device-classes"></a>
+
+## Clases de dispositivos compatibles
+
+- Muse 2 y Muse S dispositivos BLE clásicos
+- Muse S Athena dispositivos con protocolo v2
+- Se pueden añadir otros auriculares mediante el mismo contrato de transporte. Consulte [Integración de dispositivos](/es/integrate).
+
+---
+
+<a id="safari-and-ios-notes"></a>
+
+## Safari Y notas de iOS
+
+- `eeg-web` se puede utilizar como paquete WASM del lado del navegador en Safari cuando su aplicación ofrece sus activos empaquetados correctamente.
+- `eeg-web-ble` no es un flujo de trabajo de Safari o del navegador iOS. Utilice un shell de aplicación nativo con CoreBluetooth o una aplicación puente complementaria que transmita fotogramas a través de WebSocket.
+- `rppg-web` puede ejecutarse en Safari e iOS, pero los permisos de la cámara y la entrega del paquete WASM aún deben ser correctos.
+
+---
+
+<a id="package-versions"></a>
+
+## Versiones de paquetes
+
+Los paquetes tienen versiones independientes y las últimas versiones no son
+automáticamente compatibles entre sí. Cuando combine paquetes, use el conjunto
+`create-elata-demo` pines:
+
+| Paquete | Versión |
+| --- | --- |
+| `@elata-biosciences/eeg-web` | 0.12.0 |
+| `@elata-biosciences/eeg-web-ble` | 0.12.0 |
+| `@elata-biosciences/ppg-web` | 0.12.0 |
+| `@elata-biosciences/rppg-web` | 0.14.0 |
+| `@elata-biosciences/app-metrics` | 0.5.0 |
+
+<Warning>
+  `eeg-web-ble@0.12.0` y `ppg-web@0.12.0` todavía declaran rangos de pares obsoletos (`eeg-web ^0.2.1`, `rppg-web ^0.3.0`). npm se detiene con un error `ERESOLVE` cuando los instala junto a las versiones anteriores. Hasta que se actualicen los rangos, instale con `npm install --legacy-peer-deps`. pnpm solo imprime una advertencia.
+</Warning>
+
+---
+
+<a id="package-manager-notes"></a>
+
+## Notas del administrador de paquetes
+
+Las aplicaciones de demostración generadas funcionan con `pnpm` o `npm`. Para el `eeg-demo`, `eeg-ble`,
+y `ppg-demo` plantillas, npm actualmente necesita `--legacy-peer-deps` (consulte
+[Versiones de paquetes](#package-versions)).
+
+Si implementa una aplicación de demostración dentro de otro espacio de trabajo `pnpm` y no la agrega a
+ese espacio de trabajo, use:
+
+<CodeGroup>
+
+```bash pnpm
+pnpm --dir my-app --ignore-workspace install
+pnpm --dir my-app --ignore-workspace run dev
+```
+
+```bash npm
+cd my-app
+npm install
+npm run dev
+```
+
+</CodeGroup>
+
+---
+
+<a id="related"></a>
+
+## Relacionado
+
+<CardGroup cols={3}>
+  <Card title="Solución de problemas" icon="wrench" href="/es/sdk/operations/troubleshooting">
+Fallos y soluciones comunes
+  </Card>
+  <Card title="Elija un paquete" icon="compass" href="/es/sdk/guides/choose-the-right-package">
+Guía de decisión de paquetes
+  </Card>
+  <Card title="Muse Dispositivo" icon="microchip" href="/es/sdk/eeg-web-ble/muse-device">
+Detalles del protocolo y compatibilidad con el navegador
+  </Card>
+</CardGroup>

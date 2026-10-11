@@ -1,0 +1,185 @@
+---
+title: "EEG Arquitectura"
+tag: "Archived"
+description: "Capas de cajas, sistema de complementos, WebSocket APIy configuraciones de placa"
+---
+
+<a id="crate-architecture"></a>
+
+## Arquitectura de caja
+
+El firmware es un espacio de trabajo Rust dividido en cinco cajas con capas estrictas. Sin dependencias circulares.
+
+```mermaid
+flowchart TD
+    ET["eeg_types"] --> S["sensors"]
+    ET --> B["boards"]
+    ET --> P["pipeline"]
+    S --> B
+    B --> D["daemon"]
+    P --> D
+```
+
+| Caja         | Posee                                                                    | Depende de                  |
+| ------------- | ----------------------------------------------------------------------- | --------------------------- |
+| **eeg_types** | `Packet`, `ChannelId`, `AdcConfig`, enumeraciones de error                         | —                           |
+| **sensores**   | Registro de mapas, SPI/I2C de bajo nivel para un solo chip                      | eeg_types                   |
+| **placas**    | Pegamento que une uno o más chips en un controlador de PCB (`impl EegDriver`) | sensores, eeg_types          |
+| **canalización**  | Gráfico DSP, etapas de procesamiento, sumideros                                     | eeg_types                   |
+| **demonio**    | CLI, configuración, selecciona un controlador de placa y bombea paquetes a la tubería   | placas, tubería, eeg_types |
+
+El demonio es la única caja binaria. Todo lo demás es una biblioteca.
+
+---
+
+<a id="plugin-system"></a>
+
+## Sistema de complementos
+
+Los complementos se controlan por eventos y se ejecutan en paralelo en todos los núcleos de la CPU. Cada complemento es una caja Rust separada en el directorio `plugins/` .
+
+```mermaid
+flowchart LR
+    ACQ["Acquisition Task"] -->|RawEeg| EB["EventBus"]
+    EB -->|RawEeg| VF["Voltage Filter Plugin"]
+    VF -->|FilteredEeg| EB
+    EB -->|FilteredEeg| FFT["Brain Wave FFT Plugin"]
+    FFT -->|FftEvent| EB
+    EB -->|"All Events"| WS["WebSocket + Recorder"]
+    WS --> GUI["Kiosk GUI"]
+```
+
+<a id="writing-a-plugin"></a>
+
+### Escribir un complemento
+
+Cada complemento implementa el rasgo `EegPlugin` :
+
+```rust
+#[async_trait]
+impl EegPlugin for MyPlugin {
+    fn name(&self) -> &'static str { "my_plugin" }
+    fn clone_box(&self) -> Box<dyn EegPlugin> { Box::new(self.clone()) }
+
+    async fn run(
+        &mut self,
+        bus: Arc<dyn EventBus>,
+        mut receiver: broadcast::Receiver<SensorEvent>,
+        shutdown_token: CancellationToken,
+    ) -> Result<()> {
+        loop {
+            tokio::select! {
+                biased;
+                _ = shutdown_token.cancelled() => break,
+                Ok(event) = receiver.recv() => {
+                    // process event, then broadcast results back to bus
+                }
+            }
+        }
+        Ok(())
+    }
+}
+```
+
+Opcionalmente, los complementos pueden declarar un `event_filter` para suscribirse solo a tipos de eventos relevantes, evitando reactivaciones innecesarias.
+
+<a id="included-plugins"></a>
+
+### Complementos incluidos
+
+| Complemento                 | Propósito                                    |
+| ---------------------- | ------------------------------------------ |
+| `basic_voltage_filter` | Escalado y filtrado de tensión              |
+| `brain_waves_fft`      | Descomposición espectral FFT con interfaz de usuario del navegador |
+| `csv_recorder`         | Grabar sesiones en archivos CSV               |
+
+---
+
+## WebSocket API
+
+El demonio expone un punto final WebSocket centralizado para la transmisión de datos en tiempo real con un modelo de publicación/subversión basado en temas.
+
+**Punto final:** `ws://localhost:9000/ws/data`
+
+<a id="subscribe-to-a-topic"></a>
+
+### Suscríbete a un tema
+
+```json
+{ "type": "subscribe", "topic": "eeg_voltage", "epoch": 1 }
+```
+
+<a id="unsubscribe"></a>
+
+### Darse de baja
+
+```json
+{ "type": "unsubscribe", "topic": "eeg_voltage" }
+```
+
+Los marcos de datos son binarios (formato`RtPacket` ) para transmisión de alto rendimiento. Un único cliente puede tener varias suscripciones a temas simultáneamente.
+
+<a id="control-plane-rest--sse"></a>
+
+### Plano de control (REST + SSE)
+
+Además del plano de datos WebSocket, el demonio proporciona puntos finales HTTP en el mismo puerto:
+
+| Punto final                      | Método | Propósito                                     |
+| ----------------------------- | ------ | ------------------------------------------- |
+| `/api/pipelines`              | GET    | Listar las definiciones de canalización disponibles         |
+| `/api/pipelines/{id}/start`   | PUBLICAR   | Iniciar una canalización                            |
+| `/api/pipeline/stop`          | POST   | Detener la tubería en funcionamiento                   |
+| `/api/state`                  | OBTENER    | Instantánea de configuración de tiempo de ejecución actual      |
+| `/api/events`                 | OBTENER    | Flujo de actualizaciones estatales de SSE                 |
+| `/api/pipelines/{id}/control` | POST   | Enviar comandos de tiempo de ejecución (por ejemplo, `SetParameter`) |
+
+---
+
+<a id="board-configurations"></a>
+
+## Configuraciones de placa
+
+<a id="v1-single-ads1299"></a>
+
+### V1: ADS1299 único
+
+Un EVM ADS1299 conectado directamente al Pi 5 a través de SPI. Proporciona 8 canales con referencia amortiguada (SRB1) y unidad de polarización interna fija.
+
+| Señal SPI  | Pin ADS1299 (J3) | Pi 5 pines        |
+| ----------- | ---------------- | --------------- |
+| CS          | Pin 1            | Pin 24 (CE0)    |
+| SCLK        | Pin 3            | Pin 23          |
+| MOSI (DIN)  | Pin 11           | Pin 19          |
+| MISO (DOUT) | Pin 13           | Pin 21          |
+| DRDY        | Pin 15           | Pin 22 (GPIO25) |
+
+<a id="v2-four-synchronized-ads1299-boards"></a>
+
+### V2: Cuatro placas ADS1299 sincronizadas
+
+Topología en estrella con una placa maestra y tres secundarias que comparten reloj, MOSI, SCLK y MISO. Cada placa tiene una línea DRDY y selección de chip dedicada. Sólo la placa maestra (Placa 0) controla el electrodo de polarización.
+
+| Señal             | Pi 5 Pin        | Notas                  |
+| ------------------ | --------------- | ---------------------- |
+| CS_A (Placa 0)     | Pin 24 (CE0)    | Hardware CS            |
+| CS_B (Placa 1)     | Pin 26 (CE1)    | Hardware CS            |
+| CS_C (Placa 2)     | Pin 29 (GPIO5)  | Software CS            |
+| CS_D (Placa 3)     | Pin 31 (GPIO6)  | Software CS            |
+| INICIO (todas las placas) | Pin 15 (GPIO22) | Pulso de sincronización             |
+| DRDY (Placa 0)     | Pin 22 (GPIO25) | Interrupción de flanco descendente |
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card icon="brain" href="/es/home/elata-eeg/elata-eeg-overview" title="EEG Descripción general">
+Lista de materiales de hardware e inicio rápido
+  </Card>
+  <Card icon="bluetooth" href="/es/sdk/eeg-web-ble/getting-started" title="SDK: EEG Web">
+Conéctese a EEG diademas sobre Web Bluetooth
+  </Card>
+</CardGroup>

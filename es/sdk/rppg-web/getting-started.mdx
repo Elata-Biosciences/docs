@@ -1,0 +1,193 @@
+---
+title: "Empezando"
+description: "Medición de frecuencia cardíaca basada en cámara con @elata-biosciences/rppg-web"
+---
+
+<a id="what-is-rppg"></a>
+
+## ¿Qué es rPPG?
+
+La fotopletismografía remota (rPPG) extrae la frecuencia cardíaca de cambios sutiles de color en la piel del rostro capturados por una cámara estándar. No se necesita ningún sensor de contacto, sólo una cámara web.
+
+---
+
+<a id="when-to-use-this-package"></a>
+
+## Cuándo utilizar este paquete
+
+Utilice `@elata-biosciences/rppg-web` cuando su aplicación necesite:
+
+- procesamiento de bioseñales basado en cámara en el navegador
+- una sesión rPPG de nivel superior API en lugar de una orquestación WASM sin formato
+- diagnósticos y ayudantes de aplicaciones en torno a rPPG sesiones
+
+---
+
+<a id="installation"></a>
+
+## Instalación
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/rppg-web
+```
+
+```bash npm
+npm install @elata-biosciences/rppg-web
+```
+
+</CodeGroup>
+
+Requisitos: Node.js 20+, navegador con acceso a cámara y soporte WebAssembly .
+
+---
+
+<a id="recommended-usage-createrppgsession"></a>
+
+## Uso recomendado: `createRppgSession`
+
+Para la mayoría de las aplicaciones de navegador, comience con `createRppgSession()`. Maneja WASM inicio, captura de cuadros, orquestación de ROI, diagnóstico y limpieza.
+
+```typescript
+import { createRppgSession } from "@elata-biosciences/rppg-web";
+
+const session = await createRppgSession({
+  video: videoEl,
+  sampleRate: 30,
+  backend: "auto",
+  faceMesh: "off",
+  onDiagnostics: (diagnostics) => {
+    console.log(diagnostics.state.status, diagnostics.faceTrackingMode);
+    console.log(diagnostics.framesSeen, diagnostics.totalSamplesReceived);
+  },
+});
+
+const metrics = session.getMetrics();
+console.log("BPM:", metrics.bpm);
+
+// Stop processing on cleanup. Release the MediaStream you acquired separately.
+await session.dispose();
+for (const track of (videoEl.srcObject as MediaStream | null)?.getTracks() ?? []) {
+  track.stop();
+}
+```
+
+Utilice `createManagedRppgSession()` si también desea un reinicio automático después de fallas en el procesador del terminal.
+
+---
+
+<a id="diagnostics-guidance"></a>
+
+## Guía de diagnóstico
+
+Cada carga útil de diagnóstico de sesión incluye estado, códigos de problema, estadísticas de muestreo e información de falla del procesador.
+
+- Si `session.state.status` se convierte en `failed`, trate el procesador subyacente como terminal y vuelva a crear la sesión.
+- Si `backend: "auto"` vuelve a un modo de backend no disponible, los diagnósticos informan ese estado en lugar de fallar silenciosamente.
+
+---
+
+<a id="advanced-rppgprocessor"></a>
+
+## Avanzado: `RppgProcessor`
+
+Para una orquestación personalizada, vaya directamente a `RppgProcessor` . Úselo solo cuando necesite algo que `createRppgSession()` no proporciona. Si está depurando, compare primero con `createRppgSession()` .
+
+```typescript
+import { RppgProcessor, loadWasmBackend } from "@elata-biosciences/rppg-web";
+
+const backend = await loadWasmBackend(); // null if the packaged WASM can't be loaded
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const processor = new RppgProcessor(backend, 30); // backend, sampleRate
+
+// Feed green-channel intensity from face ROI each frame
+processor.pushSample(performance.now(), greenIntensity);
+
+const metrics = processor.getMetrics();
+console.log("BPM:", metrics.bpm);
+```
+
+### Constructor
+
+```typescript
+new RppgProcessor(backend: Backend, sampleRate: number, windowSeconds?: number)
+```
+
+| Parámetro | Tipo | Descripción |
+|-----------|------|-------------|
+| `backend` | `Backend` | Un objeto backend, generalmente de `loadWasmBackend()` |
+| `sampleRate` | `number` | Fotogramas esperados por segundo (p. ej., 30) |
+| `windowSeconds` | `number` | Longitud de la ventana de análisis en segundos (predeterminado: 5) |
+
+<a id="pushing-samples"></a>
+
+### Empujando muestras
+
+```typescript
+processor.pushSample(timestampMs, intensity);           // green channel only
+processor.pushSampleRgb(timestampMs, r, g, b, skinRatio?);
+processor.pushSampleRgbMeta(timestampMs, r, g, b, skinRatio?, motion?, clipRatio?);
+```
+
+<a id="metrics"></a>
+
+### Métricas
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `bpm` | `number \| null` | Estimación final de frecuencia cardíaca. `null` durante el calentamiento (aproximadamente 10 s) o cuando el backend no está disponible. |
+| `confidence` | `number` | 0 a 1. Controle su interfaz de usuario en esto: muestre BPM solo por encima de su umbral (por ejemplo, 0,5). |
+| `signal_quality` | `number` | Calidad de señal de cámara sin procesar de 0 a 1, desde relación de piel, movimiento y recorte |
+| `spectral_bpm` | `number \| null` | Estimación en el dominio de frecuencia (FFT) |
+| `acf_bpm` | `number \| null` | Estimación de autocorrelación |
+| `reason_codes` | `string[]` | Por qué la confianza es baja, por ejemplo `low_skin_ratio` o `high_motion` |
+
+---
+
+<a id="output-and-quality-guidance"></a>
+
+## Orientación sobre resultados y calidad
+
+Para aplicaciones de consumo, mantenga el seguimiento facial (`faceMesh: "auto"`u omita la opción) a menos que necesite deliberadamente el respaldo del fotograma de video. Los ejemplos anteriores utilizan `"off"` para hacer explícita la alternativa; ese modo no localiza las regiones de la piel del rostro.
+
+La fuente SDK actual también proporciona `CaptureConfidenceScorer`: confianza en movimiento e iluminación para captura y calibración, aparte de la confianza en el dominio del pulso. Utilice la calidad y publique la selección en lugar de presentar cada estimación numérica como confiable.
+
+Las API de fuente avanzada incluyen características de fisiología relativa a la línea de base, interpretación genérica de activación/recuperación, reconstrucción de forma de onda opcional y proxies de morfología experimental. Una puntuación de activación fisiológica no es una valencia emocional, un afecto facial, un diagnóstico de estrés ni una medición clínica. El afecto derivado de la cara es un APIseparado. La reconstrucción de formas de onda aprendidas requiere un artefacto modelo proporcionado por la persona que llama y sigue siendo una ruta de diagnóstico opcional.
+
+Estas API deben estar vinculadas a la versión del paquete realmente instalada; La fuente del repositorio actual puede contener funciones más recientes que la versión npm . Consulte el [paquete actual README](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/packages/rppg-web/README.md).
+
+<a id="key-exports"></a>
+
+## Exportaciones clave
+
+- `createRppgSession`
+- `createManagedRppgSession`
+- `RppgProcessor`
+- `loadWasmBackend`
+- `createRppgAppAdapter`
+- `createRppgAppMonitor`
+- `normalizeRppgError`
+- `computeTraceWaveformDebug`
+- `ensureVideoPlaying`
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="rPPG Tutorial de aplicación existente" icon="circle-play" href="/es/sdk/tutorials/rppg-existing-app">
+Guía de integración paso a paso
+  </Card>
+  <Card title="Fuentes de marco" icon="camera" href="/es/sdk/rppg-web/frame-sources">
+MediaPipe detección de rostros y captura de cámara
+  </Card>
+  <Card title="Calibración" icon="bullseye" href="/es/sdk/rppg-web/calibration">
+    Muse modelos de fusión y calibración
+  </Card>
+  <Card title="Guía de integración de cámaras" icon="video" href="/es/sdk/guides/rppg-camera">
+Configuración de extremo a extremo rPPG 
+  </Card>
+</CardGroup>

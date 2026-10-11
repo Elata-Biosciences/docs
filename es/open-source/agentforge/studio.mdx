@@ -1,0 +1,102 @@
+---
+title: "Panel de estudio"
+tag: "Archived"
+description: "Panel de análisis de múltiples ejecuciones con gráficos, análisis de chismes y kit de herramientas de aprendizaje automático"
+---
+
+<a id="overview"></a>
+
+## Descripción general
+
+AgentForge Studio es un panel inspirado en la Terminal Bloomberg para analizar ejecuciones de simulación. Lánzalo con:
+
+```bash
+forge-sim studio
+```
+
+---
+
+<a id="dashboard-tabs"></a>
+
+## Pestañas del panel
+
+<a id="session-management"></a>
+
+### Gestión de sesiones
+
+Explore todas las ejecuciones de simulación, cree o abra paneles y descargue artefactos. Cada ejecución se identifica por el nombre del escenario, el valor inicial y la marca de tiempo.
+
+<a id="financial-charts"></a>
+
+### Gráficos financieros
+
+Gráficos interactivos de series de tiempo impulsados por Lightweight Charts:
+
+- Visualización de precios, volúmenes y métricas personalizadas
+- Información sobre herramientas de zoom, panorámica y punto de mira
+- Superposición multimétrica para análisis de correlación
+
+<a id="timeline-inspector"></a>
+
+### Inspector de línea de tiempo
+
+Registro de acciones virtualizado que muestra cada acción del agente en todos los ticks:
+
+- Filtrar por agente, tipo de acción o rango de ticks
+- JSON ventanas emergentes de inspección para parámetros de acción y resultados
+- Codificado por colores según el resultado de la acción (éxito/fracaso)
+
+<a id="gossip-analysis"></a>
+
+### Análisis de chismes
+
+Visualización del flujo de mensajes a nivel de canal:
+
+- Volumen y sincronización de mensajes por canal
+- Seguimiento del autor y estado de entrega
+- Distribución de puntuación de credibilidad
+- Vista de aislamiento del canal de estrategia
+
+<a id="agent-stats"></a>
+
+### Estadísticas del agente
+
+Desglose del rendimiento por agente:
+
+- Recuento de acciones y tasas de éxito
+- Seguimiento de ingresos/PnL (cuando corresponda)
+- Profundización en los historiales de agentes individuales
+
+<a id="ml-toolkit"></a>
+
+### Kit de herramientas de aprendizaje automático
+
+Herramientas de análisis estadístico del lado del servidor:
+
+- **Regresión** : ajustar modelos a series temporales métricas
+- **PCA** — reducción de dimensionalidad en los comportamientos de los agentes
+- **K-significa agrupación** — ejecuciones de grupo o agentes por patrones de comportamiento
+- **Comparación cruzada** : superposición de métricas de múltiples semillas o variantes
+
+<a id="report"></a>
+
+### Informe
+
+Informe Markdown generado automáticamente con:
+
+- Ejecutar resumen y configuración
+- Métricas destacadas clave
+- Resultados de la afirmación
+- Comportamientos notables de los agentes
+
+---
+
+<a id="keyboard-navigation"></a>
+
+## Navegación por teclado
+
+Studio está diseñado para uso mediante teclado:
+
+- Navegación por pestañas entre paneles
+- Paleta de comandos para acceso rápido a ejecuciones y herramientas
+- Estética inspirada en terminales con tipografía monoespacial

@@ -1,0 +1,100 @@
+---
+title: "Elata EEG Descripción general"
+tag: "Archived"
+description: "Hardware EEG de código abierto y bajo costo para la investigación en neurociencia y psiquiatría de precisión"
+---
+
+<Warning>
+Este dispositivo no está aprobado por la FDA. Sólo para uso en investigación.
+</Warning>
+
+<a id="what-is-elata-eeg"></a>
+
+## ¿Qué es Elata EEG?
+
+Elata EEG es una plataforma de electroencefalografía de código abierto construida alrededor de una [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/) y la interfaz analógica [Texas Instruments ADS1299](https://www.ti.com/product/ADS1299) . El objetivo es democratizar el hardware EEG con un diseño totalmente abierto y con derecho a reparación que cualquier laboratorio o hacker pueda construir, modificar y ampliar.
+
+El sistema admite más de 8 canales de EEG de 24 bits con una resolución de grado de investigación, con transmisión en tiempo real, un canal DSP basado en complementos y una interfaz de usuario de quiosco basada en navegador.
+
+<Card icon="github" href="https://github.com/Elata-Biosciences/elata-eeg" title="GitHub Repositorio">
+Código fuente, esquemas e instrucciones de compilación (GPLv3)
+</Card>
+
+---
+
+## Hardware
+
+| Componente      | Detalles                                                      |
+| -------------- | ------------------------------------------------------------ |
+| **Controlador** | Raspberry Pi 5 (Arm Cortex de cuatro núcleos, GPIO de 40 pines)           |
+| **ADC**        | TI ADS1299 EEGFE: Front-end analógico de 8 canales y 24 bits vía SPI |
+| **Electrodos** | Ag/AgCl húmedo o copa de oro con pasta conductora (por ejemplo, Ten20)   |
+| **Pantalla**    | Pantalla táctil HDMI de 5 o 7 pulgadas (opcional)                 |
+| **Cables**     | Puentes Dupont (2,54 mm), blindaje/cuentas de ferrita opcionales |
+
+Se admiten dos configuraciones de placa:
+
+- **V1**: EVM ADS1299 único (8 canales)
+- **V2**: Cuatro EVM ADS1299 sincronizados con reloj compartido y SPI (32 canales)
+
+---
+
+
+<a id="software-stack"></a>
+
+## Pila de software
+
+| Capa                  | Tecnología                                                       |
+| ---------------------- | ---------------------------------------------------------------- |
+| **SO**                 | SO Raspberry Pi (Debian)                                         |
+| **Firmware / Backend** | Rust espacio de trabajo: `sensors`, `boards`, `pipeline`, `daemon` cajas |
+| **Frontend**           | Quiosco Next.js con transmisión de datos WebSocket                      |
+| **Interfaz de hardware** | `rppal` caja (GPIO / SPI / I2C)                                 |
+| **Sistema de complementos**      | Complementos DSP controlados por eventos en un `EventBus`                  |compartido
+| **Licencia**            | GPLv3 (copyleft fuerte)                                          |
+
+---
+
+<a id="quickstart"></a>
+
+## Inicio rápido
+
+```bash
+git clone https://github.com/Elata-Biosciences/elata-eeg
+cd elata-eeg
+bash scripts/install.sh
+```
+
+El script de instalación maneja las dependencias del sistema (Rust, Node.js, Chromium), construye todas las cajas y el quiosco, configura los servicios systemd para el demonio y el quiosco, configura el inicio de sesión automático y el modo quiosco, y se reinicia cuando finaliza.
+
+<a id="development-mode"></a>
+
+### Modo de desarrollo
+
+```bash
+# Stop kiosk mode
+bash scripts/stop.sh
+
+# Terminal 1: daemon (from repo root)
+cargo run --bin eeg_daemon -- --mock   # --mock for testing without hardware
+
+# Terminal 2: kiosk
+cd kiosk && npm run dev
+```
+
+La interfaz de usuario del quiosco está disponible en `http://localhost:3000`. El punto final de datos de WebSocket se ejecuta en `ws://localhost:9000/ws/data`.
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card icon="compass" href="/es/home/elata-eeg/eeg-architecture" title="Arquitectura">
+Capas de cajas, sistema de complementos y WebSocket API
+  </Card>
+  <Card icon="microchip" href="/es/sdk/eeg-web/getting-started" title="SDK — eeg-web">
+Procesamiento de señal EEG del lado del navegador con WASM
+  </Card>
+</CardGroup>

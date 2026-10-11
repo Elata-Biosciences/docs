@@ -1,0 +1,76 @@
+---
+title: "elata.json"
+description: "El manifiesto de la aplicación que declara su versión de lanzamiento."
+---
+
+<a id="overview"></a>
+
+## Descripción general
+
+`elata.json` es un pequeño manifiesto que incluyes en tu carga. Hoy Elata
+lo usa para leer su **versión de lanzamiento**, por lo que su listado muestra `v1.2.3`
+en lugar de `Release #4`.
+
+```json elata.json
+{
+  "version": "1.2.3",
+  "entry": "index.html",
+  "name": "Calm Runner"
+}
+```
+
+<Note>
+  `elata.json` es opcional hoy. Si falta o no es válido, Elata cae
+  volver a otras fuentes de versiones (ver más abajo). Será necesario en un
+  actualización futura, así que agréguela ahora.
+</Note>
+
+---
+
+<a id="fields"></a>
+
+## Campos
+
+| Campo | Obligatorio | Reglas |
+| --- | --- | --- |
+| `version` | Sí | De 1 a 32 caracteres. Comienza con una letra o un dígito, luego letras, dígitos, `.`, `-`o `+`. Se recomienda algo como `1.2.3` o `1.2.3-beta.1` . |
+| `entry` | No | El archivo HTML de entrada, hasta 256 caracteres. Utilice `index.html`. |
+| `name` | No | Un nombre para mostrar, de 1 a 80 caracteres. |
+
+---
+
+<a id="file-name-and-location"></a>
+
+## Nombre y ubicación del archivo
+
+- Nombra el archivo `elata.json` (`elata.manifest.json` también funciona).
+- Ponlo en la raíz de tu zip, al lado de `index.html`.
+- Si son varios, gana el que esté más cerca de la raíz.
+
+Con Vite, colóquelo en `public/` para que se copie en `dist/` en cada compilación:
+
+```
+my-app/
+├── public/
+│   └── elata.json
+├── src/
+└── index.html
+```
+
+---
+
+<a id="version-fallbacks"></a>
+
+## Versiones alternativas
+
+Si no hay ningún `elata.json`válido, Elata busca una versión en este orden:
+
+1. `elata.json` (o `elata.manifest.json`)
+2. El `version` en lo menos profundo `package.json` en el zip
+3. Una metaetiqueta en `index.html`:
+
+```html
+<meta name="elata-version" content="1.2.3" />
+```
+
+La respuesta de carga le indica qué fuente se utilizó.

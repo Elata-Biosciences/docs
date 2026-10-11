@@ -1,0 +1,37 @@
+---
+title: "Introducción"
+tag: "Archived"
+description: "Un proyecto de código abierto Elata archivado: el protocolo ZORP."
+---
+
+---
+
+![ZORP Git Hubimg(8) Sv](/images/ZORP-GitHubimg\(8\).svg)
+
+---
+
+<a id="introduction"></a>
+
+## Introducción
+
+El protocolo ZORP es una plataforma de distribución de recompensas y datos de investigación abierta y sin permiso. ZORP permite que un conjunto distribuido de participantes envíe datos (en particular, EEG firmas o resultados de encuestas) a los gerentes, quienes moderan los envíos y distribuyen recompensas simbólicas.
+
+El protocolo ZORP permite ejecutar esfuerzos de investigación coordinados a escala masiva: los participantes humanos reales ahora pueden interactuar directamente con los coordinadores del experimento sin necesidad de autorización previa de terceros intermediarios, como las juntas de revisión institucional o los diversos subcomités que a menudo prolongan el proceso de I+D.
+
+Para abordar este inmenso desafío, Elata está construyendo marcos criptográficos en su infraestructura de datos, permitiendo a los participantes compartir información confidencial (como EEG firmas o resultados de cuestionarios) sin revelar información de identificación personal (PII).
+
+Para mover la aguja, el objetivo es desarrollar protocolos y bienes públicos utilizando los últimos avances en criptografía y tecnología blockchain para servir mejor a la recopilación de datos médicos. Estos van desde casos de uso relativamente antiguos y establecidos para la criptografía, como Pretty Good Privacy (PGP) o Cifrado de clave pública en general, hasta la propia tecnología blockchain y avances más nuevos como Zero Knowledge Proofs.
+
+Nuestro primer protocolo se llama **ZORP**, o el backronym recursivo Zorp Onchain Research Protocol.
+
+ZORP permite a los usuarios crear un estudio, recibir archivos de los usuarios para ese estudio que se almacenan en el Sistema de archivos interplanetario (IPFS) a través de [Irys Network](https://irys.xyz/)y pagar una recompensa a los usuarios que participaron en ese estudio. Los archivos en cadena se cifran con la clave PGP de los administradores del estudio, de modo que permanezcan seudónimos mientras participan en el estudio.
+
+Los administradores también pueden revisar y marcar datos no válidos para que no afecten el grupo de recompensas. El objetivo inicial es permitir que los participantes en ensayos descentralizados seudónimos sean recompensados ​​por sus esfuerzos con recompensas. Inicialmente, anticipamos que el caso de uso principal será la recopilación de conjuntos de datos personalizados que de otro modo no se obtendrían fácilmente, en particular para el entrenamiento de modelos de aprendizaje automático.
+
+En septiembre de 2025, el desarrollo del contrato inteligente ZORP finalizó y los contratos se implementaron en una red de prueba pública, donde nuestra comunidad los está probando. A la espera de realizar más pruebas y una auditoría de los contratos, ZORP se publicará en la cadena de bloques [Base ](http://base.org/) y estará disponible públicamente para que cualquiera pueda crear un estudio. Ha sido construido para ser lo más creíblemente neutral y lo más resistente a la censura posible.
+
+Básicamente, no hay puntos de apalancamiento aparte de la parte frontal de los contratos, a los que un usuario que interactúa directamente con el contrato desde su billetera podría acceder fácilmente. En este sentido, deseamos que ZORP sea un retroceso a los primeros días del “Cypherpunk” de la criptografía y la tecnología blockchain.
+
+Además, estamos planeando un ZORPv2 que utilizará pruebas de conocimiento cero. Aparte de ligeros ajustes de los comentarios de los clientes de ZORPv1, ZORPv2 se ejecutaría en la red Aztec L2 (o posiblemente en otra cosa) en Ethereum. Aztec Network y las funciones de criptografía más avanzadas que ofrece su lenguaje Noir permitirán una mayor privacidad a los usuarios.
+
+Por ejemplo, un observador externo podría ver que un usuario específico ha participado en un estudio, pero no un estudio en particular, lo que otorga un seudonimato mejorado. Planeamos lanzar la segunda versión de ZORP en espera de una mayor aceptación por parte de los usuarios de la primera versión de ZORP y una mayor madurez de la red Aztec.

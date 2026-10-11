@@ -1,0 +1,233 @@
+---
+title: "Integración de cámara"
+description: "Agregue frecuencia cardíaca basada en cámara a una aplicación de navegador con Elata rPPG Web SDK."
+sidebarTitle: "Integración de cámara"
+---
+
+<Note>
+Utilice esta guía cuando desee un control de nivel inferior sobre la frecuencia cardíaca basada en la cámara en una aplicación de navegador. Para el nivel alto recomendado API, comience con [rPPG en una aplicación de navegador](/es/sdk/guides/rppg-browser).
+</Note>
+
+<a id="what-this-guide-covers"></a>
+
+## Qué cubre esta guía
+
+Esta guía muestra cómo:
+
+- capturar fotogramas de la cámara web en el navegador
+- detectar una cara y extraer una región de la cara
+- introduce muestras en el procesador rPPG 
+- leer en vivo BPM y calidad de señal
+- mejorar las estimaciones con Muse PPG cuando esté disponible
+
+<a id="before-you-start"></a>
+
+## Antes de empezar
+
+Necesitas:
+
+- `@elata-biosciences/rppg-web`
+- un navegador con acceso a la cámara (`getUserMedia`) y soporte WebAssembly 
+- `https://` o `localhost`
+
+<CodeGroup>
+
+```bash npm
+npm install @elata-biosciences/rppg-web
+```
+
+```bash pnpm
+pnpm add @elata-biosciences/rppg-web
+```
+
+</CodeGroup>
+
+<Info>
+rPPG funciona mejor cuando el rostro está bien iluminado, mayormente quieto y completamente visible en el encuadre.
+</Info>
+
+<Tip>
+La mayoría de las aplicaciones deberían usar `createRppgSession()`, que incluye todo lo que hay en esta página (WASM inicio, captura de fotogramas, selección de ROI, diagnóstico, limpieza). Consulte [rPPG en una aplicación de navegador](/es/sdk/guides/rppg-browser). Utilice las piezas de nivel inferior que aparecen a continuación solo cuando necesite una orquestación personalizada.
+</Tip>
+
+<a id="choose-a-starting-point"></a>
+
+## Elige un punto de partida
+
+<Columns cols={2}>
+  <Card title="Empezar desde una demostración" href="/es/sdk/create-elata-demo">
+Cree una aplicación de navegador que funcione si desea la ruta más rápida hacia una implementación de referencia.
+  </Card>
+
+  <Card title="rPPG Web iniciándose" href="/es/sdk/rppg-web/getting-started">
+Conozca los puntos de entrada del paquete y el navegador de nivel superior API.
+  </Card>
+
+  <Card title="Fuentes de fotogramas" href="/es/sdk/rppg-web/frame-sources">
+Consulte las primitivas de detección de rostros y cámara de nivel inferior utilizadas en esta guía.
+  </Card>
+
+  <Card title="Calibración y fusión" href="/es/sdk/rppg-web/calibration">
+Agregue calibración basada en Musecuando desee estimaciones más sólidas.
+  </Card>
+</Columns>
+
+<a id="quick-integration-with-demorunner"></a>
+
+## Integración rápida con DemoRunner
+
+`DemoRunner` maneja la captura de fotogramas, la detección de rostros, la extracción de ROI y el procesamiento en un solo flujo, mientras te deja el control del procesador.
+
+```ts
+import {
+  RppgProcessor,
+  MediaPipeFrameSource,
+  DemoRunner,
+  loadWasmBackend,
+} from "@elata-biosciences/rppg-web";
+
+const video = document.querySelector("video")!; // a playing camera <video>
+const backend = await loadWasmBackend(); // null if the packaged WASM can't be loaded
+if (!backend) throw new Error("rPPG WASM backend unavailable");
+const source = new MediaPipeFrameSource(video);
+const processor = new RppgProcessor(backend, 30);
+
+const runner = new DemoRunner(source, processor, {
+  useSkinMask: true,
+  onStats: () => {
+    const metrics = processor.getMetrics();
+
+    document.getElementById("bpm")!.textContent =
+      metrics.bpm?.toFixed(0) ?? "--";
+
+    document.getElementById("quality")!.textContent =
+      `${(metrics.confidence * 100).toFixed(0)}%`;
+  },
+});
+
+await runner.start();
+```
+
+<Tip>
+Muestra BPM solo cuando `metrics.confidence` esté por encima del umbral de tu aplicación. Un umbral alrededor de `0.5` es un punto de partida práctico.
+</Tip>
+
+<a id="manual-pipeline"></a>
+
+## Tubería manual
+
+Utilice la ruta manual cuando desee un control más estricto sobre el seguimiento de rostros, el muestreo o cómo su aplicación genera resultados intermedios.
+
+<Steps>
+  <Step title="Cargue el modelo de cara y cree una fuente de marco.">
+
+  ```ts
+  import {
+    MediaPipeFaceFrameSource,
+    loadFaceLandmarker,
+  } from "@elata-biosciences/rppg-web";
+
+  // Loads MediaPipe FaceLandmarker from a CDN; returns null if unavailable.
+  const faceLandmarker = await loadFaceLandmarker();
+  if (!faceLandmarker) throw new Error("Face tracking unavailable");
+  const source = new MediaPipeFaceFrameSource(video, faceLandmarker);
+  ```
+
+  </Step>
+
+  <Step title="Crear el procesador">
+
+  ```ts
+  import { RppgProcessor, loadWasmBackend } from "@elata-biosciences/rppg-web";
+
+  const backend = await loadWasmBackend();
+  if (!backend) throw new Error("rPPG WASM backend unavailable");
+  const processor = new RppgProcessor(backend, 30, 10);
+  ```
+
+El tercer argumento establece una ventana de análisis de 10 segundos.
+
+  </Step>
+
+  <Step title="Empuje muestras del ROI de la cara">
+
+  ```ts
+  import { averageGreenInROI } from "@elata-biosciences/rppg-web";
+
+  source.onFrame = (frame) => {
+    if (!frame.roi) return;
+
+    const { x, y, w, h } = frame.roi;
+    const green = averageGreenInROI(frame, x, y, w, h);
+
+    processor.pushSample(
+      frame.timestampMs ?? performance.now(),
+      green,
+    );
+  };
+  ```
+
+  </Step>
+
+  <Step title="Iniciar la cámara y leer métricas.">
+
+  ```ts
+  await source.start();
+
+  setInterval(() => {
+    const metrics = processor.getMetrics();
+    console.log("BPM:", metrics.bpm, "confidence:", metrics.confidence);
+  }, 1000);
+  ```
+
+  </Step>
+</Steps>
+
+<a id="add-muse-calibration"></a>
+
+## Agregar Muse calibración
+
+Si hay un dispositivo Muse disponible, puede utilizar su PPG como señal de referencia para mejorar las estimaciones basadas en cámaras.
+
+```ts
+// `processor` is the RppgProcessor created above
+processor.updateMuseMetrics(museBpm, 0.9, performance.now());
+```
+
+<Info>
+Para obtener un flujo de trabajo de fusión más completo, que incluye `MuseFusionCalibrator` y modelos de calibración, continúe con [/sdk/rppg-web/calibration](/es/sdk/rppg-web/calibration).
+</Info>
+
+<a id="quality-checklist"></a>
+
+## Lista de control de calidad
+
+Utilice esta lista de verificación antes de depurar la canalización:
+
+- mantiene la iluminación uniforme en toda la cara
+- reducir el movimiento de la cabeza
+- espere de 5 a 10 segundos antes de confiar en la salida temprana BPM 
+- asegúrese de que realmente se esté detectando el ROI de una cara
+- habilita `useSkinMask` cuando usas `DemoRunner`
+
+<a id="where-to-go-next"></a>
+
+## Adónde ir a continuación
+
+<Columns cols={2}>
+  <Card title="rPPG Web iniciándose" href="/es/sdk/rppg-web/getting-started">
+Conozca la superficie del paquete y la sesión del navegador de nivel superior API.
+  </Card>
+
+  <Card title="Fuentes de fotogramas" href="/es/sdk/rppg-web/frame-sources">
+Comprenda las primitivas de cámara y detección de rostros con más detalle.
+  </Card>
+
+  <Card title="Calibración y fusión" href="/es/sdk/rppg-web/calibration">
+Mejore las estimaciones con calibración basada en Musey fusión de múltiples fuentes.
+  </Card>
+
+  <Card title="crear-elata-demo" href="/es/sdk/create-elata-demo">
+Comience desde una aplicación de referencia funcional si desea una ruta de incorporación más rápida.
+  </Card>
+</Columns>

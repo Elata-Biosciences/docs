@@ -1,0 +1,156 @@
+---
+title: "Descripción general de AgentForge"
+tag: "Archived"
+description: "Simulación adversaria basada en agentes de mecanismos EVM"
+---
+
+<a id="what-is-agentforge"></a>
+
+## ¿Qué es AgentForge?
+
+AgentForge es un marco de simulación basado en agentes para contratos inteligentes de Foundry y EVM. Llena la brecha entre las pruebas unitarias aisladas y la producción al simular cómo se comporta un protocolo cuando muchos agentes autónomos (comerciantes, arbitrajistas, liquidadores, estrategas impulsados ​​por LLM) actúan simultáneamente con estrategias competitivas a lo largo del tiempo.
+
+<Info>
+  **Paquete**: [`@elata-biosciences/agentforge`](https://www.npmjs.com/package/@elata-biosciences/agentforge) en npm
+</Info>
+
+| Capa | Lo que prueba | Ejemplo |
+|-------|--------------|---------|
+| Pruebas unitarias | Funciones individuales | `test_transfer()` |
+| Pruebas fuzz | Entradas aleatorias | `testFuzz_transfer(uint256 amount)` |
+| **AgentForge** | **Comportamiento emergente multiactor** | **Comerciantes, arbitrajistas, liquidadores competidores** |
+| Mainnet | Usuarios reales | Producción |
+
+---
+
+<a id="key-features"></a>
+
+## Características clave
+
+- **Simulación determinista** — misma semilla + mismo escenario = resultados idénticos
+- **Agentes de acción múltiple** : los agentes pueden ejecutar hasta 3 acciones por tick (por ejemplo, intercambiar + chismes)
+- **Agentes impulsados por LLM** : agentes basados en personas con ensamblaje estructurado y bucle OODA
+- **Bus de chismes** : comunicación limitada entre agentes con canales, presupuestos y primitivas de confianza
+- **Flujo de trabajo de exploración/reproducción** : descubra comportamientos con agentes LLM y luego reproduzca de forma determinista
+- **Panel de Studio** : interfaz de usuario inspirada en la terminal Bloomberg con gráficos, cronograma, análisis de chismes y kit de herramientas de aprendizaje automático
+- **Adaptadores de protocolo (paquetes)** : conéctese a cualquier protocolo EVM a través de la interfaz `Pack` 
+- **Listo para CI** : códigos de salida, denominación de artefactos estable e integración de acciones GitHub 
+
+---
+
+<a id="quick-start"></a>
+
+## Inicio rápido
+
+```bash
+# Install
+pnpm add @elata-biosciences/agentforge
+
+# Scaffold a simulation folder
+npx forge-sim init
+
+# Run the built-in toy scenario
+npx forge-sim run --toy
+
+# Launch the Studio dashboard
+npx forge-sim studio
+```
+
+Requisitos: **Node.js 18+** y opcionalmente [Foundry](https://book.getfoundry.sh/getting-started/installation) con Anvil para simulaciones EVM.
+
+---
+
+<a id="writing-your-first-agent"></a>
+
+## Escribiendo a su primer agente
+
+Defina un agente que observe el estado y decida acciones en cada tic:
+
+```typescript
+import { BaseAgent, type Action, type TickContext } from '@elata-biosciences/agentforge';
+
+export class MyTrader extends BaseAgent {
+  async step(ctx: TickContext): Promise<Action | Action[] | null> {
+    if (ctx.rng.chance(0.3)) {
+      return {
+        id: this.generateActionId('buy', ctx.tick),
+        name: 'buy',
+        params: { amount: ctx.rng.nextInt(1, 100), asset: 'TOKEN' },
+      };
+    }
+    return null;
+  }
+}
+```
+
+Defina un escenario que conecte a los agentes:
+
+```typescript
+import { defineScenario } from '@elata-biosciences/agentforge';
+import { ToyPack, RandomTraderAgent, MomentumAgent } from '@elata-biosciences/agentforge/toy';
+
+export default defineScenario({
+  name: 'market-stress',
+  seed: 42,
+  ticks: 100,
+  tickSeconds: 3600,
+  pack: new ToyPack({
+    assets: [{ name: 'TOKEN', initialPrice: 100, volatility: 0.05 }],
+    initialCash: 10000,
+  }),
+  agents: [
+    { type: RandomTraderAgent, count: 10 },
+    { type: MomentumAgent, count: 5, params: { threshold: 0.02 } },
+  ],
+  assertions: [
+    { type: 'gt', metric: 'totalVolume', value: 0 },
+    { type: 'gte', metric: 'successRate', value: 0.9 },
+  ],
+});
+```
+
+Ejecútelo:
+
+```bash
+npx forge-sim run sim/scenarios/market-stress.ts --seed 42
+```
+
+---
+
+<a id="run-artifacts"></a>
+
+## Ejecutar artefactos
+
+Cada ejecución produce artefactos duraderos:
+
+```
+results/market-stress-ci/
+├── summary.json          # Run metadata, final metrics, assertion results
+├── metrics.csv           # Time-series data for analysis
+├── actions.ndjson        # Complete action log
+├── gossip.ndjson         # Gossip posts/deliveries
+├── config_resolved.json  # Resolved configuration for reproducibility
+├── replay_bundle.json    # Exploration trace for replay mode
+└── report.md             # Generated report
+```
+
+---
+
+<a id="demo-integrations"></a>
+
+## Integraciones de demostración
+
+- [Demostración de bifurcación Uniswap v4](https://github.com/wkyleg/v4-core/tree/main/sim/agentforge-demo) : agentes deterministas + LLM que simulan mecanismos de grupo v4
+- [Elata Protocolo](https://github.com/Elata-Biosciences/elata-protocol) — plataforma de lanzamiento de aplicaciones con curvas de vinculación
+
+---
+
+<a id="links"></a>
+
+## Enlaces
+
+- [npm paquete](https://www.npmjs.com/package/@elata-biosciences/agentforge)
+- [GitHub repositorio](https://github.com/Elata-Biosciences/agentforge)
+- [Completo CLI Referencia](/es/open-source/agentforge/cli)
+- [Conceptos básicos](/es/open-source/agentforge/concepts)
+- [Panel de estudio](/es/open-source/agentforge/studio)

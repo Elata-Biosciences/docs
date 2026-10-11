@@ -1,0 +1,131 @@
+---
+title: "EEG en una aplicación de navegador"
+description: "Agregue Elata EEG WASM API a una aplicación de navegador existente."
+---
+
+Utilice esta página si desea el modelo de paquete para el navegador EEG, no un tutorial de integración completo.
+
+Si desea pasos numerados para una aplicación existente, use [Agregar EEG a una aplicación de navegador existente](/es/sdk/tutorials/eeg-existing-app). Si desea la ruta de andamio, use [Cree su primera Elata aplicación](/es/sdk/tutorials/first-app).
+
+<Tip>
+Si desea una aplicación en ejecución sin cableado manual, utilice [create-elata-demo](/es/sdk/create-elata-demo) primero.
+</Tip>
+
+EEG es **opcional** en el viaje habitual Elata : **cámara rPPG** es la integración principal del navegador para muchas aplicaciones. Agregue `eeg-web` cuando necesite un análisis de señales cerebrales; agregue **`eeg-web-ble`** junto a él cuando necesite **Web Bluetooth** para obtener unos auriculares compatibles con Muse.
+
+EEG mide la actividad eléctrica del cerebro mediante unos auriculares portátiles. En las aplicaciones de navegador, los desarrolladores suelen utilizar EEG para transmitir muestras de auriculares, calcular funciones como potencias de banda y generar comentarios, paneles, UX adaptativo o experiencias interactivas.
+
+Los ejemplos de aplicaciones concretas incluyen:
+
+- aplicaciones de meditación o entrenamiento de respiración que adaptan la orientación al enfoque o la calma
+- experiencias de neurofeedback que premian la atención o la estabilidad
+- aplicaciones de entrenamiento o rendimiento deportivo simuladas que reaccionan al estado mental
+- juegos o herramientas creativas que cambian la dificultad, el ritmo o los efectos según las funciones EEG en vivo
+
+---
+
+<a id="install"></a>
+
+## Instalar
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/eeg-web
+```
+
+```bash npm
+npm install @elata-biosciences/eeg-web
+```
+
+</CodeGroup>
+
+---
+
+<a id="what-eeg-web-gives-you"></a>
+
+## Qué te ofrece `eeg-web` 
+
+`@elata-biosciences/eeg-web` proporciona:
+
+- lado del navegador EEG WASM inicialización
+- procesamiento de señales y exportación de modelos como `band_powers`
+- tipos compartidos y contratos utilizados por integraciones de navegador de nivel superior
+
+Este paquete no maneja la conexión del dispositivo Bluetooth por sí solo. Agregue `@elata-biosciences/eeg-web-ble` si también necesita transporte BLE del navegador.
+
+---
+
+<a id="minimal-integration"></a>
+
+## Integración mínima
+
+```ts
+import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
+
+await initEegWasm();
+
+const eegData = new Float32Array([0, 1, 0, -1]);
+const powers = band_powers(eegData, 256);
+
+console.log("alpha", powers.alpha);
+```
+
+---
+
+<a id="typical-integration-flow"></a>
+
+## Flujo de integración típico
+
+1. Inicialice el tiempo de ejecución WASM empaquetado con `initEegWasm()`.
+2. Pase los buffers de muestra EEG del lado del navegador a las funciones de análisis exportadas.
+3. Si más adelante necesitas transportar un dispositivo en vivo, combina este paquete con `eeg-web-ble`.
+
+---
+
+<a id="when-to-use-the-eeg-template-instead"></a>
+
+## Cuándo utilizar la plantilla EEG en su lugar
+
+Prefiere la plantilla con andamios `eeg-demo` cuando quieras:
+
+- una configuración Vite en buen estado
+- una referencia sobre cómo se deben servir los activos agrupados WASM 
+- una aplicación de datos sintéticos que se ejecuta sin hardware
+
+---
+
+<a id="common-gotchas"></a>
+
+## Problemas comunes
+
+- `band_powers()` toma un **monocanal** `Float32Array`, no `number[]`. `frame.eeg.samples` se presenta como `samples[sampleIdx][channelIdx]` (una fila por paso de tiempo), así que extraiga un canal con `getEegChannelSamples(frame, channelIdx)` de `eeg-web`. Pasar una matriz simple provocará un error de tiempo de ejecución WASM . Para una diadema Muse (4 canales: TP9, AF7, AF8, TP10), use un canal frontal (AF7 = índice 1 o AF8 = índice 2) para las características del estado cognitivo, o promedie entre canales.
+- `WasmCalmnessModel.process()` espera **intercalado** muestras: `[s0_ch0, s0_ch1, s1_ch0, s1_ch1, ...]`. Utilice `getEegInterleavedSamples(frame)` de `eeg-web` para obtener ese diseño.
+- `WasmCalmnessModel` necesita `channelCount` en construcción, pero `channelCount` solo llega al primer cuadro. Construya el modelo dentro de su controlador del primer cuadro.
+- Si `initEegWasm()` falla, es posible que su aplicación no esté cargando los recursos empaquetados `wasm/` correctamente.
+- Si necesita una conexión de auriculares en vivo, `eeg-web` por sí solo no es suficiente.
+- Si solo está evaluando SDK, la aplicación con scaffolding es más rápida que la configuración manual.
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="Agregar EEG a una aplicación existente" icon="circle-play" href="/es/sdk/tutorials/eeg-existing-app">
+Tutorial de integración paso a paso
+  </Card>
+
+  <Card title="Web Bluetooth" icon="bluetooth" href="/es/sdk/guides/web-bluetooth">
+Conecte un auricular Muse 
+  </Card>
+
+  <Card title="Referencia eeg-web" icon="brain" href="/es/sdk/eeg-web/getting-started">
+Paquete API y exportaciones
+  </Card>
+
+  <Card title="Solución de problemas" icon="wrench" href="/es/sdk/operations/troubleshooting">
+Fallos y soluciones comunes
+  </Card>
+</CardGroup>

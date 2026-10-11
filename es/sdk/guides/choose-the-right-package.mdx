@@ -1,0 +1,75 @@
+---
+title: "Elegir el paquete correcto"
+description: "Elija el paquete Elata SDK adecuado para lo que está creando."
+---
+
+<a id="start-here"></a>
+
+## Empieza aquí
+
+1. **¿Nueva aplicación o simplemente evaluando?** Utilice [`create-elata-demo`](/es/sdk/create-elata-demo). Tendrás una aplicación funcional en minutos.
+2. **¿Aplicación existente?** Agregue el paquete para la capacidad que necesita, de la siguiente tabla.
+3. **¿Publicando en Elata?** Agregue los paquetes [Elata ](#elata-packages) para compras, almacenamiento y puntajes.
+
+---
+
+<a id="by-goal"></a>
+
+## Por meta
+
+| Quiero... | Usar | Instalar con |
+| --- | --- | --- |
+| Medir la frecuencia cardíaca desde una cámara web | [`rppg-web`](/es/sdk/rppg-web/getting-started) | |
+| Proceso EEG en el navegador (potencias de banda, modelos) | [`eeg-web`](/es/sdk/eeg-web/getting-started) | |
+| Conecte una diadema EEG a través de Bluetooth | [`eeg-web-ble`](/es/sdk/eeg-web-ble/getting-started) | `eeg-web` |
+| Obtenga frecuencia cardíaca y HRV del sensor PPG de una diadema | [`ppg-web`](/es/sdk/ppg-web/getting-started) | `eeg-web`, `eeg-web-ble`, `rppg-web` |
+| Graba una sesión desde uno o más sensores | [`biosignal-session`](/es/sdk/biosignal-session/getting-started) | los paquetes de sensores desde los que grabas |
+| Funciones informáticas, HRVy puntuaciones de titulares | [`biosignal-analytics`](/es/sdk/biosignal-analytics/getting-started) | |
+| Experimente con la reconstrucción de forma de onda rPPG aprendida | `rppg-models-web` (experimental) | `rppg-web` |
+
+---
+
+<a id="elata-packages"></a>
+
+## Elata paquetes
+
+Estos solo funcionan cuando su aplicación se ejecuta dentro de [Elata](/es/apps/build/overview):
+
+| Quiero... | Usar |
+| --- | --- |
+| Vender artículos únicos | [`app-payments`](/es/apps/platform/in-app-purchases) |
+| Guardar configuración y progreso por usuario | [`app-state`](/es/apps/platform/app-state) |
+| Registra sesiones y puntuaciones, o contribuye a la puntuación biométrica | [`app-metrics`](/es/apps/platform/metrics-and-scores) |
+
+---
+
+<a id="common-mistakes"></a>
+
+## Errores comunes
+
+<Warning>
+Estos causan la mayoría de los problemas de primera ejecución.
+</Warning>
+
+- **Instalando `eeg-web-ble` sin `eeg-web`.** El transporte Bluetooth depende de ello.
+- **Esperando Web Bluetooth en Safari o en iOS.** Utilice Chrome o Edge en escritorio o Android. Consulte [Compatibilidad](/es/sdk/operations/compatibility).
+- **Sirviendo sobre plano `http://`.** La cámara y el Bluetooth necesitan `https://` o `localhost`.
+- **Suponiendo que una aplicación estructurada no funciona dentro de otro pnpm espacio de trabajo.** Instálalo con `pnpm --dir my-app --ignore-workspace install`.
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={3}>
+  <Card title="Tu primera aplicación" icon="rocket" href="/es/sdk/tutorials/first-app">
+Arma tu primera aplicación
+  </Card>
+  <Card title="Aplicaciones de ejemplo" icon="grid-2x2" href="/es/sdk/guides/example-apps">
+Implementaciones de referencia completa
+  </Card>
+  <Card title="Compatibilidad" icon="circle-check" href="/es/sdk/operations/compatibility">
+Soporte para navegadores, dispositivos y herramientas
+  </Card>
+</CardGroup>

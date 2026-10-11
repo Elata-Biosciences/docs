@@ -1,0 +1,110 @@
+---
+title: "Publica tu aplicación"
+description: "Paso a paso a través del asistente para crear una aplicación, desde el registro hasta el envío para revisión."
+---
+
+<a id="overview"></a>
+
+## Descripción general
+
+La publicación se realiza en el asistente **Crear una aplicación** en
+[app.elata.bio/build-app](https://app.elata.bio/build-app). Tiene cuatro pasos.
+Tu progreso se guarda como borrador, para que puedas salir y regresar.
+
+```
+Build → Register → Upload → Publish
+```
+
+---
+
+<a id="1-build"></a>
+
+## 1. Construir
+
+El primer paso es una lista de verificación. Antes de continuar debes tener:
+
+- una aplicación creada con Elata SDK y probada localmente
+- una producción `.zip` lista para subir
+
+Si realizó un scaffolding con `create-elata-demo`, ejecute:
+
+```bash
+npm run build:zip
+```
+
+Esto compila la aplicación y escribe `app.zip` con `index.html` en su raíz, que es
+el formato Elata espera.
+
+---
+
+<a id="2-register"></a>
+
+## 2. Regístrate
+
+Elija el nombre de su aplicación (hasta 50 caracteres). Elata comprueba que el nombre sea
+disponible y le da a su aplicación una URL corta, utilizada en
+`app.elata.bio/app/<slug>`.
+
+Luego paga la tarifa única de registro en USDC. La cantidad se muestra en el
+mago.
+
+---
+
+<a id="3-upload"></a>
+
+## 3. Subir
+
+Sube tu `app.zip`. Elata lo valida inmediatamente: tipo de archivo, tamaño,
+una entrada `index.html` , rutas seguras y un uso SDK . Si falta algo,
+ver exactamente qué arreglar.
+
+Una vez que pase, prueba tu aplicación en la ventana de reproducción. Así lo verán los usuarios.
+
+<Tip>
+Agregue un [`elata.json`](/es/apps/build/elata-json) a su compilación para que el lanzamiento
+  muestra su número de versión.
+</Tip>
+
+---
+
+<a id="4-publish"></a>
+
+## 4. Publicar
+
+Complete su listado Elata :
+
+- **Icono de aplicación** (obligatorio)
+- **Imagen de encabezado** (obligatorio)
+- **Descripción**, categoría y etiquetas
+- **Capturas de pantalla** (opcional, hasta 10)
+
+Luego haga clic en **Enviar para revisión**. Su liberación pasa por el proceso automatizado.
+escaneo de seguridad y revisión del moderador descritos en [Ciclo de vida de la aplicación](/es/apps/app-lifecycle).
+
+---
+
+<a id="after-submitting"></a>
+
+## Después de enviar
+
+- Realice un seguimiento del estado de la revisión en la página de su aplicación y en las notificaciones de Elata.
+- Invita hasta 10 amigos de prueba a probar el borrador antes de que se apruebe.
+- Envía actualizaciones más tarde desde la página **Editar** de tu aplicación. Cada nueva carga crea una nueva versión.
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={3}>
+  <Card title="Listado de aplicaciones" icon="image" href="/es/apps/build/app-metadata">
+Campos y pautas de imagen.
+  </Card>
+  <Card title="Subir y alojar" icon="upload" href="/es/apps/build/upload-and-hosting">
+Límites, autohospedaje, instalación de PWA
+  </Card>
+  <Card title="Lista de verificación posterior al lanzamiento" icon="list-check" href="/es/apps/build/post-launch-checklist">
+Qué hacer una vez que estés en vivo
+  </Card>
+</CardGroup>

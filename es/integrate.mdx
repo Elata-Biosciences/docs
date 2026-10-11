@@ -1,0 +1,146 @@
+---
+title: "Integra tu dispositivo con el Elata SDK"
+description: "Integre un auricular o un dispositivo de bioseñal en la pila Elata EEG BLE con una ruta simple y confiable."
+---
+
+Esta guía está dirigida a empresas de dispositivos que desean que su hardware funcione con
+Elata SDK.
+
+El objetivo es simple: su dispositivo debe conectarse al transporte compartido Elata límites y emite marcos estables en los que las aplicaciones pueden confiar.
+
+<CardGroup cols={2}>
+  <Card title="Empezar con el contrato" icon="plug" href="/es/sdk/eeg-web/headband-transport">
+Revise la trama compartida y los tipos de transporte antes de escribir el código del adaptador.
+  </Card>
+  <Card title="Verifique el soporte del navegador" icon="monitor-smartphone" href="/es/sdk/operations/compatibility">
+Primero confirme las restricciones de Web Bluetooth, navegador y plataforma.
+  </Card>
+</CardGroup>
+
+<a id="what-you-are-building"></a>
+
+## Lo que estás construyendo
+
+Una integración lista para producción debería hacer bien tres cosas:
+
+1. conéctate de manera confiable
+2. transmite fotogramas en un formato estable y predecible
+3. recuperarse limpiamente cuando el dispositivo, el navegador o el enlace de radio no funcionan correctamente
+
+En términos de Elata , eso significa converger en `HeadbandTransport` y
+`HeadbandFrameV1` en lugar de exponer directamente los diseños de paquetes específicos del proveedor.
+
+<Info>
+Las aplicaciones deben depender del contrato de transporte compartido Elata , no del proveedor en bruto
+  paquetes. Esto simplifica las integraciones posteriores y facilita la compatibilidad con dispositivos.
+  más fácil de mantener.
+</Info>
+
+<a id="the-fast-path"></a>
+
+## El camino rápido
+
+<Steps>
+  <Step title="Elija una ruta de integración">
+Decida si su dispositivo pertenece a `eeg-web-ble`, en un lugar separado
+    paquete, o en un adaptador de aplicación local. Utilice
+    [Rutas de integración](./integration-paths) para tomar esa decisión con anticipación.
+  </Step>
+  <Step title="Capturar el inventario de protocolos.">
+Reúna sus servicios, características, formato de paquete, frecuencia de muestreo,
+    nombres de canales, comportamiento de la marca de tiempo y peculiaridades conocidas del firmware. Consulte
+    [Requisitos del protocolo](./protocol-requirements).
+  </Step>
+  <Step title="Implementar el adaptador">
+Cree la capa de dispositivo que maneja el descubrimiento, la configuración de sesiones y los paquetes.
+    decodificación y emisión de cuadros. Comience desde
+    [Implementación del adaptador](./adapter-implementation).
+  </Step>
+  <Step title="Validar para confiabilidad">
+Pruebe la conexión, el inicio, la detención, la desconexión, los paquetes con formato incorrecto, las reconexiones y
+    corrección del cuadro antes de ajustar cualquier cosa en sentido posterior. Utilice
+    [Pruebas y validación](./testing-and-validation).
+  </Step>
+  <Step title="preparar el traspaso">
+Empaquete la integración con notas de plataforma, versiones de firmware probadas y
+    respaldar las expectativas. Consulte [Envío y soporte](./submission-and-support).
+  </Step>
+</Steps>
+
+<a id="what-you-need-before-you-start"></a>
+
+## Lo que necesitas antes de comenzar
+
+| Requisito | Por qué es importante |
+| --- | --- |
+| Detalles del protocolo del dispositivo | Necesita una imagen completa a nivel de bytes antes de que comience la implementación. |
+| Una ruta de navegador compatible | Web Bluetooth requiere Chrome o Edge en un contexto seguro. |
+| Metadatos de canales estables | Las aplicaciones necesitan un orden de canales, nombres y frecuencias de muestreo consistentes. |
+| Un modelo de propiedad claro | Decida con anticipación si esto funcionará en sentido ascendente, en un paquete de proveedor o de forma privada. |
+
+Si aún no ha revisado el flujo de BLE actual, lea primero
+[EEG Introducción a BLE](/es/sdk/eeg-web-ble/getting-started) .
+
+<a id="guide-map"></a>
+
+## Mapa Guía
+
+<CardGroup cols={2}>
+  <Card title="Rutas de integración" icon="git-branch" href="./integration-paths">
+Elija dónde debe vivir la integración y cómo debe ser propiedad de ella.
+  </Card>
+  <Card title="Contrato de transporte" icon="file-code-2" href="./transport-contract">
+Las interfaces compartidas que su dispositivo debe satisfacer.
+  </Card>
+  <Card title="Requisitos de protocolo" icon="binary" href="./protocol-requirements">
+El inventario de protocolos y metadatos que se deben recopilar antes de codificar.
+  </Card>
+  <Card title="Implementación del adaptador" icon="cpu" href="./adapter-implementation">
+Construya el adaptador del dispositivo y conéctelo a `BleTransport`.
+  </Card>
+  <Card title="Pruebas y Validación" icon="shield-check" href="./testing-and-validation">
+Hacer que la integración sea confiable en condiciones normales y de falla.
+  </Card>
+  <Card title="Presentación y soporte" icon="send" href="./submission-and-support">
+Transfiera la integración con los documentos y advertencias que los socios necesitan.
+  </Card>
+</CardGroup>
+
+<a id="reliability-first"></a>
+
+## La confiabilidad es lo primero
+
+La integración de un dispositivo no se realiza cuando se transmite una vez en un camino feliz.
+
+Se hace cuando:
+
+| Listo significa | Notas |
+| --- | --- |
+| `connect()` es predecible | el descubrimiento y la configuración de la sesión tienen éxito o fallan claramente |
+| `start()` produce fotogramas estables | el ancho de fila, el orden de los canales y la frecuencia de muestreo se mantienen correctos |
+| `stop()` está limpio | la sesión se detiene sin dejar el dispositivo en mal estado |
+| `disconnect()` está limpio | la sesión del navegador libera recursos correctamente |
+| las fallas se muestran claramente | las aplicaciones pueden reaccionar ante desconexiones, reintentos y estados no compatibles |
+
+<a id="related-docs"></a>
+
+## Documentos relacionados
+
+- [Transporte de diadema](/es/sdk/eeg-web/headband-transport)
+- [EEG Introducción a BLE](/es/sdk/eeg-web-ble/getting-started)
+- [Muse Dispositivo](/es/sdk/eeg-web-ble/muse-device)
+- [Compatibilidad](/es/sdk/operations/compatibility)
+- [Solución de problemas](/es/sdk/operations/troubleshooting)
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="Elija una ruta de integración" icon="arrow-right" href="./integration-paths">
+Elija el modelo de propiedad y embalaje correcto antes de codificar.
+  </Card>
+  <Card title="Revisar el contrato de transporte." icon="arrow-right" href="./transport-contract">
+Confirme las expectativas de marco y ciclo de vida que su adaptador debe satisfacer.
+  </Card>
+</CardGroup>

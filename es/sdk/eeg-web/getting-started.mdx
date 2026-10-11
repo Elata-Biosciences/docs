@@ -1,0 +1,145 @@
+---
+title: "Empezando"
+description: "Instale e inicialice el paquete @elata-biosciences/eeg-web WASM "
+---
+
+<a id="when-to-use-this-package"></a>
+
+## Cuándo utilizar este paquete
+
+Utilice `@elata-biosciences/eeg-web` cuando su aplicación necesite:
+
+- EEG API de análisis en el navegador
+- compartido EEG contratos web utilizados por integraciones de nivel superior
+- acceso desde el navegador a Elata WASM modelos y ayudantes de procesamiento de señales
+
+Este paquete no implementa la conexión de dispositivo Bluetooth. Agregue `@elata-biosciences/eeg-web-ble` si también necesita transporte de navegador compatible con Museen vivo.
+
+<Tip>
+¿Nuevo en el SDK? Comience por crear una aplicación de demostración con `create-elata-demo` antes de cablear los paquetes manualmente. Consulte el tutorial de la primera aplicación [](/es/sdk/tutorials/first-app).
+</Tip>
+
+---
+
+<a id="installation"></a>
+
+## Instalación
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/eeg-web
+```
+
+```bash npm
+npm install @elata-biosciences/eeg-web
+```
+
+</CodeGroup>
+
+Requisitos: Node.js 20+ para uso del lado del servidor y herramientas de repositorio local; Navegador moderno con WebAssembly soporte para uso en el navegador.
+
+---
+
+<a id="wasm-initialization"></a>
+
+## WASM Inicialización
+
+Antes de utilizar cualquier API de procesamiento de señales o modelo, inicialice el módulo WASM :
+
+```typescript
+import { initEegWasm } from "@elata-biosciences/eeg-web";
+
+await initEegWasm();
+```
+
+`initEegWasm` es idempotente. Llamarlo varias veces devuelve la misma promesa. Para inicialización sincrónica (por ejemplo, en un Web Worker):
+
+```typescript
+import { initEegWasmSync } from "@elata-biosciences/eeg-web";
+
+initEegWasmSync(wasmModule);
+```
+
+---
+
+<a id="basic-usage"></a>
+
+## Uso Básico
+
+Calcule las potencias de banda a partir de datos de EEG :
+
+```typescript
+import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
+
+await initEegWasm();
+
+const sampleRate = 256;
+const eegSamples = new Float32Array(/* ... one channel of EEG samples ... */);
+
+const powers = band_powers(eegSamples, sampleRate);
+console.log("Alpha:", powers.alpha);
+console.log("Beta:", powers.beta);
+console.log("Theta:", powers.theta);
+console.log("Delta:", powers.delta);
+console.log("Gamma:", powers.gamma);
+```
+
+---
+
+<a id="package-structure"></a>
+
+## Estructura del paquete
+
+`@elata-biosciences/eeg-web` es una delgada TypeScript envoltura alrededor de WASM enlaces generados por `wasm-bindgen`:
+
+- `initEegWasm` / `initEegWasmSync`: WASM ayudantes de inicialización
+- Tipos de tramas de diadema: esquema de datos normalizado para EEG transportes
+- Todas las WASM API: reexportadas desde los enlaces generados
+
+<a id="key-exports"></a>
+
+### Exportaciones clave
+
+- `initEegWasm`
+- `initEegWasmSync`
+- `band_powers`
+- `WasmAlphaBumpDetector`
+- `WasmAlphaPeakModel`
+- `WasmCalmnessModel`
+- `AthenaWasmDecoder`
+- `createRppgPipeline`
+- Ayudantes de marco: `getEegChannelSamples`, `getEegInterleavedSamples`, `getEegSignalBlock`
+- Preprocesamiento: `createEegPreprocessor`, `processHeadbandFrame`
+- Errores: `ElataError`, `isElataError`, `asElataError`
+
+<Note>
+Las exportaciones `wasm-bindgen` generadas se reexportan por motivos de compatibilidad y SDK depuración. Evite crear instancias de contenedores generados directamente a menos que esté depurando intencionalmente el SDK .
+</Note>
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<Card title="Elija un paquete" icon="compass" href="/es/sdk/guides/choose-the-right-package">
+¿No estás seguro de si este es el paquete correcto? Consulte la guía de decisiones.
+</Card>
+
+<CardGroup cols={2}>
+  <Card title="Agregar EEG a una aplicación existente" icon="circle-play" href="/es/sdk/tutorials/eeg-existing-app">
+Tutorial de integración paso a paso
+  </Card>
+  <Card title="Procesamiento de señales" icon="wave-square" href="/es/sdk/eeg-web/signal-processing">
+Potencias de banda, FFT, análisis de espectro.
+  </Card>
+
+  <Card title="Modelos" icon="chart-mixed" href="/es/sdk/eeg-web/models">
+Detección de golpes alfa, puntuación de calma.
+  </Card>
+
+  <Card title="Transporte de diadema" icon="signal-stream" href="/es/sdk/eeg-web/headband-transport">
+Esquema de trama e interfaz de transporte.
+  </Card>
+</CardGroup>

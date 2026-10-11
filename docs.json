@@ -594,8 +594,258 @@
                 "group": "Empieza aquí",
                 "pages": [
                   "es/overview/welcome",
+                  "es/overview/ecosystem-map",
                   "es/overview/status",
-                  "es/overview/apps-on-elata"
+                  "es/overview/find-your-path"
+                ]
+              },
+              {
+                "group": "El ecosistema",
+                "pages": [
+                  "es/overview/apps-on-elata",
+                  "es/overview/elata-sdk",
+                  "es/overview/biosignals",
+                  "es/overview/privacy-and-consent",
+                  "es/overview/points",
+                  "es/overview/monetization",
+                  "es/overview/elta-token"
+                ]
+              },
+              {
+                "group": "Ciencia",
+                "pages": [
+                  "es/overview/science/overview",
+                  "es/overview/science/rppg",
+                  "es/overview/science/eeg",
+                  "es/overview/science/ppg-and-hrv",
+                  "es/overview/science/metrics-and-scores",
+                  "es/overview/science/data-for-research",
+                  "es/overview/science/research-directions"
+                ]
+              },
+              {
+                "group": "Comunidad",
+                "pages": [
+                  "es/overview/mission-and-history",
+                  "es/overview/community",
+                  "es/overview/partners",
+                  "es/resources/media-assets",
+                  "es/resources/faq",
+                  "es/overview/glossary"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Usar Elata",
+            "groups": [
+              {
+                "group": "Usar Elata",
+                "pages": [
+                  "es/users/get-started",
+                  "es/users/explore-apps",
+                  "es/users/devices",
+                  "es/users/score-and-insights",
+                  "es/users/local-sessions-and-insights",
+                  "es/users/your-data",
+                  "es/users/points-and-quests",
+                  "es/users/billing-and-purchases",
+                  "es/users/safety-and-limitations",
+                  "es/users/help"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Crear aplicaciones",
+            "groups": [
+              {
+                "group": "Empieza aquí",
+                "pages": [
+                  "es/apps/what-are-elata-apps",
+                  "es/apps/quickstart",
+                  "es/apps/what-you-can-build",
+                  "es/apps/app-lifecycle",
+                  "es/apps/choose-your-path"
+                ]
+              },
+              {
+                "group": "Desarrollo",
+                "pages": [
+                  "es/apps/build/overview",
+                  "es/apps/build/requirements",
+                  "es/apps/build/launch-your-app",
+                  "es/apps/build/elata-json",
+                  "es/apps/build/upload-and-hosting",
+                  "es/apps/build/app-metadata",
+                  "es/apps/build/review-and-policy",
+                  "es/apps/build/monetize",
+                  "es/apps/build/post-launch-checklist"
+                ]
+              },
+              {
+                "group": "API de la plataforma",
+                "pages": [
+                  "es/apps/platform/host-bridge",
+                  "es/apps/platform/in-app-purchases",
+                  "es/apps/platform/app-state",
+                  "es/apps/platform/metrics-and-scores",
+                  "es/apps/platform/consent-and-insights",
+                  "es/apps/platform/notifications",
+                  "es/apps/platform/subscriptions"
+                ]
+              },
+              {
+                "group": "Gestionar",
+                "pages": [
+                  "es/apps/operate/grow-your-community",
+                  "es/apps/operate/revenue-and-payouts",
+                  "es/apps/operate/analytics-and-health"
+                ]
+              },
+              {
+                "group": "Guía de IA",
+                "pages": [
+                  "es/apps/ai-tools/claude-code",
+                  "es/apps/ai-tools/cursor",
+                  "es/apps/ai-tools/windsurf"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Elata SDK",
+            "groups": [
+              {
+                "group": "Información general",
+                "pages": [
+                  "es/sdk/overview",
+                  "es/sdk/create-elata-demo",
+                  {
+                    "group": "Integración de dispositivos",
+                    "pages": [
+                      "es/integrate",
+                      "es/integration-paths",
+                      "es/transport-contract",
+                      "es/protocol-requirements",
+                      "es/adapter-implementation",
+                      "es/testing-and-validation",
+                      "es/submission-and-support"
+                    ]
+                  },
+                  {
+                    "group": "Guías",
+                    "pages": [
+                      "es/sdk/guides/choose-the-right-package",
+                      "es/sdk/guides/rppg-browser",
+                      "es/sdk/guides/eeg-browser",
+                      "es/sdk/guides/web-bluetooth",
+                      "es/sdk/guides/eeg-ble-integration",
+                      "es/sdk/guides/rppg-camera",
+                      "es/sdk/guides/example-apps"
+                    ]
+                  },
+                  {
+                    "group": "Tutoriales",
+                    "pages": [
+                      "es/sdk/tutorials/first-app",
+                      "es/sdk/tutorials/eeg-existing-app",
+                      "es/sdk/tutorials/eeg-ble-live-stream",
+                      "es/sdk/tutorials/rppg-existing-app"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "SDK web de EEG",
+                "pages": [
+                  "es/sdk/eeg-web/getting-started",
+                  "es/sdk/eeg-web/headband-transport",
+                  "es/sdk/eeg-web/models",
+                  "es/sdk/eeg-web/signal-processing"
+                ]
+              },
+              {
+                "group": "SDK web de EEG por BLE",
+                "pages": [
+                  "es/sdk/eeg-web-ble/getting-started",
+                  "es/sdk/eeg-web-ble/muse-device"
+                ]
+              },
+              {
+                "group": "SDK web de cámara",
+                "pages": [
+                  "es/sdk/rppg-web/getting-started",
+                  "es/sdk/rppg-web/frame-sources",
+                  "es/sdk/rppg-web/calibration"
+                ]
+              },
+              {
+                "group": "SDK web de PPG",
+                "pages": [
+                  "es/sdk/ppg-web/getting-started"
+                ]
+              },
+              {
+                "group": "Sesiones y análisis",
+                "pages": [
+                  "es/sdk/biosignal-session/getting-started",
+                  "es/sdk/biosignal-analytics/getting-started"
+                ]
+              },
+              {
+                "group": "Compatibilidad y soporte",
+                "pages": [
+                  "es/sdk/operations/compatibility",
+                  "es/sdk/operations/troubleshooting"
+                ]
+              },
+              {
+                "group": "Colaboradores",
+                "pages": [
+                  "es/sdk/maintainers/contributing-eeg-transports",
+                  "es/sdk/maintainers/vendor-headset-onboarding"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Archivo",
+            "groups": [
+              {
+                "group": "Acerca del archivo",
+                "pages": [
+                  "es/archive/overview"
+                ]
+              },
+              {
+                "group": "AgentForge",
+                "pages": [
+                  "es/open-source/agentforge/overview",
+                  "es/open-source/agentforge/concepts",
+                  "es/open-source/agentforge/cli",
+                  "es/open-source/agentforge/studio"
+                ]
+              },
+              {
+                "group": "NewsReader",
+                "pages": [
+                  "es/open-source/newsreader/overview",
+                  "es/open-source/newsreader/architecture"
+                ]
+              },
+              {
+                "group": "Protocolo ZORP",
+                "pages": [
+                  "es/zorp-protocol/zorp-intro",
+                  "es/zorp-protocol/zorp-function"
+                ]
+              },
+              {
+                "group": "Elata EEG",
+                "pages": [
+                  "es/home/elata-eeg/elata-eeg-overview",
+                  "es/home/elata-eeg/eeg-architecture"
                 ]
               }
             ]
@@ -1443,6 +1693,402 @@
     {
       "source": "/cn/users/membership-and-purchases",
       "destination": "/cn/users/billing-and-purchases"
+    },
+    {
+      "source": "/es/api-reference/app-fee-router",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/app-registry",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/app-rewards-distributor",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/apps/activity",
+      "destination": "/es/apps/platform/host-bridge"
+    },
+    {
+      "source": "/es/api-reference/apps/get",
+      "destination": "/es/apps/platform/host-bridge"
+    },
+    {
+      "source": "/es/api-reference/apps/holders",
+      "destination": "/es/apps/platform/host-bridge"
+    },
+    {
+      "source": "/es/api-reference/apps/list",
+      "destination": "/es/apps/platform/host-bridge"
+    },
+    {
+      "source": "/es/api-reference/apps/search",
+      "destination": "/es/apps/platform/host-bridge"
+    },
+    {
+      "source": "/es/api-reference/config/chains",
+      "destination": "/es/apps/platform/host-bridge"
+    },
+    {
+      "source": "/es/api-reference/config/contracts",
+      "destination": "/es/apps/platform/host-bridge"
+    },
+    {
+      "source": "/es/api-reference/config/features",
+      "destination": "/es/apps/platform/host-bridge"
+    },
+    {
+      "source": "/es/api-reference/config/get",
+      "destination": "/es/apps/platform/host-bridge"
+    },
+    {
+      "source": "/es/api-reference/contributor-split",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/elata-points",
+      "destination": "/es/overview/points"
+    },
+    {
+      "source": "/es/api-reference/fee-manager",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/fee-swapper",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/market/app",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/market/candles",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/market/curve",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/market/elta",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/market/leaderboard",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/market/prices",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/overview",
+      "destination": "/es/apps/platform/host-bridge"
+    },
+    {
+      "source": "/es/api-reference/portfolio/get",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/portfolio/history",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/portfolio/pnl",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/portfolio/positions",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/preflight/launch",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/preflight/name-available",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/preflight/requirements",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/preflight/symbol-available",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/rewards-distributor",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/rewards/claim-payload",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/rewards/get",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/rewards/history",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/rewards/program-detail",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/rewards/programs",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/stake-vault-votes",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/treasury-usdc-vault",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/api-reference/veelta-votes",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/apps/build/launch-requirements",
+      "destination": "/es/apps/build/requirements"
+    },
+    {
+      "source": "/es/apps/design/app-tokens",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/apps/design/bonding-curve-basics",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/apps/design/community-systems",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/apps/design/fee-flow",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/apps/design/incentives-and-access",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/apps/operate/items-and-unlocks",
+      "destination": "/es/apps/platform/in-app-purchases"
+    },
+    {
+      "source": "/es/apps/operate/staking-for-apps",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/apps/operate/tournaments",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/apps/users/buy-and-trade",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/apps/users/stake-and-earn",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/apps/users/veelta-governance",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/builders/api-overview",
+      "destination": "/es/apps/platform/host-bridge"
+    },
+    {
+      "source": "/es/development",
+      "destination": "/es/apps/quickstart"
+    },
+    {
+      "source": "/es/elata-eco-points",
+      "destination": "/es/overview/points"
+    },
+    {
+      "source": "/es/essentials/code",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/essentials/images",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/essentials/markdown",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/essentials/navigation",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/essentials/reusable-snippets",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/essentials/settings",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/home/ELTA-Economy",
+      "destination": "/es/overview/elta-token"
+    },
+    {
+      "source": "/es/home/about-elata",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/home/app-tokens",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/home/brain-operating-system/ebos-overview",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/home/brain-token-deployer/bonding-curve",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/home/brain-token-deployer/how-it-works",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/home/elata",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/home/elta-token/elta-distribution",
+      "destination": "/es/overview/elta-token"
+    },
+    {
+      "source": "/es/home/elta-token/elta-overview",
+      "destination": "/es/overview/elta-token"
+    },
+    {
+      "source": "/es/home/elta-token/elta-release",
+      "destination": "/es/overview/elta-token"
+    },
+    {
+      "source": "/es/home/elta-token/staking",
+      "destination": "/es/overview/elta-token"
+    },
+    {
+      "source": "/es/home/elta-token/veelta",
+      "destination": "/es/overview/elta-token"
+    },
+    {
+      "source": "/es/home/governance",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/home/governance/structure",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/home/governance/teams",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/home/how-elata-works",
+      "destination": "/es/overview/ecosystem-map"
+    },
+    {
+      "source": "/es/home/problem",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/home/solution",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/learn/revenue-model",
+      "destination": "/es/overview/monetization"
+    },
+    {
+      "source": "/es/learn/tokenomics",
+      "destination": "/es/overview/elta-token"
+    },
+    {
+      "source": "/es/onchain-build",
+      "destination": "/es/overview/status"
+    },
+    {
+      "source": "/es/resources/references",
+      "destination": "/es/overview/science/overview"
+    },
+    {
+      "source": "/es/resources/smart-contracts",
+      "destination": "/es/overview/elta-token"
+    },
+    {
+      "source": "/es/sdk/guides/architecture-rppg",
+      "destination": "/es/overview/science/rppg"
+    },
+    {
+      "source": "/es/sdk/guides/federated-learning",
+      "destination": "/es/overview/science/research-directions"
+    },
+    {
+      "source": "/es/sdk/maintainers/related-repos",
+      "destination": "/es/sdk/maintainers/contributing-eeg-transports"
+    },
+    {
+      "source": "/es/sdk/maintainers/releasing",
+      "destination": "/es/sdk/maintainers/contributing-eeg-transports"
+    },
+    {
+      "source": "/es/sdk/maintainers/repo-workflows",
+      "destination": "/es/sdk/maintainers/contributing-eeg-transports"
+    },
+    {
+      "source": "/es/snippets/snippet-intro",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/learn/protocol-overview",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/learn/how-it-works",
+      "destination": "/es/overview/ecosystem-map"
+    },
+    {
+      "source": "/es/learn/privacy-and-data",
+      "destination": "/es/overview/privacy-and-consent"
+    },
+    {
+      "source": "/es/elata-points",
+      "destination": "/es/overview/points"
+    },
+    {
+      "source": "/es/apps/users/explore-apps",
+      "destination": "/es/users/explore-apps"
+    },
+    {
+      "source": "/es/apps/users/membership",
+      "destination": "/es/users/billing-and-purchases"
+    },
+    {
+      "source": "/es/quickstart",
+      "destination": "/es/apps/quickstart"
+    },
+    {
+      "source": "/es/learn",
+      "destination": "/es/overview/welcome"
+    },
+    {
+      "source": "/es/users/membership-and-purchases",
+      "destination": "/es/users/billing-and-purchases"
     }
   ],
   "description": "Documentation, learning, and information hub for the Elata platform and ecosystem.",

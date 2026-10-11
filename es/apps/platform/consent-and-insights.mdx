@@ -1,0 +1,117 @@
+---
+title: "Consentimiento y conocimientos"
+description: "Solicite consentimiento para compartir datos biométricos y lea la información entre aplicaciones de un usuario."
+---
+
+<a id="the-biometric-score"></a>
+
+## La puntuación biométrica
+
+Elata mantiene una puntuación biométrica entre aplicaciones **** para cada usuario, creada a partir de datos derivados
+Resultados de la sesión que las aplicaciones reportan con
+[`reportAffect`](/es/apps/platform/metrics-and-scores#reportaffect). Nada es
+compartido hasta que el usuario opte explícitamente por participar, y puede desactivarlo en cualquier momento.
+
+El consentimiento se muestra en Elata en su propio marco de confianza, no en su aplicación. Elata
+ también vuelve a verificar el consentimiento en el servidor para cada muestra, por lo que su aplicación no puede
+contribuir sin él.
+
+Actualmente existe un propósito de consentimiento: `platform_score`.
+
+---
+
+<a id="ask-for-consent"></a>
+
+## Solicitar consentimiento
+
+```js
+const requestId = crypto.randomUUID();
+
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'elata:consent:state' && e.data.requestId === requestId) {
+    console.log('granted?', e.data.granted);
+  }
+});
+
+window.parent?.postMessage(
+  { type: 'elata:consent:request', purpose: 'platform_score', requestId },
+  '*',
+);
+```
+
+Elata abre su cuadro de diálogo de consentimiento y responde con
+`{ type: 'elata:consent:state', purpose, granted, requestId }` una vez que el usuario
+decide.
+
+Para permitir que los usuarios **desactiven el uso compartido** desde la configuración de su aplicación, envíe el mismo
+mensaje con `action: 'revoke'`.
+
+---
+
+<a id="read-consent-without-prompting"></a>
+
+## Leer el consentimiento sin preguntar
+
+Para mostrar el estado actual en su interfaz de usuario, por ejemplo, como un interruptor de configuración, envíe
+`elata:consent:query`. Obtiene la misma respuesta y no se muestra ningún cuadro de diálogo.
+
+```js
+window.parent?.postMessage(
+  { type: 'elata:consent:query', purpose: 'platform_score', requestId: 'q1' },
+  '*',
+);
+```
+
+---
+
+<a id="read-the-users-insights"></a>
+
+## Leer las opiniones del usuario
+
+Los usuarios que comparten su puntuación pueden ver sus propios resultados entre aplicaciones dentro de su
+aplicación. Solicítalos con `elata:insights:request`:
+
+```js
+window.parent?.postMessage(
+  { type: 'elata:insights:request', requestId: 'i1', windowDays: 90 },
+  '*',
+);
+```
+
+Elata responde con `elata:insights:state`:
+
+```ts
+{
+  type: 'elata:insights:state',
+  requestId?: string,
+  consented: boolean,      // false → no data; prompt the user to opt in
+  data?: {
+    engagement: {
+      activeDays: number,
+      currentStreak: number,
+      longestStreak: number,
+      appsUsed: number,
+      totalScores: number,
+      lastActiveAt: number | null,
+    },
+    apps: { slug: string | null, name: string | null }[],
+    score: { value: number | null, calibrating: boolean, sampleCount: number },
+    windowDays: number,
+    generatedAt: number,
+  }
+}
+```
+
+`windowDays` el valor predeterminado es 90 y tiene un límite de 365. Los datos son un resumen seleccionado
+de la actividad **propia** del usuario; nunca incluye otros usuarios ni registros sin procesar.
+
+---
+
+<a id="checklist-for-score-contributing-apps"></a>
+
+## Lista de verificación para aplicaciones que contribuyen a la puntuación
+
+1. Solicite al equipo Elata que habilite el alcance `biometrics` para su aplicación.
+2. Explica en tu aplicación y enumera qué se mide y qué se comparte.
+3. Solicite consentimiento con `elata:consent:request` antes de llamar a `reportAffect`.
+4. Maneje `scope_denied` desde `reportAffect` ofreciendo nuevamente el mensaje de consentimiento.

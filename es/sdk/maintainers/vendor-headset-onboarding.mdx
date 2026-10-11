@@ -1,0 +1,27 @@
+---
+title: "Lista de verificación de incorporación de auriculares del proveedor"
+description: "Lista de verificación paso a paso para empresas de dispositivos externos que agregan compatibilidad con auriculares a la pila Elata del navegador EEG ."
+---
+
+Utilice esta lista de verificación cuando un proveedor de hardware desee agregar compatibilidad con auriculares.
+
+La guía de repositorio canónico se encuentra en el monorepo SDK :
+
+- [docs/vendor-headset-onboarding-checklist.md](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/vendor-headset-onboarding-checklist.md)
+
+<a id="fast-path-summary"></a>
+
+## Resumen de ruta rápida
+
+1. Confirmar protocolo y documentos GATT: UUID, formato de paquete, frecuencia de muestreo, mapa de canales y marcas de tiempo.
+2. Elige la ruta de integración:
+   - `eeg-web-ble` módulo de dispositivo en `src/devices/<vendor>/`
+   - paquete hermano como `packages/eeg-web-<vendor>` para flujos con mucho puente
+   - adaptador de aplicación local para pruebas de concepto privadas
+3. Converja en `HeadbandTransport` y `HeadbandFrameV1`.
+4. Agregue pruebas de paquetes y BLE simuladas.
+5. Actualice documentos y agregue un conjunto de cambios para cambios publicables.
+
+Para conocer las expectativas de arquitectura y paquetes, consulte:
+
+- [Aportando EEG Transportes](/es/sdk/maintainers/contributing-eeg-transports)

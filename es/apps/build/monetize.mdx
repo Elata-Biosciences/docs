@@ -1,0 +1,76 @@
+---
+title: "Monetiza tu aplicación"
+description: "Configure productos y suscripciones, realice un seguimiento de las ventas y acceda a sus ganancias."
+---
+
+Administre la monetización de su aplicación desde **Mis aplicaciones → su aplicación → Editar → Comercio**. Esta sección contiene productos, el plan de suscripción mensual, ingresos, transacciones recientes y fondos de billetera de pago.
+
+<Info>
+Los pagos deben estar habilitados y configurados en la implementación. Ver [Qué hay en vivo](/es/overview/status). El pago de la aplicación y el flujo de fondos que se describen aquí utilizan USDC en Base. Verifique la red de pago antes de realizar una compra de prueba.
+</Info>
+
+<a id="choose-what-to-sell"></a>
+
+## Elige qué vender
+
+| Modelo | Adecuado para | Lo que construyes |
+| --- | --- | --- |
+| [Compras dentro de la aplicación](/es/apps/platform/in-app-purchases) | Desbloqueo único de características, niveles o cosméticos | Crea productos, luego integra `app-payments` y aplica el beneficio comprado |
+| [Suscripción a la aplicación](/es/apps/platform/subscriptions) | Acceso mensual a toda la aplicación | Configure un plan mensual; Elata maneja la puerta de acceso |
+
+Puedes ofrecer ambos. Una suscripción a una aplicación proporciona acceso a la aplicación, mientras que la propiedad del artículo permanece separada. Un identificador de artículo único no admite compras repetidas de consumibles.
+
+<a id="set-up-monetization"></a>
+
+## Configurar monetización
+
+<Steps>
+  <Step title="Compruebe quién recibe las ganancias">
+Abra **Comercio → Fondos** e inspeccione la billetera de pagos. Los pagos directos de aplicaciones utilizan la billetera del creador de la aplicación como destino. Confirma que lo controlas antes de ofrecer contenido pago. Agregar miembros al equipo no crea pagos compartidos.
+  </Step>
+  <Step title="Crear productos o un plan mensual">
+En **Productos**, cree un título, una descripción, un precio, una imagen opcional y un estado activo. Elata asigna el estable `contentId` que usa tu aplicación. En **Suscripción mensual**, establezca un precio mensual USDC positivo, duración de la prueba y estado activo. Cada sección tiene su propia acción de guardar.
+  </Step>
+  <Step title="Conecta elementos a tu aplicación">
+Para los artículos, lea el catálogo y la propiedad a través de `app-payments`, solicite el pago y aplique el beneficio después del éxito. Restaura los beneficios propios cuando se carga la aplicación. Consulte [Compras dentro de la aplicación](/es/apps/platform/in-app-purchases) para conocer la integración.
+  </Step>
+  <Step title="Pon a prueba la experiencia del cliente">
+Utilice una cuenta de usuario independiente para probar una compra o suscripción. Los propietarios y miembros del equipo evitan la puerta de suscripción a la aplicación. Pruebe los estados de cierre de sesión, conexión de billetera, cancelación, artículo de propiedad, prueba, período de pago y acceso vencido, según corresponda.
+  </Step>
+  <Step title="Realice un seguimiento de las ventas y mueva los ingresos">
+Revise **Ingresos** y **Transacciones**, luego use **Fondos → Administrar fondos** para acceder a la billetera de pagos. Siga [Ingresos y pagos](/es/apps/operate/revenue-and-payouts) para enviar USDC o moverlo a un servicio con retiros bancarios.
+  </Step>
+</Steps>
+
+<a id="how-money-reaches-you"></a>
+
+## Cómo te llega el dinero
+
+El comprador paga USDC a través del divisor. El divisor deduce la tarifa de la plataforma configurada y envía su parte directamente a la billetera de pagos. Elata no mantiene un saldo de creador separado que luego reclamas.
+
+La tarjeta de fondos muestra el saldo actual de la billetera USDC en Base. Puede incluir otros depósitos e ingresos de otras aplicaciones que usan esa billetera, y disminuye cuando envías fondos. No es un total de ingresos específico de la aplicación.
+
+<a id="fees-and-reporting"></a>
+
+## Tarifas e informes
+
+El registro tiene una tarifa única que se muestra en el asistente de registro. Las ventas directas de aplicaciones tienen una tarifa de plataforma configurada que el divisor deduce. También se pueden aplicar cargos de red y de servicio. Esta guía no fija un porcentaje: utilice la configuración de pago activo y los registros de transacciones.
+
+Los informes comerciales muestran cantidades **brutas** antes de la división. Los ingresos por productos se estiman utilizando los precios actuales de los productos; Los pagos de suscripción conservan sus montos de pago registrados. No utilice la estimación bruta como saldo de pago neto.
+
+<a id="credits-and-points"></a>
+
+## Créditos y puntos
+
+Los créditos de usuario cubren funciones medidas admitidas; no son el saldo de pago de su aplicación. Los puntos también están separados de los ingresos de USDC .
+
+<a id="next-steps"></a>
+
+## Próximos pasos
+
+<CardGroup cols={2}>
+  <Card title="Compras dentro de la aplicación" href="/es/apps/platform/in-app-purchases">Cree artículos y conecte el pago con los beneficios de la aplicación.</Card>
+  <Card title="Suscripciones" href="/es/apps/platform/subscriptions">Configure el acceso y las pruebas mensuales de las aplicaciones.</Card>
+  <Card title="Ingresos y pagos" href="/es/apps/operate/revenue-and-payouts">Lee tus informes y saca tu dinero.</Card>
+  <Card title="Lista de verificación posterior al lanzamiento" href="/es/apps/build/post-launch-checklist">Verificar la experiencia del cliente publicada.</Card>
+</CardGroup>

@@ -1,0 +1,137 @@
+---
+title: "Presentación y soporte"
+description: "Empaquete la integración de un dispositivo con los documentos, las advertencias y los detalles de soporte necesarios para una transferencia limpia."
+---
+
+Utilice esta página cuando la integración esté funcionando y esté listo para transferirla.
+para revisión, publicación o soporte de socios.
+
+<a id="what-a-clean-handoff-includes"></a>
+
+## Qué incluye un traspaso limpio
+
+| Artículo | Qué incluir |
+| --- | --- |
+| Alcance del dispositivo | modelos exactos y versiones de firmware probados |
+| Alcance de la plataforma | navegadores, destinos del sistema operativo y cualquier superficie no compatible |
+| Notas de transporte | Web Bluetooth, puente o requisitos de ayudante nativo |
+| Limitaciones conocidas | advertencias de desconexión, señales no admitidas, casos extremos de configuración |
+| Propiedad | quién mantiene la integración en el futuro |
+
+<a id="required-documentation"></a>
+
+## Documentación requerida
+
+Una integración utilizable debe incluirse con un breve conjunto de notas públicas.
+
+| Doc | Por qué es importante |
+| --- | --- |
+| Notas de instalación y configuración | indica a los equipos cómo comenzar rápidamente |
+| Advertencias sobre la plataforma | evita la implementación de navegadores no compatibles |
+| Matriz de compatibilidad de dispositivos | aclara la cobertura de modelo y firmware |
+| Limitaciones conocidas | establece expectativas realistas |
+| Notas de solución de problemas | acorta los bucles de soporte |
+
+<a id="suggested-submission-template"></a>
+
+## Plantilla de envío sugerida
+
+```md
+## Device integration summary
+- Device model(s):
+- Firmware tested:
+- Transport path: upstream / separate package / app-local
+- Browser matrix tested:
+- Platform limitations:
+
+## Protocol summary
+- Primary service UUIDs:
+- Streaming characteristics:
+- EEG channel map:
+- Sample rate:
+- Timestamp source: device / local
+
+## Reliability notes
+- Reconnect behavior:
+- Known limitations:
+- Open issues:
+```
+
+<a id="if-the-integration-is-contributed-upstream"></a>
+
+## Si la integración se aporta aguas arriba
+
+Incluya estos elementos en el mismo conjunto de cambios:
+
+1. código del adaptador
+2. pruebas simuladas y fijación de paquetes
+3. actualizaciones de documentos para el consumidor
+4. notas de soporte para las versiones de dispositivo y firmware cubiertas
+
+Si la integración cambia un paquete publicado, incluya los metadatos de la versión que
+usos del equipo para la publicación de paquetes.
+
+<a id="if-the-integration-stays-vendor-owned"></a>
+
+## Si la integración sigue siendo propiedad del proveedor
+
+Mantenga el traspaso de socios simple:
+
+| Entregable | Por qué es importante |
+| --- | --- |
+| punto de entrada de paquete o adaptador | brinda a los equipos de aplicaciones una superficie de integración clara |
+| declaración de soporte versionada | evita confusión entre líneas de firmware |
+| ruta de contacto para problemas | reduce los bucles de soporte sin salida |
+| registro de cambios o notas de la versión | facilita el seguimiento de las regresiones |
+
+<a id="support-expectations"></a>
+
+## Expectativas de soporte
+
+Un buen modelo de soporte responde estas preguntas desde el principio:
+
+| Pregunta | Ejemplo de respuesta |
+| --- | --- |
+| ¿Quién arregla las regresiones de protocolo? | el socio proveedor posee cambios de decodificador específicos del dispositivo |
+| ¿Quién corrige las regresiones de los contratos de aplicaciones? | SDK los mantenedores poseen expectativas de transporte compartidas |
+| ¿Cómo se rastrean los cambios de firmware? | cada línea de firmware compatible está documentada explícitamente |
+| ¿Cómo escalan los problemas los consumidores? | una ruta de emisión y un propietario por línea de publicación |
+
+<Info>
+Los mejores documentos de socios son breves, precisos y versionados. No sobrecargue el
+  transferencia con detalles del proceso interno que los equipos de aplicaciones no necesitan.
+</Info>
+
+<a id="final-review-questions"></a>
+
+## Preguntas de revisión final
+
+Antes de la liberación o el traspaso, confirme:
+
+1. ¿La integración utiliza correctamente el contrato de transporte compartido?
+2. son explícitos los modelos compatibles y las líneas de firmware
+3. son advertencias sobre el navegador y la plataforma expresadas claramente
+4. ¿puede otro equipo reproducir la configuración sin contexto privado?
+5. es obvio el propietario del mantenimiento
+
+<a id="related-docs"></a>
+
+## Documentos relacionados
+
+- [Pruebas y Validación](./testing-and-validation)
+- [Compatibilidad](/es/sdk/operations/compatibility)
+- [Solución de problemas](/es/sdk/operations/troubleshooting)
+- [EEG Introducción a BLE](/es/sdk/eeg-web-ble/getting-started)
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="EEG Introducción a BLE" icon="arrow-right" href="/es/sdk/eeg-web-ble/getting-started">
+Revise el flujo de integración BLE actual y compárelo con la ruta de su dispositivo.
+  </Card>
+  <Card title="Lista de verificación de incorporación de proveedores" icon="arrow-right" href="/es/sdk/maintainers/vendor-headset-onboarding">
+Lista de verificación paso a paso para empresas de dispositivos.
+  </Card>
+</CardGroup>

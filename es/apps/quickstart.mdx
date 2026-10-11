@@ -1,0 +1,79 @@
+---
+title: "Inicio rápido"
+description: "Cree una aplicación de bioseñal y publíquela en Elata."
+---
+
+Esta guía lo lleva de la nada a una aplicación enviada. Necesitarás Node.js 20 o
+más nuevo y una cámara web.
+
+<Warning>
+  **Problema conocido:** el `create-elata-demo` 0.12.1 del repositorio tiene un bloqueador de empaquetado y no se inicia sin los metadatos del espacio de trabajo hermano. Verifique una versión fija antes de usarla. Por ahora, siga
+  [Agregar rPPG a una aplicación existente](/es/sdk/tutorials/rppg-existing-app) para configurar
+  el SDK en su propia aplicación web. Ver [Qué hay en vivo](/es/overview/status).
+</Warning>
+
+<Steps>
+  <Step title="Armado de una aplicación">
+Cree una aplicación de inicio de frecuencia cardíaca de la cámara (rPPG):
+
+    ```bash
+    npm create @elata-biosciences/elata-demo my-app -- --template rppg
+    cd my-app
+    npm install
+    ```
+
+¿Prefieres EEG, diadema PPGo un juego? Consulte la lista de plantillas [](/es/sdk/create-elata-demo).
+  </Step>
+
+  <Step title="Ejecútelo localmente">
+    ```bash
+    npm run dev
+    ```
+
+Abra la URL local, permita el acceso a la cámara y debería ver una señal de pulso en vivo.
+  </Step>
+
+  <Step title="Hazlo tuyo">
+Edite la aplicación en `src/`. La guía [rPPG ](/es/sdk/guides/rppg-browser) explica la sesión APIy las API de la plataforma [](/es/apps/platform/host-bridge) agregan compras, progreso guardado y puntuaciones.
+  </Step>
+
+  <Step title="Agregar una versión">
+Crear `public/elata.json`:
+
+    ```json
+    { "version": "1.0.0" }
+    ```
+
+Consulte [elata.json](/es/apps/build/elata-json).
+  </Step>
+
+  <Step title="Construye la carga">
+    ```bash
+    npm run build:zip
+    ```
+
+Esto escribe `app.zip` con `index.html` en su raíz.
+  </Step>
+
+  <Step title="Publicar">
+Vaya a [app.elata.bio/build-app](https://app.elata.bio/build-app), registre el nombre de su aplicación, cárguela `app.zip`, pruébela en la ventana de reproducción, agregue un ícono y una imagen de encabezado y envíela para su revisión. El tutorial completo se encuentra en [Publica tu aplicación](/es/apps/build/launch-your-app).
+  </Step>
+</Steps>
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={3}>
+  <Card title="Tu primera aplicación" icon="graduation-cap" href="/es/sdk/tutorials/first-app">
+Un tutorial SDK más profundo
+  </Card>
+  <Card title="Requisitos" icon="clipboard-check" href="/es/apps/build/requirements">
+Lo que cada carga necesita
+  </Card>
+  <Card title="Puente anfitrión" icon="plug" href="/es/apps/platform/host-bridge">
+Habla con Elata desde tu aplicación
+  </Card>
+</CardGroup>

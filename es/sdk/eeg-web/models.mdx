@@ -1,0 +1,119 @@
+---
+title: "Modelos de análisis"
+description: "Detección de golpes alfa, seguimiento de picos alfa y puntuación de calma"
+---
+
+Los tres modelos comparten la misma forma:
+
+- construir con `new Model(sampleRateHz, channelCount)`
+- llame a `process(interleaved)` con un `Float32Array` de **muestras** intercaladas (`[s0_ch0, s0_ch1, …, s1_ch0, …]`); `getEegInterleavedSamples(frame)` produce esto a partir de un marco de diadema
+- `process` devuelve un objeto de resultado, o `undefined` hasta que se hayan acumulado suficientes datos (`min_samples()` le indica cuántos)
+- llama al `reset()` para borrar el estado
+
+Debido a que `channelCount` solo se conoce una vez que llega el primer cuadro, construya modelos dentro de su controlador del primer cuadro.
+
+## WasmAlphaBumpDetector
+
+Detecta golpes alfa: cambios transitorios en la potencia de la banda alfa que indican transiciones de estado, como el cierre de los ojos.
+
+```typescript
+import { initEegWasm, WasmAlphaBumpDetector, getEegInterleavedSamples } from "@elata-biosciences/eeg-web";
+
+await initEegWasm();
+
+const detector = new WasmAlphaBumpDetector(256, 4); // sampleRateHz, channelCount
+
+const result = detector.process(getEegInterleavedSamples(frame));
+if (result?.state_changed) {
+  console.log(result.state, result.alpha_power, result.baseline); // state: "high" | "low" | "transitioning" | "unknown"
+}
+```
+
+Sintoniza con `set_threshold(multiplier)` y `set_baseline_smoothing(alpha)`.
+
+---
+
+## WasmAlphaPeakModel
+
+Realiza un seguimiento de la frecuencia máxima alfa individual (normalmente de 8 a 13 Hz), que varía de persona a persona.
+
+```typescript
+import { WasmAlphaPeakModel } from "@elata-biosciences/eeg-web";
+
+const model = new WasmAlphaPeakModel(256, 4);
+
+const result = model.process(interleaved);
+if (result) {
+  console.log(result.peak_frequency, result.smoothed_peak_frequency, result.snr);
+}
+```
+
+---
+
+<a id="wasmcalmnessmodel"></a>
+
+## WasmCalmaModelo
+
+Calcula una puntuación de calma a partir de la relación entre el poder alfa y el poder beta. Un alfa más alto en relación con el beta generalmente indica un estado más relajado.
+
+```typescript
+import { WasmCalmnessModel } from "@elata-biosciences/eeg-web";
+
+const model = new WasmCalmnessModel(256, 4);
+
+const result = model.process(interleaved);
+if (result) {
+  console.log(result.score);          // 0.0 (alert) to 1.0 (very calm)
+  console.log(result.smoothed_score); // less jittery
+  console.log(result.alpha_beta_ratio);
+}
+```
+
+---
+
+<a id="athenawasmdecoder"></a>
+
+## AthenaWasmDecodificador
+
+Decodifica paquetes de protocolo Athena sin procesar de diademas Muse S (firmwareAthena ). Se utiliza como parámetro de fábrica para `BleTransport`:
+
+```typescript
+import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+
+const decoder = new AthenaWasmDecoder();
+
+decoder.reset();
+decoder.set_use_device_timestamps(true);
+decoder.set_clock_kind("monotonic");
+decoder.set_reorder_window_ms(50);
+
+const output = decoder.decode(rawBytes);
+```
+
+El decodificador Athena normalmente no se utiliza directamente. Se pasa como fábrica a [`BleTransport`](/es/sdk/eeg-web-ble/getting-started):
+
+```typescript
+import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+
+const transport = new BleTransport({
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),
+  },
+});
+```
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="Procesamiento de señales" icon="wave-square" href="/es/sdk/eeg-web/signal-processing">
+Potencias de banda, FFT, análisis de espectro.
+  </Card>
+  <Card title="Transporte de diadema" icon="signal-stream" href="/es/sdk/eeg-web/headband-transport">
+Esquema de trama e interfaz de transporte.
+  </Card>
+</CardGroup>

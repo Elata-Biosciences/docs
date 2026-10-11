@@ -1,0 +1,114 @@
+---
+title: "Ingresos y pagos"
+description: "Comprenda sus informes de ventas, acceda a su billetera de pagos y mueva su USDC."
+---
+
+Su parte de las ventas directas de aplicaciones va a la billetera de pagos de su aplicación después de que el divisor deduce la tarifa de la plataforma configurada. Accedes a esa billetera para mover el dinero; no hay ningún saldo de creador de Elata separado para retirar.
+
+<a id="open-your-commerce-dashboard"></a>
+
+## Abra su panel de comercio
+
+Vaya a **Mis aplicaciones → su aplicación → Editar → Comercio**, en `/app/<slug>/edit#commerce` en la tienda de aplicaciones.
+
+| Panel | Qué muestra |
+| --- | --- |
+| Productos | Su catálogo y estado activo |
+| Suscripción mensual | Precio de la aplicación, configuración de prueba, estado activo y señal de suscriptor |
+| Ingresos | Ventas de productos e ingresos estimados de productos, pagos de suscripción registrados e ingresos brutos totales estimados |
+| Transacciones | Registros recientes de productos y suscripciones, con enlaces de transacciones cuando estén disponibles |
+| Fondos | La dirección de pago y el saldo actual de esa billetera USDC en Base |
+
+<a id="understand-the-numbers"></a>
+
+## Entiende los números
+
+**Se estiman los ingresos del producto.** Los registros de compra de productos no almacenan un monto histórico pagado. El informe multiplica los recuentos de compras por el precio actual de cada artículo. Editar un precio puede cambiar la estimación de ventas anteriores sin cambiar lo que alguien realmente pagó.
+
+**Los ingresos por suscripción utilizan cantidades registradas.** Los períodos pagados almacenan el monto cobrado al momento del pago. Las pruebas gratuitas no son ingresos por suscripción paga.
+
+**Los ingresos son brutos.** El informe no calcula sus ganancias netas exactas después de las tarifas de la plataforma. Si dice que los registros fuente fueron limitados, los totales también pueden ser parciales. Utilice registros de transacciones para conciliar los pagos reales y los montos de los destinatarios.
+
+**Los fondos son el saldo de la billetera.** Incluye otros USDC depositados en esa billetera y excluye los fondos ya enviados. Varias aplicaciones pueden compartir una billetera. Un saldo cero no significa que la aplicación nunca haya obtenido ingresos.
+
+<a id="where-payouts-go"></a>
+
+## Adónde van los pagos
+
+El destino de pago actual de la aplicación es la billetera del creador de la aplicación, que se muestra como la billetera de pago en **Fondos**. Los productos y el plan mensual no tienen su propio campo de dirección de pago editable.
+
+Antes de vender, compare la dirección mostrada con la billetera que controla. Si es incorrecto o inaccesible, resuélvalo con [soporte](/es/users/help) antes de aceptar pagos. Agregar un miembro del equipo no transfiere la propiedad ni configura el reparto automático de ingresos.
+
+<a id="access-your-funds"></a>
+
+## Accede a tus fondos
+
+<Steps>
+  <Step title="Fondos abiertos">
+En **Comercio**, busque **Fondos**, verifique la dirección de pago completa y lea **USDC saldo (Base)**. Actualice o vuelva a intentarlo si no se puede cargar el saldo.
+  </Step>
+  <Step title="Utilice la billetera de pagos">
+Inicie sesión como propietario de la aplicación y conecte la billetera asociada con la dirección de pago. La consola ofrece **Administrar fondos** solo cuando el propietario y los cheques de su billetera pasan. Un miembro del equipo puede ver el informe pero no obtiene esta acción exclusiva del propietario.
+  </Step>
+  <Step title="Abrir Administrar fondos">
+Esto abre los controles de la billetera. Las opciones de envío, recepción y exportación disponibles dependen del tipo de billetera. Verifique la dirección de la billetera dentro de la interfaz abierta con la dirección de pago antes de transferir cualquier cosa.
+  </Step>
+</Steps>
+
+Los permisos del tablero controlan sus propios botones. Cualquiera que controle de forma independiente la billetera de pagos también puede administrar esa billetera fuera de Elata.
+
+<a id="send-usdc-to-another-wallet"></a>
+
+## Enviar USDC a otra billetera
+
+1. Abra la billetera de pagos usando **Administrar fondos** o la propia aplicación de su billetera.
+2. Seleccione **USDC en Base** y la acción de enviar.
+3. Ingresa la dirección de destino y el monto. Confirma que el destino acepta USDC el Base.
+4. Revise cualquier tarifa de red o detalles de patrocinio y confirme la transferencia.
+5. Guarde el hash de la transacción y verifique el saldo de destino después de la confirmación.
+
+Una billetera externa puede requerir ETH en Base para las tarifas de red. Las billeteras integradas o inteligentes pueden manejar las tarifas de manera diferente; Utilice los detalles que se muestran en la billetera. Exportar, cuando es compatible, exporta el acceso a la billetera en lugar de convertir USDC en efectivo.
+
+<a id="get-money-into-a-bank-account"></a>
+
+## Ingresar dinero a una cuenta bancaria
+
+La tarjeta de fondos deElatano proporciona retiro bancario ni conversión de USDC a fiat. Para retirar dinero:
+
+1. Utilice un servicio de cambio o retiro de efectivo disponible para usted que acepte explícitamente **USDC depósitos en Base** y ofrezca retiros a su banco.
+2. Obtenga su USDC dirección de depósito con **Base** seleccionado como red de depósito.
+3. Envía USDC desde tu billetera de pagos a esa dirección.
+4. Después de que el servicio acredite el depósito, siga los pasos de conversión y retiro bancario.
+
+Verifique los mínimos de depósito actuales, las tarifas, los requisitos de verificación y las opciones de retiro bancario de ese servicio antes de realizar el envío. Una dirección de depósito para una red diferente no es suficiente. Esos pasos se dan con el servicio de recepción, fuera del Elata.
+
+<a id="pay-collaborators"></a>
+
+## Pagar colaboradores
+
+El acceso al equipo permite a los colaboradores ayudar a administrar la aplicación. No divide automáticamente los ingresos directos de la aplicación entre ellos. El flujo actual envía la parte del creador a una billetera de pagos. Para pagar a los colaboradores con esos ingresos, realice transferencias desde esa billetera según su propio acuerdo acordado.
+
+<a id="troubleshooting"></a>
+
+## Solución de problemas
+
+| Problema | Qué comprobar |
+| --- | --- |
+| Falta administrar fondos | Estado del propietario, conexión de billetera y dirección de pago mostrada |
+| La billetera se abrió en una dirección diferente | Ciérrela y seleccione la billetera de pago real antes de enviar |
+| El saldo no coincide con los ingresos | Precios brutos versus netos, precios estimados de los artículos, fondos ya enviados, otros depósitos y billeteras compartidas |
+| Falta el pago de un cliente en los informes | Estado de liquidación y registro; compare el hash de la transacción con los registros de la aplicación |
+| No se puede cargar el saldo | Vuelva a intentar la consulta de saldo; un error de lectura no es evidencia de que se hayan acabado los fondos |
+| Necesita un cambio de dirección de pago | Comuníquese con el soporte; La configuración del producto y del plan no cambia el destino del pago |
+
+Para pagos faltantes o en disputa, conserve el identificador de la aplicación, la fecha, el artículo o período de pago y el hash de la transacción. Utilice [Ayuda](/es/users/help). El panel no proporciona reembolsos de autoservicio, reemplazo de direcciones de pago ni un botón de retiro de efectivo bancario.
+
+<a id="related-guides"></a>
+
+## Guías relacionadas
+
+- [Monetiza tu aplicación](/es/apps/build/monetize)
+- [Compras dentro de la aplicación](/es/apps/platform/in-app-purchases)
+- [Suscripciones](/es/apps/platform/subscriptions)
+- [Análisis](/es/apps/operate/analytics-and-health)
+- [La experiencia de facturación del usuario](/es/users/billing-and-purchases)

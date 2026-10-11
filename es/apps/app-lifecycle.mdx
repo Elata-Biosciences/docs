@@ -1,0 +1,115 @@
+---
+title: "Ciclo de vida de la aplicación"
+description: "Cómo pasa una aplicación desde la carga hasta una lista activa y reproducible públicamente."
+---
+
+<a id="overview"></a>
+
+## Descripción general
+
+Cada versión de la aplicación que publicas es una versión ****. Una liberación se mueve a través de uno
+canalización: lo subes, lo envías, Elata lo escanea y un moderador
+lo aprueba.
+
+```
+DRAFT ──submit──▶ SUBMITTED ──scan + review──▶ APPROVED (live)
+                      │
+                      └──▶ REJECTED  (fix and resubmit)
+```
+
+---
+
+<a id="step-1-upload"></a>
+
+## Paso 1: Subir
+
+Cargue un `.zip` (o un solo archivo `.html` ) desde el asistente o la edición de su aplicación
+página. Elata lo comprueba inmediatamente:
+
+- el tipo y tamaño del archivo están dentro de los límites [](/es/apps/build/upload-and-hosting#limits)
+- el paquete tiene una entrada `index.html` y rutas de archivo seguras
+- el paquete utiliza un Elata sensor SDK
+
+Si falta algo, aparecerá un mensaje claro que dice "No se cumplen los requisitos de la aplicación".
+enumerando qué arreglar. Una carga exitosa se convierte en una versión **borrador** y su
+La versión se lee desde su [`elata.json`](/es/apps/build/elata-json).
+
+Puedes probar un borrador en la ventana de reproducción de Elatay compartirlo con hasta 10 personas.
+amigos de prueba, antes de que nadie más pueda verlo.
+
+---
+
+<a id="step-2-submit-for-review"></a>
+
+## Paso 2: enviar para revisión
+
+Cuando envía, Elata verifica que su listado esté completo. Necesita un
+**ícono de aplicación** y una **imagen de encabezado**. Las capturas de pantalla son opcionales pero recomendadas.
+Los detalles de la lista están congelados en el lanzamiento en este momento, por lo que las ediciones posteriores
+no cambie lo que se revisó.
+
+Puede retirar un envío mientras esté pendiente.
+
+---
+
+<a id="step-3-automated-security-scan"></a>
+
+## Paso 3: análisis de seguridad automatizado
+
+Cada versión enviada se escanea automáticamente. El escaneo busca cosas
+como código que agota la billetera, intentos de escapar de la zona de pruebas, acceso a credenciales,
+código ofuscado y falta el uso de SDK . Se lleva a cabo una versión que falla el escaneo.
+De regreso de Elata.
+
+<Note>
+Los resultados del escaneo son revisados por el equipo Elata y no se muestran en detalle para
+  cargadores. Si se retiene su liberación, tendrá noticias nuestras a través del Elata.
+</Note>
+
+---
+
+<a id="step-4-moderator-approval"></a>
+
+## Paso 4: Aprobación del moderador
+
+Un moderador Elata revisa el comunicado según la política de envío
+[](/es/apps/build/review-and-policy). Una vez aprobado, se convierte en
+el lanzamiento en vivo de su aplicación y se le notificará en Elata y por correo electrónico.
+
+Si se rechaza, solucione los problemas y envíelo nuevamente.
+
+---
+
+<a id="after-youre-live"></a>
+
+## Después de que estés en vivo
+
+La aprobación hace que un lanzamiento sea elegible para reproducirse. Si la gente puede encontrar y
+jugar también depende de:
+
+| Configuración | Quién lo controla | Valores |
+| --- | --- | --- |
+| **Visibilidad** | Usted | Público, No listado, Privado |
+| **Moderación** | Elata | Activo, Suspendido, Prohibido |
+| **Descubrimiento** | Elata | Qué tan prominente es la clasificación de la aplicación. Las nuevas aplicaciones comienzan con una exposición limitada. |
+
+Para enviar una actualización, cargue una nueva compilación. Pasa por el mismo conducto y
+su versión en vivo actual permanece activa hasta que se apruebe la nueva.
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={3}>
+  <Card title="Requisitos" icon="clipboard-check" href="/es/apps/build/requirements">
+Lo que cada carga necesita
+  </Card>
+  <Card title="Publica tu aplicación" icon="rocket" href="/es/apps/build/launch-your-app">
+El asistente, paso a paso
+  </Card>
+  <Card title="Revisión y política" icon="shield-check" href="/es/apps/build/review-and-policy">
+Qué buscan los revisores
+  </Card>
+</CardGroup>

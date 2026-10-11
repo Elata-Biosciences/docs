@@ -1,0 +1,103 @@
+---
+title: "Métricas y puntuaciones"
+description: "Registre eventos y puntuaciones, y contribuya a la puntuación biométrica con @elata-biosciences/app-metrics."
+---
+
+<a id="overview"></a>
+
+## Descripción general
+
+`@elata-biosciences/app-metrics` le da a tu aplicación una tienda por usuario para el evento **registros** y **puntuaciones**, más `reportAffect` por contribuir a la
+Puntuación biométrica entre aplicaciones.
+
+```bash
+npm install @elata-biosciences/app-metrics
+```
+
+```ts
+import { createMetricsClient } from '@elata-biosciences/app-metrics';
+
+const metrics = createMetricsClient();
+await metrics.ready();
+
+await metrics.record({ type: 'level_complete', data: { level: 3, time: 42 } });
+await metrics.saveScore({ value: 1200, meta: { level: 3 } });
+
+const best = await metrics.loadScores({ order: 'value_desc', limit: 10 });
+const recent = await metrics.query({ type: 'level_complete', limit: 20 });
+```
+
+Los datos tienen como alcance el par (usuario, aplicación) y nunca cruzan los límites de la aplicación. Elata
+ mantiene una copia local y, para los usuarios que han iniciado sesión, la sincroniza con la cuenta del usuario.
+cuenta para que los siga en todos los dispositivos. Estos registros también impulsan sus análisis
+[](/es/apps/operate/analytics-and-health).
+
+---
+
+## API
+
+| Método | Qué hace |
+| --- | --- |
+| `ready()` | Se resuelve una vez que se configura la conexión a Elata  |
+| `record({ type, data })` | Almacenar un registro de evento |
+| `query({ type?, since?, until?, limit? })` | Leer registros nuevamente |
+| `clear()` | Eliminar todos los registros de esta aplicación para el usuario |
+| `saveScore({ value, meta? })` | Almacena una puntuación numérica |
+| `loadScores({ order?, since?, until?, limit? })` | Leer partituras. `order` es `"value_desc"` o `"timestamp_desc"`. |
+| `reportAffect(report)` | Contribuir con el resultado de una sesión a la puntuación biométrica (ver más abajo) |
+| `dispose()` | Derribar al cliente |
+
+<a id="limits"></a>
+
+### Límites
+
+- Cada registro puede tener hasta 64 KB.
+- Cada par (usuario, aplicación) tiene una cuota de almacenamiento de 5 MB.
+- Las llamadas fallan con `quota_exceeded`, `invalid_payload`o `rate_limited` cuando excede los límites.
+
+Los errores se generan como `MetricsClientError`, cuyo `code` es uno de los códigos de host
+arriba o `handshake_timeout`, `disposed`o `transport`.
+
+---
+
+<a id="reportaffect"></a>
+
+## informarAfecto
+
+`reportAffect` envía un **resultado de sesión derivado**, nunca una señal sin procesar, a Elata
+para que pueda contribuir a la puntuación biométrica entre aplicaciones del usuario.
+
+```ts
+const result = await metrics.reportAffect({
+  dimension: 'calm',      // 'calm' | 'stress' | 'focus'
+  baselineValue: 0.42,    // 0..1
+  sessionValue: 0.61,     // 0..1
+  delta: 0.19,            // -1..1
+  meanHr: 68,             // optional session-average heart rate
+  signalQuality: 0.85,    // 0..1
+  confidence: 0.8,        // 0..1
+  source: 'rppg',
+  durationSec: 300,
+});
+// result: { accepted, calibrating, score }
+```
+
+| Campo de resultado | Significado |
+| --- | --- |
+| `accepted` | `false` si la muestra se cayó, por ejemplo por baja calidad |
+| `calibrating` | `true` hasta que el usuario tenga suficientes muestras para una puntuación estable |
+| `score` | La puntuación del usuario, de 0 a 100, una vez calibrada; en caso contrario `null` |
+
+Dos cosas deben ser ciertas o la llamada falla con `scope_denied`:
+
+1. **Tu aplicación tiene el alcance `biometrics` .** Póngase en contacto con el equipo Elata para habilitarlo en su aplicación.
+2. **El usuario ha dado su consentimiento.** Pregunta con [`elata:consent:request`](/es/apps/platform/consent-and-insights). Elata también vuelve a verificar el consentimiento en el servidor para cada muestra.
+
+---
+
+<a id="for-hosts"></a>
+
+## Para anfitriones
+
+El paquete también envía una entrada de host, `@elata-biosciences/app-metrics/host`
+(`createMetricsHost`), utilizada por el propio Elata . Los desarrolladores de aplicaciones no lo necesitan.

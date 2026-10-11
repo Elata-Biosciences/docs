@@ -1,0 +1,277 @@
+---
+title: "Agregue rPPG basado en cámara a una aplicación de navegador existente"
+description: "Cree un flujo de navegador rPPG que funcione con createRppgSession, diagnóstico y limpieza."
+---
+
+Utilice esta página si ya tiene una aplicación de navegador y desea la ruta de integración de aplicaciones existentes recomendada.
+
+Si desea la ruta del andamio, utilice [Inicio rápido](/es/sdk/tutorials/first-app). Si primero solo necesita el modelo mental, use [rPPG en una aplicación de navegador](/es/sdk/guides/rppg-browser).
+
+Este tutorial muestra la ruta de integración de aplicaciones recomendada para `@elata-biosciences/rppg-web`.
+
+La cámara rPPG es la **integración principal del navegador** para muchos productos Elata . No se requieren auriculares.
+
+La idea central es simple: permita que `createRppgSession()` sea dueño del tiempo de ejecución del navegador, el bucle de procesamiento de video y los diagnósticos, mientras que su aplicación es dueña de la interfaz de usuario.
+
+Este es el siguiente tutorial habitual **** después de [Cree su primera Elata aplicación](/es/sdk/tutorials/first-app) cuando elige la rama **de aplicación existente** para cámara rPPG. Si está **extendiendo el andamio** , permanezca en `rppg-demo` y use [rPPG en una aplicación de navegador](/es/sdk/guides/rppg-browser) más [rppg-web](/es/sdk/rppg-web/getting-started).
+
+<a id="what-you-will-build"></a>
+
+## Lo que construirás
+
+Usted:
+
+1. instalar `@elata-biosciences/rppg-web`
+2. solicitar acceso a la cámara
+3. adjunta la secuencia a un elemento `video` 
+4. inicio `createRppgSession()`
+5. leer métricas y diagnósticos
+6. detener la sesión durante la limpieza
+
+<a id="step-1-install-the-package"></a>
+
+## Paso 1: instalar el paquete
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/rppg-web
+```
+
+```bash npm
+npm install @elata-biosciences/rppg-web
+```
+
+</CodeGroup>
+
+<a id="step-2-prepare-a-video-element"></a>
+
+## Paso 2: Prepare un elemento de video
+
+Su aplicación necesita un elemento `video` que pueda recibir la transmisión de la cámara.
+
+```html index.html (or your component markup)
+<video id="camera" autoplay playsinline muted></video>
+```
+
+Las partes importantes son:
+
+- `autoplay` para que la reproducción pueda comenzar una vez que se adjunta la transmisión
+- `playsinline` para el comportamiento del navegador móvil
+- `muted` para mantener las reglas de reproducción automática fuera del camino
+
+<a id="step-3-acquire-camera-access"></a>
+
+## Paso 3: Adquirir acceso a la cámara
+
+```ts camera setup
+const videoEl = document.getElementById("camera") as HTMLVideoElement;
+
+const stream = await navigator.mediaDevices.getUserMedia({
+  video: { facingMode: "user" },
+  audio: false,
+});
+
+videoEl.srcObject = stream;
+await videoEl.play();
+```
+
+En este punto, la aplicación de su navegador ya debería mostrar la vista previa de la cámara.
+
+<a id="step-4-start-createrppgsession"></a>
+
+## Paso 4: Iniciar `createRppgSession()`
+
+```ts rPPG session
+import { createRppgSession } from "@elata-biosciences/rppg-web";
+
+const session = await createRppgSession({
+  video: videoEl,
+  sampleRate: 30,
+  backend: "auto",
+  faceMesh: "off",
+  onDiagnostics: (diagnostics) => {
+    console.log("status", diagnostics.state.status);
+    console.log("frames", diagnostics.framesSeen);
+    console.log("samples", diagnostics.totalSamplesReceived);
+    console.log("issues", diagnostics.issues);
+  },
+  onError: (error) => {
+    console.error(error.code, error.message);
+  },
+});
+```
+
+Este es el punto de partida recomendado para la mayoría de las aplicaciones de navegador.
+
+Se encarga de:
+
+- empaquetado WASM inicio de backend
+- captura de fotograma
+- ROI/orquestación de sesiones
+- emisión de diagnóstico
+- soporte de limpieza
+
+<a id="step-5-read-metrics-in-your-ui"></a>
+
+## Paso 5: Lea las métricas en su interfaz de usuario
+
+```ts
+const metrics = session.getMetrics();
+console.log(metrics);
+```
+
+En una aplicación real, realizarías una encuesta o te suscribirías a través de tu propia capa de estado de la interfaz de usuario y mostrarías los valores que son importantes para tu producto.
+
+<a id="step-6-clean-up-correctly"></a>
+
+## Paso 6: Limpiar correctamente
+
+Cuando el componente, ruta o página salga, detenga la sesión y libere la transmisión de la cámara. Ejecútelos en orden (los mismos `session` y `stream` que arriba):
+
+```ts
+await session.stop();
+```
+
+```ts
+for (const track of stream.getTracks()) {
+  track.stop();
+}
+```
+
+Esto importa más de lo que parece. Evita que las sesiones posteriores hereden el estado obsoleto de la cámara o del tiempo de ejecución.
+
+<a id="full-example-single-paste"></a>
+
+## Ejemplo completo (pasta única)
+
+Úselo cuando desee que un archivo se coloque en una aplicación Vite \+ React (por ejemplo, reemplace el contenido de `src/App.tsx`). Incluye configuración de la cámara, inicio de sesión y limpieza al desmontar.
+
+```tsx App.tsx
+import { useEffect, useRef, useState } from "react";
+import { createRppgSession, type RppgSession } from "@elata-biosciences/rppg-web";
+
+export default function App() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const sessionRef = useRef<RppgSession | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const [line, setLine] = useState("Starting…");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function run() {
+      const video = videoRef.current;
+      if (!video) return;
+
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user" },
+          audio: false,
+        });
+      } catch {
+        setLine("Camera permission denied.");
+        return;
+      }
+
+      if (cancelled) {
+        stream.getTracks().forEach((t) => t.stop());
+        return;
+      }
+
+      streamRef.current = stream;
+      video.srcObject = stream;
+      await video.play().catch(() => undefined);
+
+      const sampleRate = stream.getVideoTracks()[0]?.getSettings().frameRate ?? 30;
+
+      try {
+        const session = await createRppgSession({
+          video,
+          sampleRate,
+          backend: "auto",
+          faceMesh: "off",
+          onDiagnostics: (d) => {
+            setLine(`status=${d.state.status} backend=${d.backendMode}`);
+          },
+          onError: (e) => setLine(`${e.code}: ${e.message}`),
+        });
+
+        if (cancelled) {
+          await session.dispose();
+          return;
+        }
+
+        sessionRef.current = session;
+      } catch (e) {
+        setLine(e instanceof Error ? e.message : "Session failed");
+      }
+    }
+
+    void run();
+
+    return () => {
+      cancelled = true;
+      void sessionRef.current?.dispose();
+      sessionRef.current = null;
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    };
+  }, []);
+
+  return (
+    <main style={{ padding: "1.5rem", maxWidth: 720 }}>
+      <p>{line}</p>
+      <video ref={videoRef} autoPlay playsInline muted style={{ width: "100%", borderRadius: 12 }} />
+    </main>
+  );
+}
+```
+
+Este ejemplo utiliza un React `ref` en `<video>` en lugar de `getElementById("camera")` de los pasos anteriores.
+
+<a id="what-to-do-with-diagnostics"></a>
+
+## Qué hacer con el diagnóstico
+
+El comportamiento útil más rápido de una aplicación es:
+
+1. muestra si la sesión es `running`, `degraded`o `failed`
+2. muestra una guía legible por humanos cuando aparece `issues` 
+3. bloquear la publicación o puntuación hasta que su aplicación tenga suficientes muestras estables
+
+Si desea una capa de estado orientada a la aplicación de nivel superior más adelante, mire:
+
+- `createManagedRppgSession()`
+- `createRppgAppAdapter()`
+- `createRppgAppMonitor()`
+
+Pero comience primero con `createRppgSession()` simple.
+
+<a id="common-problems"></a>
+
+## Problemas Comunes
+
+- `session.getDiagnostics().backendMode` es `unavailable`: es probable que su aplicación no esté cargando los recursos empaquetados WASM correctamente
+- El acceso a la cámara falla: verifique los permisos del navegador y el soporte `getUserMedia` 
+- La sesión llega a la terminal `failed`: recrea la sesión en lugar de intentar seguir usando el mismo procesador envenenado
+- Primero está intentando depurar enlaces generados en niveles inferiores: comience con `createRppgSession()` a menos que esté depurando intencionalmente el SDK .
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={3}>
+  <Card title="Referencia de rppg-web" icon="heart-pulse" href="/es/sdk/rppg-web/getting-started">
+Paquete API y exportaciones
+  </Card>
+
+  <Card title="rPPG En un navegador" icon="book-open" href="/es/sdk/guides/rppg-browser">
+Descripción general de la integración
+  </Card>
+
+  <Card title="Crea tu primera aplicación" icon="rocket" href="/es/sdk/tutorials/first-app">
+La mejor ruta de configuración por primera vez
+  </Card>
+</CardGroup>
