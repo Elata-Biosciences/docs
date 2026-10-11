@@ -167,7 +167,7 @@ function extract(b){
     let known=input.overrides?.[locale]?.[text]??(locale==="cn"?cnReuse[text]:undefined);
     if(known!==undefined){
      // Retain existing translations only if inline technical literals still match.
-     if(JSON.stringify(inlineCodes(text).sort())===JSON.stringify(inlineCodes(known).sort())){translated[text]=known;continue;}
+     if(JSON.stringify(inlineCodes(text).sort())===JSON.stringify(inlineCodes(known).sort())){try{validateSegment(text,known);translated[text]=known;continue;}catch{}}
     }
     const p=prepare(text);prepared[text]=p;
     for(const unit of p.type==="table"?p.cells:[p.unit])if(unit)units.add(unit);
