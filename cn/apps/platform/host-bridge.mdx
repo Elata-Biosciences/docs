@@ -3,6 +3,8 @@ title: "宿主桥接"
 description: "沙箱中的应用如何与 Elata 通信，以及它支持的所有消息。"
 ---
 
+<a id="overview"></a>
+
 ## 概述
 
 你的应用运行在沙箱 iframe 中，无法访问 Elata 的 Cookie、后端或用户的钱包。当它需要平台的能力（例如购买、保存数据或获取同意）时，会向父框架发送一条 `postMessage`。Elata 使用用户的会话完成操作并回复。
@@ -10,17 +12,19 @@ description: "沙箱中的应用如何与 Elata 通信，以及它支持的所�
 桥接不会向应用披露账户凭据或会话令牌。公开活动、交易记录和用户主动输入的信息仍可能用于识别用户。
 
 ```
-┌──────────── app.elata.bio（Elata）─────────────┐
-│  会话 · 结账 · 存储 · 同意界面                │
+┌──────────── app.elata.bio (Elata) ────────────┐
+│  session · checkout · storage · consent UI    │
 │        ▲                         │            │
-│        │ postMessage             │ 回复       │
+│        │ postMessage             │ reply      │
 │  ┌─────┴─────────────────────────▼─────────┐  │
-│  │   你的应用（沙箱，独立源）              │  │
+│  │   your app (sandboxed, own origin)      │  │
 │  └─────────────────────────────────────────┘  │
 └───────────────────────────────────────────────┘
 ```
 
 ---
+
+<a id="use-the-sdk-packages"></a>
 
 ## 使用 SDK 包
 
@@ -36,6 +40,8 @@ description: "沙箱中的应用如何与 Elata 通信，以及它支持的所�
 
 ---
 
+<a id="ground-rules"></a>
+
 ## 基本规则
 
 - **发送给父框架。** 发送到 `window.parent`。目标源使用 `'*'` 即可：Elata 会检查消息是否来自你应用的框架和源。
@@ -45,7 +51,11 @@ description: "沙箱中的应用如何与 Elata 通信，以及它支持的所�
 
 ---
 
+<a id="message-reference"></a>
+
 ## 消息参考
+
+<a id="purchases"></a>
 
 ### 购买
 
@@ -58,6 +68,8 @@ description: "沙箱中的应用如何与 Elata 通信，以及它支持的所�
 
 请使用 [`app-payments`](/cn/apps/platform/in-app-purchases)，而不是手动发送这些消息。
 
+<a id="app-state"></a>
+
 ### 应用状态
 
 | 应用 → Elata | Elata → 应用 |
@@ -68,9 +80,13 @@ description: "沙箱中的应用如何与 Elata 通信，以及它支持的所�
 
 `@elata-biosciences/app-state` 发布到 npm 后，建议优先使用它，而不是手动发送这些消息。参见[应用状态](/cn/apps/platform/app-state)。
 
+<a id="metrics"></a>
+
 ### 指标
 
 `app-metrics` 使用通过 `__elata_metrics_init` 握手建立的专用 `MessageChannel`，而不是单独的窗口消息。请始终使用[该包](/cn/apps/platform/metrics-and-scores)。
+
+<a id="consent-and-insights"></a>
 
 ### 同意与洞察
 
@@ -82,6 +98,8 @@ description: "沙箱中的应用如何与 Elata 通信，以及它支持的所�
 
 参见[同意与洞察](/cn/apps/platform/consent-and-insights)。
 
+<a id="notifications"></a>
+
 ### 通知
 
 | 应用 → Elata | Elata → 应用 |
@@ -89,6 +107,8 @@ description: "沙箱中的应用如何与 Elata 通信，以及它支持的所�
 | `elata:notify:request` `{ requestId?, body }` | `elata:notify:state` `{ requestId?, status }` |
 
 参见[通知](/cn/apps/platform/notifications)。
+
+<a id="navigation"></a>
 
 ### 导航
 
@@ -100,13 +120,15 @@ window.parent?.postMessage({ type: 'elata:navigate', slug: 'calm-runner' }, '*')
 
 `slug` 必须是 Elata 应用的标识：小写字母、数字和短横线，最多 64 个字符。没有回复。
 
+<a id="feedback"></a>
+
 ### 反馈
 
 应用运行时，Elata 的悬浮反馈按钮会被隐藏，以免遮挡你的控件。请改为从你自己的界面中打开 Elata 的反馈面板：
 
 ```js
 window.parent?.postMessage({ type: 'elata:feedback:open', mode: 'feature' }, '*');
-// mode：'feature'（默认）或 'bug'
+// mode: 'feature' (default) or 'bug'
 ```
 
 没有回复。

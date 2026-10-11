@@ -3,17 +3,21 @@ title: "应用生命周期"
 description: "应用如何从上传变为上线、可公开使用的应用页面。"
 ---
 
+<a id="overview"></a>
+
 ## 概述
 
 你发布的每个应用版本都是一个**版本（release）**。版本会经历同一条流程：你上传、提交，Elata 扫描，审核员批准。
 
 ```
-DRAFT（草稿）──提交──▶ SUBMITTED（已提交）──扫描 + 审核──▶ APPROVED（已上线）
-                          │
-                          └──▶ REJECTED（被拒，修复后重新提交）
+DRAFT ──submit──▶ SUBMITTED ──scan + review──▶ APPROVED (live)
+                      │
+                      └──▶ REJECTED  (fix and resubmit)
 ```
 
 ---
+
+<a id="step-1-upload"></a>
 
 ## 第 1 步：上传
 
@@ -29,6 +33,8 @@ DRAFT（草稿）──提交──▶ SUBMITTED（已提交）──扫描 + �
 
 ---
 
+<a id="step-2-submit-for-review"></a>
+
 ## 第 2 步：提交审核
 
 提交时，Elata 会检查你的应用页面是否完整。你需要提供**应用图标**和**头图**。截图可选，但建议提供。此时应用页面的信息会被固定到该版本上，之后的修改不会影响已审核的内容。
@@ -36,6 +42,8 @@ DRAFT（草稿）──提交──▶ SUBMITTED（已提交）──扫描 + �
 在审核期间，你可以撤回提交。
 
 ---
+
+<a id="step-3-automated-security-scan"></a>
 
 ## 第 3 步：自动安全扫描
 
@@ -47,6 +55,8 @@ DRAFT（草稿）──提交──▶ SUBMITTED（已提交）──扫描 + �
 
 ---
 
+<a id="step-4-moderator-approval"></a>
+
 ## 第 4 步：审核员批准
 
 Elata 审核员会依据[提交政策](/cn/apps/build/review-and-policy)审核该版本。获批后，它将成为你应用的线上版本，你会在 Elata 内和邮件中收到通知。
@@ -54,6 +64,8 @@ Elata 审核员会依据[提交政策](/cn/apps/build/review-and-policy)审核�
 如果被拒绝，修复问题后重新提交即可。
 
 ---
+
+<a id="after-youre-live"></a>
 
 ## 上线之后
 
@@ -68,6 +80,8 @@ Elata 审核员会依据[提交政策](/cn/apps/build/review-and-policy)审核�
 要发布更新，上传新的构建产物即可。它会走同样的流程，在新版本获批之前，当前线上版本保持不变。
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

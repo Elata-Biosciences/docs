@@ -3,6 +3,8 @@ title: "同意与洞察"
 description: "请求生物特征数据共享同意，并读取用户的跨应用洞察。"
 ---
 
+<a id="the-biometric-score"></a>
+
 ## 生物特征评分
 
 Elata 为每位用户维护一个跨应用的**生物特征评分**，由应用通过 [`reportAffect`](/cn/apps/platform/metrics-and-scores) 上报的派生会话结果构成。在用户明确同意之前不会共享任何数据，用户也可以随时关闭。
@@ -12,6 +14,8 @@ Elata 为每位用户维护一个跨应用的**生物特征评分**，由应用�
 目前只有一种同意用途：`platform_score`。
 
 ---
+
+<a id="ask-for-consent"></a>
 
 ## 请求同意
 
@@ -36,6 +40,8 @@ Elata 会打开同意对话框，并在用户做出选择后回复 `{ type: 'ela
 
 ---
 
+<a id="read-consent-without-prompting"></a>
+
 ## 不弹窗读取同意状态
 
 如需在界面中显示当前状态（例如设置开关），发送 `elata:consent:query`。你会得到相同的回复，且不会显示对话框。
@@ -48,6 +54,8 @@ window.parent?.postMessage(
 ```
 
 ---
+
+<a id="read-the-users-insights"></a>
 
 ## 读取用户的洞察
 
@@ -66,7 +74,7 @@ Elata 会回复 `elata:insights:state`：
 {
   type: 'elata:insights:state',
   requestId?: string,
-  consented: boolean,      // false → 无数据；提示用户开启共享
+  consented: boolean,      // false → no data; prompt the user to opt in
   data?: {
     engagement: {
       activeDays: number,
@@ -87,6 +95,8 @@ Elata 会回复 `elata:insights:state`：
 `windowDays` 默认为 90，最大为 365。这些数据是用户**自己**活动的精选摘要，绝不包含其他用户或原始记录。
 
 ---
+
+<a id="checklist-for-score-contributing-apps"></a>
 
 ## 贡献评分的应用检查清单
 

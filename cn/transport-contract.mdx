@@ -7,6 +7,8 @@ description: 为你的设备实现共享的 Elata 传输和帧接口。
 
 应用应看到稳定的 Elata 传输接口，而不是厂商特定的数据包格式或蓝牙细节。
 
+<a id="the-core-rule"></a>
+
 ## 核心规则
 
 你的设备适配器应通过 `HeadbandTransport` 输出 `HeadbandFrameV1` 帧。
@@ -52,6 +54,8 @@ interface HeadbandSignalBlock {
 }
 ```
 
+<a id="what-must-stay-stable"></a>
+
 ## 必须保持稳定的内容
 
 | 字段 | 正确的表现 |
@@ -80,6 +84,8 @@ interface HeadbandTransport {
 }
 ```
 
+<a id="lifecycle-expectations"></a>
+
 ## 生命周期要求
 
 | 方法 | 预期行为 |
@@ -106,6 +112,8 @@ interface HeadbandTransportStatus {
 }
 ```
 
+<a id="practical-rules-for-integrators"></a>
+
 ## 集成者的实用规则
 
 <Steps>
@@ -126,10 +134,12 @@ interface HeadbandTransportStatus {
   </Step>
 </Steps>
 
+<a id="minimal-usage-pattern"></a>
+
 ## 最小用法
 
 ```ts
-const transport: HeadbandTransport = /* BleTransport 或其他传输 */;
+const transport: HeadbandTransport = /* BleTransport or another transport */;
 
 transport.onFrame = (frame) => {
   const eegRows = frame.eeg.samples;
@@ -143,10 +153,12 @@ transport.onStatus = (status) => {
 await transport.connect();
 await transport.start();
 
-// ……之后
+// ... later
 await transport.stop();
 await transport.disconnect();
 ```
+
+<a id="related-docs"></a>
 
 ## 相关文档
 
@@ -154,6 +166,8 @@ await transport.disconnect();
 - [协议要求](./protocol-requirements)
 - [适配器实现](./adapter-implementation)
 - [测试与验证](./testing-and-validation)
+
+<a id="next"></a>
 
 ## 下一步
 

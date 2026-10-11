@@ -1,0 +1,72 @@
+---
+title: "Aplicaciones en Elata"
+description: "Qué aplicaciones hay en Elata, cómo se revisan y cómo funcionan de forma segura en tu navegador."
+---
+
+<a id="what-an-elata-app-is"></a>
+
+## Qué es una aplicación de Elata
+
+Una aplicación de Elata es una aplicación web que responde a señales del cuerpo: el pulso de una cámara, actividad cerebral de una diadema EEG o frecuencia cardíaca de su sensor óptico. La abres en [app.elata.bio](https://app.elata.bio) y la usas en el navegador, sin instalar nada.
+
+---
+
+<a id="kinds-of-apps"></a>
+
+## Tipos de aplicaciones
+
+| Categoría | Ejemplos |
+| --- | --- |
+| **Juegos** | Juegos que reaccionan a la frecuencia cardíaca, la concentración o la calma |
+| **Neurometría** | Paneles de EEG y frecuencia cardíaca en tiempo real |
+| **Bienestar** | Respiración guiada, meditación y recuperación |
+| **Herramientas** | Temporizadores de concentración y seguimiento personal |
+| **Experimentos** | Estudios, prototipos y aplicaciones de investigación |
+
+---
+
+<a id="how-apps-get-onto-elata"></a>
+
+## Cómo se publican las aplicaciones
+
+Cualquiera puede crear una aplicación con [Elata SDK](/overview/elata-sdk) de código abierto. Para publicarla, registra la aplicación, sube la compilación y la envía a revisión.
+
+Cada versión pasa por:
+
+1. **Comprobaciones automáticas al subirla**: estructura de archivos, límites de tamaño y uso de Elata SDK.
+2. **Un análisis automático de seguridad del código**.
+3. **Una revisión humana** según la [política de publicación](/apps/build/review-and-policy).
+
+Solo las versiones aprobadas son públicas. Antes de la aprobación, los creadores pueden compartir un borrador con unos pocos probadores.
+
+---
+
+<a id="how-apps-run-safely"></a>
+
+## Cómo funcionan de forma segura
+
+Cada aplicación funciona en un **entorno aislado** con su propio origen web. Esto significa que:
+
+- El puente de Elata no revela el correo de tu cuenta, las claves de tu cartera ni los tokens de sesión a la aplicación. La actividad pública y los pagos aún pueden identificarte.
+- Puede solicitar cámara o Bluetooth; el navegador te pide permiso primero.
+- Cuando necesita algo de Elata, como una compra o guardar progreso, envía una solicitud y Elata la gestiona por ti.
+- Los datos de pago nunca pasan por la aplicación.
+
+---
+
+<a id="what-builders-get"></a>
+
+## Qué reciben los creadores
+
+Los creadores no tienen que implementar cuentas, pagos, alojamiento ni almacenamiento. Elata proporciona:
+
+| Función | Estado |
+| --- | --- |
+| Alojamiento, ficha, reseñas y descubrimiento | Disponible |
+| Progreso y puntuaciones guardados por usuario | Disponible |
+| Recordatorios mediante Elata | Disponible |
+| Contribución a la puntuación biométrica voluntaria del usuario | Disponible |
+| Compras únicas dentro de aplicaciones | Implementadas en la rama de actualización de IAP; verifica despliegue y configuración de pagos |
+| Suscripciones mensuales | Experimental |
+
+Consulta [Qué está disponible](/es/overview/status) y empieza por la pestaña [Crear aplicaciones](/apps/what-are-elata-apps).

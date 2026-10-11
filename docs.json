@@ -431,6 +431,7 @@
                 "group": "运营",
                 "pages": [
                   "cn/apps/operate/grow-your-community",
+                  "cn/apps/operate/revenue-and-payouts",
                   "cn/apps/operate/analytics-and-health"
                 ]
               },
@@ -525,7 +526,7 @@
                 ]
               },
               {
-                "group": "运维",
+                "group": "操作与维护",
                 "pages": [
                   "cn/sdk/operations/compatibility",
                   "cn/sdk/operations/troubleshooting"
@@ -566,7 +567,7 @@
                 ]
               },
               {
-                "group": "Zorp 协议",
+                "group": "ZORP 协议",
                 "pages": [
                   "cn/zorp-protocol/zorp-intro",
                   "cn/zorp-protocol/zorp-function"
@@ -577,6 +578,24 @@
                 "pages": [
                   "cn/home/elata-eeg/elata-eeg-overview",
                   "cn/home/elata-eeg/eeg-architecture"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "es",
+        "tabs": [
+          {
+            "tab": "Información general",
+            "groups": [
+              {
+                "group": "Empieza aquí",
+                "pages": [
+                  "es/overview/welcome",
+                  "es/overview/status",
+                  "es/overview/apps-on-elata"
                 ]
               }
             ]

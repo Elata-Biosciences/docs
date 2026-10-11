@@ -1,0 +1,104 @@
+---
+title: "Bienvenido a Elata"
+description: "Qué es Elata, para quién es y cómo orientarte en esta documentación."
+---
+
+<a id="what-elata-is"></a>
+
+## Qué es Elata
+
+Elata es una plataforma para crear y usar aplicaciones de biosensado, neurociencia y cognición dirigidas al público y respetuosas con tu privacidad.
+
+- **Elata** ([app.elata.bio](https://app.elata.bio)) es donde las personas descubren y usan estas aplicaciones en el navegador, y donde sus creadores las publican.
+- **El [Elata SDK](/overview/elata-sdk)** es un conjunto de paquetes de código abierto que convierte una cámara o una diadema de consumo en un sensor de bioseñales y procesa los datos en el propio dispositivo.
+- **La privacidad empieza en tu dispositivo.** Las señales sin procesar se procesan localmente. Elata puede guardar partidas, eventos, puntuaciones y pagos; los resultados derivados solo contribuyen a la puntuación biométrica entre aplicaciones con tu consentimiento. Puedes revocarlo y solicitar la eliminación. [Tus datos](/users/your-data) explica las distintas formas de almacenamiento y eliminación.
+
+_No necesitas hardware especial_ para empezar: las aplicaciones de cámara pueden usar la cámara web o del teléfono que ya tienes.
+
+Las aplicaciones de Elata pueden convertir una cámara común en un biosensor mediante cambios sutiles del rostro y el comportamiento para medir o estimar señales como frecuencia cardíaca, variabilidad cardíaca, respiración, parpadeo y estado afectivo.
+
+Los resultados disponibles y su fiabilidad dependen de la aplicación, el sensor, la versión, la calidad de señal y el algoritmo. La frecuencia cardíaca, la HRV, las estimaciones respiratorias y el afecto facial son señales distintas; una puntuación de activación fisiológica no mide directamente una emoción. Consulta [Bioseñales explicadas](/overview/biosignals) y [Orientación sobre resultados del SDK](/sdk/rppg-web/getting-started#output-and-quality-guidance).
+
+También admitimos aplicaciones que leen actividad cerebral en la web. Requieren dispositivos EEG de consumo, como [Muse](https://choosemuse.com/).
+
+<Note>
+Las aplicaciones de Elata sirven para bienestar, juegos, aprendizaje e investigación. No son dispositivos médicos ni diagnostican o tratan enfermedades. Consulta [Seguridad y limitaciones](/users/safety-and-limitations).
+</Note>
+
+---
+
+<a id="building-technology-thats-open-transparent-and-private"></a>
+
+## Crear tecnología abierta, transparente y privada
+
+Elata se basa en software abierto, experimentación transparente y la idea de que la tecnología de biosensado debe ser comprensible, verificable, extensible y respetuosa con la privacidad.
+
+Gran parte de la tecnología de Elata se desarrolla públicamente en GitHub, desde los SDK que impulsan las aplicaciones actuales hasta experimentos anteriores que dieron forma al proyecto.
+
+Dos ejemplos destacados:
+
+- [**Elata EEG**](https://github.com/Elata-Biosciences/elata-eeg) es nuestro proyecto abierto de hardware EEG económico y reparable para investigación y proyectos de interfaces cerebro-computadora (BCI), como la [competición de juegos controlados con el cerebro](https://x.com/DeSciWorld/status/1978762697022865576?s=20) que celebramos en Singapur en 2025.
+- [**ZORP**](https://github.com/Elata-Biosciences/zorp) fue un experimento de infraestructura de investigación sin permisos para recoger datos, coordinar estudios y recompensar a participantes.
+
+No todos los experimentos pasan al producto actual, pero mantenemos este trabajo público para que las ideas, el código y la investigación útiles no desaparezcan cuando cambia la dirección.
+
+Puedes explorar nuestro trabajo actual y anterior en [GitHub](https://github.com/Elata-Biosciences).
+
+---
+
+<a id="who-these-docs-are-for"></a>
+
+## Para quién es esta documentación
+
+<CardGroup cols={3}>
+  <Card title="Usuarios" icon="user" href="/users/get-started">
+Descubre aplicaciones, úsalas y controla tus datos
+  </Card>
+  <Card title="Creadores" icon="hammer" href="/apps/quickstart">
+Crea una aplicación de bioseñales y publícala en Elata
+  </Card>
+  <Card title="Investigadores" icon="flask-conical" href="/overview/science/overview">
+Comprende cómo funcionan las mediciones y sus limitaciones
+  </Card>
+  <Card title="Socios" icon="handshake" href="/overview/partners">
+Colabora con la comunidad o el equipo de Elata
+  </Card>
+  <Card title="Fabricantes de dispositivos" icon="cpu" href="/integrate">
+Integra tu hardware con Elata SDK
+  </Card>
+  <Card title="Comunidad" icon="users" href="/overview/community">
+Discord, X, Farcaster y GitHub
+  </Card>
+</CardGroup>
+
+---
+
+<a id="how-to-read-these-docs"></a>
+
+## Cómo leer esta documentación
+
+Las funciones tienen un estado para que sepas qué puedes usar hoy:
+
+| Etiqueta | Significado |
+| --- | --- |
+| **Disponible** | Disponible ahora para todos. |
+| **Experimental** | Utilizable, pero puede cambiar o tener límites; por ejemplo, un paquete disponible solo como código fuente. |
+| **Planificado** | Dirección de trabajo; todavía no disponible y sus detalles pueden cambiar. |
+| **Retirado** | Existía y se eliminó; se documenta para mantener el sentido de enlaces antiguos. |
+
+Las páginas de funciones aún no plenamente disponibles llevan una etiqueta en la barra lateral. Consulta la lista en [Estado](/es/overview/status).
+
+---
+
+<a id="where-to-start"></a>
+
+## Por dónde empezar
+
+<CardGroup cols={2}>
+  <Card title="Cómo encaja todo" icon="network" href="/overview/ecosystem-map">
+Mapa del ecosistema: dispositivos, SDK, aplicaciones y Elata
+  </Card>
+  <Card title="Encuentra tu camino" icon="compass" href="/overview/find-your-path">
+Lecturas recomendadas para cada público
+  </Card>
+</CardGroup>

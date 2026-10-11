@@ -3,6 +3,8 @@ title: "上传与托管"
 description: "上传限制、自托管地址、应用运行的沙箱，以及添加到主屏幕。"
 ---
 
+<a id="two-ways-to-host"></a>
+
 ## 两种托管方式
 
 | 方式 | 运作方式 | 适用场景 |
@@ -13,6 +15,8 @@ description: "上传限制、自托管地址、应用运行的沙箱，以及添
 上传的代码被视为静态 Web 内容（HTML、CSS、JS 和资源）。它在用户的浏览器中运行，绝不会在 Elata 的服务器上执行。
 
 ---
+
+<a id="limits"></a>
 
 ## 限制
 
@@ -27,6 +31,8 @@ zip 中必须包含 `index.html`。文件路径必须是普通的相对路径：
 
 ---
 
+<a id="building-for-elata"></a>
+
 ## 为 Elata 构建
 
 - **使用相对 URL。** 应用在子路径而不是域名根路径下提供服务。请使用相对路径加载资源和数据（`./data.json`，而不是 `/data.json`）。
@@ -35,6 +41,8 @@ zip 中必须包含 `index.html`。文件路径必须是普通的相对路径：
 - **只在需要时请求摄像头权限。** rPPG 应用运行在 Elata 框架内，浏览器会弹出摄像头权限请求。
 
 ---
+
+<a id="the-sandbox"></a>
 
 ## 沙箱
 
@@ -46,6 +54,8 @@ zip 中必须包含 `index.html`。文件路径必须是普通的相对路径：
 要与 Elata 通信，请使用[宿主桥接](/cn/apps/platform/host-bridge)。
 
 ---
+
+<a id="self-hosted-apps"></a>
 
 ## 自托管应用
 
@@ -60,6 +70,8 @@ zip 中必须包含 `index.html`。文件路径必须是普通的相对路径：
 
 ---
 
+<a id="home-screen-install-pwa"></a>
+
 ## 添加到主屏幕（PWA）
 
 当有人从应用的试玩页面安装你的应用（**添加到主屏幕**）时，如果你的包中带有 Web 清单，Elata 会让安装使用**你的**应用名称和图标：
@@ -72,6 +84,8 @@ zip 中必须包含 `index.html`。文件路径必须是普通的相对路径：
 Elata 会管理 `start_url`、`scope` 和 `display`，以确保安装后的应用能正确重新打开。如果没有清单，安装将使用你应用页面的名称和图片。
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

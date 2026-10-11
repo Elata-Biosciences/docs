@@ -7,11 +7,15 @@ description: 为设备集成选择合适的打包和归属方式。
 
 合适的路径取决于：这个集成是否具有广泛用途、是否需要厂商 SDK 或原生桥接，以及是否会作为公开的 SDK 能力长期维护。
 
+<a id="recommended-default"></a>
+
 ## 推荐的默认方式
 
 如果该设备可能对更广泛的 Elata SDK 用户有用，请将其放在上游的 `@elata-biosciences/eeg-web-ble` 中。
 
 这样可以集中管理传输行为，避免在多个应用中出现并行的适配器。
+
+<a id="choose-by-outcome"></a>
 
 ## 按目标选择
 
@@ -20,6 +24,8 @@ description: 为设备集成选择合适的打包和归属方式。
 | `eeg-web-ble` 中的上游设备模块 | 设备具有广泛用途，且可通过浏览器 BLE 工作 | 公开 SDK 支持的最佳默认选择 |
 | `packages/` 下的独立包 | 需要厂商 SDK、许可证限制，或 localhost/原生桥接 | 将较重的集成隔离开 |
 | 应用本地适配器 | 验证概念或交付私有集成 | 不需要共享包时最快的方式 |
+
+<a id="path-1-upstream-in-eeg-web-ble"></a>
 
 ## 路径 1：放在上游的 `eeg-web-ble` 中
 
@@ -40,6 +46,8 @@ description: 为设备集成选择合适的打包和归属方式。
   这是公开、长期集成的最佳路径，能让它成为 SDK 的一等公民。
 </Check>
 
+<a id="path-2-separate-package"></a>
+
 ## 路径 2：独立包
 
 当设备需要的不仅仅是干净的浏览器 BLE 流程时，选择此路径。
@@ -54,6 +62,8 @@ description: 为设备集成选择合适的打包和归属方式。
 
 该包仍应暴露 `HeadbandTransport`（或其轻量封装），以便应用代码与 Elata 技术栈的其他部分保持一致。
 
+<a id="path-3-app-local-adapter"></a>
+
 ## 路径 3：应用本地适配器
 
 当速度比复用更重要时，选择此路径。
@@ -65,6 +75,8 @@ description: 为设备集成选择合适的打包和归属方式。
 - 在公开包出现之前的评估工作
 
 即使代码保持私有，也要保持相同的协议。这样以后更容易迁移到上游。
+
+<a id="decision-order"></a>
 
 ## 决策顺序
 
@@ -83,6 +95,8 @@ description: 为设备集成选择合适的打包和归属方式。
   </Step>
 </Steps>
 
+<a id="paths-to-avoid"></a>
+
 ## 应避免的路径
 
 不要仅仅因为第一个小时最容易就选择应用本地适配器。
@@ -91,12 +105,16 @@ description: 为设备集成选择合适的打包和归属方式。
 
 也不要把较重的、基于桥接的或需要许可证的集成塞进共享的 BLE 包。保持公开包精简。
 
+<a id="related-docs"></a>
+
 ## 相关文档
 
 - [EEG BLE 快速上手](/cn/sdk/eeg-web-ble/getting-started)
 - [传输协议](./transport-contract)
 - [适配器实现](./adapter-implementation)
 - [兼容性](/cn/sdk/operations/compatibility)
+
+<a id="next"></a>
 
 ## 下一步
 

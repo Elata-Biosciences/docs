@@ -61,8 +61,8 @@ const model = new WasmCalmnessModel(256, 4);
 
 const result = model.process(interleaved);
 if (result) {
-  console.log(result.score);          // 0.0（警觉）到 1.0（非常平静）
-  console.log(result.smoothed_score); // 更平滑
+  console.log(result.score);          // 0.0 (alert) to 1.0 (very calm)
+  console.log(result.smoothed_score); // less jittery
   console.log(result.alpha_beta_ratio);
 }
 ```
@@ -100,6 +100,8 @@ const transport = new BleTransport({
 ```
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

@@ -11,6 +11,8 @@ description: "MuseBleDevice 内部实现、协议细节和兼容性"
 
 ---
 
+<a id="supported-protocols"></a>
+
 ## 支持的协议
 
 | 协议 | 头带 | EEG 通道 | 额外数据 |
@@ -21,6 +23,8 @@ description: "MuseBleDevice 内部实现、协议细节和兼容性"
 连接时会根据设备特征值自动识别协议。
 
 ---
+
+<a id="classic-protocol"></a>
 
 ## Classic 协议
 
@@ -36,6 +40,8 @@ description: "MuseBleDevice 内部实现、协议细节和兼容性"
 PPG 位于另外 3 个特征值上（`PPG1`、`PPG2`、`PPG3`）。
 
 ---
+
+<a id="athena-protocol"></a>
 
 ## Athena 协议
 
@@ -81,7 +87,7 @@ interface MuseDeviceOptions {
 interface MuseBoardInfo {
   device_name: string;
   sample_rate_hz: number;        // 256
-  channel_count: number;         // 4 或 8
+  channel_count: number;         // 4 or 8
   eeg_channel_names: string[];
   board_id: number;
   protocol: "classic" | "athena";
@@ -91,6 +97,8 @@ interface MuseBoardInfo {
 ```
 
 ---
+
+<a id="browser-compatibility"></a>
 
 ## 浏览器兼容性
 
@@ -108,6 +116,8 @@ interface MuseBoardInfo {
 
 ---
 
+<a id="safariios-workarounds"></a>
+
 ## Safari/iOS 替代方案
 
 支持 iOS 的三种策略：
@@ -119,6 +129,8 @@ interface MuseBoardInfo {
 无论哪种方式，都应以 `HeadbandFrameV1` 结构作为接口边界，让浏览器和原生传输输出相同的帧结构。
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

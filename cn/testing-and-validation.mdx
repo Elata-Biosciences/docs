@@ -7,6 +7,8 @@ description: 在交付设备集成之前，验证帧的正确性、生命周期�
 
 设备集成应能承受真实世界的情况，而不仅仅是一次干净的演示会话。
 
+<a id="definition-of-done"></a>
+
 ## 完成的标准
 
 当以下所有条件都满足时，集成才算就绪：
@@ -19,6 +21,8 @@ description: 在交付设备集成之前，验证帧的正确性、生命周期�
 | 状态转换 | 连接、开始、停止、断开和故障都能清晰呈现 |
 | 数据包处理 | 畸形或过短的数据包被安全拒绝 |
 | 重连行为 | 会话能够恢复，或明确失败 |
+
+<a id="minimum-test-set"></a>
 
 ## 最低测试集
 
@@ -40,6 +44,8 @@ description: 在交付设备集成之前，验证帧的正确性、生命周期�
   </Step>
 </Steps>
 
+<a id="what-to-test-first"></a>
+
 ## 优先测试什么
 
 | 方面 | 为什么通常最先出问题 |
@@ -50,6 +56,8 @@ description: 在交付设备集成之前，验证帧的正确性、生命周期�
 | 会话拆除 | 残留的订阅会让重连不稳定 |
 | 时间戳逻辑 | 样本看起来正常，但时序元数据可能是错的 |
 
+<a id="ci-guidance"></a>
+
 ## CI 建议
 
 CI 不需要真实硬件。
@@ -59,6 +67,8 @@ CI 不需要真实硬件。
 <Check>
   一套好的测试数据比在真实头带上手动测试一次更有价值。
 </Check>
+
+<a id="manual-validation-pass"></a>
 
 ## 手动验证
 
@@ -71,6 +81,8 @@ CI 不需要真实硬件。
 | 会话时长 | 数据流长时间保持稳定 |
 | 中断 | 短暂断开的行为可预测 |
 | 恢复 | 设备可以停止后再次开始 |
+
+<a id="common-failure-patterns"></a>
 
 ## 常见故障模式
 
@@ -89,6 +101,8 @@ CI 不需要真实硬件。
   </Accordion>
 </AccordionGroup>
 
+<a id="release-readiness-checklist"></a>
+
 ## 发布就绪检查清单
 
 在交付集成之前，确保你能清楚回答：
@@ -99,12 +113,16 @@ CI 不需要真实硬件。
 4. 应用应预期什么样的恢复行为
 5. 后续维护由谁负责
 
+<a id="related-docs"></a>
+
 ## 相关文档
 
 - [传输协议](./transport-contract)
 - [协议要求](./protocol-requirements)
 - [提交与支持](./submission-and-support)
 - [故障排查](/cn/sdk/operations/troubleshooting)
+
+<a id="next"></a>
 
 ## 下一步
 

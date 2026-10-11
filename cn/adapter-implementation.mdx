@@ -7,11 +7,15 @@ description: 构建一个接入 BleTransport 并输出稳定头带帧的设备�
 
 目标是隔离设备特定的 BLE 和数据包逻辑，同时为应用保留共享的 Elata 传输协议。
 
+<a id="recommended-shape"></a>
+
 ## 推荐结构
 
 对于浏览器 BLE 集成，适配器应满足 `@elata-biosciences/eeg-web-ble` 所期望的 `BleDeviceLike` 结构。
 
 也就是说，设备层负责发现、会话建立、订阅和数据包解码，而 `BleTransport` 负责面向应用的传输接口。
+
+<a id="implementation-order"></a>
 
 ## 实现顺序
 
@@ -32,6 +36,8 @@ description: 构建一个接入 BleTransport 并输出稳定头带帧的设备�
     取消订阅，安全停止数据流，并在不泄漏资源的情况下释放会话。
   </Step>
 </Steps>
+
+<a id="minimal-adapter-skeleton"></a>
 
 ## 最小适配器骨架
 
@@ -54,23 +60,25 @@ export class VendorBleDevice implements BleDeviceLike {
   }
 
   async prepareSession() {
-    // 连接 GATT、解析特征值并初始化数据流状态
+    // Connect to GATT, resolve characteristics, and initialize streaming state
   }
 
   async releaseSession() {
-    // 撤销订阅并释放浏览器会话
+    // Tear down subscriptions and release the browser session
   }
 
   async startStream(eegCb, _ppgCb) {
-    // 订阅通知并输出解码后的 EEG 行
+    // Subscribe to notifications and emit decoded EEG rows
     eegCb([[0, 0]]);
   }
 
   async stopStream() {
-    // 停止设备数据流并取消订阅
+    // Stop device streaming and unsubscribe
   }
 }
 ```
+
+<a id="what-the-adapter-must-own"></a>
 
 ## 适配器必须负责的内容
 
@@ -82,6 +90,8 @@ export class VendorBleDevice implements BleDeviceLike {
 | 准确的元数据 | 是 |
 | 面向应用的传输生命周期 | 通常通过 `BleTransport` |
 | 向应用交付规范化的帧 | 通过共享的传输协议 |
+
+<a id="packet-decoding-rules"></a>
 
 ## 数据包解码规则
 
@@ -95,6 +105,8 @@ export class VendorBleDevice implements BleDeviceLike {
 | 有包计数器时进行追踪 | 有助于检测丢包或损坏 |
 | 将 EEG 与辅助信号逻辑清晰分离 | 便于调试和测试 |
 
+<a id="session-lifecycle-rules"></a>
+
 ## 会话生命周期规则
 
 你的适配器应让这些状态转换符合预期：
@@ -107,6 +119,8 @@ export class VendorBleDevice implements BleDeviceLike {
 | 停止 | 通知干净地停止 |
 | 释放 | 之后可以再次开始会话 |
 
+<a id="reliability-notes"></a>
+
 ## 可靠性说明
 
 <Info>
@@ -115,12 +129,16 @@ export class VendorBleDevice implements BleDeviceLike {
 
 如果设备提供 PPG、光学、IMU 或电量等辅助信号，只在语义清晰时才进行映射。不要把 Muse 特有的假设强加给非 Muse 硬件。
 
+<a id="related-docs"></a>
+
 ## 相关文档
 
 - [EEG BLE 快速上手](/cn/sdk/eeg-web-ble/getting-started)
 - [传输协议](./transport-contract)
 - [测试与验证](./testing-and-validation)
 - [Muse 设备](/cn/sdk/eeg-web-ble/muse-device)
+
+<a id="next"></a>
 
 ## 下一步
 

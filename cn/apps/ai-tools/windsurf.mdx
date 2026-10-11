@@ -3,11 +3,15 @@ title: "Windsurf"
 description: "使用 Windsurf 结合 Elata SDK 和 Elata API 构建 Elata 应用。"
 ---
 
+<a id="overview"></a>
+
 ## 概述
 
 当 Windsurf 了解 Elata 的运作方式（沙箱、SDK 包和上传规则）时，它在 Elata 应用上的表现最好。本页提供一个可直接粘贴的项目上下文文件，以及常见任务的提示词。
 
 ---
+
+<a id="setup"></a>
 
 ## 设置
 
@@ -16,6 +20,8 @@ description: "使用 Windsurf 结合 Elata SDK 和 Elata API 构建 Elata 应用
 3. 在项目根目录添加 `.windsurfrules` 文件，内容如下。
 
 ---
+
+<a id="project-context"></a>
 
 ## 项目上下文
 
@@ -59,7 +65,11 @@ iframe in Elata.
 
 ---
 
+<a id="useful-prompts"></a>
+
 ## 常用提示词
+
+<a id="start-a-new-app"></a>
 
 ### 创建新应用
 
@@ -69,6 +79,8 @@ npm create @elata-biosciences/elata-demo my-app -- --template rppg
 and explain the project structure.
 ```
 
+<a id="add-the-sdk-to-an-existing-app"></a>
+
 ### 在现有应用中添加 SDK
 
 ```text
@@ -76,6 +88,8 @@ Add camera heart rate with @elata-biosciences/rppg-web. Use createRppgSession,
 show signal quality, and stop the camera when the component unmounts.
 Read node_modules/@elata-biosciences/rppg-web/llms.txt first.
 ```
+
+<a id="add-a-purchase"></a>
 
 ### 添加购买
 
@@ -85,12 +99,16 @@ getOwnedItems(), branch on result.status (not txHash), and re-apply owned
 benefits on startup.
 ```
 
+<a id="save-progress"></a>
+
 ### 保存进度
 
 ```text
 Persist the player's settings and best score with Elata's elata:state:get/set messages.
 Fall back to localStorage when Elata replies with not_authenticated.
 ```
+
+<a id="prepare-an-upload"></a>
 
 ### 准备上传
 
@@ -102,6 +120,8 @@ version from package.json. Then run npm run build:zip.
 
 ---
 
+<a id="tips"></a>
+
 ## 提示
 
 <Tip>
@@ -112,6 +132,8 @@ version from package.json. Then run npm run build:zip.
 - 提交前在 Elata 的试玩窗口中测试。沙箱的行为与 `localhost` 不同。
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

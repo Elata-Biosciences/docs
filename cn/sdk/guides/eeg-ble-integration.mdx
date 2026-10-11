@@ -8,6 +8,8 @@ sidebarTitle: "EEG + BLE 集成"
   如果你想在一个地方看到完整的浏览器 EEG 流程，请阅读本指南。你将初始化 EEG WASM 层、通过 Web Bluetooth 连接、输出数据帧，并把这些帧转化为应用可用的指标。
 </Note>
 
+<a id="what-this-guide-covers"></a>
+
 ## 本指南涵盖的内容
 
 本指南展示如何把 `@elata-biosciences/eeg-web` 和 `@elata-biosciences/eeg-web-ble` 组合成一个完整的浏览器流程。
@@ -19,6 +21,8 @@ sidebarTitle: "EEG + BLE 集成"
 - 接收规范化的 `HeadbandFrameV1` 帧
 - 从传入的 EEG 样本实时计算频段功率
 - 干净地停止并从断开中恢复
+
+<a id="before-you-start"></a>
 
 ## 开始之前
 
@@ -33,6 +37,8 @@ sidebarTitle: "EEG + BLE 集成"
 <Warning>
   Safari 和 iOS 不支持此浏览器 BLE 流程。对于这些平台，请使用原生 BLE 外壳、桥接应用或其他传输层，并继续以 `@elata-biosciences/eeg-web` 作为处理边界。
 </Warning>
+
+<a id="choose-the-right-starting-point"></a>
 
 ## 选择合适的起点
 
@@ -54,6 +60,8 @@ sidebarTitle: "EEG + BLE 集成"
   </Card>
 </Columns>
 
+<a id="install-the-packages"></a>
+
 ## 安装包
 
 <Tabs>
@@ -73,6 +81,8 @@ sidebarTitle: "EEG + BLE 集成"
   `@elata-biosciences/eeg-web-ble` 依赖 `@elata-biosciences/eeg-web` 提供的共享帧类型和 EEG WASM 层。
 </Info>
 
+<a id="integration-flow"></a>
+
 ## 集成流程
 
 <Steps>
@@ -81,7 +91,7 @@ sidebarTitle: "EEG + BLE 集成"
 
     ```ts
     import { initEegWasm } from "@elata-biosciences/eeg-web";
-
+    
     await initEegWasm();
     ```
   </Step>
@@ -91,7 +101,7 @@ sidebarTitle: "EEG + BLE 集成"
     ```ts
     import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
     import { BleTransport } from "@elata-biosciences/eeg-web-ble";
-
+    
     const transport = new BleTransport({
       sourceName: "my-app",
       deviceOptions: {
@@ -106,12 +116,12 @@ sidebarTitle: "EEG + BLE 集成"
 
     ```ts
     import type { HeadbandFrameV1 } from "@elata-biosciences/eeg-web";
-
+    
     transport.onStatus = (status) => {
       const el = document.getElementById("status");
       if (el) el.textContent = status.state;
     };
-
+    
     transport.onFrame = (frame: HeadbandFrameV1) => {
       console.log("channels", frame.eeg.channelNames);
       console.log("rows", frame.eeg.samples.length);
@@ -139,17 +149,17 @@ sidebarTitle: "EEG + BLE 集成"
 
     ```ts
     import { band_powers } from "@elata-biosciences/eeg-web";
-
+    
     transport.onFrame = (frame: HeadbandFrameV1) => {
       const { eeg } = frame;
-
+    
       for (let ch = 0; ch < eeg.channelCount; ch++) {
         const channelSamples = eeg.samples.map((row) => row[ch]);
         const powers = band_powers(
           new Float32Array(channelSamples),
           eeg.sampleRateHz,
         );
-
+    
         console.log(
           `${eeg.channelNames[ch]}: alpha=${powers.alpha.toFixed(2)} beta=${powers.beta.toFixed(2)}`,
         );
@@ -158,6 +168,8 @@ sidebarTitle: "EEG + BLE 集成"
     ```
   </Step>
 </Steps>
+
+<a id="full-example"></a>
 
 ## 完整示例
 
@@ -209,6 +221,8 @@ try {
 }
 ```
 
+<a id="clean-shutdown"></a>
+
 ## 干净地关闭
 
 当用户离开视图或关闭页面时，停止数据流并释放蓝牙会话。
@@ -221,6 +235,8 @@ async function shutdown() {
 
 window.addEventListener("beforeunload", shutdown);
 ```
+
+<a id="handle-reconnection"></a>
 
 ## 处理重连
 
@@ -243,6 +259,8 @@ transport.onStatus = (status) => {
 };
 ```
 
+<a id="understand-the-transport-lifecycle"></a>
+
 ## 了解传输生命周期
 
 | 方法 | 作用 |
@@ -252,6 +270,8 @@ transport.onStatus = (status) => {
 | `start()` | 开始 EEG 数据流并触发 `onFrame` |
 | `stop()` | 停止数据流，但保持蓝牙会话打开 |
 | `disconnect()` | 释放蓝牙会话 |
+
+<a id="device-notes"></a>
 
 ## 设备说明
 
@@ -278,6 +298,8 @@ const channelNames = transport.getEegNames();
   如果你要在不同 Muse 型号之间测试，请从第一天起就启用 Athena 解码器工厂，这样以后就不需要单独的传输设置。
 </Tip>
 
+<a id="architecture-at-a-glance"></a>
+
 ## 架构一览
 
 浏览器 EEG BLE 流程通常如下：
@@ -288,6 +310,8 @@ const channelNames = transport.getEegNames();
 4. 接收 `HeadbandFrameV1` 帧
 5. 计算频段功率、分数或状态转换等应用指标
 6. 在应用中渲染图表、分数或自适应界面
+
+<a id="integration-tips"></a>
 
 ## 集成建议
 
@@ -301,6 +325,8 @@ const channelNames = transport.getEegNames();
 <Info>
   `band_powers` 在大约 1 到 2 秒的数据上最有用。在 256 Hz 下，大约是 256 到 512 个样本。
 </Info>
+
+<a id="where-to-go-next"></a>
 
 ## 下一步
 

@@ -3,6 +3,8 @@ title: "通知"
 description: "在应用打开期间，通过 Elata 向用户显示提醒。"
 ---
 
+<a id="why-your-app-cant-notify-directly"></a>
+
 ## 为什么应用不能直接发送通知
 
 你的应用运行在跨源的沙箱 iframe 中。浏览器会在其中屏蔽 `Notification` API：权限始终为 `denied`，`requestPermission()` 也不会弹出提示。
@@ -15,6 +17,8 @@ description: "在应用打开期间，通过 Elata 向用户显示提醒。"
 | **后台推送** | 另行实现 Service Worker、推送订阅和发送服务 | 后台通知；仅安装应用并不会提供这项能力 |
 
 ---
+
+<a id="request-a-reminder"></a>
 
 ## 请求提醒
 
@@ -44,6 +48,8 @@ Elata 会回复 `{ type: 'elata:notify:state', requestId?, status }`：
 
 ---
 
+<a id="what-elata-guarantees"></a>
+
 ## Elata 的保证
 
 - **标题由 Elata 撰写。** 始终为 `Elata · <你的应用名称>`，取自你的应用页面，因此应用无法冒充系统、Elata 或其他应用。
@@ -52,6 +58,8 @@ Elata 会回复 `{ type: 'elata:notify:state', requestId?, status }`：
 - **仅限前台。** 提醒只会在 Elata 标签页打开时出现。点击提醒会聚焦到 Elata。
 
 ---
+
+<a id="detecting-elata"></a>
 
 ## 检测是否在 Elata 中
 
