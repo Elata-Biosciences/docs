@@ -1,40 +1,46 @@
 ---
-title: "AgentForge Overview"
-tag: "Archived"
-description: "Adversarial, agent-based simulation of EVM mechanisms"
+title: "AgentForge 概述"
+tag: "已归档"
+description: "EVM 机制的对抗性、基于代理的模拟"
 ---
 
-## What is AgentForge?
+<a id="what-is-agentforge"></a>
 
-AgentForge is an agent-based simulation framework for Foundry and EVM smart contracts. It fills the gap between isolated unit tests and production by simulating how a protocol behaves when many autonomous agents — traders, arbitrageurs, liquidators, LLM-driven strategists — act simultaneously with competing strategies over time.
+## 什么是 AgentForge？
+
+AgentForge 是一个基于代理的 Foundry 和 EVM 智能合约模拟框架。它通过模拟当许多自主代理（交易者、套利者、清算人、法学硕士驱动的策略师）随着时间的推移与竞争策略同时采取行动时协议的行为方式，从而填补了孤立的单元测试和生产之间的空白。
 
 <Info>
-  **Package**: [`@elata-biosciences/agentforge`](https://www.npmjs.com/package/@elata-biosciences/agentforge) on npm
+npm 上的**包**: [`@elata-biosciences/agentforge`](https://www.npmjs.com/package/@elata-biosciences/agentforge) 
 </Info>
 
-| Layer | What it tests | Example |
+| 图层 | 它测试什么 | 示例 |
 |-------|--------------|---------|
-| Unit tests | Individual functions | `test_transfer()` |
-| Fuzz tests | Random inputs | `testFuzz_transfer(uint256 amount)` |
-| **AgentForge** | **Multi-actor emergent behavior** | **Traders, arbitrageurs, liquidators competing** |
-| Mainnet | Real users | Production |
+| 单元测试 | 个别功能 | `test_transfer()` |
+| 模糊测试 | 随机输入 | `testFuzz_transfer(uint256 amount)` |
+| **AgentForge** | **多参与者紧急行为** | **交易者、套利者、清算人竞争** |
+| 主网 | 真实用户 | 生产 |
 
 ---
 
-## Key Features
+<a id="key-features"></a>
 
-- **Deterministic simulation** — same seed + same scenario = identical results
-- **Multi-action agents** — agents can execute up to 3 actions per tick (e.g., trade + gossip)
-- **LLM-driven agents** — persona-based agents with structured prompt assembly and OODA loop
-- **Gossip bus** — bounded inter-agent communication with channels, budgets, and trust primitives
-- **Exploration/Replay workflow** — discover behaviors with LLM agents, then replay deterministically
-- **Studio dashboard** — Bloomberg Terminal-inspired UI with charts, timeline, gossip analysis, and ML toolkit
-- **Protocol adapters (Packs)** — plug into any EVM protocol via the `Pack` interface
-- **CI-ready** — exit codes, stable artifact naming, and GitHub Actions integration
+## 主要特点
+
+- **确定性模拟** — 相同的种子 + 相同的场景 = 相同的结果
+- **多操作代理** — 代理每个周期最多可以执行 3 个操作（例如，交易 + 闲聊）
+- **LLM 驱动的代理** — 基于角色的代理，具有结构化提示组装和 OODA 循环
+- **Gossip 总线** — 与通道、预算和信任原语的有界代理间通信
+- **探索/重放工作流程** — 使用 LLM 代理发现行为，然后确定性地重放
+- **Studio 仪表板** — 受彭博终端启发的 UI，带有图表、时间线、八卦分析和 ML 工具包
+- **协议适配器（包）** — 通过 `Pack` 接口插入任何 EVM 协议
+- **CI 就绪** — 退出代码、稳定的工件命名和 GitHub Actions 集成
 
 ---
 
-## Quick Start
+<a id="quick-start"></a>
+
+## 快速入门
 
 ```bash
 # Install
@@ -50,13 +56,15 @@ npx forge-sim run --toy
 npx forge-sim studio
 ```
 
-Requirements: **Node.js 18+** and optionally [Foundry](https://book.getfoundry.sh/getting-started/installation) with Anvil for EVM simulations.
+要求： **Node.js 18+** 以及可选的 [Foundry](https://book.getfoundry.sh/getting-started/installation) 以及用于 EVM 模拟的 Anvil。
 
 ---
 
-## Writing Your First Agent
+<a id="writing-your-first-agent"></a>
 
-Define an agent that observes state and decides actions each tick:
+## 编写你的第一个代理
+
+定义一个代理来观察状态并决定每个tick的操作：
 
 ```typescript
 import { BaseAgent, type Action, type TickContext } from '@elata-biosciences/agentforge';
@@ -75,7 +83,7 @@ export class MyTrader extends BaseAgent {
 }
 ```
 
-Define a scenario that wires agents together:
+定义一个将代理连接在一起的场景：
 
 ```typescript
 import { defineScenario } from '@elata-biosciences/agentforge';
@@ -101,7 +109,7 @@ export default defineScenario({
 });
 ```
 
-Run it:
+运行它：
 
 ```bash
 npx forge-sim run sim/scenarios/market-stress.ts --seed 42
@@ -109,9 +117,11 @@ npx forge-sim run sim/scenarios/market-stress.ts --seed 42
 
 ---
 
-## Run Artifacts
+<a id="run-artifacts"></a>
 
-Every run produces durable artifacts:
+## 运行工件
+
+每次运行都会产生持久的工件：
 
 ```
 results/market-stress-ci/
@@ -126,17 +136,21 @@ results/market-stress-ci/
 
 ---
 
-## Demo Integrations
+<a id="demo-integrations"></a>
 
-- [Uniswap v4 Fork Demo](https://github.com/wkyleg/v4-core/tree/main/sim/agentforge-demo) — deterministic + LLM agents simulating v4 pool mechanisms
-- [Elata Protocol](https://github.com/Elata-Biosciences/elata-protocol) — app launchpad with bonding curves
+## 演示集成
+
+- [Uniswap v4 Fork Demo](https://github.com/wkyleg/v4-core/tree/main/sim/agentforge-demo) — 确定性 + LLM 代理模拟 v4 池机制
+- [Elata 协议](https://github.com/Elata-Biosciences/elata-protocol) — 带有绑定曲线的应用程序启动板
 
 ---
 
-## Links
+<a id="links"></a>
 
-- [npm package](https://www.npmjs.com/package/@elata-biosciences/agentforge)
-- [GitHub repository](https://github.com/Elata-Biosciences/agentforge)
-- [Full CLI Reference](/cn/open-source/agentforge/cli)
-- [Core Concepts](/cn/open-source/agentforge/concepts)
-- [Studio Dashboard](/cn/open-source/agentforge/studio)
+## 友情链接
+
+- [npm 包](https://www.npmjs.com/package/@elata-biosciences/agentforge)
+- [GitHub 存储库](https://github.com/Elata-Biosciences/agentforge)
+- [完整 CLI 参考](/cn/open-source/agentforge/cli)
+- [核心概念](/cn/open-source/agentforge/concepts)
+- [工作室仪表板](/cn/open-source/agentforge/studio)

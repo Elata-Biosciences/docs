@@ -1,57 +1,65 @@
 ---
-title: "Elata EEG Overview"
-tag: "Archived"
-description: "Open-source, low-cost EEG hardware for precision psychiatry and neuroscience research"
+title: "Elata EEG 概述"
+tag: "已归档"
+description: "用于精密精神病学和神经科学研究的开源、低成本 EEG 硬件"
 ---
 
 <Warning>
-  This device is not FDA-approved. For research use only.
+该设备未经 FDA 批准。仅供研究使用。
 </Warning>
 
-## What is Elata EEG?
+<a id="what-is-elata-eeg"></a>
 
-Elata EEG is an **open-source electroencephalography platform** built around a Raspberry Pi 5 and the Texas Instruments ADS1299 analog front-end. The goal is to democratize EEG hardware with a fully open, right-to-repair design that any lab or hacker can build, modify, and extend.
+## Elata EEG是什么？
 
-The system supports 8+ channels of 24-bit EEG at research-grade resolution, with real-time streaming, a plugin-based DSP pipeline, and a browser-based kiosk UI.
+Elata EEG 是一个开源脑电图平台，围绕 [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/) 和 [Texas Instruments ADS1299](https://www.ti.com/product/ADS1299) 模拟前端构建。目标是通过完全开放、有权修复的设计使 EEG 硬件民主化，任何实验室或黑客都可以构建、修改和扩展。
 
-<Card icon="github" href="https://github.com/Elata-Biosciences/elata-eeg" title="GitHub Repository">
-  Source code, schematics, and build instructions (GPLv3)
+该系统支持研究级分辨率的 8 个以上 24 位 EEG 通道，具有实时流、基于插件的 DSP 管道和基于浏览器的信息亭 UI。
+
+<Card icon="github" href="https://github.com/Elata-Biosciences/elata-eeg" title="GitHub 存储库">
+源代码、原理图和构建说明 (GPLv3)
 </Card>
 
 ---
 
-## Hardware
+<a id="hardware"></a>
 
-| Component | Details |
+## 硬件
+
+| 组件 | 详情 |
 | -------------- | ------------------------------------------------------------ |
-| **Controller** | Raspberry Pi 5 (quad-core Arm Cortex, 40-pin GPIO) |
-| **ADC** | TI ADS1299 EEGFE — 8-channel, 24-bit analog front-end via SPI |
-| **Electrodes** | Wet Ag/AgCl or gold-cup with conductive paste (e.g. Ten20) |
-| **Display** | 5-inch or 7-inch HDMI touchscreen (optional) |
-| **Cables** | Dupont jumpers (2.54 mm), optional shielding / ferrite beads |
+| **控制器** | Raspberry Pi 5（四核 Arm Cortex，40 针 GPIO） |
+| **ADC** | TI ADS1299 EEGFE：通过 SPI 的 8 通道、24 位模拟前端 |
+| **电极** | 湿Ag/AgCl或带有导电膏的金杯（例如Ten20） |
+| **显示** | 5英寸或7英寸HDMI触摸屏（可选） |
+| **电缆** | 杜邦跳线 (2.54 mm)，可选屏蔽/铁氧体磁珠 |
 
-Two board configurations are supported:
+支持两种板配置：
 
-- **V1** — Single ADS1299 EVM (8 channels)
-- **V2** — Four synchronized ADS1299 EVMs with shared clock and SPI (32 channels)
+- **V1**：单 ADS1299 EVM（8 通道）
+- **V2**：四个具有共享时钟和 SPI 的同步 ADS1299 EVM（32 通道）
 
 ---
 
 
-## Software Stack
+<a id="software-stack"></a>
 
-| Layer | Technology |
+## 软件堆栈
+
+| 图层 | 技术 |
 | ---------------------- | ---------------------------------------------------------------- |
-| **OS** | Raspberry Pi OS (Debian) |
-| **Firmware / Backend** | Rust workspace — `sensors`, `boards`, `pipeline`, `daemon` crates |
-| **Frontend** | Next.js kiosk with WebSocket data streaming |
-| **Hardware Interface** | `rppal` crate (GPIO / SPI / I2C) |
-| **Plugin System** | Event-driven DSP plugins on a shared `EventBus` |
-| **License** | GPLv3 (strong copyleft) |
+| **操作系统** | 树莓派操作系统 (Debian) |
+| **固件/后端** | Rust 工作区： `sensors`、 `boards`、 `pipeline`、 `daemon` 箱子 |
+| **前端** | 具有 WebSocket 数据流的 Next.js 信息亭 |
+| **硬件接口** | `rppal` 箱子（GPIO / SPI / I2C） |
+| **插件系统** | 共享 `EventBus`上的事件驱动 DSP 插件 |
+| **许可证** | GPLv3（强版权左） |
 
 ---
 
-## Quickstart
+<a id="quickstart"></a>
+
+## 快速入门
 
 ```bash
 git clone https://github.com/Elata-Biosciences/elata-eeg
@@ -59,9 +67,11 @@ cd elata-eeg
 bash scripts/install.sh
 ```
 
-The install script handles system dependencies (Rust, Node.js, Chromium), builds all crates and the kiosk, configures systemd services for the daemon and kiosk, sets up auto-login and kiosk mode, and reboots when complete.
+安装脚本处理系统依赖项（Rust、 Node.js、Chromium）、构建所有 crate 和 kiosk、为守护程序和 kiosk 配置 systemd 服务、设置自动登录和 kiosk 模式，并在完成后重新启动。
 
-### Development Mode
+<a id="development-mode"></a>
+
+### 发展模式
 
 ```bash
 # Stop kiosk mode
@@ -74,7 +84,7 @@ cargo run --bin eeg_daemon -- --mock   # --mock for testing without hardware
 cd kiosk && npm run dev
 ```
 
-The kiosk UI is available at `http://localhost:3000`. The WebSocket data endpoint runs at `ws://localhost:9000/ws/data`.
+信息亭用户界面可通过 `http://localhost:3000`获取。 WebSocket 数据端点在 `ws://localhost:9000/ws/data`运行。
 
 ---
 
@@ -83,10 +93,10 @@ The kiosk UI is available at `http://localhost:3000`. The WebSocket data endpoin
 ## 下一步
 
 <CardGroup cols={2}>
-  <Card icon="compass" href="/cn/home/elata-eeg/eeg-architecture" title="Architecture">
-    Crate layering, plugin system, and WebSocket API
+  <Card icon="compass" href="/cn/home/elata-eeg/eeg-architecture" title="建筑">
+Crate 分层、插件系统和 WebSocket API
   </Card>
   <Card icon="microchip" href="/cn/sdk/eeg-web/getting-started" title="SDK — eeg-web">
-    Browser-side EEG signal processing with WASM
+浏览器端 EEG 信号处理 WASM
   </Card>
 </CardGroup>

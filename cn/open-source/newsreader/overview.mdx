@@ -1,64 +1,74 @@
 ---
-title: "Newsreader Overview"
-tag: "Archived"
-description: "AI-powered environmental scanner for the Elata DAO — news.elata.bio"
+title: "新闻阅读器概述"
+tag: "已归档"
+description: "用于 Elata DAO 的人工智能环境扫描仪 — news.elata.bio"
 ---
 
-## What is the Newsreader?
+<a id="what-is-the-newsreader"></a>
 
-The Elata Newsreader implements **System 4** of Stafford Beer's [Viable System Model](https://kelsienabben.substack.com/p/aligning-the-concept-of-decentralized) — the "outside and future" sensing organ of the DAO. It monitors the external environment across neuroscience, psychiatry, DeSci, and adjacent fields, then transforms raw information into actionable intelligence for token holders and contributors.
+## 什么是新闻阅读器？
+
+Elata 新闻阅读器实现了 Stafford Beer 的 [可行系统模型](https://kelsienabben.substack.com/p/aligning-the-concept-of-decentralized) 的 **系统 4** — DAO 的“外部和未来”传感器官。它监控神经科学、精神病学、DeSci 和邻近领域的外部环境，然后将原始信息转化为代币持有者和贡献者可操作的情报。
 
 <Info>
-  **Live at**: [news.elata.bio](https://news.elata.bio)
+**直播**: [news.elata.bio](https://news.elata.bio)
 </Info>
 
-The system aggregates content from **400+ sources** spanning academic journals, pharma news, neurotech companies, DeSci communities, regulatory bodies, and more. Every article is scored for relevance using OpenAI, tagged across 86 domain-specific tags, and surfaced through a Next.js frontend with full-text search and filtering.
+该系统汇总了来自 **400 多个来源** 的内容，涵盖学术期刊、制药新闻、神经科技公司、DeSci 社区、监管机构等。每篇文章都使用 OpenAI 进行相关性评分，标记 86 个特定领域的标签，并通过具有全文搜索和过滤功能的 Next.js 前端显示。
 
 ---
 
-## Source Categories
+<a id="source-categories"></a>
+
+## 来源类别
 
 | 类别 | 示例 |
 |----------|---------|
-| **Neuroscience journals** | Nature Neuroscience, Cell Neuron, Frontiers, Journal of Neuroscience |
-| **Psychiatry & clinical** | Medscape, Psychiatric News, Lancet Psychiatry, MedPage Today |
-| **Hardware & BCI** | OpenBCI, Neuralink, Synchron, Kernel, NeuroTechX |
-| **Pharma & biotech** | STAT News, Fierce Pharma, BioPharma Dive, Endpoints |
-| **DeSci & Web3** | CoinDesk, Decrypt, molecule.xyz, VitaDAO |
-| **Preprints & archives** | arXiv (q-bio.NC, cs.AI), PubMed, bioRxiv |
-| **Regulatory** | FDA, EMA, NIH, NSF |
-| **Community** | Warpcast channels, Reddit, Discord |
+| **神经科学期刊** | 自然神经科学，细胞神经元，前沿，神经科学杂志 |
+| **精神病学与临床** | Medscape、精神病学新闻、柳叶刀精神病学、MedPage Today |
+| **硬件和 BCI** | OpenBCI、Neuralink、Synchron、内核、NeuroTechX |
+| **制药与生物技术** | STAT 新闻、Fierce Pharma、生物制药潜水、端点 |
+| **DeSci 与 Web3** | CoinDesk、Decrypt、molecules.xyz、VitaDAO |
+| **预印本和档案** | arXiv（q-bio.NC、cs.AI）、PubMed、bioRxiv |
+| **监管** | FDA、EMA、NIH、NSF |
+| **社区** | Warpcast 频道、Reddit、Discord |
 
 ---
 
-## Key Features
+<a id="key-features"></a>
 
-- **NewsAPI integration** for keyword-based aggregation across global news
-- **Web scraping** of curated scientific and industry sources
-- **GPT-powered relevance scoring** — each article is evaluated against the Elata mission
-- **86 domain-specific tags** covering EEG, BCI, precision psychiatry, DeSci, pharmacology, biohacking, and more
-- **Podcast generation** — AI-narrated audio summaries via ElevenLabs
-- **Discord notifications** for high-relevance articles
-- **REST API** serving `current.json` with date-filtered queries
+## 主要特点
+
+- **NewsAPI 集成** 用于基于关键字的全球新闻聚合
+- **网络抓取** 精选的科学和行业资源
+- **GPT 支持的相关性评分** — 每篇文章均根据 Elata 任务进行评估
+- **86 个特定领域标签** 涵盖 EEG、BCI、精准精神病学、DeSci、药理学、生物黑客等
+- **播客生成** — 来自 ElevenLabs 的人工智能叙述音频摘要
+- **不和谐通知** 高相关性文章
+- **REST API** 使用日期过滤查询服务 `current.json` 
 
 ---
 
-## Tech Stack
+<a id="tech-stack"></a>
 
-| Component | Technology |
+## 技术堆栈
+
+| 组件 | 技术 |
 |-----------|-----------|
-| Scraper engine | Node.js, Express, TypeScript |
-| Process management | PM2 |
-| AI analysis | OpenAI API |
-| News aggregation | NewsAPI |
-| Audio generation | ElevenLabs |
-| Data validation | Zod schemas |
-| Frontend | Next.js 15, App Router, SSR |
+| 铲运机 | Node.js，Express，TypeScript |
+| 流程管理 | 颗粒物 |
+| 人工智能分析 | 开放人工智能API |
+| 新闻聚合 | 新闻API |
+| 音频生成 | 十一实验室 |
+| 数据验证 | Zod 模式 |
+| 前端 | Next.js 15、应用程序路由器、SSR |
 
 ---
 
-## Links
+<a id="links"></a>
 
-- [Live site — news.elata.bio](https://news.elata.bio)
-- [GitHub repository](https://github.com/Elata-Biosciences/elata-vsm-system-4)
-- [Discord](https://discord.gg/VmkH5JfxMC)
+## 友情链接
+
+- [实时网站 — news.elata.bio](https://news.elata.bio)
+- [GitHub 存储库](https://github.com/Elata-Biosciences/elata-vsm-system-4)
+- [不和谐](https://discord.gg/VmkH5JfxMC)

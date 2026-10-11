@@ -1,14 +1,14 @@
 ---
-title: "CLI Reference"
-tag: "Archived"
-description: "Full command and option reference for the AgentForge CLI"
+title: "CLI 参考"
+tag: "已归档"
+description: "AgentForge CLI 的完整命令和选项参考"
 ---
 
 <a id="installation"></a>
 
 ## 安装
 
-The CLI is available as `forge-sim` (or `agentforge`) after installing the package:
+安装软件包后，CLI 可作为 `forge-sim` （或 `agentforge`）使用：
 
 ```bash
 pnpm add @elata-biosciences/agentforge
@@ -16,11 +16,13 @@ pnpm add @elata-biosciences/agentforge
 
 ---
 
-## Commands
+<a id="commands"></a>
+
+## 命令
 
 ### `forge-sim init [path]`
 
-Scaffold a simulation folder with example scenarios and configuration.
+搭建一个包含示例场景和配置的模拟文件夹。
 
 ```bash
 forge-sim init                    # Initialize in current directory
@@ -29,36 +31,36 @@ forge-sim init sim/               # Initialize in sim/ subdirectory
 
 ### `forge-sim run <scenario>`
 
-Execute a scenario file and produce artifacts.
+执行场景文件并生成工件。
 
 ```bash
 forge-sim run sim/scenarios/stress.ts
 forge-sim run --toy                          # Run built-in demo scenario
 ```
 
-**Options:**
+**选项：**
 
-| Flag | Description |
+| 旗帜 | 说明 |
 |------|-------------|
-| `--seed <n>` | Override random seed |
-| `--ticks <n>` | Override tick count |
-| `--out <dir>` | Output directory for artifacts |
-| `--mode <mode>` | `deterministic` (default), `exploration`, or `replay` |
-| `--replay-bundle <path>` | Replay bundle path (for `--mode replay`) |
-| `--capture-memory` | Persist agent memory snapshots |
-| `--live` | Enable live WebSocket event stream |
-| `--ci` | CI mode — no colors, stable naming |
-| `--verbose` | Verbose logging |
-| `--json` | Output results as JSON |
+| `--seed <n>` | 覆盖随机种子 |
+| `--ticks <n>` | 覆盖刻度计数 |
+| `--out <dir>` | 工件的输出目录 |
+| `--mode <mode>` | `deterministic` （默认）、 `exploration`或 `replay` |
+| `--replay-bundle <path>` | 重播捆绑包路径（对于 `--mode replay`） |
+| `--capture-memory` | 持久化代理内存快照 |
+| `--live` | 启用实时 WebSocket 事件流 |
+| `--ci` | CI模式——无颜色，命名稳定 |
+| `--verbose` | 详细日志记录 |
+| `--json` | 将结果输出为 JSON |
 
-**Mode guidance:**
-- **`deterministic`** — no live LLM calls; best for baselines and CI
-- **`exploration`** — LLM-enabled red-team discovery; produces `replay_bundle.json`
-- **`replay`** — deterministic re-run of prior exploration traces
+**模式指导：**
+- **`deterministic`** — 没有现场 LLM 电话；最适合基线和 CI
+- **`exploration`** — 支持 LLM 的红队发现；生产 `replay_bundle.json`
+- **`replay`** — 先前探索轨迹的确定性重新运行
 
 ### `forge-sim studio`
 
-Launch the Studio dashboard for multi-run analysis.
+启动 Studio 仪表板进行多次运行分析。
 
 ```bash
 forge-sim studio
@@ -66,7 +68,7 @@ forge-sim studio
 
 ### `forge-sim report <runDir>`
 
-Generate a Markdown report from run artifacts.
+从运行工件生成 Markdown 报告。
 
 ```bash
 forge-sim report results/market-stress-ci/
@@ -74,7 +76,7 @@ forge-sim report results/market-stress-ci/
 
 ### `forge-sim dashboard <runDir>`
 
-Build a static HTML dashboard from run artifacts.
+从运行工件构建静态 HTML 仪表板。
 
 ```bash
 forge-sim dashboard results/market-stress-ci/
@@ -82,7 +84,7 @@ forge-sim dashboard results/market-stress-ci/
 
 ### `forge-sim serve <runDir>`
 
-Serve a run dashboard over HTTP.
+通过 HTTP 提供运行仪表板。
 
 ```bash
 forge-sim serve results/market-stress-ci/
@@ -90,7 +92,7 @@ forge-sim serve results/market-stress-ci/
 
 ### `forge-sim compare <runA> <runB>`
 
-Diff two runs — compare metrics, actions, and artifact hashes.
+比较两次运行 - 比较指标、操作和工件哈希。
 
 ```bash
 forge-sim compare results/run1 results/run2
@@ -98,7 +100,7 @@ forge-sim compare results/run1 results/run2
 
 ### `forge-sim sweep <scenario>`
 
-Multi-seed statistical analysis. Runs the same scenario across a range of seeds and aggregates results.
+多种子统计分析。在一系列种子中运行相同的场景并聚合结果。
 
 ```bash
 forge-sim sweep sim/scenarios/stress.ts --seeds 1..50
@@ -106,7 +108,7 @@ forge-sim sweep sim/scenarios/stress.ts --seeds 1..50
 
 ### `forge-sim matrix <scenario>`
 
-Multi-variant matrix comparison. Runs multiple parameter combinations and produces a comparison matrix.
+多变量矩阵比较。运行多个参数组合并生成比较矩阵。
 
 ```bash
 forge-sim matrix sim/scenarios/stress.ts
@@ -114,7 +116,7 @@ forge-sim matrix sim/scenarios/stress.ts
 
 ### `forge-sim extract-agent <bundle>`
 
-Generate a deterministic agent from a replay bundle. Useful for converting LLM exploration traces into reproducible test agents.
+从重播包生成确定性代理。对于将 LLM 探索痕迹转换为可重现的测试代理很有用。
 
 ```bash
 forge-sim extract-agent results/run/replay_bundle.json
@@ -122,7 +124,7 @@ forge-sim extract-agent results/run/replay_bundle.json
 
 ### `forge-sim doctor`
 
-Check that all dependencies (Node.js, Foundry, Anvil) are available and correctly configured.
+检查所有依赖项（Node.js、Foundry、Anvil）是否可用且配置正确。
 
 ```bash
 forge-sim doctor
@@ -130,7 +132,7 @@ forge-sim doctor
 
 ### `forge-sim types`
 
-Generate TypeScript types from Foundry artifacts.
+从 Foundry 工件生成 TypeScript 类型。
 
 ```bash
 forge-sim types
@@ -138,17 +140,19 @@ forge-sim types
 
 ---
 
-## CI Integration
+<a id="ci-integration"></a>
 
-AgentForge is designed for CI pipelines. Exit codes:
+## 持续集成集成
 
-| Code | Meaning |
+AgentForge 专为 CI 管道而设计。退出代码：
+
+| 错误代码 | 含义 |
 |------|---------|
-| `0` | All assertions passed |
-| `1` | One or more assertions failed |
-| `2` | Infrastructure error |
+| `0` | 所有断言均通过 |
+| `1` | 一个或多个断言失败 |
+| `2` | 基础设施错误 |
 
-Example GitHub Actions workflow:
+GitHub Actions 工作流程示例：
 
 ```yaml
 - name: Run simulations

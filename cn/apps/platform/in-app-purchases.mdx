@@ -1,21 +1,19 @@
 ---
 title: "应用内购买"
-description: "使用 @elata-biosciences/app- payment 在您的应用程序中销售一次性商品。"
+description: "使用 @elata-biosciences/app-payments在您的应用中销售一次性商品。"
 ---
 
 <a id="overview"></a>
 
 ## 概述
 
-`@elata-biosciences/app-payments` 让您的应用程序打开 Elata的结帐并
-检查用户拥有什么。 Elata 运行结帐，在 USDC中付款，并且
-记录所有权。您的应用程序永远不会接触钱包或付款详细信息。
+`@elata-biosciences/app-payments` 让您的应用打开 Elata 的结帐并检查用户拥有什么。 Elata 运行结账，在 USDC中付款，并记录所有权。您的应用程序永远不会接触钱包或付款详细信息。
 
 ```bash
 npm install @elata-biosciences/app-payments
 ```
 
-| 函数 | 返回 | 使用它来 |
+| 函数 | 返回值 | 用它来 |
 | --- | --- | --- |
 | `getCatalog(opts?)` | `Promise<CatalogItem[]>` | 列出应用程序的项目及其价格、标题和说明 |
 | `getOwnedItems(opts?)` | `Promise<number[]>` | 列出用户拥有的每个 `contentId`  |
@@ -26,15 +24,15 @@ npm install @elata-biosciences/app-payments
 
 ## 创建您的目录
 
-打开 **我的应用程序 → 您的应用程序 → 编辑 → 商务 → 产品**。所有者和授权团队成员可以自行创建和管理目录。
+打开 **我的应用程序→您的应用程序→编辑→商业→产品**。所有者和授权团队成员可以自行创建和管理目录。
 
-| 字段 | 输入内容 |
+| 字段 | 输入什么 |
 | --- | --- |
-| 标题 | 清晰的商品名称，最多 100 个字符 |
-| 描述 | 买家收到的内容，最多 500 个字符 |
-| 图片 URL | 可选 HTTP 或 HTTPS 图片 URL |
-| 价格 | 仪表板表单中人类可读的正数 USDC 金额 |
-| 活动 | 该商品是否在活动目录中可用 |
+| 标题 | 清晰的项目名称，最多 100 个字符 |
+| 说明 | 买家收到的内容，最多 500 个字符 |
+| 图片网址 | 可选的 HTTP 或 HTTPS 图像 URL |
+| 价格 | 仪表板表单中人类可读的正值 USDC 金额 |
+| 活跃 | 该商品是否在活动目录中可用 |
 
 保存产品，然后将其分配的 `contentId` 复制到您的集成中。标识符是稳定的且无法编辑。可以编辑或停用产品，但不能删除产品。停用会停止新的销售；继续应用现有所有者的权益，包括当该项目不再出现在活动目录中时。
 
@@ -48,7 +46,7 @@ npm install @elata-biosciences/app-payments
 
 <a id="the-correct-flow"></a>
 
-## 正确流程
+## 正确的流程
 
 首先确定您的用户界面的所有权，然后购买，然后应用权益。
 
@@ -92,27 +90,26 @@ async function buy(item) {
 }
 ```
 
-`requestPurchase` 记录*用户拥有一个项目。您的应用程序决定什么
-拥有它*确实*。
+`requestPurchase` 记录*用户拥有一个项目。您的应用程序决定拥有它*做什么*。
 
 ---
 
 <a id="things-to-know"></a>
 
-## 须知事项
+## 要知道的事情
 
 <AccordionGroup>
   <Accordion title="根据状态分支，从不在 txHash 上分支">
-如果用户已经拥有该商品，则 Elata 跳过付款并返回 `{ status: "success", txHash: "" }`。检查 `if (result.txHash)` 的代码将对此进行错误处理。
+如果用户已经拥有该物品，Elata 会跳过付款并返回 `{ status: "success", txHash: "" }`。检查 `if (result.txHash)` 的代码会对此进行错误处理。
   </Accordion>
   <Accordion title="两种价格格式">
-    `CatalogItem.priceUsdc` 采用 USDC **基本单位** （6 位小数）： `"50000"` 为 0.05 美元。 `RequestPurchaseInput.priceUsdc` 是自由格式的显示提示 Elata 会忽略。 Elata 始终按目录价格收费。
+`CatalogItem.priceUsdc` 采用 USDC **基本单位** （6 位小数）： `"50000"` 为 0.05 美元。 `RequestPurchaseInput.priceUsdc` 是 Elata 忽略的自由格式显示提示。 Elata 始终按目录价格收费。
   </Accordion>
   <Accordion title="物品是一次性解锁的">
 每件商品购买一次。物品不支持消耗品（每次使用支出余额）和定期计费。对于经常性收入，请使用 [订阅计划](/cn/apps/platform/subscriptions)。
   </Accordion>
   <Accordion title="超时">
-    `requestPurchase` 等待用户最多 5 分钟完成结账。 `getCatalog`、 `getOwnedItems`和 `hasItem` 默认为 10 秒。在 Elata之外，使用模拟主机进行本地测试。将所有权查询失败视为未知所有权：提供重试或登录操作，并且永远不要仅仅因为查询超时而授予付费权益。
+`requestPurchase` 等待用户最多 5 分钟完成结账。 `getCatalog`、 `getOwnedItems`和 `hasItem` 默认为 10 秒。在 Elata 之外，使用模拟主机进行本地测试。将所有权查询失败视为未知所有权：提供重试或登录操作，并且永远不要仅仅因为查询超时而授予付费权益。
   </Accordion>
 </AccordionGroup>
 
@@ -124,13 +121,13 @@ async function buy(item) {
 
 仅使用 `AppPaymentsError`拒绝呼叫，其中有 `code`：
 
-| Code | Meaning |
+| 错误代码 | 含义 |
 | --- | --- |
 | `invalid_input` | `contentId` 不是非负整数，或者选项类型错误 |
-| `no_window` | 未在浏览器中运行 |
-| `no_parent` | 不在 Elata的框架 |内运行
+| `no_window` | 不在浏览器中运行 |
+| `no_parent` | 不在 Elata 的框架内运行 |
 | `no_crypto` | `crypto.randomUUID` 不可用 |
-| `timeout` | 未及时回复 |
+| `timeout` | 没有及时回复 |
 | `not_authenticated` | 用户未登录（所有权查询） |
 | `fetch_failed` | Elata 无法查找所有权 |
 
@@ -142,10 +139,10 @@ async function buy(item) {
 
 ## 安全模型
 
-- Elata的购买记录是服务器端支付验证后创建的。您的 UI 应使用主机所有权查询作为其事实来源。
+- Elata的购买记录是在服务器端支付验证后创建的。您的 UI 应使用主机所有权查询作为其事实来源。
 - 您的应用 **永远不会看到** 付款详细信息、钱包密钥或会话令牌。
 - 使用相同的 `requestId` 重放录音请求是幂等的。这并不意味着发送第二次链上支付是安全的。
-- 分割器扣除配置的平台费用，并将创建者的份额发送到支付钱包。请参阅 [收入和支出](/cn/apps/operate/revenue-and-payouts)。
+- 拆分器扣除配置的平台费用并将创建者的份额发送到支付钱包。请参阅 [收入和支出](/cn/apps/operate/revenue-and-payouts)。
 
 ---
 
@@ -154,13 +151,13 @@ async function buy(item) {
 ## 尝试一下
 
 - [`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo)：一个带有内置模拟商店的独立 HTML 文件，因此您可以在本地运行完整流程。
-- [ npm](https://www.npmjs.com/package/@elata-biosciences/app-payments)上的软件包自述文件
+- [npm 上的软件包自述文件](https://www.npmjs.com/package/@elata-biosciences/app-payments)
 
 <a id="payment-and-ui-states"></a>
 
 ## 付款和 UI 状态
 
-分别处理成功、取消和错误。防止重复购买尝试。成功付款和记录权利是分开的步骤； Elata 报告成功后才能解锁。
+分别处理成功、取消和错误。防止重复购买尝试。成功付款和记录权利是分开的步骤；仅在 Elata 报告成功后解锁。
 
 如果付款已结算但记录失败，请保留交易详细信息并将用户引导至 [计费帮助](/cn/users/billing-and-purchases#payment-problems-and-history)。不要自动发送另一笔付款。签出会重试临时索引延迟，但不能保证从每次记录失败中恢复。
 
@@ -173,9 +170,9 @@ async function buy(item) {
 ## 测试您的集成
 
 - 重新打开应用程序并恢复主机所有权中已拥有的权益。
-- 显示 **使用** 或 **拥有** 购买物品， **购买** 购买可用的未拥有物品。
-- 使用空交易哈希处理成功的已拥有响应。
+- 显示 **使用** 或 **拥有** 购买物品， **购买** 获取可用的未拥有物品。
+- 使用空事务哈希处理成功的已拥有响应。
 - 处理注销、取消、资金不足、无法结帐和查找错误状态。
-- 停用项目并验证现有所有者是否仍然可以使用其权益。
+- 停用某个项目并验证现有所有者是否仍然可以使用其权益。
 
 对于订阅访问，请使用 [订阅](/cn/apps/platform/subscriptions)，而不是通过重复购买商品来模拟定期计费。

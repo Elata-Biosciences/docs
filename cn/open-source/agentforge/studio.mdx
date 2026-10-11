@@ -1,14 +1,14 @@
 ---
-title: "Studio Dashboard"
-tag: "Archived"
-description: "Multi-run analysis dashboard with charts, gossip analysis, and ML toolkit"
+title: "工作室仪表板"
+tag: "已归档"
+description: "带有图表、八卦分析和 ML 工具包的多运行分析仪表板"
 ---
 
 <a id="overview"></a>
 
 ## 概述
 
-AgentForge Studio is a Bloomberg Terminal-inspired dashboard for analyzing simulation runs. Launch it with:
+AgentForge Studio 是一个受彭博终端启发的仪表板，用于分析模拟运行。启动它：
 
 ```bash
 forge-sim studio
@@ -16,69 +16,87 @@ forge-sim studio
 
 ---
 
-## Dashboard Tabs
+<a id="dashboard-tabs"></a>
 
-### Session Management
+## 仪表板选项卡
 
-Browse all simulation runs, build or open dashboards, and download artifacts. Each run is identified by its scenario name, seed, and timestamp.
+<a id="session-management"></a>
 
-### Financial Charts
+### 会话管理
 
-Interactive time-series charts powered by Lightweight Charts:
+浏览所有模拟运行、构建或打开仪表板以及下载工件。每次运行均由其场景名称、种子和时间戳来标识。
 
-- Price, volume, and custom metric visualization
-- Zoom, pan, and crosshair tooltips
-- Multi-metric overlay for correlation analysis
+<a id="financial-charts"></a>
 
-### Timeline Inspector
+### 金融图表
 
-Virtualized action log showing every agent action across all ticks:
+由轻量级图表提供支持的交互式时间序列图表：
 
-- Filter by agent, action type, or tick range
-- JSON inspection popovers for action parameters and results
-- Color-coded by action outcome (success/failure)
+- 价格、数量和自定义指标可视化
+- 缩放、平移和十字准线工具提示
+- 用于相关性分析的多指标叠加
 
-### Gossip Analysis
+<a id="timeline-inspector"></a>
 
-Channel-level message flow visualization:
+### 时间线检查员
 
-- Per-channel message volume and timing
-- Author tracking and delivery status
-- Credibility score distribution
-- Strategy channel isolation view
+虚拟化操作日志显示所有代理的所有操作：
 
-### Agent Stats
+- 按代理、操作类型或刻度范围过滤
+- 用于操作参数和结果的 JSON 检查弹出窗口
+- 按操作结果（成功/失败）进行颜色编码
 
-Per-agent performance breakdown:
+<a id="gossip-analysis"></a>
 
-- Action counts and success rates
-- Revenue/PnL tracking (when applicable)
-- Drill-down into individual agent histories
+### 八卦分析
 
-### ML Toolkit
+通道级消息流可视化：
 
-Server-side statistical analysis tools:
+- 每个通道的消息量和时间
+- 作者跟踪和交付状态
+- 可信度分数分布
+- 策略通道隔离视图
 
-- **Regression** — fit models to metric time series
-- **PCA** — dimensionality reduction across agent behaviors
-- **K-means clustering** — group runs or agents by behavior patterns
-- **Cross-run comparison** — overlay metrics from multiple seeds or variants
+<a id="agent-stats"></a>
 
-### Report
+### 代理统计
 
-Auto-generated Markdown report with:
+每个代理的绩效细分：
 
-- Run summary and configuration
-- Key metric highlights
-- Assertion results
-- Notable agent behaviors
+- 行动次数和成功率
+- 收入/损益跟踪（如适用）
+- 深入了解个人代理历史记录
+
+<a id="ml-toolkit"></a>
+
+### 机器学习工具包
+
+服务器端统计分析工具：
+
+- **回归** — 将模型拟合到公制时间序列
+- **PCA** — 代理行为的降维
+- **K-means 聚类** — 按行为模式对运行或代理进行分组
+- **交叉运行比较** — 来自多个种子或变体的叠加指标
+
+<a id="report"></a>
+
+### 报告
+
+自动生成的 Markdown 报告包含：
+
+- 运行摘要和配置
+- 关键指标亮点
+- 断言结果
+- 值得注意的代理人行为
 
 ---
 
-## Keyboard Navigation
+<a id="keyboard-navigation"></a>
 
-Studio is designed for keyboard-driven use:
+## 键盘导航
 
-- Tab navigation between panels
-- Command palette for quick access to runs and tools
-- Terminal-inspired aesthetic with monospace typography
+Studio 专为键盘驱动使用而设计：
+
+- 面板之间的选项卡导航
+- 用于快速访问运行和工具的命令面板
+- 受终端启发的美学与等宽排版

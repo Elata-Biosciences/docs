@@ -1,21 +1,23 @@
 ---
-title: "Core Concepts"
-tag: "Archived"
-description: "Scenarios, agents, ticks, packs, and determinism in AgentForge"
+title: "核心概念"
+tag: "已归档"
+description: "AgentForge 中的场景、代理、蜱虫、包和确定性"
 ---
 
-## Scenarios
+<a id="scenarios"></a>
 
-A scenario is the top-level configuration for a simulation run. It defines:
+## 应用场景
 
-- **`name`** — identifier for the scenario
-- **`seed`** — deterministic RNG seed (same seed = same results)
-- **`ticks`** — number of simulation steps
-- **`tickSeconds`** — simulated time per tick (e.g., 3600 = 1 hour)
-- **`pack`** — protocol adapter that sets up world state
-- **`agents`** — list of agent types, counts, and parameters
-- **`assertions`** — post-run validation checks
-- **`gossip`** — channel definitions, budgets, and trust settings
+场景是模拟运行的顶级配置。它定义：
+
+- **`name`** — 场景标识符
+- **`seed`** — 确定性 RNG 种子（相同种子 = 相同结果）
+- **`ticks`** — 模拟步骤数
+- **`tickSeconds`** — 每个刻度的模拟时间（例如，3600 = 1 小时）
+- **`pack`** — 设置世界状态的协议适配器
+- **`agents`** — 代理类型、计数和参数列表
+- **`assertions`** — 运行后验证检查
+- **`gossip`** — 渠道定义、预算和信任设置
 
 ```typescript
 import { defineScenario } from '@elata-biosciences/agentforge';
@@ -37,22 +39,26 @@ export default defineScenario({
 
 ---
 
-## Ticks
+<a id="ticks"></a>
 
-A tick is one simulation step. During each tick:
+## 蜱虫
 
-1. The engine calls `step(ctx)` on every agent in order
-2. Each agent returns zero, one, or up to three actions
-3. The pack executes each action against the protocol state
-4. Metrics, gossip, and artifacts are recorded
+一个勾号是一个模拟步骤。在每个刻度期间：
 
-Tick ordering can be configured: **priority-based** (default), **random**, or **custom**. The ordering policy affects outcomes — see the mechanism experiments for analysis.
+1. 引擎按顺序调用 `step(ctx)` 
+2. 每个代理返回零个、一个或最多三个操作
+3. 包根据协议状态执行每个操作
+4. 记录指标、八卦和工件
+
+可以配置刻度排序： **基于优先级** （默认）、 **随机**或 **自定义**。排序策略影响结果——参见机制实验进行分析。
 
 ---
 
-## Agents
+<a id="agents"></a>
 
-Agents are autonomous actors. Every agent extends `BaseAgent` and implements `step()`:
+## 代理商
+
+代理人是自主行动者。每个代理都会扩展 `BaseAgent` 并实现 `step()`：
 
 ```typescript
 export class MyAgent extends BaseAgent {
@@ -62,31 +68,37 @@ export class MyAgent extends BaseAgent {
 }
 ```
 
-### Agent Context
+<a id="agent-context"></a>
 
-Each tick, agents receive a `TickContext` with:
+### 代理上下文
 
-| Property | Description |
+每个刻度，代理都会收到 `TickContext` ，其中包含：
+
+| 属性 | 说明 |
 |----------|-------------|
-| `ctx.rng` | Deterministic random number generator |
-| `ctx.world` | Current protocol state |
-| `ctx.gossip` | Read and post gossip messages |
-| `ctx.capabilities` | Available contracts, tools, and action templates |
-| `ctx.tick` | Current tick number |
-| `ctx.tickSeconds` | Simulated seconds per tick |
+| `ctx.rng` | 确定性随机数生成器 |
+| `ctx.world` | 当前协议状态 |
+| `ctx.gossip` | 阅读和发布八卦消息 |
+| `ctx.capabilities` | 可用的合同、工具和操作模板 |
+| `ctx.tick` | 当前刻度数 |
+| `ctx.tickSeconds` | 每个刻度的模拟秒数 |
 
-### Agent State
+<a id="agent-state"></a>
 
-Agents can persist state across ticks:
+### 代理状态
 
-- **`this.remember(key, value)`** — store a value
-- **`this.recall(key)`** — retrieve a stored value
-- **`this.setCooldown(name, ticks)`** — rate-limit an action
-- **`this.isOnCooldown(name)`** — check cooldown status
+代理可以跨刻度保持状态：
 
-### Multi-Action Support
+- **`this.remember(key, value)`** — 存储一个值
+- **`this.recall(key)`** — 检索存储的值
+- **`this.setCooldown(name, ticks)`** — 对操作进行速率限制
+- **`this.isOnCooldown(name)`** — 检查冷却状态
 
-Agents can return an array of up to 3 actions per tick. The engine executes each action in order within the same tick:
+<a id="multi-action-support"></a>
+
+### 多操作支持
+
+代理每次可以返回最多包含 3 个操作的数组。引擎在同一时间周期内按顺序执行每个操作：
 
 ```typescript
 return [
@@ -95,38 +107,44 @@ return [
 ];
 ```
 
-### Persona LLM Agents
+<a id="persona-llm-agents"></a>
 
-`PersonaLlmAgentBase` provides a reusable base for LLM-driven agents with:
+### 角色法学硕士代理人
 
-- Persona profile (id, style, goals, risk profile, tool preferences)
-- Structured prompt assembly with full capability manifest context
-- Two-stage OODA loop: plan then act, with fallback to single-shot parsing
-- Schema-validated action intents via Zod
+`PersonaLlmAgentBase` 为 LLM 驱动的代理提供可重用的基础：
 
----
-
-## Packs
-
-Packs are protocol adapters. They bridge AgentForge to your smart contracts by implementing the `Pack` interface:
-
-- **`setup()`** — deploy contracts, initialize state
-- **`executeAction(action)`** — execute an agent's action against the protocol
-- **`getWorldState()`** — return current protocol state for agents to observe
-- **`getCapabilityManifest()`** — describe available contracts, functions, and action templates
-
-The built-in `ToyPack` provides a simple price-simulation environment for getting started.
+- 角色概况（身份、风格、目标、风险概况、工具偏好）
+- 具有完整功能清单上下文的结构化提示程序集
+- 两阶段 OODA 循环：计划然后行动，回退到单次解析
+- 通过 Zod 进行架构验证的操作意图
 
 ---
 
-## Gossip
+<a id="packs"></a>
 
-The gossip bus enables inter-agent communication:
+## 包
 
-- **Channels** — global broadcast or scoped strategy channels with membership lists
-- **Free-form messages** — text payloads with optional `credibilityPrior` scores (0-1)
-- **Budgets** — configurable `maxPostsPerTick` and `maxReadsPerTick` per agent
-- **Cooldowns** — per-channel `postCooldownTicks` to rate-limit posting
+包是协议适配器。他们通过实现 `Pack` 接口将 AgentForge 与您的智能合约连接起来：
+
+- **`setup()`** — 部署合约，初始化状态
+- **`executeAction(action)`** — 根据协议执行代理的操作
+- **`getWorldState()`** — 返回当前协议状态以供代理观察
+- **`getCapabilityManifest()`** — 描述可用的合约、函数和操作模板
+
+内置 `ToyPack` 提供了一个简单的价格模拟环境以供入门。
+
+---
+
+<a id="gossip"></a>
+
+## 八卦
+
+gossip 总线支持代理间通信：
+
+- **频道** — 带会员列表的全球广播或范围策略频道
+- **自由格式消息** — 带有可选 `credibilityPrior` 分数 (0-1) 的文本负载
+- **预算** — 每个代理可配置 `maxPostsPerTick` 和 `maxReadsPerTick` 
+- **冷却时间** — 每个频道 `postCooldownTicks` 到速率限制发帖
 
 ```typescript
 gossip: {
@@ -138,17 +156,19 @@ gossip: {
 }
 ```
 
-Strategy channels are useful for LLM-only coordination without flooding deterministic agents.
+策略通道对于仅限 LLM 的协调非常有用，不会淹没确定性代理。
 
 ---
 
-## Determinism
+<a id="determinism"></a>
 
-Same seed + same scenario = identical results. All randomness flows through a seeded RNG. This enables:
+## 决定论
 
-- **Reproducible CI** — assertions pass or fail consistently
-- **Replay** — re-run exploration traces deterministically against updated contracts
-- **Comparison** — diff two runs with `forge-sim compare`
+相同的种子+相同的场景=相同的结果。所有随机性都流经种子 RNG。这使得：
+
+- **可重现的 CI** — 断言一致通过或失败
+- **重播** — 根据更新的合约确定性地重新运行探索跟踪
+- **比较** — 比较两次运行与 `forge-sim compare`
 
 ```bash
 forge-sim run --toy --seed 123 --out run1 --ci
@@ -158,15 +178,17 @@ forge-sim compare run1/toy-market-ci run2/toy-market-ci
 
 ---
 
-## Exploration / Replay Workflow
+<a id="exploration--replay-workflow"></a>
 
-1. **Explore** — run with LLM agents in exploration mode to discover behaviors
-2. **Capture** — a `replay_bundle.json` records the full decision trace
-3. **Replay** — re-run the exact same trace deterministically against updated contracts
+## 探索/重播工作流程
+
+1. **探索** — 在探索模式下与 LLM 代理一起运行以发现行为
+2. **捕获** — `replay_bundle.json` 记录完整的决策跟踪
+3. **重播** — 针对更新的合约确定性地重新运行完全相同的跟踪
 
 ```bash
 forge-sim run scenario.ts --mode exploration
 forge-sim run scenario.ts --mode replay --replay-bundle results/run/replay_bundle.json
 ```
 
-This allows you to discover emergent attack vectors with LLMs, then regression-test them after contract changes.
+这使您可以通过法学硕士发现紧急攻击向量，然后在合同更改后对它们进行回归测试。
