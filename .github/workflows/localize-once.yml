@@ -1,0 +1,31 @@
+name: One-time documentation localization
+on:
+  push:
+    branches: [docs/chinese-spanish-2026-10-11]
+    paths: [scripts/localize-docs.cjs, scripts/localization-input.json, .github/workflows/localize-once.yml]
+permissions:
+  contents: write
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/chinese-spanish-2026-10-11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Translate public documentation and validate structural parity
+        run: node scripts/localize-docs.cjs
+      - name: Persist translation progress on the task branch
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cn es docs.json
+          if [ -f scripts/localization-cache.json ]; then git add scripts/localization-cache.json; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'docs: synchronize Chinese and add Spanish translations'
+            git push origin HEAD:docs/chinese-spanish-2026-10-11
+          fi
