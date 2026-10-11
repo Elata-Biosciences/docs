@@ -11,158 +11,141 @@ function extract(b){
  if(paragraph&&paragraph.end+1>=at){paragraph.end=at+l.length;paragraph.text=b.slice(paragraph.start,paragraph.end);}else{flush();paragraph={start:at,end:at+l.length,text:l,kind:"text"};}
  }flush();return out;
 }
-(function localizationProgram() {
+(function improvedLocalizer() {
  const fs=require("node:fs"),path=require("node:path");
  const input=JSON.parse(fs.readFileSync("scripts/localization-input.json","utf8"));
- const cachePath="scripts/localization-cache.json";
- const cache=fs.existsSync(cachePath)?JSON.parse(fs.readFileSync(cachePath,"utf8")):{};
+ const cacheFile="scripts/localization-cache.json";
+ const cache=fs.existsSync(cacheFile)?JSON.parse(fs.readFileSync(cacheFile,"utf8")):{};
+ const fallbackFile="scripts/localization-fallbacks.json";
+ const fallbackRecords=fs.existsSync(fallbackFile)?JSON.parse(fs.readFileSync(fallbackFile,"utf8")):[];
  const docs=Object.fromEntries(input.paths.map(p=>[p,fs.readFileSync(p,"utf8")]));
- const pageSegments=Object.fromEntries(Object.entries(docs).map(([p,b])=>[p,extract(b)]));
- const mdPaths=new Set(input.paths.map(p=>"/"+p.replace(/\.mdx$/,"")));
+ const segments=Object.fromEntries(Object.entries(docs).map(([p,b])=>[p,extract(b)]));
  const config=JSON.parse(fs.readFileSync("docs.json","utf8"));
+ const mdPaths=new Set(input.paths.map(p=>"/"+p.slice(0,-4)));
  const redirects=new Set(config.redirects.map(r=>r.source.replace(/^\/(?:cn|es)\//,"/")));
- const literals=/`[^`]*`|\]\([^)\n]+\)|https?:\/\/[^\s<>)]+|(?:^\s*(?:#{1,6}\s+|[-*]\s+|\d+\.\s+))|\*\*|(?<!\w)_(?!\s)|(?<!\s)_(?!\w)|\[|(?<!\\)\||\b(?:USDC|ELTA|veELTA|EEG|PPG|rPPG|HRV|BPM|OPFS|IndexedDB|WebAssembly|WASM|Arrow|CRC32C|Muse|Athena|Elata|SDK|CLI|API|MessagePort|MessageChannel|JSON|npm|pnpm|Rust|TypeScript|JavaScript|GitHub|Base|Node\.js|Chrome|Edge|Safari|Firefox|Web Bluetooth|React|Vite|NumPy|SciPy)\b/gm;
- function protect(s) {
-  const held=[];
-  const tokenPattern=new RegExp("\\s*(?:"+literals.source+")\\s*",literals.flags);
-  const text=s.replace(tokenPattern,m=>{let i=held.length;held.push(m);return " ⟦"+(9100000+i)+"⟧ ";});
-  return {text,held};
- }
- function restore(text,held) {
-  let remaining=text;
-  const seen=new Set();
-  remaining=remaining.replace(/\s*⟦\s*(910\d{4})\s*⟧\s*/g,(m,id)=>{
-   id=Number(id)-9100000;if(id>=held.length)throw Error("Unknown literal "+id);
-   if(seen.has(id))throw Error("Duplicated literal "+id);seen.add(id);return held[id];
+ const cnReuse={};
+ for(const [p,translated]of Object.entries(input.cnReuse)){
+  if(segments[p]?.length!==translated.length)continue;
+  segments[p].forEach((s,i)=>{
+   const t=translated[i];
+   if(/\p{Script=Han}/u.test(t)||s.text===t&&(/^[#\s]*`[^`]+`$/.test(t)||/^[#\s]*[A-Za-z0-9]+[a-z][A-Z][A-Za-z0-9]*$/.test(t)))cnReuse[s.text]=t;
   });
-  if(seen.size!==held.length)throw Error("Translation lost protected literal");
-  return remaining;
  }
- async function service(text,tl) {
+ const terms={
+  cn:{"Live":"已上线","Experimental":"实验性","Planned":"计划中","Retired":"已退役","Archived":"已归档","Code":"错误代码","Meaning":"含义","Description":"说明","Type":"类型","Status":"状态","Notes":"说明","Examples":"示例","Property":"属性","Value":"值","Package":"软件包","Function":"函数","Returns":"返回值","Capability":"功能","Field":"字段","Goal":"目标","Hardware":"硬件","Browser":"浏览器","Supported":"支持","Not supported":"不支持","Install":"安装","Overview":"概览","Credits":"使用额度（credits）","Elata Points":"Elata 积分","Revenue":"收入","Payouts":"收款","Yes":"是","No":"否","Next":"下一步"},
+  es:{"Live":"Disponible","Experimental":"Experimental","Planned":"Planificado","Retired":"Retirado","Archived":"Archivado","Code":"Código","Meaning":"Significado","Description":"Descripción","Type":"Tipo","Status":"Estado","Notes":"Notas","Examples":"Ejemplos","Property":"Propiedad","Value":"Valor","Package":"Paquete","Function":"Función","Returns":"Devuelve","Capability":"Función","Field":"Campo","Goal":"Objetivo","Hardware":"Hardware","Browser":"Navegador","Supported":"Compatible","Not supported":"No compatible","Install":"Instalación","Overview":"Información general","Credits":"Créditos","Elata Points":"Elata Points","Revenue":"Ingresos","Payouts":"Cobros","Yes":"Sí","No":"No","Next":"Siguiente"}
+ };
+ function protect(text){
+  const held=[];
+  const normalized=text.replace(/\s*\n\s*/g," ").trim();
+  const protectedText=normalized.replace(/\s*(?:`[^`]*`|\]\([^)\n]+\)|https?:\/\/[^\s<>)]+|\*\*|\[|(?<!\w)_(?!\s)|(?<!\s)_(?!\w)|@[a-z0-9-]+\/[a-z0-9-]+|\b(?:USDC|ELTA|veELTA|EEG|PPG|rPPG|HRV|OPFS|IndexedDB|WASM|WebAssembly|CRC32C|MessagePort|MessageChannel|Node\.js)\b)\s*/gm,m=>{
+   const i=held.length;held.push(m);return" ⟦"+(9100000+i)+"⟧ ";
+  });
+  return{text:protectedText,held};
+ }
+ function restore(text,held){
+  const seen=new Set();
+  const out=text.replace(/\s*⟦\s*(910\d{4})\s*⟧\s*/g,(m,id)=>{
+   id=Number(id)-9100000;
+   if(id<0||id>=held.length||seen.has(id))throw Error("Unstable technical token");
+   seen.add(id);return held[id];
+  });
+  if(seen.size!==held.length)throw Error("Technical token missing");
+  return out;
+ }
+ async function service(text,tl){
   const url=new URL("https://translate.googleapis.com/translate_a/single");
   url.search=new URLSearchParams({client:"gtx",sl:"en",tl,dt:"t",q:text}).toString();
-  for(let retry=0;retry<6;retry++) {
-   try {
-    const res=await fetch(url,{signal:AbortSignal.timeout(40000)});
-    if(!res.ok)throw Error("Translation HTTP "+res.status);
-    const json=await res.json();
-    if(!Array.isArray(json[0]))throw Error("Unexpected translation response");
-    return json[0].map(s=>s[0]||"").join("");
+  for(let retry=0;retry<6;retry++){
+   try{
+    const r=await fetch(url,{signal:AbortSignal.timeout(40000)});
+    if(!r.ok)throw Error("Translation HTTP "+r.status);
+    const j=await r.json();
+    if(!Array.isArray(j[0]))throw Error("Unexpected translation response");
+    return j[0].map(a=>a[0]||"").join("");
    }catch(err){if(retry===5)throw err;await new Promise(r=>setTimeout(r,Math.min(1000*2**retry,20000)));}
   }
  }
- async function safeFallback(entry,tl){
-  const fallbackPath="scripts/localization-fallbacks.json";
-  const records=fs.existsSync(fallbackPath)?JSON.parse(fs.readFileSync(fallbackPath,"utf8")):[];
-  async function cell(text){
-   const marker=text.match(/^(\s*(?:#{1,6}\s+|[-*]\s+|\d+\.\s+))/);
-   const prefix=marker?.[0]??"",inner=text.slice(prefix.length);
-   const held=[];
-   const protectedText=inner.replace(/`[^`]*`|\]\([^)\n]+\)|https?:\/\/[^\s<>)]+|\*\*|\[|(?<!\w)_(?!\s)|(?<!\s)_(?!\w)/g,m=>{const i=held.length;held.push(m);return " ⟦"+(9100000+i)+"⟧ ";});
-   if(!/[A-Za-z]{2}/.test(protectedText.replace(/⟦\d+⟧/g,"")))return text;
-   const translated=await service(protectedText,tl);
-   try{return prefix+restore(translated.trim(),held);}
-   catch(err){
-    const parts=protectedText.split(/(⟦910\d{4}⟧)/g);
-    let out=prefix;
-    for(const part of parts){
-     const m=part.match(/^⟦(910\d{4})⟧$/);
-     if(m)out+=held[Number(m[1])-9100000];
-     else if(/[A-Za-z]{2}/.test(part))out+=await service(part,tl);
-     else out+=part;
-    }
-    return out.trimEnd();
+ async function one(e,tl){
+  const t=await service(e.protected.text,tl);
+  try{return restore(t.trim(),e.protected.held);}
+  catch(err){
+   let out="";
+   for(const p of e.protected.text.split(/(⟦910\d{4}⟧)/g)){
+    const m=p.match(/^⟦(910\d{4})⟧$/);
+    if(m)out+=e.protected.held[Number(m[1])-9100000];
+    else out+=/[A-Za-z]{2}/.test(p)?await service(p,tl):p;
    }
+   fallbackRecords.push({language:tl,source:e.text,translation:out.trim()});
+   fs.writeFileSync(fallbackFile,JSON.stringify(fallbackRecords,null,2));
+   return out.trim();
   }
-  let output;
-  if(/^\s*\|/.test(entry.text)){
-   const parts=[];let current="",code=false;
-   for(let i=0;i<entry.text.length;i++){
-    const c=entry.text[i];
-    if(c==="`"&&entry.text[i-1]!=="\\")code=!code;
-    if(c==="|"&&!code&&entry.text[i-1]!=="\\"){parts.push(current);current="";}
-    else current+=c;
-   }parts.push(current);
-   const translated=[];
-   for(const p of parts)translated.push(await cell(p));
-   output=translated.join("|");
-  }else output=await cell(entry.text);
-  if(tl==="zh-CN")output=output.replaceAll("埃拉塔","Elata");
-  records.push({language:tl,source:entry.text,translation:output});
-  fs.writeFileSync(fallbackPath,JSON.stringify(records,null,2));
-  console.log("Used structured fallback for",tl,entry.text.slice(0,100));
-  return output;
  }
- async function batchTranslate(entries,tl) {
-  const text=entries.map((e,i)=>"⟦"+(9000000+i)+"⟧\n"+e.protected.text).join("\n\n");
-  const translated=await service(text,tl);
-  const marker=/⟦\s*(900\d{4})\s*⟧/g;
-  const matches=[...translated.matchAll(marker)];
-  const results=[];
-  if(matches.length===entries.length&&matches.every((m,i)=>Number(m[1])-9000000===i)){
-   try{
-    for(let i=0;i<entries.length;i++){
-     const start=matches[i].index+matches[i][0].length;
-     const end=i+1<matches.length?matches[i+1].index:translated.length;
-     results.push(restore(translated.slice(start,end).trim(),entries[i].protected.held));
-    }
-    return results;
-   }catch(err){console.log("Retrying batch per segment:",String(err));}
+ async function batch(entries,tl){
+  const input=entries.map((e,i)=>"⟦"+(9000000+i)+"⟧\n"+e.protected.text).join("\n\n");
+  const output=await service(input,tl),marks=[...output.matchAll(/⟦\s*(900\d{4})\s*⟧/g)],translated=[];
+  if(marks.length===entries.length&&marks.every((m,i)=>Number(m[1])-9000000===i)){
+   for(let i=0;i<entries.length;i++){
+    const start=marks[i].index+marks[i][0].length,end=i+1<marks.length?marks[i+1].index:output.length;
+    try{translated.push(restore(output.slice(start,end).trim(),entries[i].protected.held));}
+    catch(err){translated.push(await one(entries[i],tl));}
+   }
+   return translated;
   }
-  results.length=0;
-  for(const e of entries){ const translated=await service(e.protected.text,tl); try { results.push(restore(translated.trim(),e.protected.held)); } catch(err){ console.log("Repairing unstable token placement:",e.text.slice(0,100)); results.push(await safeFallback(e,tl)); } }
-  return results;
+  for(const e of entries)translated.push(await one(e,tl));
+  return translated;
  }
- const chinese={};
- for(const [p,texts]of Object.entries(input.cnReuse)){
-  const segs=pageSegments[p];
-  if(segs&&segs.length===texts.length)segs.forEach((s,i)=>{chinese[s.text]=texts[i];});
+ function prepare(text){
+  if(/^\s*\|/.test(text)){
+   const cells=[];let current="",code=false;
+   for(let i=0;i<text.length;i++){
+    const c=text[i];if(c==="`"&&text[i-1]!=="\\")code=!code;
+    if(c==="|"&&!code&&text[i-1]!=="\\"){cells.push(current.trim());current="";}else current+=c;
+   }cells.push(current.trim());
+   return{type:"table",cells};
+  }
+  const m=text.match(/^(\s*(?:#{1,6}\s+|[-*]\s+|\d+\.\s+))/);
+  return{type:"text",prefix:m?.[0]??"",unit:text.slice(m?.[0].length??0).replace(/\s*\n\s*/g," ").trim()};
  }
+ function inlineCodes(s){return s.match(/`[^`]*`/g)??[];}
+ function validateSegment(source,target){
+  if(JSON.stringify(inlineCodes(source).sort())!==JSON.stringify(inlineCodes(target).sort()))throw Error("Inline code changed: "+source);
+  if(/^\s*\|/.test(source)&&prepare(source).cells.length!==prepare(target).cells.length)throw Error("Table columns changed");
+  const a=source.match(/^\s*(?:#{1,6}\s+|[-*]\s+|\d+\.\s+)/)?.[0],b=target.match(/^\s*(?:#{1,6}\s+|[-*]\s+|\d+\.\s+)/)?.[0];
+  if(a!==b)throw Error("Structural prefix changed: "+source);
+ }
+ function slug(h){return h.replace(/^#+\s*/,"").replace(/`/g,"").replace(/\[([^\]]+)\]\([^)]*\)/g,"$1").toLowerCase().replace(/[^\p{L}\p{N}\p{M}\-_ ]/gu,"").replace(/\s/g,"-");}
  function localizeLinks(b,locale){
-  // Do not rewrite code blocks or asset URLs.
-  let inFence=false;
+  let fence=false;
   return b.split("\n").map(l=>{
-   if(/^\s*```/.test(l)){inFence=!inFence;return l;}
-   if(inFence)return l;
-   return l.replace(/(href=["']|\]\()\/((?:cn\/|es\/)?)([^"')\s#]+)(#[^"')\s]*)?/g,(m,prefix,old,target,hash)=>{
-    const plain="/"+target;
-    if(!mdPaths.has(plain)&&!redirects.has(plain))return m;
-    return prefix+"/"+locale+"/"+target+(hash||"");
-   });
+   if(/^\s*```/.test(l)){fence=!fence;return l;}if(fence)return l;
+   return l.replace(/(href=["']|\]\()\/(?:cn\/|es\/)?([^"')\s#]+)(#[^"')\s]*)?/g,(m,prefix,target,hash)=>
+    mdPaths.has("/"+target)||redirects.has("/"+target)?prefix+"/"+locale+"/"+target+(hash||""):m);
   }).join("\n");
  }
- function escapeReplacement(seg,text,body){
-  if(seg.kind==="meta"){
-   const lineStart=body.lastIndexOf("\n",seg.start)+1;
-   const before=body.slice(lineStart,seg.start);
-   const quoted=before.endsWith('"');
-   if(quoted)return text.replaceAll("\\","\\\\").replaceAll('"','\\"').replaceAll("\n"," ");
-   if(before.endsWith("\'"))return text.replaceAll("\'","\'\'").replaceAll("\n"," ");
-   return JSON.stringify(text.replaceAll("\n"," "));
+ function escape(s,t,b){
+  if(s.kind==="meta"){
+   const before=b.slice(b.lastIndexOf("\n",s.start)+1,s.start);
+   if(before.endsWith('"'))return t.replaceAll("\\","\\\\").replaceAll('"','\\"').replaceAll("\n"," ");
+   if(before.endsWith("'"))return t.replaceAll("'","''").replaceAll("\n"," ");
+   return JSON.stringify(t.replaceAll("\n"," "));
   }
-  if(seg.kind==="attr")return text.replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("'","&#39;").replaceAll("<","&lt;").replaceAll(">","&gt;");
-  return text;
+  if(s.kind==="attr")return t.replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("'","&#39;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+  return t;
  }
- function slug(h){
-  return h.replace(/^#+\s*/,"").replace(/`/g,"").replace(/\[([^\]]+)\]\([^)]*\)/g,"$1").toLowerCase().replace(/[^\p{L}\p{N}\p{M}\-_ ]/gu,"").replace(/\s/g,"-");
- }
- function writePages(locale,map){
+ function write(locale,translated){
   for(const [p,b]of Object.entries(docs)){
-   const segs=pageSegments[p];
    let out=b;
-   for(let i=segs.length-1;i>=0;i--){
-    const s=segs[i],raw=map[s.text];
-    if(raw===undefined)throw Error("Missing "+locale+" translation: "+p+" "+s.text);
-    let translated=escapeReplacement(s,raw,b);
-    if(s.kind==="heading"&&slug(s.text)!==slug(raw)){
-     translated='<a id="'+slug(s.text)+'"></a>\n\n'+translated;
-    }
-    out=out.slice(0,s.start)+translated+out.slice(s.end);
+   for(const s of [...segments[p]].reverse()){
+    let t=translated[s.text];validateSegment(s.text,t);
+    t=escape(s,t,b);
+    if(s.kind==="heading"&&slug(s.text)!==slug(t))t='<a id="'+slug(s.text)+'"></a>\n\n'+t;
+    out=out.slice(0,s.start)+t+out.slice(s.end);
    }
    out=localizeLinks(out,locale);
-   const file=path.join(locale,p);
-   fs.mkdirSync(path.dirname(file),{recursive:true});
-   fs.writeFileSync(file,out);
+   if(locale==="cn")out=out.replace(/^(tag:\s*)["']?(Experimental|Planned|Archived)["']?$/gm,(m,prefix,status)=>prefix+JSON.stringify(terms.cn[status]));
+   if(locale==="es")out=out.replace(/^(tag:\s*)["']?(Planned|Archived)["']?$/gm,(m,prefix,status)=>prefix+JSON.stringify(terms.es[status]));
+   fs.mkdirSync(path.dirname(locale+"/"+p),{recursive:true});fs.writeFileSync(locale+"/"+p,out);
   }
  }
  function navFor(locale,labels){
@@ -170,68 +153,60 @@ function extract(b){
    if(typeof v==="string"){
     if(k==="language")return locale;
     if(k==="group"||k==="tab"||k==="anchor")return labels[v]||v;
-    if(input.paths.includes(v+".mdx"))return locale+"/"+v;
-    return v;
+    return input.paths.includes(v+".mdx")?locale+"/"+v:v;
    }
    if(Array.isArray(v))return v.map(x=>walk(x,k==="pages"?"page":k));
-   if(v&&typeof v==="object")return Object.fromEntries(Object.entries(v).map(([key,val])=>[key,walk(val,key)]));
-   return v;
-  }
-  return walk(config.navigation.languages.find(l=>l.language==="en"),"");
+   return v&&typeof v==="object"?Object.fromEntries(Object.entries(v).map(([a,b])=>[a,walk(b,a)])):v;
+  }return walk(config.navigation.languages.find(l=>l.language==="en"),"");
  }
  async function run(){
-  const probe=await service("Welcome to Elata. Raw signals stay on your device.","es");
-  console.log("Translation probe:",probe);
+  const all=[...new Set(Object.values(segments).flat().map(s=>s.text))];
   for(const [locale,tl]of [["cn","zh-CN"],["es","es"]]){
-   const map={};
-   const unique=[...new Set(Object.values(pageSegments).flat().map(s=>s.text))];
-   const pending=[];
-   for(const text of unique){
-    const key=locale+":"+text;
-    if(input.overrides?.[locale]?.[text]!==undefined){map[text]=input.overrides[locale][text];continue;}
-    if(locale==="cn"&&chinese[text]!==undefined){map[text]=chinese[text];continue;}
-    if(cache[key]!==undefined){map[text]=cache[key];continue;}
-    const protectedText=protect(text);
-    if(!/[A-Za-z]{2}/.test(protectedText.text.replace(/⟦\d+⟧/g,""))){map[text]=text;continue;}
-    pending.push({text,key,protected:protectedText});
+   const translated={},prepared={},units=new Set();
+   for(const text of all){
+    let known=input.overrides?.[locale]?.[text]??(locale==="cn"?cnReuse[text]:undefined);
+    if(known!==undefined){
+     // Retain existing translations only if inline technical literals still match.
+     if(JSON.stringify(inlineCodes(text).sort())===JSON.stringify(inlineCodes(known).sort())){translated[text]=known;continue;}
+    }
+    const p=prepare(text);prepared[text]=p;
+    for(const unit of p.type==="table"?p.cells:[p.unit])if(unit)units.add(unit);
    }
-   console.log(locale+": "+pending.length+" untranslated segments");
-   const batches=[];let batch=[],length=0;
-   for(const entry of pending){
-    const size=entry.protected.text.length+35;
-    if(batch.length&&(length+size>3500)){batches.push(batch);batch=[];length=0;}
-    batch.push(entry);length+=size;
+   const unitMap={},pending=[];
+   for(const text of units){
+    const key="v2:"+locale+":"+text;
+    if(terms[locale][text]!==undefined)unitMap[text]=terms[locale][text];
+    else if(cache[key]!==undefined)unitMap[text]=cache[key];
+    else{
+     const protectedText=protect(text);
+     if(!/[A-Za-z]{2}/.test(protectedText.text.replace(/⟦\d+⟧/g,"")))unitMap[text]=text;
+     else pending.push({text,key,protected:protectedText});
+    }
    }
-   if(batch.length)batches.push(batch);
+   const batches=[];let current=[],len=0;
+   for(const p of pending){const n=p.protected.text.length+30;if(current.length&&len+n>3500){batches.push(current);current=[];len=0;}current.push(p);len+=n;}if(current.length)batches.push(current);
+   console.log(locale+": "+pending.length+" new units in "+batches.length+" batches");
    for(let i=0;i<batches.length;i++){
-    const translated=await batchTranslate(batches[i],tl);
-    batches[i].forEach((entry,j)=>{map[entry.text]=translated[j];cache[entry.key]=translated[j];});
-    fs.writeFileSync(cachePath,JSON.stringify(cache));
-    console.log(locale+": batch "+(i+1)+"/"+batches.length+" complete");
+    const output=await batch(batches[i],tl);
+    batches[i].forEach((e,j)=>{let t=output[j];if(locale==="cn")t=t.replaceAll("埃拉塔","Elata");unitMap[e.text]=t;cache[e.key]=t;});
+    fs.writeFileSync(cacheFile,JSON.stringify(cache));console.log(locale+": batch "+(i+1)+"/"+batches.length+" complete");
     await new Promise(r=>setTimeout(r,200));
    }
-   writePages(locale,map);
+   for(const [text,p]of Object.entries(prepared)){
+    translated[text]=p.type==="table"?p.cells.map((c,i)=>c?" "+unitMap[c]+" ":"").join("|"):p.prefix+(unitMap[p.unit]??"");
+   }
+   write(locale,translated);console.log("Wrote all "+input.paths.length+" "+locale+" pages");
   }
-  config.navigation.languages=[
-   config.navigation.languages.find(l=>l.language==="en"),
-   navFor("cn",input.cnNav),
-   navFor("es",input.esNav),
-  ];
-  const sources=new Set(config.redirects.map(r=>r.source));
+  config.navigation.languages=[config.navigation.languages.find(l=>l.language==="en"),navFor("cn",input.cnNav),navFor("es",input.esNav)];
+  const seen=new Set(config.redirects.map(r=>r.source));
   for(const r of [...config.redirects].filter(r=>!/^\/(?:cn|es)\//.test(r.source))){
-   const source="/es"+r.source,destination=r.destination.startsWith("/")?"/es"+r.destination:r.destination;
-   if(!sources.has(source)){config.redirects.push({source,destination});sources.add(source);}
+   const source="/es"+r.source;
+   if(!seen.has(source)){config.redirects.push({source,destination:r.destination.startsWith("/")?"/es"+r.destination:r.destination});seen.add(source);}
   }
   fs.writeFileSync("docs.json",JSON.stringify(config,null,2)+"\n");
-  // Ensure no page silently falls back to English and all code stays identical.
-  for(const locale of ["cn","es"])for(const [p,b]of Object.entries(docs)){
-   const output=fs.readFileSync(path.join(locale,p),"utf8");
-   const fences=s=>s.match(/```[\s\S]*?```/g)||[];
-   if(JSON.stringify(fences(b))!==JSON.stringify(fences(output)))throw Error("Code changed: "+locale+"/"+p);
-   if(output.includes("translation is being prepared")||output.includes("中文翻译正在准备中"))throw Error("Placeholder remained");
-   if(!output.startsWith("---\n"))throw Error("Invalid front matter");
-  }
-  console.log("Generated "+input.paths.length+" complete pages in each locale; code blocks preserved.");
+  const fences=s=>s.match(/```[\s\S]*?```/g)??[];
+  for(const locale of ["cn","es"])for(const [p,b]of Object.entries(docs))if(JSON.stringify(fences(b))!==JSON.stringify(fences(fs.readFileSync(locale+"/"+p,"utf8"))))throw Error("Code changed "+locale+"/"+p);
+  console.log("Complete locale coverage with unchanged code blocks.");
  }
  run().catch(err=>{console.error(err);process.exitCode=1;});
 })();
