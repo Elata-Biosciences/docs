@@ -1,8 +1,69 @@
 ---
-title: "Elata SDK"
-description: "开源软件包，将摄像头和消费级头带变成生物信号传感器，并在用户设备上处理数据。"
+title: " Elata SDK"
+description: "开源软件包可将网络摄像头和消费者头带转变为生物信号传感器，并在用户设备上进行处理。"
 ---
 
-<Note>
-  本页的中文翻译正在准备中。请先阅读[英文版本](/overview/elata-sdk)。
-</Note>
+<a id="what-it-does"></a>
+
+## 功能
+
+ Elata SDK 是一组开源 JavaScript 软件包，用于在
+生物信号。它处理困难的部分：
+
+- **将** 连接到设备：网络摄像头或蓝牙 EEG 头带，例如 Muse
+- **将** 原始信号处理为可用的测量值：心率、心率变异性、 EEG 频段功率、信号质量
+- **在设备上运行**：处理核心是用 Rust 编写并编译为 WebAssembly，因此它在浏览器中运行，原始数据不必到服务器
+
+ SDK 免费使用，发布于 [npm](https://www.npmjs.com/org/elata-biosciences)，
+并于
+[GitHub](https://github.com/Elata-Biosciences/elata-bio-sdk)公开开发。
+
+---
+
+<a id="package-families"></a>
+
+## 套餐家庭
+
+| 家庭 | 套餐 | 状态 |
+| --- | --- | --- |
+| **传感器** | `rppg-web` （网络摄像头心率）、 `eeg-web` （EEG 处理）、 `eeg-web-ble` （蓝牙头带）、 `ppg-web` （头带心率） | 直播 |
+| **Elata 平台** | `app-payments` （购买）， `app-metrics` （记录和分数） | 直播 |
+| | `app-state` （已保存进度） | 实验 |
+| **记录和分析** | `biosignal-session` （本地会话记录）、 `biosignal-analytics` （功能和分数）、 `rppg-models-web` （学习的波形模型） | 实验 |
+| **工具** | `create-elata-demo` （入门应用程序） | 已上线，已知问题 |
+
+“实验”包可作为源代码使用，但尚未在 npm上使用。请参阅
+[直播内容](/cn/overview/status)。
+
+---
+
+<a id="supported-devices"></a>
+
+## 支持的设备
+
+| 设备 | 信号 | 浏览器 |
+| --- | --- | --- |
+| 任何网络摄像头 | Pulse (rPPG) | 现代浏览器 |
+| Muse 2 和 Muse S | 4 通道 EEG、 PPG | Chrome 或 Edge (Web Bluetooth) |
+| Muse S (Athena) | 8 通道 EEG，光学，运动 | Chrome 或 Edge (Web Bluetooth) |
+
+其他耳机可以通过 SDK的设备合约添加。请参阅
+[设备集成](/cn/integrate)。
+
+---
+
+<a id="you-dont-have-to-publish-on-elata"></a>
+
+## 您不必在 Elata上发布
+
+ SDK 适用于任何网络应用程序。在 Elata 上发布添加了分发、帐户、
+和付款，但传感器包不需要它。
+
+<CardGroup cols={2}>
+  <Card title="SDK 概览" icon="package" href="/cn/sdk/overview">
+软件包、安装和设备支持
+  </Card>
+  <Card title="你的第一个应用程序" icon="graduation-cap" href="/cn/sdk/tutorials/first-app">
+实践教程
+  </Card>
+</CardGroup>

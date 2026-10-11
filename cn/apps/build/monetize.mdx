@@ -1,8 +1,76 @@
 ---
-title: "应用变现"
-description: "在 Elata 上通过应用获得收入的方式、各自的要求，以及收入如何到账。"
+title: "通过您的应用获利"
+description: "配置产品和订阅、跟踪销售并获取您的收益。"
 ---
 
-<Note>
-  本页的中文翻译正在准备中。请先阅读[英文版本](/apps/build/monetize)。
-</Note>
+从 ** 我的应用程序 → 您的应用程序 → 编辑 → Commerce** 管理应用程序的盈利。此部分包含产品、每月订阅计划、收入、最近交易和支付钱包资金。
+
+<Info>
+必须在部署中启用并配置付款。查看 [ 的实时动态 ](/cn/overview/status)。此处描述的应用程序结帐和资金流程在 Base 上使用 USDC。在进行测试购买之前验证结账网络。
+</Info>
+
+<a id="choose-what-to-sell"></a>
+
+## 选择要卖什么
+
+| 型号 | 适合 | 您构建的内容 |
+| --- | --- | --- |
+| [ 应用内购买](/cn/apps/platform/in-app-purchases) | 一次性功能、级别或外观解锁 | 创建产品，然后集成 `app-payments` 并应用购买的权益 |
+| [ 应用程序订阅](/cn/apps/platform/subscriptions) | 每月访问整个应用程序 | 配置每月计划； Elata 手柄门禁 |
+
+您可以两者都提供。应用程序订阅提供应用程序访问权限，而项目所有权保持独立。单一物品标识符不支持重复购买消耗品。
+
+<a id="set-up-monetization"></a>
+
+## 设置获利
+
+<Steps>
+  <Step title="检查谁收到收益">
+打开 **Commerce → Funds** 并检查支付钱包。直接应用付款使用应用创建者的钱包作为目的地。在提供付费内容之前确认您控制它。添加团队成员不会创建支付份额。
+  </Step>
+  <Step title="创建产品或每月计划">
+在 **Products** 下，创建标题、说明、价格、可选图像和活动状态。 Elata 分配您的应用程序使用的稳定版 `contentId`。在 ** 每月订阅 ** 下，设置正的每月 USDC 价格、试用长度和活动状态。每个部分都有自己的保存操作。
+  </Step>
+  <Step title="将项目连接到您的应用程序">
+对于物品，通过`app-payments`读取目录和所有权，请求结账，成功后应用福利。应用程序加载时恢复拥有的权益。请参阅 [ 应用内购买](/cn/apps/platform/in-app-purchases) 以了解集成。
+  </Step>
+  <Step title="测试客户体验">
+使用单独的用户帐户来测试购买或订阅。所有者和团队成员绕过应用程序订阅大门。测试注销、钱包连接、取消、拥有项目、试用、付费期和过期访问状态（如果适用）。
+  </Step>
+  <Step title="跟踪销售和转移收益">
+查看 **Revenue** 和 **Transactions**，然后使用 **Funds → 管理资金** 访问支付钱包。按照 [收入和支出](/cn/apps/operate/revenue-and-payouts) 发送 USDC 或将其转移到银行提款服务。
+  </Step>
+</Steps>
+
+<a id="how-money-reaches-you"></a>
+
+##  钱如何到达您手中
+
+买方通过分流器支付USDC。拆分器扣除配置的平台费用并将您的份额直接发送到支付钱包。 Elata 不会保留您稍后声明的单独创作者余额。
+
+资金卡显示 Base 上钱包当前的 USDC 余额。它可以包括其他存款和使用该钱包的其他应用程序的收益，并且当您发送资金时它会减少。它不是特定于应用程序的收入总额。
+
+<a id="fees-and-reporting"></a>
+
+## 费用和报告
+
+注册时需要支付一次性费用，如注册向导所示。直接应用销售具有由拆分器扣除的配置平台费用。网络和服务费也可能适用。本指南不固定百分比：使用有效的支付配置和交易记录。
+
+商务报告显示拆分前的 ** 总金额**。产品收入是根据当前产品价格估算的；订阅付款保留其记录的付款金额。请勿使用总估算作为您的净支出余额。
+
+<a id="credits-and-points"></a>
+
+## 学分和积分
+
+用户积分涵盖支持的计量功能；它们不是您应用程序的支付余额。积分也与 USDC 收入分开。
+
+<a id="next-steps"></a>
+
+## 后续步骤
+
+<CardGroup cols={2}>
+  <Card title="应用内购买" href="/cn/apps/platform/in-app-purchases">创建项目并将结帐与应用程序权益相关联。</Card>
+  <Card title="订阅" href="/cn/apps/platform/subscriptions">配置每月的应用程序访问和试用。</Card>
+  <Card title="收入与收款" href="/cn/apps/operate/revenue-and-payouts">阅读您的报告并取出您的钱。</Card>
+  <Card title="上线后检查清单" href="/cn/apps/build/post-launch-checklist">验证已发布的客户体验。</Card>
+</CardGroup>

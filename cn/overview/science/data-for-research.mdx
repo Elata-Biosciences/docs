@@ -1,8 +1,65 @@
 ---
 title: "研究数据"
-description: "Elata 生态中存在哪些生物信号数据、哪些不存在，以及可用于自行开展研究的工具。"
+description: " Elata 生态系统中存在哪些生物信号数据，不存在哪些生物信号数据，以及可用于运行您自己的研究的工具。"
 ---
 
+<a id="what-data-exists"></a>
+
+## 存在哪些数据
+
+Elata 的构建使得原始生物信号不需要离开用户的设备。
+这决定了数据的存在：
+
+| 数据 | 存在吗？ | 哪里 |
+| --- | --- | --- |
+| 原始相机帧 | 未由 Elata的服务器管道收集 | 在本地处理 |
+| Raw EEG 和 PPG | 不由 Elata的服务器管道收集；可以进行本地实验录制 | 启用兼容录制主机时用户的浏览器存储 |
+| 生物识别分数的派生会话结果 | 是，经同意 | Elata，适用于选择加入 |的用户
+| 应用程序保存、记录和分数 | 是 | 用户帐户，范围为每个应用程序 |
+| 聚合应用程序分析 | 是 | 对每个应用程序的构建者可见，匿名 |
+
 <Note>
-  本页的中文翻译正在准备中。请先阅读[英文版本](/overview/science/data-for-research)。
+  Elata 目前不提供研究数据集或数据访问程序。
 </Note>
+
+---
+
+<a id="running-your-own-study"></a>
+
+## 开展自己的研究
+
+研究人员可以直接使用开源工具：
+
+- **将研究构建为 Elata 应用程序。** 使用 SDK 进行捕获和处理，并将其发布到 Elata 以到达参与者的浏览器。您的应用程序对其自己的同意和研究协议负责。根据 Elata的 [提交政策](/cn/apps/build/review-and-policy)，应用程序不得从设备发送原始生物信号。
+- **在您自己的工具中使用 SDK 。** 传感器包可在 Elata之外的任何 Web 应用程序中使用，并根据您自己机构的数据处理进行操作。
+
+---
+
+<a id="recording-sessions-experimental"></a>
+
+## 录制会话（实验性）
+
+<Warning>
+实验性的。 SDK 提供录音合同。应用商店的 `feat/long-local-analytics` 分支实现了本地录制主机、会话页面和存储控制，但在生产中明确禁用它们。
+</Warning>
+
+`biosignal-session` 记录多传感器会话（EEG、 PPG、 rPPG 指标，以及
+更多）作为 Apache Arrow 文件中的类型化流，专为可靠性而设计：
+
+- 每个块都带有校验和和稳定的身份，因此可以安全地存储和重试
+- 真实的数据间隙会被记录为显式的不连续，绝不插值
+- 时间是以整数微秒为单位的单个会话时钟
+
+录音是本地的：该包没有网络客户端。该应用程序
+嵌入它决定数据存储的位置。请参阅
+[生物信号会话](/cn/sdk/biosignal-session/getting-started)。
+
+---
+
+<a id="analysis-tools-experimental"></a>
+
+## 分析工具（实验）
+
+`biosignal-analytics` 提供可重复的特征和透明的分数，
+每个值都可以追溯到生成它的算法和版本。请参阅
+[指标和分数](/cn/overview/science/metrics-and-scores)。

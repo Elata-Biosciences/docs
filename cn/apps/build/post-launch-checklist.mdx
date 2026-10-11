@@ -1,49 +1,74 @@
 ---
 title: "上线后检查清单"
-description: "应用在 Elata 上线后该做什么。"
+description: "当您的应用程序在 Elata 上上线后该怎么办。"
 ---
 
-## 获批后立即
+<a id="right-after-approval"></a>
+
+## 批准后立即
 
 <Steps>
-  <Step title="检查应用页面">
-    打开 `app.elata.bio/app/<slug>`，确认图标、头图、描述和截图在桌面端和移动端都显示正常。
+  <Step title="检查您的列表">
+打开 `app.elata.bio/app/<slug>` 并确认图标、标题、描述和屏幕截图在桌面和移动设备上正确显示。
   </Step>
-  <Step title="从 Elata 使用一次">
-    在登录和未登录两种状态下，从试玩页面完整运行一次会话，体验新用户看到的效果。
+  <Step title="从 Elata 播放">
+登录并再次注销时从播放页面运行完整会话，以便您看到新用户看到的内容。
   </Step>
-  <Step title="添加团队和链接">
-    在**编辑**页面添加团队成员和社交链接，方便用户找到你的社区。
+  <Step title="添加您的团队和链接">
+从 **Edit** 页面添加团队成员和社交链接，以便用户可以找到您的社区。
   </Step>
   <Step title="设置可见性">
-    设为**公开**以出现在发现页面，或设为**不公开列出**，仅通过链接分享。
+将应用程序保留为 **Public** 以显示在发现中，或保留 **Unlisted** 以仅通过链接共享。
   </Step>
 </Steps>
 
 ---
 
+<a id="before-accepting-payments"></a>
+
+## 接受付款之前
+
+- ** 在 ** 编辑 → 商业 → 资金** 中检查支付地址** 并确认您控制该钱包。
+- ** 在 Commerce 中使用自己的保存操作保存产品和计划**。确认活跃产品具有正确的标识符和价格。
+- ** 作为单独用户进行测试**，因为所有者和团队成员绕过应用程序订阅门控。
+- ** 重新加载后以及物品停用时验证物品恢复**。
+- **检查订阅日期**、试用资格、当月覆盖范围、下个月续订和过期访问权限。
+- **行权付款状态**，包括已退出、无钱包、资金不足、取消、无法结账等。
+- **在用户账单、创建者商务和支付钱包中验证已完成的付款**。在预览中使用资金之前检查网络。
+- **明确您的报价**：物品是一次性解锁的；应用程序订阅手动续订；订阅访问不包括所有付费项目。
+
+关注 [Monetize 您的应用程序](/cn/apps/build/monetize) 进行设置，关注 [ 收入和支出](/cn/apps/operate/revenue-and-payouts) 获取收益。
+
+---
+
+<a id="launch-week"></a>
+
 ## 上线第一周
 
-- **分享应用链接。** 分享链接会被追踪，通过链接带来的访问会计入分享者的 [Elata 积分](/cn/overview/points)。
+- ** 共享您的应用程序链接。** 会跟踪共享链接，并且来自这些链接的访问将计入共享者的 [Elata 积分 ](/cn/overview/points)。
 - **回复**应用页面上的**评价和评论**。
-- **在应用内添加反馈入口**，让用户可以在应用内联系你。参见[宿主桥接](/cn/apps/platform/host-bridge)。
-- 在 `app.elata.bio/app/<slug>/analytics` **查看分析数据**。
+- **添加应用内反馈条目**，以便用户可以从应用程序内部联系您。请参见 [ 主桥](/cn/apps/platform/host-bridge#feedback)。
+- ** 在 ** 编辑 → 分析 ** 中观看您的分析 **。
 
 ---
 
-## 持续运营
+<a id="ongoing"></a>
 
-- 以新版本发布改进。每个版本都会经过审核，在新版本获批前当前版本保持上线。
-- 保持更新日志准确，尤其是变现方式或数据使用方面的变化。
-- 考虑使用[应用内购买](/cn/apps/platform/in-app-purchases)或[订阅计划](/cn/apps/platform/subscriptions)。
+## 正在进行
+
+- 作为新版本发布改进。每个版本都会经过审核，并且当前版本将保持有效，直到新版本获得批准。
+- 保持变更日志准确，尤其是货币化或数据使用方面的变更。
+-  考虑在应用程序内购买 [ ](/cn/apps/platform/in-app-purchases) 或 [ 订阅计划](/cn/apps/platform/subscriptions)。
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 
 <CardGroup cols={2}>
   <Card title="发展你的社区" icon="users" href="/cn/apps/operate/grow-your-community">
-    增长指南
+成长手册
   </Card>
   <Card title="分析" icon="activity" href="/cn/apps/operate/analytics-and-health">
     需要关注什么
