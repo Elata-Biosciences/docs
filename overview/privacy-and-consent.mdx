@@ -12,15 +12,13 @@ them anywhere.
 
 Elata's [privacy policy](https://elata.bio/privacy) puts it this way: raw
 physiological signals never leave the user's device through the SDK, and the
-processing pipeline produces non-identifying derived metrics by design.
+processing pipeline is designed to produce derived metrics instead of transmitting raw signals. A derived value can still be personal data when associated with an account or transaction.
 
 ---
 
 ## What apps can see
 
-Apps run in a sandbox and never see who you are. They can't read your wallet,
-email, session, or your Elata account. When an app needs something from the
-platform, Elata answers on your behalf.
+The hosted app runs in a sandbox, and Elata's bridge does not give it your account email, wallet keys, or session tokens. When an app needs something from the platform, Elata answers on your behalf. This isolation does not make every interaction anonymous: public profile activity, purchase records, transaction hashes, or information you choose to enter may identify you.
 
 ---
 
@@ -32,8 +30,7 @@ An app can save data for you through Elata:
 - event records and scores
 
 That data is scoped to that one app and your account. Apps can't read each
-other's data. Builders only see aggregate, anonymized
-[analytics](/apps/operate/analytics-and-health), never individual users.
+other's data. Usage [analytics](/apps/operate/analytics-and-health) show aggregates and suppress small cohorts. Commerce reports are different: they can show shortened buyer wallet addresses and transaction links, which should not be described as anonymous.
 
 ---
 

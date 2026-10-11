@@ -3,6 +3,10 @@ title: "什么是 Elata 应用？"
 description: "基于 Elata SDK 构建、发布在 Elata 上的浏览器应用。"
 ---
 
+<Warning>
+  仓库中的 `create-elata-demo` 0.12.1 缺少 `app-metrics` 版本元数据，打包后会在启动时失败。运行以下命令前请检查[脚手架状态](/cn/sdk/create-elata-demo)，目前可先使用[手动 rPPG 集成](/cn/sdk/tutorials/rppg-existing-app)。
+</Warning>
+
 ## 理念
 
 Elata 应用是使用 Elata SDK 处理人体信号的 Web 应用：通过网络摄像头获取心率、通过消费级头带获取 EEG，或通过头带的光学传感器获取 PPG。你使用标准 Web 工具构建应用，上传到 [Elata](https://app.elata.bio)，用户即可直接在浏览器中使用。

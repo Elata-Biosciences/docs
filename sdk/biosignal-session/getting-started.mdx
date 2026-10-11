@@ -47,9 +47,7 @@ A recording has two sides that talk over a `MessagePort`:
 | **Host** (trusted embedder) | Stores chunks durably and acknowledges each one | A reference in-memory host for tests (`createMemoryHost`) |
 
 <Note>
-  Elata doesn't host session recording yet. Today, use the
-  package in your own host page, or with the in-memory host for development
-  and tests.
+  The appstore has an experimental local host on `feat/long-local-analytics`, disabled in production. Use your own host page or the in-memory host for development and tests, or follow [Local sessions and insights](/users/local-sessions-and-insights) for the appstore development flow. This is browser-local storage, not cloud hosting.
 </Note>
 
 ---

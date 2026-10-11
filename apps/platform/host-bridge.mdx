@@ -10,7 +10,7 @@ backend, or the user's wallet. When it needs something from the platform, such
 as a purchase, saved data, or consent, it sends a `postMessage` to the parent
 frame. Elata does the work with the user's session and replies.
 
-Your app never sees who the user is. It only gets the answers it needs.
+The bridge does not expose account credentials or session tokens. Public activity, commerce records, and information a user enters are separate from this isolation.
 
 ```
 ┌──────────── app.elata.bio (Elata) ────────────┐
@@ -43,7 +43,7 @@ Consent, insights, notifications, navigation, and feedback use plain
 
 ## Ground rules
 
-- **Send to the parent.** Post to `window.parent`. Using `'*'` as the target origin is fine: Elata checks that the message came from your app's frame and origin.
+- **Send to the parent.** Post to `window.parent`. Use the known host origin as the target when available. SDK clients handle their own transport. Hand-written listeners should verify the replying window and, when known, its origin; do not assume every bridge handler enforces identical checks.
 - **Use a `requestId`.** Where a reply is expected, include a unique `requestId` (8 to 128 characters; `crypto.randomUUID()` works) and match it on the reply.
 - **Handle no reply.** Outside Elata (for example in local development) nobody answers. Use a timeout and degrade gracefully. The SDK packages do this for you.
 - **Elata is the source of truth.** Prices, ownership, and consent always come from Elata, never from values your app sends.

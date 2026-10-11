@@ -58,8 +58,11 @@ const session = await createRppgSession({
 const metrics = session.getMetrics();
 console.log("BPM:", metrics.bpm);
 
-// Stop and release camera on cleanup
-await session.stop();
+// Stop processing on cleanup. Release the MediaStream you acquired separately.
+await session.dispose();
+for (const track of (videoEl.srcObject as MediaStream | null)?.getTracks() ?? []) {
+  track.stop();
+}
 ```
 
 Use `createManagedRppgSession()` if you also want automatic restart after terminal processor failures.
@@ -125,6 +128,16 @@ processor.pushSampleRgbMeta(timestampMs, r, g, b, skinRatio?, motion?, clipRatio
 | `reason_codes` | `string[]` | Why confidence is low, for example `low_skin_ratio` or `high_motion` |
 
 ---
+
+## Output and quality guidance
+
+For consumer apps, retain face tracking (`faceMesh: "auto"`, or omit the option) unless you deliberately need the video-frame fallback. The examples above use `"off"` to make the fallback explicit; that mode does not locate facial skin regions.
+
+The current SDK source also provides `CaptureConfidenceScorer`: motion and lighting confidence for capture and calibration, separate from pulse-domain confidence. Use quality and publish gating rather than presenting every numeric estimate as reliable.
+
+Advanced source APIs include baseline-relative physiology features, generic activation/recovery interpretation, optional waveform reconstruction, and experimental morphology proxies. A physiology activation score is not emotional valence, facial affect, a stress diagnosis, or a clinical measurement. Face-derived affect is a separate API. Learned waveform reconstruction requires a caller-supplied model artifact and remains an optional diagnostic path.
+
+These APIs should be tied to the package release actually installed; current repository source can contain features newer than the npm release. See the [current package README](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/packages/rppg-web/README.md).
 
 ## Key Exports
 

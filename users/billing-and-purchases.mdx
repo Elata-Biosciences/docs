@@ -1,5 +1,5 @@
 ---
-title: "Membership and Purchases"
+title: "Billing and Purchases"
 description: "Buy app items, manage monthly access, and understand your wallet and credits."
 ---
 
@@ -16,8 +16,8 @@ Open [Settings → Billing](https://app.elata.bio/settings/billing).
 | Section | What you can do |
 | --- | --- |
 | [Purchases](https://app.elata.bio/settings/billing/purchases) | View the app items you own and return to their apps |
-| [Subscriptions](https://app.elata.bio/settings/billing/subscriptions) | Review app access, choose periods to pay for, and manage membership |
-| [History](https://app.elata.bio/settings/billing/history) | Review recorded product, subscription, membership, and credit payments |
+| [Subscriptions](https://app.elata.bio/settings/billing/subscriptions) | Review app access and choose periods to pay for |
+| [History](https://app.elata.bio/settings/billing/history) | Review recorded product, subscription, and credit payments |
 | [Wallet](https://app.elata.bio/settings/billing/wallet) | Check your account wallet, connected wallet, and credit balance |
 
 ## Buy an in-app item
@@ -40,7 +40,7 @@ An already-owned item should show an owned state instead of requiring another pa
 
 An app with an active monthly plan shows its price and any available trial on its app page or locked play screen. An eligible free trial starts without a payment; paid access is managed in **Billing → Subscriptions**.
 
-1. Open **Subscriptions** from the app's subscription prompt.
+1. Use the app's subscription prompt for inline checkout when available, or open **Subscriptions** to manage your cart.
 2. Select the offered period: current-month access, next-month access, or both when available.
 3. Review the coverage dates and total in the cart. Several apps can be paid for together.
 4. Complete checkout and wait for the periods to show as paid.
@@ -53,22 +53,9 @@ There is **no autopay** for app subscriptions. Selecting an app for next month a
 
 To stop renewing, leave the next month unpaid. Unchecking an unpaid selection removes it from the cart. It does not cancel or refund a month you already purchased. Access continues through the paid coverage or trial end date, then expires unless another form of access applies.
 
-## Elata membership
-
-[Elata membership](https://app.elata.bio/membership) provides access to subscription-gated apps while active. It does not automatically buy their one-time items.
-
-Membership also renews manually. Review the period shown before paying. Card and crypto options depend on the deployment; card payment is offered for Base mainnet membership checkout, rather than testnet checkout. An unconfigured membership shows **Coming soon**.
-
-| | App subscription | Elata membership |
-| --- | --- | --- |
-| Coverage | One app | Subscription-gated apps across Elata |
-| Trial | If the app offers one and you are eligible | No app-specific trial |
-| Renewal | Manual payment | Manual payment |
-| One-time items included | No | No |
-
 ## Google sign-in, wallets, and credits
 
-Signing in identifies your Elata account. Completing a payment requires an active wallet capable of approving it. A Google sign-in may use an embedded wallet; the payment confirmation then happens in that wallet's interface. Follow the wallet connection prompt if no wallet is active.
+Signing in identifies your Elata account. Completing a payment requires an active wallet capable of approving it. Google or email sign-in can use an embedded wallet. The current checkout attempts to restore that wallet automatically, so you do not need to bring an external crypto wallet just to sign in or begin checkout. You may still need to add USDC on Base. Follow the recovery or connection prompt if the account wallet cannot be restored; payment confirmation happens in the wallet's interface.
 
 **Billing → Wallet** shows both your account wallet and your currently connected wallet. If they differ, check the account and wallet before paying. Wallet connection alone does not guarantee that a different payer can be verified for your account.
 
@@ -79,7 +66,8 @@ Credits cover supported metered features. Topping up credits does not fund your 
 | State | What to do |
 | --- | --- |
 | Not signed in | Sign in to the account that should own the purchase |
-| No connected wallet | Follow checkout's wallet connection prompt |
+| Account wallet restoring | Wait for the embedded wallet to restore; follow recovery if it fails |
+| No usable payment wallet | Follow checkout's wallet connection prompt |
 | Insufficient funds | Add USDC on Base to the paying wallet, then retry |
 | Waiting for confirmation or recording | Keep checkout open while it finishes |
 | Payment settled but access is missing | Save the transaction hash, check History and your access, and contact support before sending another payment |

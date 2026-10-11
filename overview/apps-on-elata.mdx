@@ -45,7 +45,7 @@ playtesters before that.
 
 Each app runs in an **isolated sandbox** on its own web origin. That means:
 
-- The app can't see who you are, your email, your wallet, or your Elata account.
+- Elata's bridge does not disclose your account email, wallet keys, or session tokens to the embedded app. Public activity and payment records can still be identifying.
 - It can ask for your camera or Bluetooth, and your browser asks you first.
 - When it needs something from Elata, like a purchase or saved progress, it sends a request and Elata handles it on your behalf.
 - Payment details never pass through the app.
@@ -63,7 +63,7 @@ provides:
 | Saved progress and scores per user | Live |
 | Reminders through Elata | Live |
 | Contributing to the user's opt-in biometric Score | Live |
-| One-time in-app purchases | Live on testnet |
+| One-time in-app purchases | Implemented on the IAP overhaul branch; deployment and payment configuration must be verified |
 | Monthly subscriptions | Experimental |
 
 See [What's live](/overview/status) for details, and the

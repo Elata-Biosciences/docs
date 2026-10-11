@@ -3,8 +3,11 @@ title: "What's Live"
 description: "The status of every Elata capability: live, experimental, planned, or retired."
 ---
 
-This page is the single source of truth for what you can use today. Other pages
-link here instead of repeating it.
+This page distinguishes current capabilities, experimental integrations, and future work. Other pages link here for availability.
+
+<Info>
+  Source review: October 11, 2026. Billing and Commerce guidance reflects the `fix/iap-system-overhaul` branch, not proof that every flow is deployed at app.elata.bio. Confirm the deployed UI and payment configuration before accepting payments.
+</Info>
 
 | Label | Meaning |
 | --- | --- |
@@ -25,18 +28,20 @@ link here instead of repeating it.
 | Elata Points, quests, referrals, leaderboard | Live | [Points](/overview/points) |
 | Biometric Score, consent, and Insights | Live | Opt-in. [Privacy and consent](/overview/privacy-and-consent) |
 | Reminders from apps (notifications) | Live | Delivered by Elata, never by the app directly |
-| In-app purchases (USDC) | Deployment-dependent | The overhaul checkout uses the USDC splitter on Base; availability requires payment configuration. Check the deployed checkout's network. [In-app purchases](/apps/platform/in-app-purchases) |
-| App subscriptions and Elata membership | Experimental | App subscriptions use manual calendar-month payments through the Base splitter. Membership is a separate checkout whose network and payment methods depend on deployment. Unconfigured checkout may show "Coming soon". [Membership and purchases](/users/membership-and-purchases) |
+| In-app purchases (USDC) | Implemented; deployment unverified | The overhaul checkout uses the USDC splitter on Base; availability requires payment configuration. Check the deployed checkout's network. [In-app purchases](/apps/platform/in-app-purchases) |
+| App subscriptions | Experimental | Manual calendar-month payments through the Base splitter; configuration and deployment must be verified. [Billing and purchases](/users/billing-and-purchases) |
 
 ---
 
 ## Elata SDK
 
+Repository APIs and published packages can differ. Check the installed package version and release notes before using source-only APIs; publication labels below are not a guarantee that every current-source feature is in the npm release.
+
 | Capability | Status | Notes |
 | --- | --- | --- |
 | `rppg-web`, `eeg-web`, `eeg-web-ble`, `ppg-web` | Live | On npm. [SDK overview](/sdk/overview) |
 | `app-metrics`, `app-payments` | Live | On npm |
-| `create-elata-demo` (starter apps) | Live, known issue | The current npm release (0.12.1) fails to start. A fix is coming in the next release. |
+| `create-elata-demo` (starter apps) | Packaging blocker in repository version 0.12.1 | Missing `app-metrics` version metadata prevents the packaged CLI from starting. Verify a fixed release before using it. |
 | `app-state` | Experimental | Not on npm yet. Apps can use the [`elata:state:*` messages](/apps/platform/app-state) directly. |
 | `biosignal-session`, `biosignal-analytics`, `rppg-models-web` | Experimental | Source code only, not on npm yet. APIs may change. |
 | Muse 2, Muse S, Muse S (Athena) over Web Bluetooth | Live | Chrome or Edge. [Devices](/users/devices) |
@@ -48,7 +53,8 @@ link here instead of repeating it.
 
 | Capability | Status | Notes |
 | --- | --- | --- |
-| On-device processing of raw signals | Live | Raw signals never need to leave the device |
+| On-device processing of raw signals | Live | Raw signals do not need to leave the device |
+| Local session storage, session detail, and on-device analytics | Experimental; disabled in production | Implemented on `feat/long-local-analytics` behind a developer flag. Recordings stay in that browser. [Local sessions and insights](/users/local-sessions-and-insights) |
 | Federated learning (training models without collecting raw data) | Planned | Research direction. Not part of the live product. [Research directions](/overview/science/research-directions) |
 
 ---
@@ -66,10 +72,9 @@ repository, which notes it is pending an external audit.
 
 ---
 
-## Retired
+## Retired from the current product
 
-These existed before and have been removed. Old links redirect here or to the
-nearest current page.
+App tokens, staking, and governance are retired for now, with a planned return later. No return date or final design is committed. Earlier documentation is historical; it does not describe today's publishing or payment flow. Other archived projects are listed separately.
 
 | Capability | What replaced it |
 | --- | --- |

@@ -14,7 +14,7 @@ There are two supported options:
 | Option | Works when | Best for |
 | --- | --- | --- |
 | **Elata-brokered reminders** (this page) | Elata tab is open | "Session complete", "time for your break" |
-| **Installed app** | The user installed your app to their home screen | Reminders while everything is closed |
+| **Background push** | A separately implemented service worker, push subscription, and delivery service | Background notifications; installing alone does not provide this |
 
 ---
 
@@ -40,7 +40,7 @@ Elata replies with `{ type: 'elata:notify:state', requestId?, status }`:
 | --- | --- | --- |
 | `shown` | A notification was shown | Show reminders as on |
 | `undecided` | The user hasn't opted in yet; Elata is showing an "Allow reminders?" prompt | A neutral, pending state |
-| `blocked` | The user opted out, or the OS denied permission | Stop asking; suggest installing the app |
+| `blocked` | The user opted out, or the OS denied permission | Stop asking; explain notification settings |
 | `rate_limited` | More than 3 requests in a minute | Back off |
 | `unsupported` | This browser has no Notification API | Hide the setting |
 
@@ -57,8 +57,7 @@ Elata replies with `{ type: 'elata:notify:state', requestId?, status }`:
 
 ## Detecting Elata
 
-Use the bridge only when running inside Elata, and keep your direct path
-for standalone or installed use:
+Use the bridge only when running inside Elata, and keep your direct path for standalone use while its page is running. Home-screen installation alone does not let this code run when the app is closed:
 
 ```js
 const inStore = window.parent !== window;

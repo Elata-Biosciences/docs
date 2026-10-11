@@ -29,7 +29,6 @@ Each app has one plan. Save using the plan's own action. Owners and authorized t
 | App owner or authorized team member | Access without buying the app's plan |
 | User with valid paid-period coverage | Access during that coverage |
 | User with a valid trial | Access until the trial ends |
-| Active Elata member | Access through membership |
 | User without any of these | Subscription prompt while the plan is active |
 
 With no active plan, the app is free to enter. These rules concern app access; they do not grant paid in-app items.
@@ -37,7 +36,7 @@ With no active plan, the app is free to enter. These rules concern app access; t
 ## The customer's flow
 
 1. The user opens the app's subscription prompt from its page or locked play screen.
-2. If eligible, they start the offered trial without payment. Otherwise they proceed to **Settings → Billing → Subscriptions**.
+2. If eligible, they start the offered trial without payment. Paid checkout can run directly in the subscription prompt when its wallet and payment configuration are ready, or the user can proceed to **Settings → Billing → Subscriptions**.
 3. They choose available current-month or next-month coverage and review the cart.
 4. Elata checks settlement and records access after payment. Multiple apps can be paid for in one cart.
 
@@ -51,7 +50,7 @@ The previous `/profile/subscriptions` route redirects to the current [Billing �
 
 Paid app periods retain their payment amounts. The **Commerce** report shows those subscription payments as gross revenue before the splitter fee. Your share settles directly to the creator's payout wallet. See [Revenue and payouts](/apps/operate/revenue-and-payouts).
 
-The plan's subscriber count is an access signal, not an exact recurring revenue metric. Trials can contribute to the current-period count. Membership access is a separate path and does not mean an individual app subscription was purchased.
+The plan's subscriber count is an access signal, not an exact recurring revenue metric. Trials can contribute to the current-period count.
 
 ## Test before enabling
 
@@ -62,5 +61,5 @@ Tell users what the subscription includes and show the relevant end date. Avoid 
 ## Next
 
 - [Monetize your app](/apps/build/monetize)
-- [Membership and purchases](/users/membership-and-purchases)
+- [Billing and purchases](/users/billing-and-purchases)
 - [Revenue and payouts](/apps/operate/revenue-and-payouts)

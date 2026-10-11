@@ -10,8 +10,8 @@ description: "Elata 为你提供的使用分析，以及如何充分利用它们
 | 指标 | 统计内容 |
 | --- | --- |
 | **Users** | 在你的应用中记录过数据的不同玩家数 |
-| **Sessions** | 使用会话数 |
-| **Events** | 你的应用通过 `app-metrics` 写入的记录数 |
+| **Sessions** | 通过 `saveScore` 提交的分数数量，不是独立统计的使用会话数 |
+| **Events** | 所有已存储的 `app-metrics` 数据行，包括事件记录和分数 |
 | **Avg score** | 通过 `saveScore` 保存的分数平均值 |
 
 使用量图表会展示该时间窗口内的趋势。
