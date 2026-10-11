@@ -1,0 +1,134 @@
+---
+title: "Puente anfitrión"
+description: "Cómo se comunica su aplicación de espacio aislado con Elata y cada mensaje que admite."
+---
+
+<a id="overview"></a>
+
+## Información general
+
+Su aplicación se ejecuta en un iframe de espacio aislado sin acceso a las cookies, al backend o a la billetera del usuario de Elata. Cuando necesita algo de la plataforma, como una compra, datos guardados o consentimiento, envía un `postMessage` al marco principal. Elata hace el trabajo con la sesión del usuario y responde.
+
+El puente no expone las credenciales de la cuenta ni los tokens de sesión. La actividad pública, los registros comerciales y la información que ingresa un usuario están separados de este aislamiento.
+
+```
+┌──────────── app.elata.bio (Elata) ────────────┐
+│  session · checkout · storage · consent UI    │
+│        ▲                         │            │
+│        │ postMessage             │ reply      │
+│  ┌─────┴─────────────────────────▼─────────┐  │
+│  │   your app (sandboxed, own origin)      │  │
+│  └─────────────────────────────────────────┘  │
+└───────────────────────────────────────────────┘
+```
+
+---
+
+<a id="use-the-sdk-packages"></a>
+
+## Utilice los paquetes SDK
+
+Para la mayoría de las funciones, existe un pequeño paquete que incluye los mensajes, los tiempos de espera y los errores:
+
+| Característica | Paquete | Página |
+| --- | --- | --- |
+| Compras únicas y propiedad | `@elata-biosciences/app-payments` | [Compras dentro de la aplicación](/es/apps/platform/in-app-purchases) |
+| Almacenamiento de valores clave por usuario | `@elata-biosciences/app-state` (aún no en npm) | [Estado de la aplicación](/es/apps/platform/app-state) |
+| Registros de eventos, puntuaciones, `reportAffect` | `@elata-biosciences/app-metrics` | [Métricas y puntuaciones](/es/apps/platform/metrics-and-scores) |
+
+El consentimiento, los conocimientos, las notificaciones, la navegación y los comentarios utilizan llamadas simples `postMessage` . Están documentados a continuación y en sus propias páginas.
+
+---
+
+<a id="ground-rules"></a>
+
+## Reglas básicas
+
+- **Enviar a los padres.** Publicar en `window.parent`. Utilice el origen del host conocido como destino cuando esté disponible. Los clientes del SDK manejan su propio transporte. Los oyentes escritos a mano deben verificar la ventana de respuesta y, cuando se conozca, su origen; No asuma que todos los manejadores de puentes aplican controles idénticos.
+- **Utilice un `requestId`.** Cuando se espera una respuesta, incluya un `requestId` único (de 8 a 128 caracteres; `crypto.randomUUID()` funciona) y compárelo en la respuesta.
+- **No maneja respuesta.** Fuera de Elata (por ejemplo en desarrollo local) nadie responde. Utilice un tiempo de espera y degrade con gracia. Los paquetes SDK hacen esto por usted.
+- **Elata es la fuente de la verdad.** Los precios, la propiedad y el consentimiento siempre provienen de Elata, nunca de los valores que envía su aplicación.
+
+---
+
+<a id="message-reference"></a>
+
+## Referencia del mensaje
+
+<a id="purchases"></a>
+
+### Compras
+
+| Aplicación → Elata | Elata → aplicación |
+| --- | --- |
+| `elata:iap:request` `{ requestId, contentId, priceUsdc?, title?, description? }` | `elata:iap:result` `{ requestId, status: "success" \| "cancelled" \| "error", txHash?, error? }` |
+| `elata:iap:getCatalog` `{ requestId }` | `elata:iap:getCatalog:result` `{ requestId, items }` |
+| `elata:iap:hasItem` `{ requestId, contentId }` | `elata:iap:hasItem:result` `{ requestId, owned }` |
+| `elata:iap:listOwned` `{ requestId }` | `elata:iap:listOwned:result` `{ requestId, ownedContentIds }` |
+
+Utilice [`app-payments`](/es/apps/platform/in-app-purchases) en lugar de enviarlos manualmente.
+
+<a id="app-state"></a>
+
+### Estado de la aplicación
+
+| Aplicación → Elata | Elata → aplicación |
+| --- | --- |
+| `elata:state:get` `{ requestId, key }` | `elata:state:get:result` `{ requestId, value }` o `{ requestId, error }` |
+| `elata:state:set` `{ requestId, key, value }` | `elata:state:set:result` `{ requestId, ok }` o `{ requestId, error }` |
+| `elata:state:delete` `{ requestId, key }` | `elata:state:delete:result` `{ requestId, ok }` o `{ requestId, error }` |
+
+Una vez que `@elata-biosciences/app-state` esté en npm, prefiérelo a enviarlos manualmente. Consulte [Estado de la aplicación](/es/apps/platform/app-state).
+
+<a id="metrics"></a>
+
+### Métricas
+
+`app-metrics` utiliza una configuración `MessageChannel` dedicada con un protocolo de enlace `__elata_metrics_init` , no mensajes de ventana individuales. Utilice siempre el paquete [Métricas y puntuaciones](/es/apps/platform/metrics-and-scores).
+
+<a id="consent-and-insights"></a>
+
+### Consentimiento y conocimientos
+
+| Aplicación → Elata | Elata → aplicación |
+| --- | --- |
+| `elata:consent:request` `{ requestId?, purpose: "platform_score", action?: "grant" \| "revoke" }` | `elata:consent:state` `{ requestId?, purpose, granted }` |
+| `elata:consent:query` `{ requestId?, purpose: "platform_score" }` | `elata:consent:state` `{ requestId?, purpose, granted }` |
+| `elata:insights:request` `{ requestId?, windowDays? }` | `elata:insights:state` `{ requestId?, consented, data? }` |
+
+Consulte [Consentimiento e información](/es/apps/platform/consent-and-insights).
+
+<a id="notifications"></a>
+
+### Notificaciones
+
+| Aplicación → Elata | Elata → aplicación |
+| --- | --- |
+| `elata:notify:request` `{ requestId?, body }` | `elata:notify:state` `{ requestId?, status }` |
+
+Ver [Notificaciones](/es/apps/platform/notifications).
+
+<a id="navigation"></a>
+
+### Navegación
+
+Enviar al usuario a la página de reproducción de otra aplicación en Elata:
+
+```js
+window.parent?.postMessage({ type: 'elata:navigate', slug: 'calm-runner' }, '*');
+```
+
+`slug` debe ser un slug de la aplicación Elata: letras minúsculas, dígitos y guiones, hasta 64 caracteres. No hay respuesta.
+
+<a id="feedback"></a>
+
+### Comentarios
+
+El botón de comentarios flotante de Elata está oculto mientras se reproduce una aplicación, por lo que no cubre sus controles. En su lugar, abra el panel de comentarios de Elata desde su propia interfaz de usuario:
+
+```js
+window.parent?.postMessage({ type: 'elata:feedback:open', mode: 'feature' }, '*');
+// mode: 'feature' (default) or 'bug'
+```
+
+No hay respuesta.

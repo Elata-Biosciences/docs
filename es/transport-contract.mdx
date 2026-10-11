@@ -1,0 +1,181 @@
+---
+title: "Contrato de transporte"
+description: "Implemente las interfaces de marco y transporte compartidas de Elata para su dispositivo."
+---
+
+Este es el contrato que debe cumplir su integración.
+
+Las aplicaciones deberían ver una superficie de transporte Elata estable, no formatos de paquetes específicos del proveedor ni detalles de Bluetooth.
+
+<a id="the-core-rule"></a>
+
+## La regla central
+
+El adaptador de su dispositivo debe emitir `HeadbandFrameV1` fotogramas a través de un `HeadbandTransport`.
+
+Ese es el límite de compatibilidad para las aplicaciones del navegador y el análisis posterior.
+
+<Info>
+Si el contrato marco es correcto, el código de la aplicación puede seguir siendo simple. Si el contrato marco es inestable, resulta más difícil confiar en todo lo que está encima.
+</Info>
+
+## `HeadbandFrameV1`
+
+Cada transporte produce la misma forma de marco de nivel superior:
+
+```ts
+interface HeadbandFrameV1 {
+  schemaVersion: "v1";
+  source: string;
+  sequenceId: number;
+  emittedAtMs: number;
+  eeg: HeadbandSignalBlock;
+  ppgRaw?: HeadbandSignalBlock;
+  optics?: HeadbandSignalBlock;
+  accgyro?: HeadbandSignalBlock;
+  battery?: HeadbandBatteryBlock;
+}
+```
+
+En la práctica, la mayoría de las integraciones deberían tratar `eeg` como el bloque requerido y agregar otros bloques solo cuando el dispositivo los exponga claramente.
+
+## `HeadbandSignalBlock`
+
+La carga útil EEG debe normalizarse en esta forma:
+
+```ts
+interface HeadbandSignalBlock {
+  sampleRateHz: number;
+  channelNames: string[];
+  channelCount: number;
+  samples: number[][];
+  timestampsMs?: number[];
+  clockSource?: "device" | "local";
+}
+```
+
+<a id="what-must-stay-stable"></a>
+
+## Lo que debe permanecer estable
+
+| Campo | que bien se ve |
+| --- | --- |
+| `source` | Un identificador estable y legible como `vendor-ble` |
+| `sequenceId` | Monótono dentro de la sesión de carrera. |
+| `sampleRateHz` | Coincide con el comportamiento real del dispositivo |
+| `channelNames` | Estable y documentado |
+| `channelCount` | Siempre coincide con el ancho de fila real |
+| `samples` | Cada fila es un paso de tiempo y utiliza el mismo orden de canales. |
+| `timestampsMs` | Opcional, pero alineado con las filas emitidas cuando está presente |
+| `clockSource` | Documentado explícitamente como `device` o `local` |
+
+## `HeadbandTransport`
+
+Todos los transportes implementan la misma superficie de ciclo de vida:
+
+```ts
+interface HeadbandTransport {
+  onFrame?: (frame: HeadbandFrameV1) => void;
+  onStatus?: (status: HeadbandTransportStatus) => void;
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
+  start(): Promise<void>;
+  stop(): Promise<void>;
+}
+```
+
+<a id="lifecycle-expectations"></a>
+
+## Expectativas del ciclo de vida
+
+| Método | Comportamiento esperado |
+| --- | --- |
+| `connect()` | Empareje o conéctelo al dispositivo y prepare la sesión |
+| `start()` | Comience a transmitir fotogramas válidos |
+| `stop()` | Detener la transmisión sin corromper la sesión |
+| `disconnect()` | Liberar la sesión y los recursos subyacentes. |
+
+Las reglas de transición importan tanto como los métodos mismos. Una integración limpia debería dejar claro si el transporte está inactivo, conectado, transmitiendo, degradado, reconectándose, desconectado o presenta un error.
+
+## `HeadbandTransportStatus`
+
+Las actualizaciones de estado deben ser lo suficientemente explícitas para que las aplicaciones reaccionen correctamente:
+
+```ts
+interface HeadbandTransportStatus {
+  state: HeadbandTransportState;
+  atMs: number;
+  reason?: string;
+  errorCode?: string;
+  recoverable?: boolean;
+  details?: Record<string, unknown>;
+}
+```
+
+<a id="practical-rules-for-integrators"></a>
+
+## Reglas prácticas para integradores
+
+<Steps>
+  <Step title="Mantener el orden de los canales fijo">
+Si el dispositivo transmite `TP9, AF7, AF8, TP10`, cada fila emitida debe usar ese orden de manera consistente.
+  </Step>
+  <Step title="Hacer que el ancho de fila coincida con el número de canales">
+Una fila nunca debe contener más o menos valores EEG que `channelCount`.
+  </Step>
+  <Step title="Utilice la frecuencia de muestreo adecuada">
+No codifique un valor nominal si la tasa de salida real difiere.
+  </Step>
+  <Step title="Comportamiento de la marca de tiempo del documento">
+Indique si las marcas de tiempo provienen del reloj del dispositivo o del reloj del navegador local.
+  </Step>
+  <Step title="Fallos superficiales a través de actualizaciones de estado.">
+Las aplicaciones necesitan señales claras de desconexiones, reintentos y errores irrecuperables.
+  </Step>
+</Steps>
+
+<a id="minimal-usage-pattern"></a>
+
+## Patrón de uso mínimo
+
+```ts
+const transport: HeadbandTransport = /* BleTransport or another transport */;
+
+transport.onFrame = (frame) => {
+  const eegRows = frame.eeg.samples;
+  console.log(eegRows.length);
+};
+
+transport.onStatus = (status) => {
+  console.log(status.state, status.reason ?? "");
+};
+
+await transport.connect();
+await transport.start();
+
+// ... later
+await transport.stop();
+await transport.disconnect();
+```
+
+<a id="related-docs"></a>
+
+## Documentos relacionados
+
+- [Transporte de diadema](/es/sdk/eeg-web/headband-transport)
+- [Requisitos de protocolo](./protocol-requirements)
+- [Implementación del adaptador](./adapter-implementation)
+- [Pruebas y Validación](./testing-and-validation)
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="Requisitos de protocolo" icon="arrow-right" href="./protocol-requirements">
+Reúna los detalles del paquete y los metadatos necesarios para cumplir el contrato.
+  </Card>
+  <Card title="Implementación del adaptador" icon="arrow-right" href="./adapter-implementation">
+Conecte el contrato a un adaptador de dispositivo real.
+  </Card>
+</CardGroup>

@@ -1,0 +1,81 @@
+---
+title: "Privacidad y consentimiento"
+description: "Qué permanece en tu dispositivo, qué pueden almacenar las aplicaciones, cómo funciona la puntuación biométrica voluntaria y tus derechos sobre tus datos."
+---
+
+<a id="on-device-first"></a>
+
+## Procesamiento en el dispositivo
+
+El SDK de Elata procesa las bioseñales en tu dispositivo. Los fotogramas de la cámara y las señales EEG y PPG sin procesar no necesitan salir de él. La [política de publicación](/es/apps/build/review-and-policy) de Elata prohíbe que las aplicaciones envíen esas señales a otro lugar.
+
+La [política de privacidad](https://elata.bio/privacy) de Elata establece que las señales fisiológicas sin procesar nunca salen del dispositivo del usuario a través del SDK. El procesamiento está diseñado para producir métricas derivadas en lugar de transmitir señales sin procesar. Un valor derivado puede seguir siendo un dato personal cuando se vincula a una cuenta o transacción.
+
+---
+
+<a id="what-apps-can-see"></a>
+
+## Qué pueden ver las aplicaciones
+
+Las aplicaciones alojadas se ejecutan en un entorno aislado. El puente de Elata no les entrega el correo electrónico de tu cuenta, las claves de tu billetera ni los tokens de sesión. Cuando una aplicación necesita información de la plataforma, Elata responde en tu nombre. Este aislamiento no hace anónimas todas las interacciones: la actividad pública del perfil, los registros de compra, los hashes de transacciones o la información que introduces pueden identificarte.
+
+---
+
+<a id="what-apps-can-store"></a>
+
+## Qué pueden almacenar las aplicaciones
+
+Una aplicación puede guardar datos para ti a través de Elata:
+
+- configuración, partidas guardadas y progreso
+- registros de eventos y puntuaciones
+
+Estos datos se limitan a esa aplicación y a tu cuenta. Las aplicaciones no pueden leer los datos de otras aplicaciones. Las [estadísticas de uso](/es/apps/operate/analytics-and-health) muestran datos agregados y ocultan grupos de usuarios demasiado pequeños. Los informes comerciales son distintos: pueden mostrar direcciones abreviadas de billeteras de compradores y enlaces a transacciones, por lo que no deben describirse como anónimos.
+
+---
+
+<a id="the-biometric-score"></a>
+
+## La puntuación biométrica
+
+La puntuación es una medida común entre aplicaciones, de 0 a 100, construida a partir de resultados **derivados** de las sesiones. Por ejemplo, puede reflejar cuánto aumentó tu calma durante una sesión respecto a tu propia línea de base. Nunca incluye la señal sin procesar.
+
+- **Desactivada por defecto.** No se comparten contribuciones hasta que aceptas participar.
+- **Elata solicita el consentimiento.** La solicitud aparece en la interfaz de Elata, no en la aplicación.
+- **Controlada en el servidor.** Cada resultado se comprueba frente a tu consentimiento actual antes de contabilizarlo.
+- **Revocable.** Puedes desactivar el uso compartido en cualquier momento.
+- **Con versiones.** Si las condiciones cambian de forma sustancial, se vuelve a solicitar tu consentimiento.
+
+Puedes ver tu puntuación y actividad en **Insights**, y dentro de las aplicaciones que la solicitan. Consulta [Puntuación e información](/es/users/score-and-insights).
+
+---
+
+<a id="your-rights"></a>
+
+## Tus derechos
+
+Según la política de privacidad de Elata, puedes solicitar el acceso, la rectificación, la eliminación, la exportación o la limitación del tratamiento de tus datos personales. Escribe a [info@elata.bio](mailto:info@elata.bio); la política establece un plazo de respuesta de 30 días.
+
+Cada aplicación de Elata es creada por un desarrollador independiente. Lee sus propias condiciones si proporciona un enlace.
+
+---
+
+<a id="whats-next"></a>
+
+## Próximos pasos
+
+| Función | Estado |
+| --- | --- |
+| Procesamiento en el dispositivo | Disponible |
+| Puntuación voluntaria con consentimiento revocable | Disponible |
+| Aprendizaje federado: mejorar modelos mediante entrenamiento entre dispositivos sin recopilar datos sin procesar | Planificado (investigación) |
+
+Consulta [Líneas de investigación](/es/overview/science/research-directions).
+
+---
+
+<a id="sources"></a>
+
+## Fuentes
+
+- [Política de privacidad de Elata](https://elata.bio/privacy)

@@ -3,6 +3,8 @@ title: "指标与分数"
 description: "使用 @elata-biosciences/app-metrics 记录事件和分数，并为生物特征评分做贡献。"
 ---
 
+<a id="overview"></a>
+
 ## 概述
 
 `@elata-biosciences/app-metrics` 为你的应用提供按用户存储的**事件记录**和**分数**，以及用于为用户跨应用生物特征评分做贡献的 `reportAffect`。
@@ -28,7 +30,9 @@ const recent = await metrics.query({ type: 'level_complete', limit: 20 });
 
 ---
 
-## API
+<a id="api"></a>
+
+## 应用程序编程接口
 
 | 方法 | 作用 |
 | --- | --- |
@@ -40,6 +44,8 @@ const recent = await metrics.query({ type: 'level_complete', limit: 20 });
 | `loadScores({ order?, since?, until?, limit? })` | 读取分数。`order` 为 `"value_desc"` 或 `"timestamp_desc"`。 |
 | `reportAffect(report)` | 为生物特征评分贡献一次会话结果（见下文） |
 | `dispose()` | 销毁客户端 |
+
+<a id="limits"></a>
 
 ### 限制
 
@@ -61,7 +67,7 @@ const result = await metrics.reportAffect({
   baselineValue: 0.42,    // 0..1
   sessionValue: 0.61,     // 0..1
   delta: 0.19,            // -1..1
-  meanHr: 68,             // 可选，会话平均心率
+  meanHr: 68,             // optional session-average heart rate
   signalQuality: 0.85,    // 0..1
   confidence: 0.8,        // 0..1
   source: 'rppg',
@@ -82,6 +88,8 @@ const result = await metrics.reportAffect({
 2. **用户已同意。** 使用 [`elata:consent:request`](/cn/apps/platform/consent-and-insights) 请求同意。Elata 还会在服务器端针对每个样本重新检查同意状态。
 
 ---
+
+<a id="for-hosts"></a>
 
 ## 面向宿主
 

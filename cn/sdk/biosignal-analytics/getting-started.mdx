@@ -1,12 +1,14 @@
 ---
 title: "快速上手"
-tag: "Experimental"
+tag: "实验性"
 description: "使用 @elata-biosciences/biosignal-analytics 计算 EEG 特征、HRV、稳健统计和透明的总体评分。"
 ---
 
 <Warning>
   `@elata-biosciences/biosignal-analytics` 尚未发布到 npm。以下 API 基于 [SDK 仓库](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics)中的源码，在首次发布前可能会有变化。
 </Warning>
+
+<a id="what-it-does"></a>
 
 ## 功能
 
@@ -20,11 +22,13 @@ description: "使用 @elata-biosciences/biosignal-analytics 计算 EEG 特征、
 它与 [`biosignal-session`](/cn/sdk/biosignal-session/getting-started) 天然搭配，但并不依赖它。
 
 ```bash
-# 尚未发布到 npm。首次发布后此命令才可用。
+# Not on npm yet. This command works after the first release.
 npm install @elata-biosciences/biosignal-analytics
 ```
 
 ---
+
+<a id="analyze-an-eeg-window"></a>
 
 ## 分析一个 EEG 窗口
 
@@ -43,6 +47,8 @@ const result = await analyzeEeg({
 每个窗口只调用一次，使 JavaScript/WASM 边界的开销保持很低。结果中包含生成它所用的配置和算法版本。
 
 ---
+
+<a id="headline-scores"></a>
 
 ## 总体评分
 
@@ -70,6 +76,8 @@ const result = await analyzeEeg({
 
 ---
 
+<a id="run-analysis-off-the-main-thread"></a>
+
 ## 在主线程之外运行分析
 
 ```ts
@@ -82,6 +90,8 @@ const client = createAnalyticsWorkerClient({ createWorker: launchAnalyticsWorker
 ```
 
 ---
+
+<a id="entry-points"></a>
 
 ## 入口
 

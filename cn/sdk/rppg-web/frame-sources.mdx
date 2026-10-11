@@ -3,6 +3,8 @@ title: "帧来源"
 description: "使用 MediaPipe 进行摄像头采集和人脸检测"
 ---
 
+<a id="framesource-interface"></a>
+
 ## FrameSource 接口
 
 所有帧来源都实现此接口：
@@ -15,7 +17,7 @@ interface FrameSource {
 }
 
 type Frame = {
-  data: Uint8ClampedArray | number[];  // RGBA 像素数据
+  data: Uint8ClampedArray | number[];  // RGBA pixel data
   width: number;
   height: number;
   roi?: ROI;
@@ -35,17 +37,17 @@ type ROI = { x: number; y: number; w: number; h: number };
 ```typescript
 import { MediaPipeFrameSource } from "@elata-biosciences/rppg-web";
 
-const video = document.querySelector("video")!; // 正在播放的摄像头 <video>
+const video = document.querySelector("video")!; // a playing camera <video>
 const source = new MediaPipeFrameSource(video);
 
 source.onFrame = (frame) => {
-  // frame.roi 包含检测到的面部边界框
-  // frame.data 包含摄像头图像像素
+  // frame.roi contains the detected face bounding box
+  // frame.data contains the camera image pixels
   console.log("Face ROI:", frame.roi);
 };
 
 await source.start();
-// ……之后
+// ... later
 await source.stop();
 ```
 
@@ -63,7 +65,7 @@ if (!faceLandmarker) throw new Error("Face tracking unavailable");
 const source = new MediaPipeFaceFrameSource(video, faceLandmarker);
 
 source.onFrame = (frame) => {
-  // frame.rois 可能包含多个面部区域
+  // frame.rois may contain multiple face regions
   console.log("Face regions:", frame.rois?.length);
 };
 
@@ -80,7 +82,7 @@ await source.start();
 import { loadFaceLandmarker } from "@elata-biosciences/rppg-web";
 
 const faceLandmarker = await loadFaceLandmarker({
-  // 均为可选：
+  // all optional:
   // visionCdnBase, wasmBase, modelAssetPath
 });
 ```
@@ -110,7 +112,7 @@ const options: DemoRunnerOptions = {
 const runner = new DemoRunner(source, processor, options);
 await runner.start();
 
-// ……之后
+// ... later
 await runner.stop();
 ```
 
@@ -127,6 +129,8 @@ await runner.stop();
 
 ---
 
+<a id="roi-helper"></a>
+
 ## ROI 辅助函数
 
 从感兴趣区域提取平均绿色通道强度：
@@ -138,6 +142,8 @@ const intensity = averageGreenInROI(frame, roi.x, roi.y, roi.w, roi.h);
 ```
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

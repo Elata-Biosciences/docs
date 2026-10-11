@@ -1,0 +1,77 @@
+---
+title: "Suscripciones"
+tag: "Experimental"
+description: "Configure el acceso mensual a las aplicaciones, las pruebas y la renovación manual a través de Elata."
+---
+
+Un plan de suscripción activo controla toda tu aplicación. Elata verifica el acceso antes de abrir la aplicación, por lo que no necesita el código de pago de suscripción dentro de ella. También puedes vender [artículos únicos](/es/apps/platform/in-app-purchases); su propiedad es separada.
+
+<Info>
+El pago pago requiere la configuración de pago de la implementación. Ver [Qué hay en vivo](/es/overview/status). El pago de la suscripción a la aplicación utiliza una billetera conectada que paga USDC en Base y se renueva manualmente; no es un cargo recurrente automático.
+</Info>
+
+<a id="configure-your-plan"></a>
+
+## Configura tu plan
+
+Abra **Mis aplicaciones → su aplicación → Editar → Comercio → Suscripción mensual**.
+
+| Configuración | Comportamiento |
+| --- | --- |
+| Precio mensual | Una cantidad positiva en USDC; ingrese la cantidad legible por humanos en el formulario |
+| Prueba gratuita | Un número entero de 0 a 365 días; 0 significa que no hay prueba |
+| Activo | Un plan inactivo no bloquea la aplicación ni ofrece renovación |
+
+Cada aplicación tiene un plan. Ahorra utilizando la acción propia del plan. Los propietarios y miembros autorizados del equipo pueden gestionarlo. Las ediciones de precios no reescriben períodos pagados previamente registrados; revise el precio actual al realizar un nuevo pago.
+
+<a id="who-gets-access"></a>
+
+## ¿Quién tiene acceso?
+
+| Usuario | Acceso |
+| --- | --- |
+| Propietario de la aplicación o miembro autorizado del equipo | Accede sin comprar el plan de la aplicación |
+| Usuario con cobertura de período pagado válida | Acceso durante esa cobertura |
+| Usuario con una prueba válida | Acceso hasta que finalice la prueba |
+| Usuario sin ninguno de estos | Aviso de suscripción mientras el plan está activo |
+
+Sin un plan activo, la aplicación es gratuita. Estas reglas se refieren al acceso a las aplicaciones; no otorgan elementos pagos dentro de la aplicación.
+
+<a id="the-customers-flow"></a>
+
+## El flujo del cliente
+
+1. El usuario abre el mensaje de suscripción de la aplicación desde su página o pantalla de reproducción bloqueada.
+2. Si son elegibles, comienzan la prueba ofrecida sin pago. El pago pago puede ejecutarse directamente en el mensaje de suscripción cuando su billetera y configuración de pago estén listas, o el usuario puede proceder a **Configuración → Facturación → Suscripciones**.
+3. Eligen la cobertura disponible para el mes actual o el mes siguiente y revisan el carrito.
+4. Elata verifica la liquidación y registra el acceso después del pago. Se pueden pagar varias aplicaciones en un solo carrito.
+
+Los períodos utilizan meses calendario en UTC. La cobertura del próximo mes comienza el primero; El acceso de actualización del mes actual, cuando se ofrece, utiliza la cobertura y el precio prorrateado que se muestra en el carrito. Una prueba no genera un cargo automático cuando finaliza.
+
+El usuario debe completar el pago para renovar. Una selección de carrito no pagado no amplía el acceso. Dejar el mes siguiente sin pagar permite que caduque el acceso pago; eliminar una selección del carrito no reembolsa un período ya pagado.
+
+La ruta `/profile/subscriptions` anterior redirige a la página actual [Facturación → Suscripciones](https://app.elata.bio/settings/billing/subscriptions) .
+
+<a id="earnings-and-subscribers"></a>
+
+## Ganancias y suscriptores
+
+Los períodos de aplicación paga conservan sus montos de pago. El informe **Comercio** muestra esos pagos de suscripción como ingresos brutos antes de la tarifa de división. Su parte se deposita directamente en la billetera de pagos del creador. Consulte [Ingresos y pagos](/es/apps/operate/revenue-and-payouts).
+
+El recuento de suscriptores del plan es una señal de acceso, no una métrica exacta de ingresos recurrentes. Los ensayos pueden contribuir al recuento del período actual.
+
+<a id="test-before-enabling"></a>
+
+## Pruebe antes de habilitar
+
+Utilice una cuenta de usuario separada para verificar los estados de prueba, período actual pagado, período siguiente pagado, caducado y pago no disponible. Los propietarios y miembros del equipo pasan por alto la puerta, por lo que si prueban solo usted mismo se lo perderán.
+
+Informe a los usuarios qué incluye la suscripción y muestre la fecha de finalización correspondiente. Evite describirlo como pago automático o prometer una acción de reembolso que la interfaz de usuario de facturación no proporciona.
+
+<a id="next"></a>
+
+## Siguiente
+
+- [Monetiza tu aplicación](/es/apps/build/monetize)
+- [Facturación y compras](/es/users/billing-and-purchases)
+- [Ingresos y pagos](/es/apps/operate/revenue-and-payouts)

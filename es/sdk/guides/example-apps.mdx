@@ -1,0 +1,76 @@
+---
+title: "Aplicaciones de ejemplo"
+description: "Aplicaciones de navegador de código abierto creadas con paquetes Elata EEG, Web Bluetooth y rPPG ."
+---
+
+<Info>
+Se trata de integraciones completas en forma de producto con enrutamiento, sesiones, gráficos y bucles de juego. Van más allá de las `create-elata-demo` plantillas iniciales y muestran cómo se ve una aplicación completa.
+</Info>
+
+<a id="featured-apps"></a>
+
+## Aplicaciones destacadas
+
+<CardGroup cols={2}>
+  <Card title="Entrenador de respiración" icon="lungs" iconType="light" href="https://github.com/wkyleg/breathwork-trainer">
+Respiración guiada con monitoreo biométrico en vivo EEG y rPPG .
+  </Card>
+  <Card title="Neurovuelo" icon="plane" iconType="light" href="https://github.com/wkyleg/neuroflight">
+Simulador de vuelo 3D con análisis neuronal post-sesión.
+  </Card>
+  <Card title="Mente de mono: invasores internos" icon="gamepad" iconType="light" href="https://github.com/wkyleg/monkey-mind">
+Juego arcade que reactiva el cerebro y responde al estado mental.
+  </Card>
+  <Card title="Neuro ajedrez" icon="chess" iconType="light" href="https://github.com/wkyleg/neuro-chess">
+Ajedrez contra Stockfish con una superposición de HUD neuronal.
+  </Card>
+  <Card title="Entrenador de reacción" icon="bolt" iconType="light" href="https://github.com/wkyleg/reaction-trainer">
+Juego de reacción modulado por estrés con seguimiento de resultados.
+  </Card>
+</CardGroup>
+
+---
+
+<a id="what-these-apps-demonstrate"></a>
+
+## Lo que demuestran estas aplicaciones
+
+Cada aplicación es un repositorio independiente que utiliza los paquetes `@elata-biosciences` publicados:
+
+| Paquete | Propósito |
+| --- | --- |
+| `@elata-biosciences/eeg-web` | EEG procesamiento y modelos de señales |
+| `@elata-biosciences/eeg-web-ble` | Transmisión web con diadema Bluetooth |
+| `@elata-biosciences/rppg-web` | Medición de frecuencia cardíaca basada en cámara |
+
+Estas aplicaciones son útiles como implementaciones de referencia cuando necesita ver cómo un producto real conecta las sesiones del SDK, la administración del estado, los gráficos y la limpieza.
+
+---
+
+<a id="when-to-use-these-vs-create-elata-demo"></a>
+
+## Cuándo utilizarlos frente a `create-elata-demo`
+
+| Si quieres... | Empieza aquí |
+| --- | --- |
+| Obtenga una aplicación funcional en menos de un minuto | [`create-elata-demo`](/es/sdk/create-elata-demo) |
+| Vea un producto completo con enrutamiento, bucles de juego o visualización de datos | Una de las aplicaciones de ejemplo anteriores |
+| Compare su integración con una buena referencia conocida | Cualquiera de los dos caminos funciona |
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={3}>
+  <Card title="Crea tu primera aplicación" icon="rocket" iconType="light" href="/es/sdk/tutorials/first-app">
+Crear una aplicación inicial
+  </Card>
+  <Card title="Elija un paquete" icon="compass" iconType="light" href="/es/sdk/guides/choose-the-right-package">
+Guía de decisión de paquetes
+  </Card>
+  <Card title="rPPG En un navegador" icon="heart-pulse" iconType="light" href="/es/sdk/guides/rppg-browser">
+Integración del navegador principal
+  </Card>
+</CardGroup>

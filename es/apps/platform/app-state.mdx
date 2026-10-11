@@ -1,0 +1,105 @@
+---
+title: "Estado de la aplicación"
+tag: "Experimental"
+description: "Almacenamiento de valores-clave por usuario y por aplicación con @elata-biosciences/app-state."
+---
+
+<Warning>
+`@elata-biosciences/app-state` aún no está publicado en npm. Hasta que así sea, puedes llamar a Elata directamente con los mensajes `elata:state:*` que se muestran a continuación; Elata ya los apoya.
+</Warning>
+
+<a id="overview"></a>
+
+## Información general
+
+`@elata-biosciences/app-state` almacena pequeños valores JSON por usuario y por aplicación: guardar juegos, configuraciones, progreso. No necesita un backend y el puente no revela las credenciales de la cuenta del usuario. Los valores siguen al usuario a través de los dispositivos.
+
+```bash
+# Not on npm yet. This command works after the first release.
+npm install @elata-biosciences/app-state
+```
+
+```ts
+import { getState, setState, deleteState } from '@elata-biosciences/app-state';
+
+// null if nothing was ever stored
+const save = await getState('save_slot_1');
+
+await setState('save_slot_1', { level: 7, hp: 100 });
+
+// idempotent: no error if the key was never set
+await deleteState('save_slot_1');
+```
+
+---
+
+<a id="limits"></a>
+
+## Límites
+
+| Límite | Valor |
+| --- | --- |
+| clave | 1 a 256 caracteres de `A-Z a-z 0-9 . _ : / -` |
+| Valor | Cualquier valor serializable en JSON, hasta 64 KB una vez codificado |
+| Alcance | Un espacio de nombres por (usuario, aplicación). Las aplicaciones no pueden leer los datos de otras. |
+
+---
+
+<a id="errors"></a>
+
+## Errores
+
+Las tres funciones se rechazan con `AppStateError`, que tiene un `code`:
+
+| Código | de donde viene | Significado |
+| --- | --- | --- |
+| `no_parent` | locales | No correr dentro del marco de Elata |
+| `timeout` | locales | No hay respuesta a tiempo |
+| `invalid_input` | Local o Elata | Clave o valor incorrectos |
+| `not_authenticated` | Elata | El usuario no ha iniciado sesión |
+| `value_too_large` | Elata | El valor es superior a 64 KB. |
+| `fetch_failed` | Elata | Elata no pudo alcanzar el almacenamiento |
+
+<Tip>
+Los jugadores que no hayan iniciado sesión obtienen `not_authenticated`. Mantenga un respaldo local, como `localStorage`, y sincronícelo con `app-state` una vez que inicien sesión.
+</Tip>
+
+---
+
+<a id="without-the-package"></a>
+
+## sin el paquete
+
+Elata responde estos mensajes directamente. Envíelos a `window.parent` con un `requestId` único y espere la respuesta `…:result` coincidente:
+
+```js
+function stateCall(type, payload) {
+  return new Promise((resolve, reject) => {
+    const requestId = crypto.randomUUID();
+    const onMessage = (e) => {
+      if (e.data?.type !== `${type}:result` || e.data.requestId !== requestId) return;
+      window.removeEventListener('message', onMessage);
+      e.data.error ? reject(new Error(e.data.error)) : resolve(e.data);
+    };
+    window.addEventListener('message', onMessage);
+    window.parent.postMessage({ type, requestId, ...payload }, '*');
+  });
+}
+
+const { value } = await stateCall('elata:state:get', { key: 'save_slot_1' });
+await stateCall('elata:state:set', { key: 'save_slot_1', value: { level: 7 } });
+await stateCall('elata:state:delete', { key: 'save_slot_1' });
+```
+
+Agregue un tiempo de espera en producción: fuera de Elata nada responde.
+
+---
+
+<a id="app-state-or-app-metrics"></a>
+
+## ¿Estado de la aplicación o métricas de la aplicación?
+
+| uso | Paquete |
+| --- | --- |
+| El último valor de algo: configuración, un espacio para guardar, niveles desbloqueados | `app-state` |
+| Un historial de eventos o puntuaciones que desea consultar y registrar | [`app-metrics`](/es/apps/platform/metrics-and-scores) |

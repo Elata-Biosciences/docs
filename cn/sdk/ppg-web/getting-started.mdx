@@ -3,6 +3,8 @@ title: "快速上手"
 description: "使用 @elata-biosciences/ppg-web 通过 Muse 头带的光学（PPG）传感器获取心率和 HRV。"
 ---
 
+<a id="what-it-does"></a>
+
 ## 功能
 
 `@elata-biosciences/ppg-web` 在浏览器中通过头带的 PPG（光学）传感器估算心率和心率变异性。它运行在与 EEG 包相同的规范化头带数据流上，因此可以与同一设备的 EEG 一起使用。
@@ -12,6 +14,8 @@ description: "使用 @elata-biosciences/ppg-web 通过 Muse 头带的光学（PP
 - 输出 `bpm`、`rmssdMs`、`sdnnMs` 和 `meanNnMs`，以及置信度和信号质量
 
 ---
+
+<a id="install"></a>
 
 ## 安装
 
@@ -23,12 +27,14 @@ npm install @elata-biosciences/ppg-web @elata-biosciences/eeg-web @elata-bioscie
 
 ---
 
+<a id="connect-a-muse-and-read-metrics"></a>
+
 ## 连接 Muse 并读取指标
 
 ```ts
 import { createMusePpgSession } from '@elata-biosciences/ppg-web';
 
-// 请在用户手势（例如“连接”按钮）中调用：Web Bluetooth 需要用户手势。
+// Call from a user gesture (e.g. a "Connect" button): Web Bluetooth requires it.
 const session = await createMusePpgSession({
   windowSec: 16,
   onMetrics: (m) => {
@@ -36,15 +42,17 @@ const session = await createMusePpgSession({
   },
 });
 
-// 或者轮询
+// Or poll
 const metrics = session.getMetrics();
 
-// 结束时
+// When done
 await session.stop();
 await session.dispose();
 ```
 
 ---
+
+<a id="use-any-headband-transport"></a>
 
 ## 使用任意头带传输
 
@@ -63,6 +71,8 @@ const session = await createPpgSession({
 
 ---
 
+<a id="session-api"></a>
+
 ## 会话 API
 
 | 成员 | 作用 |
@@ -77,6 +87,8 @@ const session = await createPpgSession({
 回调：`onMetrics`、`onDiagnostics`、`onStatus`。
 
 ---
+
+<a id="notes"></a>
 
 ## 说明
 

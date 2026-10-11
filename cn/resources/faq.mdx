@@ -1,73 +1,101 @@
 ---
-title: "常见问题"
-description: "关于 Elata、Elata 和 Elata SDK 的常见问题。"
+title: "常见问题解答"
+description: "有关 Elata、其应用程序、Elata SDK、隐私、积分和 ELTA 代币的常见问题的解答。"
 ---
 
-<Note>
-  本页英文版本已更新，中文翻译将随后同步。最新内容请参阅[英文版本](/resources/faq)。
-</Note>
+<a id="about-elata"></a>
 
-## 概况
+## 关于艾拉塔
 
 <AccordionGroup>
-  <Accordion title="什么是 Elata？">
-    一个用于构建和分发生物信号应用的平台：包括用于 rPPG、EEG 和 PPG 的浏览器 SDK，以及发布和使用这些应用的 [Elata](https://app.elata.bio)。参见[什么是 Elata？](/cn/overview/welcome)。
+  <Accordion title="Elata是什么？">
+尊重隐私的生物信号应用程序市场，位于 [app.elata.bio](https://app.elata.bio)，以及用于构建这些应用程序的开源 Elata SDK。请参阅 [欢迎](/cn/overview/welcome)。
   </Accordion>
-  <Accordion title="我需要特殊硬件吗？">
-    不需要。摄像头（rPPG）应用适用于任何网络摄像头。EEG 和头带 PPG 应用需要 Muse 等受支持的头带。
+  <Accordion title="Elata 是医疗产品吗？">
+不会。Elata 应用程序适用于健康、游戏、学习和研究。他们不诊断、治疗或监测任何医疗状况。请参阅 [安全和限制](/cn/users/safety-and-limitations)。
+  </Accordion>
+  <Accordion title="什么's available today?">
+ [实时功能](/cn/overview/status) 页面列出了每个功能的实时状态、实验状态、计划状态或退役状态。
+  </Accordion>
+</AccordionGroup>
+
+---
+
+<a id="using-apps"></a>
+
+## 使用应用程序
+
+<AccordionGroup>
+  <Accordion title="我需要特殊的硬件吗？">
+不会。相机应用程序适用于任何网络摄像头。 EEG 和头带心率应用程序需要受支持的头带，例如 Muse。请参阅 [设备](/cn/users/devices)。
   </Accordion>
   <Accordion title="支持哪些浏览器？">
-    摄像头应用可在现代浏览器中运行。蓝牙 EEG 需要支持 Web Bluetooth 的 Chromium 内核浏览器（桌面和 Android 上的 Chrome 或 Edge）。参见[兼容性](/cn/sdk/operations/compatibility)。
+相机应用程序可以在现代浏览器中运行。蓝牙头带需要Chrome或Edge（网页蓝牙）； Safari 和 iOS 浏览器不支持。请参阅 [设备](/cn/users/devices)。
+  </Accordion>
+  <Accordion title="我需要一个加密钱包吗？">
+不需要。您可以使用社交登录名进行登录。连接现有钱包是可选的。
+  </Accordion>
+  <Accordion title="需要花费什么吗？">
+浏览和玩都是免费的。有些应用程序出售可选项目或提供按月订阅。请参阅 [货币化](/cn/overview/monetization)。
   </Accordion>
 </AccordionGroup>
 
 ---
 
-## 开发应用
-
-<AccordionGroup>
-  <Accordion title="如何发布应用？">
-    使用 SDK 构建 Web 应用，然后通过 [app.elata.bio/build-app](https://app.elata.bio/build-app) 的“构建应用”向导发布。参见[快速开始](/cn/apps/quickstart)。
-  </Accordion>
-  <Accordion title="我的应用必须使用 SDK 吗？">
-    是的。上传的应用必须至少使用一个 Elata 传感器 SDK（rPPG、EEG 或 PPG）。参见[要求](/cn/apps/build/requirements)。
-  </Accordion>
-  <Accordion title="发布需要多少费用？">
-    一笔以 USDC 支付的少量一次性注册费，金额会在向导中显示。
-  </Accordion>
-  <Accordion title="我的应用如何赚钱？">
-    通过[应用内购买](/cn/apps/platform/in-app-purchases)出售一次性物品，或收取月度[订阅](/cn/apps/platform/subscriptions)费用。
-  </Accordion>
-  <Accordion title="我可以自行托管应用吗？">
-    可以，但需要审批。在应用的编辑页面申请外部托管。参见[上传与托管](/cn/apps/build/upload-and-hosting)。
-  </Accordion>
-  <Accordion title="审核需要多长时间？">
-    每个版本都会先经过自动扫描，再由审核员审核。获批后你会在 Elata 内和邮件中收到通知。
-  </Accordion>
-</AccordionGroup>
-
----
+<a id="privacy"></a>
 
 ## 隐私
 
 <AccordionGroup>
-  <Accordion title="我的摄像头或 EEG 数据会离开我的设备吗？">
-    原始信号在你的设备上处理，应用不得将其发送到任何地方。参见[隐私与数据](/cn/overview/privacy-and-consent)。
+  <Accordion title="我的相机或 EEG 数据会离开我的设备吗？">
+原始信号在您的设备上进行处理，并且应用程序不允许将它们发送到任何地方。请参阅 [隐私和同意](/cn/overview/privacy-and-consent)。
   </Accordion>
-  <Accordion title="什么是生物特征评分？">
-    一个可选的跨应用指标，由派生的会话结果构成。只有在你同意后才会生成，你也可以随时关闭。
+  <Accordion title="什么是生物识别分数？">
+根据派生会话结果构建的可选跨应用度量。它仅在您选择加入时才会构建，并且您可以随时将其关闭。请参阅 [分数和见解](/cn/users/score-and-insights)。
+  </Accordion>
+  <Accordion title="如何删除我的数据？">
+电子邮件 [info@elata.bio](mailto:info@elata.bio)。请参阅 [您的数据](/cn/users/your-data)。
   </Accordion>
 </AccordionGroup>
 
 ---
 
-## 账户与积分
+<a id="building-apps"></a>
+
+## 构建应用程序
 
 <AccordionGroup>
-  <Accordion title="我需要加密钱包吗？">
-    不需要。你可以使用社交账号登录，连接已有钱包是可选的。
+  <Accordion title="如何发布应用程序？">
+使用 Elata SDK 构建 Web 应用程序，然后使用位于 [app.elata.bio/build-app](https://app.elata.bio/build-app)的构建应用程序向导。请参阅 [快速入门](/cn/apps/quickstart)。
   </Accordion>
+  <Accordion title="我的应用程序必须使用 Elata SDK 吗？">
+是的。上传必须至少使用一个 Elata 传感器包（rPPG、 EEG或 PPG）。请参阅 [要求](/cn/apps/build/requirements)。
+  </Accordion>
+  <Accordion title="出版要花多少钱？">
+一次性注册费 USDC，如向导所示。
+  </Accordion>
+  <Accordion title="我如何从我的应用程序中赚钱？">
+出售一次性物品或收取每月订阅费。请参阅 [通过您的应用获利](/cn/apps/build/monetize)。
+  </Accordion>
+  <Accordion title="审核需要多长时间？">
+每个版本都会自动扫描，然后由主持人审核。批准后，您会在 Elata 上收到通知并通过电子邮件收到通知。
+  </Accordion>
+</AccordionGroup>
+
+---
+
+<a id="points-and-the-token"></a>
+
+## 积分和代币
+
+<AccordionGroup>
   <Accordion title="什么是 Elata 积分？">
-    参与 Elata 活动获得的不可转让积分。参见 [Elata 积分](/cn/overview/points)。
+您通过参与游戏、评论、建造和邀请朋友赚取链下积分。它们不能被购买、出售或转让。请参阅 [Elata 积分](/cn/overview/points)。
+  </Accordion>
+  <Accordion title="我需要 ELTA 才能使用Elata吗？">
+否。参见 [ELTA 代币](/cn/overview/elta-token)。
+  </Accordion>
+  <Accordion title="哪里可以买到 ELTA？">
+目前尚无官方流动性池。任何在官方公告之前出现的矿池均未经授权。请参阅 [ELTA 代币](/cn/overview/elta-token)。
   </Accordion>
 </AccordionGroup>

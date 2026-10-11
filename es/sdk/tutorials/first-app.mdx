@@ -1,0 +1,233 @@
+---
+title: "Crea tu primera aplicación Elata"
+description: "Primero cree una aplicación que funcione y luego úsela como punto de referencia para una integración más profunda del SDK."
+---
+
+<Warning>
+El `create-elata-demo` 0.12.1 del repositorio tiene un bloqueador de empaquetado: la falta de metadatos de la versión `app-metrics` impide el inicio. Verifique [estado de la carpeta de andamios](/es/sdk/create-elata-demo) antes de usar los siguientes comandos; por ahora, siga el [manual rPPG integración](/es/sdk/tutorials/rppg-existing-app).
+</Warning>
+
+Utilice esta página si es nuevo en el SDK y desea que una aplicación con scaffolding se ejecute localmente antes de integrar algo manualmente.
+
+Si desea el mapa completo (**rPPG principal**, **EEG opcional**, **Bluetooth para conectar un auricular**) con estructura, paso a paso y descripción general, utilice [la descripción general del SDK](/es/sdk/overview).
+
+El objetivo es simple: ejecutar localmente una aplicación que funcione, comprender qué plantilla se asigna a qué flujo de trabajo de sensor y saber adónde ir a continuación.
+
+<a id="what-you-will-build"></a>
+
+## Lo que construirás
+
+Creará una de las aplicaciones iniciales publicadas con `@elata-biosciences/create-elata-demo`.
+
+Elija la plantilla que coincida con su objetivo:
+
+- `rppg-demo`: **principal**: pulso basado en cámara/rPPG aplicación
+- `eeg-demo`: procesamiento del navegador EEG , compatible con Muse Web Bluetooth
+- `eeg-ble`: Bluetooth primero EEG iniciador para unos auriculares compatibles con Muse
+- `ppg-demo`: frecuencia cardíaca y HRV del sensor PPG de una diadema Muse
+- `pulse-game`: un juego rPPG que se ejecuta en un iframe de espacio aislado y guarda puntuaciones, de la misma manera que se ejecutan las aplicaciones en Elata
+
+<a id="why-start-here"></a>
+
+## ¿Por qué empezar aquí?
+
+Este es el valor predeterminado recomendado porque le brinda:
+
+- una estructura de aplicación funcional
+- versiones de paquetes compatibles fijadas
+- una implementación de referencia con la que puedes comparar tu propia aplicación
+
+Haga esto antes de integrar el SDK en una aplicación existente.
+
+<a id="step-1-choose-a-template"></a>
+
+## Paso 1: elige una plantilla
+
+Utilice esta tabla de decisiones:
+
+| Si quieres... | Elige |
+| --- | --- |
+| Cree la aplicación predeterminada basada en cámara (sin hardware adicional) | `rppg-demo` |
+| Agregue el navegador EEG únicamente (muestras sintéticas o sin conexión primero) | `eeg-demo` |
+| Habilite unos auriculares compatibles con Muse a través de Bluetooth (Chrome/Edge) | `eeg-ble` |
+| Lea la frecuencia cardíaca y HRV desde una diadema Muse | `ppg-demo` |
+| Vea el patrón completo de Elata (iframe en espacio aislado + partituras guardadas) | `pulse-game` |
+
+Si no está seguro, comience con `rppg-demo`.
+
+<a id="step-2-scaffold-the-app"></a>
+
+## Paso 2: estructurar la aplicación
+
+Comience con el selector interactivo:
+
+<CodeGroup>
+
+```bash pnpm
+pnpm create @elata-biosciences/elata-demo my-app
+```
+
+```bash npm
+npm create @elata-biosciences/elata-demo my-app
+```
+
+</CodeGroup>
+
+Si prefiere la ruta predeterminada explícita, utilice scaffolding `rppg-demo` directamente:
+
+<CodeGroup>
+
+```bash pnpm
+pnpm create @elata-biosciences/elata-demo my-app -- --template rppg
+```
+
+```bash npm
+npm create @elata-biosciences/elata-demo my-app -- --template rppg
+```
+
+</CodeGroup>
+
+Si desea ver la lista completa de plantillas primero:
+
+<CodeGroup>
+
+```bash pnpm
+pnpm dlx @elata-biosciences/create-elata-demo --list-templates
+```
+
+```bash npm
+npx @elata-biosciences/create-elata-demo --list-templates
+```
+
+</CodeGroup>
+
+El alias completo y la matriz de plantilla se encuentran en [create-elata-demo](/es/sdk/create-elata-demo).
+
+<a id="step-3-install-and-run"></a>
+
+## Paso 3: instalar y ejecutar
+
+Copie **una columna** (pnpm o npm), luego ejecute cada línea en orden:
+
+<CodeGroup>
+
+```bash pnpm
+cd my-app
+pnpm install
+pnpm run dev
+```
+
+```bash npm
+cd my-app
+npm install
+npm run dev
+```
+
+</CodeGroup>
+
+<a id="step-4-confirm-what-you-have"></a>
+
+## Paso 4: confirma lo que tienes
+
+Una vez que se inicie la aplicación, verifique el comportamiento esperado:
+
+- `rppg-demo`: solicita acceso a la cámara e inicia una sesión estilo pulso
+- `eeg-demo`: carga el procesamiento EEG en el navegador y muestra la salida basada en datos sintéticos
+- `eeg-ble`: agrega emparejamiento y transmisión por Bluetooth para auriculares compatibles con Muse además de EEG
+- `ppg-demo`: conecta una diadema Muse y muestra BPM, RMSSD y diagnósticos PPG en vivo
+- `pulse-game`: ejecuta el juego dentro de un iframe de espacio aislado y guarda puntuaciones a través de un host local, como lo hace Elata.
+
+Si su objetivo es solo la evaluación, deténgase aquí primero y aprenda de la aplicación generada antes de integrarla a una base de código existente.
+
+<a id="step-5-understand-the-generated-app"></a>
+
+## Paso 5: comprender la aplicación generada
+
+Cada aplicación estructurada te ofrece:
+
+- un shell mínimo de Vite + React
+- Paquetes Elata ya conectados
+- a `README.md` con notas específicas de la plantilla
+- un script `build` para que puedas confirmar que la aplicación se compila limpiamente
+- un script `build:zip` que empaqueta la aplicación para cargar [en Elata](/es/apps/build/launch-your-app)
+
+Esta debe ser su línea de base conocida y buena.
+
+Cuando una integración manual sale mal más adelante, compare su aplicación con la generada antes de asumir que el paquete no funciona.
+
+<a id="common-gotcha-scaffolding-inside-another-pnpm-workspace"></a>
+
+## Problema común: andamio dentro de otro espacio de trabajo `pnpm` 
+
+Si crea `my-app` dentro de otro repositorio que ya tiene un `pnpm-workspace.yaml`, `pnpm install` puede adjuntarse al espacio de trabajo principal en lugar de a la aplicación generada.
+
+Ejecute estos **una línea a la vez** desde el directorio principal (ajuste `my-app` si es necesario):
+
+<CodeGroup>
+
+```bash pnpm
+pnpm --dir my-app --ignore-workspace install
+pnpm --dir my-app --ignore-workspace run dev
+```
+
+```bash npm
+cd my-app
+npm install
+npm run dev
+```
+
+</CodeGroup>
+
+<a id="where-to-go-next"></a>
+
+## Adónde ir a continuación
+
+Ya tienes un andamio en funcionamiento. El orden recomendado es **cámara rPPG primero** (la aplicación principal de la mayoría de las personas), **navegador EEG segundo si el producto necesita señales cerebrales**, luego **Web Bluetooth para conectar unos auriculares** (transporte encima de EEG). Cada paso se divide de la misma manera: **permanecer en el andamio** o **integrarse en una aplicación que ya tiene**.
+
+<a id="next-camera-rppg-primary"></a>
+
+### Siguiente: Cámara (rPPG): principal
+
+Elige la fila que más te convenga:
+
+| tu situacion | ¿Qué hacer a continuación? |
+| --- | --- |
+| **Nueva aplicación**: seguirás construyendo a partir del andamio `rppg-demo` generado | Utilice [rPPG en una aplicación de navegador](/es/sdk/guides/rppg-browser) para el modelo de integración, luego [rppg-web](/es/sdk/rppg-web/getting-started) mientras cambia la plantilla. Para obtener detalles de la CLI de andamio: [create-elata-demo](/es/sdk/create-elata-demo). |
+| **Aplicación existente**: necesitas rPPG dentro de un código base que ya envías | Siga [Agregar rPPG basado en cámara a una aplicación de navegador existente](/es/sdk/tutorials/rppg-existing-app) paso a paso. |
+
+<a id="then-browser-eeg-optional-no-headset-yet"></a>
+
+### Luego: Navegador EEG: opcional (aún no hay auriculares)
+
+| tu situacion | ¿Qué hacer a continuación? |
+| --- | --- |
+| **Nueva aplicación**: extender o volver a girar `eeg-demo` | [EEG En una aplicación de navegador](/es/sdk/guides/eeg-browser), luego [eeg-web](/es/sdk/eeg-web/getting-started). Referencia de andamio: [create-elata-demo](/es/sdk/create-elata-demo). |
+| **Aplicación existente** | [Agregue EEG a una aplicación de navegador existente](/es/sdk/tutorials/eeg-existing-app). |
+
+<a id="then-enable-bluetooth-headset-muse-compatible"></a>
+
+### Luego: habilite los auriculares Bluetooth (compatibles con Muse)
+
+| tu situacion | ¿Qué hacer a continuación? |
+| --- | --- |
+| **Nueva aplicación**: amplía el andamio `eeg-ble`  | [Web Bluetooth con dispositivos compatibles](/es/sdk/guides/web-bluetooth), luego [eeg-web-ble](/es/sdk/eeg-web-ble/getting-started) (y [eeg-web](/es/sdk/eeg-web/getting-started)). |
+| **Aplicación existente** | [Transmisión compatible con Muse EEG A través de Web Bluetooth](/es/sdk/tutorials/eeg-ble-live-stream). Si WASM aún no está cableado, haga primero la fila EEG de arriba. |
+
+<a id="full-map"></a>
+
+### mapa completo
+
+Para las mismas opciones en un lugar en **orden de prioridad** (rPPG, luego EEG, luego Bluetooth), use [la descripción general del SDK](/es/sdk/overview).
+
+<a id="example-apps"></a>
+
+### Aplicaciones de ejemplo
+
+<CardGroup cols={2}>
+  <Card title="Aplicaciones de ejemplo" icon="grid-2" href="/es/sdk/guides/example-apps">
+Implementaciones de referencia completas en forma de producto
+  </Card>
+  <Card title="Elija un paquete" icon="compass" href="/es/sdk/guides/choose-the-right-package">
+Guía de decisión de paquetes
+  </Card>
+</CardGroup>

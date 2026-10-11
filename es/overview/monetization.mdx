@@ -1,0 +1,54 @@
+---
+title: "Comercialización"
+description: "Qué pagan los usuarios, cómo ganan los constructores y adónde van los pagos."
+---
+
+Elata permite a los constructores vender artículos únicos y acceso mensual a la aplicación a través del proceso de pago de la plataforma. Los usuarios administran sus pagos en **Configuración → Facturación**; Los creadores administran la monetización de sus aplicaciones en **Editar → Comercio**.
+
+<Info>
+La disponibilidad depende de la implementación y la configuración de pago. Ver [Qué hay en vivo](/es/overview/status). El flujo de suscripción y compra de aplicaciones que se describe aquí se establece en USDC en Base cuando está habilitado. Una vista previa puede utilizar fondos reales; verifique la red que se muestra en el proceso de pago.
+</Info>
+
+<a id="what-users-can-pay-for"></a>
+
+## Qué pueden pagar los usuarios
+
+| Compra | lo que proporciona | donde gestionarlo |
+| --- | --- | --- |
+| Elemento en la aplicación | Un desbloqueo único dentro de una aplicación | Configuración → Facturación → Compras |
+| Suscripción a la aplicación | Acceso a una aplicación controlada por suscripción durante el período pago | Configuración → Facturación → Suscripciones |
+| Créditos | Acceso a funciones medidas compatibles | Configuración → Facturación → Monedero |
+
+Las suscripciones a aplicaciones se renuevan manualmente. Seleccionar una aplicación para el próximo mes no la paga: complete el pago para asegurar el acceso.
+
+Los créditos y los [Puntos Elata](/es/overview/points) son independientes de los USDC que se utilizan para comprar artículos y suscripciones a aplicaciones. El acceso a la suscripción a la aplicación no otorga la propiedad de todos los elementos de la aplicación.
+
+Consulte [Facturación y compras](/es/users/billing-and-purchases) para obtener instrucciones de pago, acceso y facturación.
+
+<a id="how-builders-earn"></a>
+
+## Cómo ganan los constructores
+
+Los creadores crean productos y planes de suscripción en la sección **Comercio** de su aplicación. Los artículos de una sola vez utilizan [`app-payments`](/es/apps/platform/in-app-purchases); Las suscripciones a toda la aplicación no requieren ningún código de compra dentro de la aplicación.
+
+Para ventas directas de aplicaciones, realice las rutas de pago USDC a través del divisor de pagos. El divisor deduce la tarifa de la plataforma configurada y envía la parte del creador a la billetera de pagos de la aplicación. No hay un saldo de creador de Elata separado para retirar más tarde.
+
+El informe **Ingresos** muestra las ventas brutas antes de la división. La tarjeta **Fondos** muestra el saldo actual USDC de la billetera de pagos en Base. Estos son números diferentes: las transferencias de billetera, las tarifas y otras actividades de la billetera afectan el saldo.
+
+Comience con [Monetice su aplicación](/es/apps/build/monetize), luego siga [Ingresos y pagos](/es/apps/operate/revenue-and-payouts) para acceder y mover sus fondos.
+
+<a id="fees"></a>
+
+## Tarifas
+
+| Costo | cuando se aplica |
+| --- | --- |
+| Cuota de inscripción | Una vez por aplicación, al registrarse; el asistente muestra la cantidad |
+| Tarifa de plataforma | Deducido por el divisor de los pagos directos de la aplicación |
+| Tarifas de red o de proveedor de pagos | Según corresponda a checkout o transferencias |
+
+<a id="app-tokens"></a>
+
+## Fichas de aplicación
+
+La compra de artículos de aplicaciones o acceso a una suscripción no requiere ELTA ni un token de aplicación. El modelo de lanzamiento de token de aplicación anterior está [retirado del producto actual por ahora](/es/overview/status#retired-from-the-current-product). Se pretende que las características del protocolo regresen más adelante, sin compromiso de tiempo ni diseño final.

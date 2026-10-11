@@ -1,11 +1,14 @@
 ---
-title: "Newsreader Architecture"
-description: "How the AI-powered scraper pipeline works"
+title: "新闻阅读器架构"
+tag: "已归档"
+description: "人工智能驱动的刮刀管道如何工作"
 ---
 
-## System Architecture
+<a id="system-architecture"></a>
 
-The Newsreader is composed of three modules:
+## 系统架构
+
+新闻阅读器由三个模块组成：
 
 ```
 elata-vsm-system-4/
@@ -16,9 +19,11 @@ elata-vsm-system-4/
 
 ---
 
-## Scraper Pipeline
+<a id="scraper-pipeline"></a>
 
-The scraper runs as a scheduled process via PM2. Each cycle executes the following pipeline:
+## 刮板管道
+
+刮刀通过 PM2 按计划进程运行。每个周期执行以下管道：
 
 ```mermaid
 flowchart TD
@@ -33,30 +38,38 @@ flowchart TD
     G --> J["REST API"]
 ```
 
-### Phase 1: Aggregation
+<a id="phase-1-aggregation"></a>
 
-- **NewsAPI** queries for neuroscience, psychiatry, BCI, DeSci, and related keywords
-- **Web scraper** fetches from 400+ curated sources: journals, preprint servers, pharma outlets, neurotech companies, regulatory agencies, and community platforms
+### 第一阶段：聚合
 
-### Phase 2: Analysis
+- **NewsAPI** 神经科学、精神病学、BCI、DeSci 和相关关键字的查询
+- **网络抓取** 从 400 多个精选来源获取：期刊、预印本服务器、制药商店、神经科技公司、监管机构和社区平台
 
-- **GPT processor** evaluates each article against the Elata mission and assigns a relevance score (0-1)
-- **GPT validator** filters out low-quality or irrelevant content
-- **Tag assignment** applies from a controlled vocabulary of 86 domain-specific tags across categories: neuroscience, hardware, AI/ML, pharmacology, biohacking, biomarkers, DeSci, and industry
+<a id="phase-2-analysis"></a>
 
-### Phase 3: Enrichment and Output
+### 第二阶段：分析
 
-- **Content scraper** extracts full text, word count, and reading time
-- **Embedding generation** via OpenAI for semantic search
-- **Podcast generation** produces AI-narrated audio summaries using ElevenLabs with two narrator personas (Nova and Dr. Renn)
-- **Discord notifications** alert the community to high-relevance articles
-- Results are written to `current.json` and served via the REST API
+- **GPT 处理器** 根据 Elata 任务评估每篇文章并分配相关性分数 (0-1)
+- **GPT 验证器** 过滤掉低质量或不相关的内容
+- **标签分配** 适用于跨类别的 86 个特定领域标签的受控词汇表：神经科学、硬件、AI/ML、药理学、生物黑客、生物标记、DeSci 和工业
+
+<a id="phase-3-enrichment-and-output"></a>
+
+### 第三阶段：丰富和输出
+
+- **内容抓取** 提取全文、字数和阅读时间
+- **嵌入生成** 通过 OpenAI 用于语义搜索
+- **播客生成** 使用 ElevenLabs 和两个叙述者角色（Nova 和 Dr. Renn）生成 AI 叙述的音频摘要
+- **不和谐通知** 提醒社区高相关性文章
+- 结果写入 `current.json` 并通过 REST API 提供服务
 
 ---
 
-## Data Model
+<a id="data-model"></a>
 
-Articles follow a Zod-validated schema:
+## 数据模型
+
+文章遵循 Zod 验证的架构：
 
 ```typescript
 const ArticleSchema = z.object({
@@ -77,7 +90,7 @@ const ArticleSchema = z.object({
 });
 ```
 
-Summary metadata tracks aggregate statistics:
+摘要元数据跟踪聚合统计数据：
 
 ```typescript
 const SummaryMetadataSchema = z.object({
@@ -90,30 +103,34 @@ const SummaryMetadataSchema = z.object({
 
 ---
 
-## Tag Taxonomy
+<a id="tag-taxonomy"></a>
 
-The 86 tags are organized into domains:
+## 标签分类
 
-| Domain | Tag count | Examples |
+这 86 个标签被组织成域：
+
+| 域名 | 标签计数 | 示例 |
 |--------|-----------|---------|
-| Neuroscience & Research | 15 | `eeg`, `fmri`, `neuroimaging`, `synaptic-plasticity` |
-| Hardware & Devices | 16 | `bci`, `neural-interfaces`, `openbci`, `muse`, `eeg-headsets` |
-| Computational & AI | 12 | `precision-psychiatry`, `machine-learning`, `neural-decoding` |
-| Neuro-Pharmacology | 8 | `neuropharmacology`, `clinical-trials`, `drug-discovery` |
-| Biohacking & Experimental | 12 | `nootropics`, `psychedelics`, `neurofeedback`, `meditation` |
-| Biomarkers & Mechanisms | 10 | `biomarkers`, `neuroinflammation`, `gut-brain-axis` |
-| DeSci & Web3 | 7 | `desci`, `daos`, `tokenomics`, `on-chain-governance` |
-| Industry & Business | 6 | `pharma`, `biotech`, `startups`, `regulatory` |
+| 神经科学研究 | 15 | `eeg`, `fmri`, `neuroimaging`, `synaptic-plasticity` |
+| 硬件与设备 | 16 | `bci`, `neural-interfaces`, `openbci`, `muse`, `eeg-headsets` |
+| 计算与人工智能 | 12 | `precision-psychiatry`, `machine-learning`, `neural-decoding` |
+| 神经药理学 | 8 | `neuropharmacology`, `clinical-trials`, `drug-discovery` |
+| 生物黑客与实验 | 12 | `nootropics`, `psychedelics`, `neurofeedback`, `meditation` |
+| 生物标志物和机制 | 10 | `biomarkers`, `neuroinflammation`, `gut-brain-axis` |
+| 德科学与Web3 | 7 | `desci`, `daos`, `tokenomics`, `on-chain-governance` |
+| 工业与商业 | 6 | `pharma`, `biotech`, `startups`, `regulatory` |
 
 ---
 
-## Running Locally
+<a id="running-locally"></a>
+
+## 本地运行
 
 ```bash
 git clone https://github.com/Elata-Biosciences/elata-vsm-system-4.git
 cd elata-vsm-system-4
 ```
 
-See the individual module READMEs for setup:
-- [Scraper setup](https://github.com/Elata-Biosciences/elata-vsm-system-4/tree/main/scraper)
-- [Web platform setup](https://github.com/Elata-Biosciences/elata-vsm-system-4/tree/main/web)
+请参阅各个模块自述文件进行设置：
+- [刮刀设置](https://github.com/Elata-Biosciences/elata-vsm-system-4/tree/main/scraper)
+- [Web 平台设置](https://github.com/Elata-Biosciences/elata-vsm-system-4/tree/main/web)

@@ -1,0 +1,106 @@
+---
+title: "Empezando"
+tag: "Experimental"
+description: "EEG características, HRV, estadísticas sólidas y puntuaciones de titulares transparentes con @elata-biosciences/biosignal-analytics."
+---
+
+<Warning>
+`@elata-biosciences/biosignal-analytics` aún no está publicado en npm. La API a continuación refleja la fuente en el [repositorio SDK](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) y puede cambiar antes del primer lanzamiento.
+</Warning>
+
+<a id="what-it-does"></a>
+
+## que hace
+
+`@elata-biosciences/biosignal-analytics` convierte los datos de bioseñales en funciones y puntuaciones en el navegador, sin servidor ni conexión de red:
+
+- **EEG características de la ventana** (WASM): potencias de banda, entropía espectral, frecuencia dominante, pico alfa, parámetros de Hjorth e indicadores de calidad
+- **HRV y estadísticas sólidas**: dominio del tiempo HRV, medianas y MAD, líneas de base personales móviles
+- **Puntajes principales**: Medición de calidad, activación, recuperación, enfoque, preparación y resiliencia, cada uno con sus contribuyentes expuestos
+- **Un registro de métricas**: cada métrica tiene una definición, unidad, nivel de evidencia y versión de algoritmo registrados
+
+Se empareja naturalmente con [`biosignal-session`](/es/sdk/biosignal-session/getting-started), pero no lo requiere.
+
+```bash
+# Not on npm yet. This command works after the first release.
+npm install @elata-biosciences/biosignal-analytics
+```
+
+---
+
+<a id="analyze-an-eeg-window"></a>
+
+## Analizar una ventana EEG 
+
+```ts
+import { analyzeEeg, initAnalyticsWasm } from '@elata-biosciences/biosignal-analytics';
+
+await initAnalyticsWasm();
+
+const result = await analyzeEeg({
+  samples,                        // samples[sampleIndex][channelIndex]
+  sampleRateHz: 256,
+  channels: ['TP9', 'AF7', 'AF8', 'TP10'],
+});
+```
+
+Una llamada por ventana mantiene barato el límite de JavaScript/WASM . El resultado incluye la configuración y las versiones del algoritmo que lo produjeron.
+
+---
+
+<a id="headline-scores"></a>
+
+## Puntuaciones principales
+
+Las puntuaciones son interpretaciones, no medidas, y así lo dicen:
+
+- **Calidad de medición** describe la grabación, no la persona, y siempre está disponible.
+- **Activación, Recuperación, Enfoque, Preparación y Resiliencia** cada uno enumera a cada contribuyente con su peso, puntuación z y calidad.
+- Una puntuación **se retiene** (devuelve `null` con una razón) en lugar de adivinar cuando faltan entradas, la calidad es mala o aún no existe una línea de base personal.
+
+| Retener motivo | Significado |
+| --- | --- |
+| `inputs_missing` | La medida no fue hecha |
+| `insufficient_quality` | Fue hecho demasiado mal para leer. |
+| `insufficient_baseline` | Aún no hay una base personal utilizable |
+| `no_activation_detected` | Recuperación: nada calificado como activación |
+| `recovery_incomplete` | Recuperación: la grabación finalizó antes de la recuperación. |
+| `no_task_context` | Enfoque: no había ninguna tarea que atender |
+| `insufficient_history` | Preparación y resiliencia: todavía no hay suficientes días de datos |
+
+`insufficient_history` incluye recuentos, por lo que puede decirle al usuario exactamente cuántos días más se necesitan. La preparación necesita 14 días calificados; La resiliencia necesita 21 más 6 episodios de activación recuperados.
+
+<Note>
+El enfoque no se basa deliberadamente en la proporción theta/beta, que no es una medida de atención válida.
+</Note>
+
+---
+
+<a id="run-analysis-off-the-main-thread"></a>
+
+## Ejecutar análisis desde el hilo principal
+
+```ts
+import {
+  createAnalyticsWorkerClient,
+  launchAnalyticsWorker,
+} from '@elata-biosciences/biosignal-analytics';
+
+const client = createAnalyticsWorkerClient({ createWorker: launchAnalyticsWorker });
+```
+
+---
+
+<a id="entry-points"></a>
+
+## Puntos de entrada
+
+| Importar | Contenidos |
+| --- | --- |
+| `@elata-biosciences/biosignal-analytics` | Todo, reexportado. |
+| `…/registry` | Definiciones de métricas, niveles de evidencia, versiones de algoritmos |
+| `…/insights` | Líneas de base personales y fórmulas de puntuación de titulares |
+| `…/worker` | La entrada del trabajador analítico |
+| `…/testing` | Cargadores de dispositivos y ayudantes de señales sintéticas. |
+
+El código de característica se verifica con los dispositivos de referencia de Python (NumPy/SciPy), por lo que las implementaciones de Rust, WASMy TypeScript concuerdan.

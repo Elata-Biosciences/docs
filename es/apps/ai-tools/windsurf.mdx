@@ -1,0 +1,147 @@
+---
+title: "windsurf"
+description: "Utilice Windsurf para crear aplicaciones de Elata con Elata SDK y las API de Elata."
+---
+
+<a id="overview"></a>
+
+## Información general
+
+Windsurf funciona mejor en aplicaciones de Elata cuando sabe cómo funciona Elata: la zona de pruebas, los paquetes SDK y las reglas de carga. Esta página le brinda un archivo de contexto del proyecto para pegar, además de indicaciones para tareas comunes.
+
+---
+
+<a id="setup"></a>
+
+## Configuración
+
+1. Instale Windsurf desde [windsurf.com](https://windsurf.com).
+2. Abre tu proyecto.
+3. Agregue un archivo `.windsurfrules` en la raíz de su proyecto con el contexto a continuación.
+
+---
+
+<a id="project-context"></a>
+
+## Contexto del proyecto
+
+Guarde esto como `.windsurfrules` en la raíz de su proyecto:
+
+```markdown .windsurfrules
+# Elata app
+
+This is a browser app for Elata (https://app.elata.bio), built on
+the Elata SDK. It is a static web build that runs inside a sandboxed
+iframe in Elata.
+
+## Docs
+- Docs home: https://docs.elata.bio (full text for agents: https://docs.elata.bio/llms-full.txt)
+- Building apps: https://docs.elata.bio/apps/build/overview
+- Host bridge (Elata APIs): https://docs.elata.bio/apps/platform/host-bridge
+- SDK overview: https://docs.elata.bio/sdk/overview
+- Package references for agents: node_modules/@elata-biosciences/<package>/llms.txt
+
+## Packages
+- @elata-biosciences/rppg-web: camera heart rate (use createRppgSession)
+- @elata-biosciences/eeg-web + eeg-web-ble: EEG over Web Bluetooth (Muse built in)
+- @elata-biosciences/ppg-web: headband PPG heart rate and HRV
+- @elata-biosciences/biosignal-session / biosignal-analytics: recording and analysis (not yet on npm)
+- @elata-biosciences/app-payments: in-app purchases (Elata checkout)
+- @elata-biosciences/app-state: per-user key-value storage (not yet on npm; use the elata:state:* messages)
+- @elata-biosciences/app-metrics: event records, scores, reportAffect
+
+## Elata rules
+- The build must actually use an Elata sensor SDK (rPPG, EEG, or PPG), or upload fails.
+- Ship a zip with index.html at the root; use relative asset URLs.
+- Never handle wallets, payments, or sessions in the app. Use app-payments for purchases.
+- Never send raw camera frames, audio, or raw biosignals off the device.
+- Never access window.parent beyond postMessage.
+- Put the release version in public/elata.json: { "version": "x.y.z" }.
+
+## Commands
+- npm run dev        start the dev server
+- npm run build:zip  build and write app.zip for upload
+```
+
+---
+
+<a id="useful-prompts"></a>
+
+## Indicaciones útiles
+
+<a id="start-a-new-app"></a>
+
+### Iniciar una nueva aplicación
+
+```text
+Scaffold a new camera heart-rate app with
+npm create @elata-biosciences/elata-demo my-app -- --template rppg
+and explain the project structure.
+```
+
+<a id="add-the-sdk-to-an-existing-app"></a>
+
+### Agregar el SDK a una aplicación existente
+
+```text
+Add camera heart rate with @elata-biosciences/rppg-web. Use createRppgSession,
+show signal quality, and stop the camera when the component unmounts.
+Read node_modules/@elata-biosciences/rppg-web/llms.txt first.
+```
+
+<a id="add-a-purchase"></a>
+
+### Añadir una compra
+
+```text
+Add a "Pro theme" unlock with @elata-biosciences/app-payments. Gate the UI on
+getOwnedItems(), branch on result.status (not txHash), and re-apply owned
+benefits on startup.
+```
+
+<a id="save-progress"></a>
+
+### Guardar progreso
+
+```text
+Persist the player's settings and best score with Elata's elata:state:get/set messages.
+Fall back to localStorage when Elata replies with not_authenticated.
+```
+
+<a id="prepare-an-upload"></a>
+
+### Preparar una carga
+
+```text
+Check that this build is ready for Elata: index.html at the zip
+root, relative asset paths, SDK usage present, and public/elata.json with the
+version from package.json. Then run npm run build:zip.
+```
+
+---
+
+<a id="tips"></a>
+
+## Consejos
+
+<Tip>
+Apunte al asistente al `llms.txt` de un paquete en `node_modules` antes de pedirle que escriba el código de integración. Estos archivos están escritos para herramientas de inteligencia artificial y enumeran las API compatibles y los errores comunes.
+</Tip>
+
+- Comience desde una plantilla `create-elata-demo` y luego repita.
+- Pruebe en la ventana de juego de Elata antes de enviarlo. La zona de pruebas se comporta de manera diferente a `localhost`.
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="Descripción general del constructor" icon="hammer" href="/es/apps/build/overview">
+Cómo funciona la publicación
+  </Card>
+  <Card title="Descripción general del SDK" icon="brain" href="/es/sdk/overview">
+Los paquetes del SDK de Elata
+  </Card>
+</CardGroup>

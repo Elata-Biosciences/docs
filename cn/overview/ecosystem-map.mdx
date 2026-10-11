@@ -1,62 +1,98 @@
 ---
-title: "Elata 如何运作"
-description: "从传感器到应用再到 Elata：各部分如何协同工作。"
+title: "Elata 如何组合在一起"
+description: "生态系统图：设备、Elata SDK、应用程序和 Elata 本身，以及数据和价值如何在它们之间移动。"
 ---
 
-<Note>
-  本页英文版本已更新，中文翻译将随后同步。最新内容请参阅[英文版本](/overview/ecosystem-map)。
-</Note>
+<a id="the-big-picture"></a>
 
-## 三个层次
+## 大局观
 
 ```mermaid
 graph LR
-    A[传感器<br/>摄像头 · EEG 头带] --> B[Elata SDK<br/>运行在浏览器中]
-    B --> C[你的应用]
-    C -->|postMessage 桥接| D[Elata<br/>登录 · 支付 · 存储]
+    D[Devices<br/>webcam · EEG headband] --> S[Elata SDK<br/>runs on the user's device]
+    S --> A[Biosignal apps]
+    A -->|sandboxed bridge| E[Elata<br/>accounts · payments · storage · consent]
+    E --> U[Users]
+    U --> A
+    E -.-> P[Points and the biometric Score<br/>across all apps]
 ```
 
-1. **传感器**：用于 rPPG 的网络摄像头，或 Muse 等蓝牙 EEG/PPG 头带。
-2. **Elata SDK**：在用户设备上借助 WebAssembly，把原始传感器数据转化为可用信号（心率、频段功率、HRV）。
-3. **Elata**：在沙箱中托管你的应用，并提供账户、支付、存储和分发。
+Elata 有四层。这些文档中的每个部分都有自己的部分。
 
 ---
 
-## 开发者流程
+<a id="1-devices"></a>
 
-1. **构建**：使用 SDK 构建 Web 应用。可通过 `npm create @elata-biosciences/elata-demo` 从模板开始。
-2. **注册**：在 Elata 的“构建应用”向导中注册应用名称。
-3. **上传**：上传构建产物的 zip 文件，Elata 会立即进行检查。
-4. **提交**审核：自动安全扫描和人工审核员会审查该版本。
-5. **上线**：用户发现你的应用并在浏览器中使用。
+## 1. 设备
 
-详情见[应用生命周期](/cn/apps/app-lifecycle)。
+传感器是人们已经拥有的东西：
+
+- **网络摄像头** 可以根据皮肤微小的颜色变化来估计脉搏（远程光电体积描记法，或 rPPG）。
+- **消费者 EEG 头带**，例如 Muse 2 或 Muse S，从头皮上的几个点测量电活动，某些型号还具有光学 (PPG) 心率传感器。
+
+请参阅 [您可以使用的设备](/cn/users/devices) ，以及，对于科学而言， [生物信号解释](/cn/overview/biosignals)。
 
 ---
 
-## 你的应用如何运行
+<a id="2-the-elata-sdk"></a>
 
-你的应用运行在一个拥有独立源的沙箱 iframe 中。在用户许可下，它可以使用摄像头和蓝牙，但无法看到用户的身份、钱包或 Elata 的数据。
+## 2.Elata SDK
 
-当需要平台能力时，它会向 Elata 发送消息：
+ [Elata SDK](/cn/overview/elata-sdk) 是一组开源软件包，可连接到这些设备并将原始信号转换为可用的测量值，例如心率、心率变异性和 EEG 频段功率。使用 WebAssembly在用户设备上的浏览器中运行处理。构建者使用 SDK，因此他们不必从头开始编写信号处理。
 
-| 需求 | Elata 功能 |
+---
+
+<a id="3-apps"></a>
+
+## 3. 应用程序
+
+开发者将 SDK 与他们自己的想法相结合：您可以专注或平静地驾驶游戏、跟随您的心率的呼吸指南、实时仪表板、研究工具。应用程序是普通的网络应用程序。请参阅 Elata 上的 [应用程序](/cn/overview/apps-on-elata)。
+
+---
+
+## 4. Elata
+
+[Elata](https://app.elata.bio) 是这些应用程序所在的位置。它：
+
+- **评论** 每个版本（自动安全扫描加上人工审核）
+- **主机** 每个应用程序都位于隔离的沙箱中，因此应用程序无法查看用户是谁或触摸他们的帐户
+- **提供** 登录、购买、订阅和保存进度，因此构建者无需
+- **在派生的会话结果贡献给平台生物识别分数之前，在其自己的界面中请求同意** 
+
+---
+
+<a id="across-all-apps"></a>
+
+## 跨所有应用程序
+
+Elata 上的每个应用程序都有两件事：
+
+- **[Elata 积分](/cn/overview/points)** 参与奖励：玩、评论、建造、邀请好友。
+- **生物识别得分** 是一项可选的跨应用衡量标准，仅根据派生的会话结果构建，并且仅在用户选择加入的情况下进行。请参阅 [隐私和同意](/cn/overview/privacy-and-consent)。
+
+---
+
+<a id="how-value-moves"></a>
+
+## 价值如何变动
+
+| 谁 | 给予 | 获取 |
+| --- | --- | --- |
+| 用户 | 注意、反馈、可选购买 | 对身体做出反应并内置隐私的应用程序 |
+| 建设者 | 应用程序 | 分发、内置帐户和付款以及购买和订阅的收入 |
+| Elata | 平台及SDK | 每个应用程序的一次性注册费以及销售和订阅的平台费 |
+
+详细信息： [货币化](/cn/overview/monetization)。
+
+---
+
+<a id="where-data-lives"></a>
+
+## 数据所在的地方
+
+| 数据 | 它停留在哪里 |
 | --- | --- |
-| 出售解锁内容 | [应用内购买](/cn/apps/platform/in-app-purchases) |
-| 保存进度 | [应用状态](/cn/apps/platform/app-state) |
-| 记录会话和分数 | [指标与分数](/cn/apps/platform/metrics-and-scores) |
-| 为用户评分做贡献 | [同意与洞察](/cn/apps/platform/consent-and-insights) |
-| 提醒用户 | [通知](/cn/apps/platform/notifications) |
-| 按月收费 | [订阅](/cn/apps/platform/subscriptions) |
-
----
-
-## 数据存放在哪里
-
-| 数据 | 存放位置 |
-| --- | --- |
-| 原始摄像头画面和生物信号 | 用户的设备上 |
-| 你的应用保存的存档、记录和分数 | 用户账户中，仅限你的应用访问 |
-| 用于评分的派生会话结果 | 仅在用户同意后与 Elata 共享 |
-
-参见[隐私与数据](/cn/overview/privacy-and-consent)。
+| 原始相机帧和生物信号 | 在用户的设备上 |
+| 保存、设置应用程序商店并对其进行评分 | 用户的帐户，范围仅限于该一个应用程序 |
+| 得出的得分会话结果 | 仅在用户同意的情况下与 Elata 共享 |
+| 建设者看到了什么 | 聚合使用分析；商务报告还可以显示缩短的买家钱包和交易链接 |

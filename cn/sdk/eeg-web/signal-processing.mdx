@@ -3,6 +3,8 @@ title: "信号处理"
 description: "频段功率分析、FFT 和频谱计算"
 ---
 
+<a id="band-powers"></a>
+
 ## 频段功率
 
 从样本数组计算标准 EEG 频段功率：
@@ -24,6 +26,8 @@ const powers = band_powers(samples, sampleRateHz);
 
 ---
 
+<a id="individual-band-functions"></a>
+
 ## 单个频段函数
 
 如需针对性分析，可使用单个频段函数：
@@ -44,11 +48,13 @@ const theta = theta_power(samples, sampleRateHz);
 const delta = delta_power(samples, sampleRateHz);
 const gamma = gamma_power(samples, sampleRateHz);
 
-// 自定义频率范围
+// Custom frequency range
 const mu = custom_band_power(samples, sampleRateHz, 8.0, 12.0);
 ```
 
 ---
+
+<a id="power-spectrum"></a>
 
 ## 功率谱
 
@@ -60,10 +66,12 @@ import { compute_power_spectrum, get_fft_frequencies } from "@elata-biosciences/
 const spectrum = compute_power_spectrum(samples); // samples: Float32Array
 const frequencies = get_fft_frequencies(samples.length, sampleRateHz);
 
-// spectrum[i] 是 frequencies[i] Hz 处的功率
+// spectrum[i] is the power at frequencies[i] Hz
 ```
 
 ---
+
+<a id="input-format"></a>
 
 ## 输入格式
 
@@ -77,7 +85,7 @@ const frequencies = get_fft_frequencies(samples.length, sampleRateHz);
 对于多通道数据（例如来自 `HeadbandFrameV1.eeg.samples`），请提取单个通道分别处理：
 
 ```typescript
-const frame: HeadbandFrameV1 = /* ……来自传输…… */;
+const frame: HeadbandFrameV1 = /* ... from transport ... */;
 const channelIndex = 0; // TP9
 
 const channelSamples = frame.eeg.samples.map(row => row[channelIndex]);
@@ -85,6 +93,8 @@ const powers = band_powers(new Float32Array(channelSamples), frame.eeg.sampleRat
 ```
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

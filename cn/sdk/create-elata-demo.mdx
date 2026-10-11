@@ -1,45 +1,55 @@
 ---
-title: "Create Elata Demo"
-description: "从模板创建可直接运行的 Elata 入门应用。"
+title: "创建 Elata 演示"
+description: "从模板搭建一个可立即运行的 Elata 入门应用程序。"
 ---
 
-## 这是什么
+<Warning>
+**已知问题：** 存储库的 `create-elata-demo` 0.12.1 具有打包阻止程序，并且在没有同级工作区元数据的情况下无法启动。在使用之前验证固定版本。现在，请按照 [将 rPPG 添加到现有应用程序](/cn/sdk/tutorials/rppg-existing-app) ，在您自己的 Web 应用程序中设置 SDK。请参阅 [直播内容](/cn/overview/status)。
+</Warning>
 
-`@elata-biosciences/create-elata-demo` 会生成一个已接入 Elata SDK、可直接运行的 Vite + React 应用。这是最快获得可运行应用的方式，也是你将 SDK 集成到自己项目之前的可靠基线。
+<a id="what-it-is"></a>
+
+## 它是什么
+
+`@elata-biosciences/create-elata-demo` 生成一个连接到 Elata SDK 的工作 Vite + React 应用程序。这是运行应用程序的最快方式，也是将 SDK 集成到您自己的项目之前的已知良好基准。
 
 ---
+
+<a id="templates"></a>
 
 ## 模板
 
-| 模板 | 别名 | 内容 | 硬件 |
+| 模板 | 别名 | 你得到什么 | 硬件 |
 | --- | --- | --- | --- |
-| `rppg-demo` | `rppg` | 摄像头脉搏和 rPPG 入门。**默认模板。** | 网络摄像头 |
-| `eeg-demo` | `eeg` | 用于 SDK 接线的浏览器 EEG 入门，支持 Muse Web Bluetooth | Muse（可选） |
-| `eeg-ble` | `ble` | 以蓝牙为主的 EEG 入门，包含浏览器配对流程 | Muse |
-| `ppg-demo` | `ppg`、`muse-ppg` | 头带 PPG 入门，显示 BPM、RMSSD 和实时诊断 | Muse |
-| `pulse-game` | `pulse`、`recovery` | 运行在沙箱 iframe 中、通过 `app-metrics` 保存分数的 rPPG 恢复游戏，完整演示端到端流程 | 网络摄像头 |
+| `rppg-demo` | `rppg` | 相机脉冲和 rPPG 启动器。 **默认值。** | 网络摄像头 |
+| `eeg-demo` | `eeg` | 用于 SDK 接线的浏览器 EEG 启动器，支持 Muse Web 蓝牙 | 缪斯（可选） |
+| `eeg-ble` | `ble` | 蓝牙优先 EEG 启动器以及浏览器配对流程 | 缪斯 |
+| `ppg-demo` | `ppg`, `muse-ppg` | 头带 PPG 启动器显示 BPM、RMSSD 和实时诊断 | 缪斯 |
+| `pulse-game` | `pulse`, `recovery` | rPPG 恢复游戏，在沙盒 iframe 中运行并使用 `app-metrics`保存分数，端到端 | 网络摄像头 |
 
 <Tip>
-  要为 Elata 开发？`pulse-game` 展示了完整的 Elata 模式：应用运行在 iframe 中，通过[指标桥接](/cn/apps/platform/metrics-and-scores)与宿主通信。
+为Elata建造？ `pulse-game` 显示了完整的 Elata 模式：应用程序在 iframe 中运行，并通过 [指标桥](/cn/apps/platform/metrics-and-scores)与主机对话。
 </Tip>
 
 ---
 
-## 用法
+<a id="usage"></a>
+
+## 用途
 
 <CodeGroup>
 
 ```bash npm
-# 交互式：先选择模板，再输入项目名称
+# Interactive: pick a template, then a project name
 npm create @elata-biosciences/elata-demo my-app
 
-# 直接指定模板
+# Pick a template directly
 npm create @elata-biosciences/elata-demo my-app -- --template rppg
 npm create @elata-biosciences/elata-demo my-app -- --template eeg-ble
 npm create @elata-biosciences/elata-demo my-app -- --template ppg
 npm create @elata-biosciences/elata-demo my-app -- --template pulse-game
 
-# 列出模板
+# List templates
 npx @elata-biosciences/create-elata-demo --list-templates
 ```
 
@@ -51,25 +61,27 @@ pnpm dlx @elata-biosciences/create-elata-demo --list-templates
 
 </CodeGroup>
 
-| 参数 | 含义 |
+| 旗帜 | 含义 |
 | --- | --- |
 | `--template <name>` 或 `--template=<name>` | 选择模板或别名 |
-| `--list-templates` | 列出可用模板 |
+| `--list-templates` | 打印可用的模板 |
 
-未指定 `--template` 时，CLI 在交互模式下会让你选择模板，否则使用 `rppg-demo`。如果省略项目目录，它会询问项目名称。
+如果没有 `--template`，CLI 会要求您在交互运行时选择一个，否则使用 `rppg-demo` 。如果您省略项目目录，它会要求输入名称。
 
 ---
 
-## 你将获得
+<a id="what-you-get"></a>
 
-每个生成的应用都包含：
+## 你得到什么
 
-- Vite + React + TypeScript 应用
-- 固定为兼容版本组合的 Elata 包
-- 针对该模板的 `README.md`
+每个生成的应用程序都包括：
+
+- 一个 Vite + React + TypeScript 应用程序
+- Elata 软件包固定到一组兼容的版本
+- 特定于模板的 `README.md`
 - `npm run dev`：启动开发服务器
-- `npm run build`：类型检查并构建到 `dist/`
-- `npm run build:zip`：构建并生成 `app.zip`，可直接[上传到 Elata](/cn/apps/build/launch-your-app)
+- `npm run build`：类型检查并构建为 `dist/`
+- `npm run build:zip`：构建并编写 `app.zip`，准备 [上传到Elata](/cn/apps/build/launch-your-app)
 
 ```bash
 cd my-app
@@ -79,9 +91,11 @@ npm run dev
 
 ---
 
-## 在其他 pnpm 工作区中
+<a id="inside-another-pnpm-workspace"></a>
 
-如果你在一个未包含新目录的现有 `pnpm` 工作区中创建应用，请在工作区之外安装和运行：
+## 在另一个 pnpm 工作区中
+
+如果您在不包含新文件夹的现有 `pnpm` 工作区中搭建脚手架，请在工作区外安装并运行它：
 
 ```bash
 pnpm --dir my-app --ignore-workspace install
@@ -90,25 +104,29 @@ pnpm --dir my-app --ignore-workspace run dev
 
 ---
 
-## 脚手架还是示例应用？
+<a id="scaffolder-or-example-apps"></a>
 
-| 如果你想要…… | 使用 |
+## 脚手架或示例应用程序？
+
+| 如果你想... | 使用 |
 | --- | --- |
-| 依赖版本固定的干净入门项目 | `create-elata-demo` |
-| 带有路由、游戏循环和图表的完整产品级应用 | [示例应用](/cn/sdk/guides/example-apps) |
+| 具有固定依赖项的干净启动器 | `create-elata-demo` |
+| 具有路由、游戏循环和图表的完整产品型应用程序 | [示例应用程序](/cn/sdk/guides/example-apps) |
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 
 <CardGroup cols={3}>
   <Card title="你的第一个应用" icon="rocket" href="/cn/sdk/tutorials/first-app">
-    创建并运行入门应用
+搭建并运行入门应用程序
   </Card>
   <Card title="选择合适的包" icon="compass" href="/cn/sdk/guides/choose-the-right-package">
     包选择指南
   </Card>
-  <Card title="发布到 Elata" icon="store" href="/cn/apps/build/launch-your-app">
-    上传你的应用
+  <Card title="在 Elata 上发布" icon="store" href="/cn/apps/build/launch-your-app">
+上传您的应用程序
   </Card>
 </CardGroup>

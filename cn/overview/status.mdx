@@ -1,8 +1,90 @@
 ---
-title: "当前状态"
+title: "当前可用功能"
 description: "Elata 各项功能的状态：已上线、实验性、计划中或已退役。"
 ---
 
-<Note>
-  本页的中文翻译正在准备中。请先阅读[英文版本](/overview/status)。
-</Note>
+本页区分当前功能、实验性集成和未来工作。其他页面链接到这里说明可用性。
+
+<Info>
+源码审核日期：2026 年 10 月 11 日。账单和 Commerce 指南基于 `fix/iap-system-overhaul` 分支，并不能证明所有流程已部署到 app.elata.bio。接受付款前，请确认实际部署的界面和支付配置。
+</Info>
+
+| 标签 | 含义 |
+| --- | --- |
+| **已上线** | 目前对所有人开放。 |
+| **实验性** | 可以使用，但可能变化或有局限。 |
+| **计划中** | 正在探索的方向，尚不可用。 |
+| **已退役** | 已移除，保留说明以帮助理解旧链接和帖子。 |
+
+---
+
+<a id="elata-appelatabio"></a>
+
+## Elata（app.elata.bio）
+
+| 功能 | 状态 | 说明 |
+| --- | --- | --- |
+| 浏览、使用、收藏、评价和关注应用 | 已上线 | [探索应用](/cn/users/explore-apps) |
+| 发布 Web 应用（构建向导、审核、沙箱托管） | 已上线 | [快速开始](/cn/apps/quickstart) |
+| 使用社交登录或已有钱包登录 | 已上线 | |
+| Elata Points、任务、邀请和排行榜 | 已上线 | [积分](/cn/overview/points) |
+| 生物特征评分、同意和 Insights | 已上线 | 自愿启用。[隐私与同意](/cn/overview/privacy-and-consent) |
+| 应用提醒（通知） | 已上线 | 由 Elata 发送，不由应用直接发送 |
+| 应用内购买（USDC） | 已实现；部署未验证 | 新版结账通过 Base 上的 USDC 分账合约付款，需配置支付。检查实际结账网络。[应用内购买](/cn/apps/platform/in-app-purchases) |
+| 应用订阅 | 实验性 | 通过 Base 分账合约按日历月手动付款；需验证配置和部署。[账单与购买](/cn/users/billing-and-purchases) |
+
+---
+
+## Elata SDK
+
+仓库中的 API 与已发布软件包可能不同。使用仅源码提供的 API 前，检查已安装版本和发行说明；以下发布状态并不保证 npm 版本包含当前源码中的每项功能。
+
+| 功能 | 状态 | 说明 |
+| --- | --- | --- |
+| `rppg-web`、`eeg-web`、`eeg-web-ble`、`ppg-web` | 已上线 | 已发布到 npm。[SDK 概览](/cn/sdk/overview) |
+| `app-metrics`、`app-payments` | 已上线 | 已发布到 npm |
+| `create-elata-demo`（入门应用） | 仓库版本 0.12.1 存在打包阻碍 | 缺少 `app-metrics` 版本元数据，打包后的 CLI 无法启动。使用前确认修复版本。 |
+| `app-state` | 实验性 | 尚未发布到 npm。应用可以直接使用 [`elata:state:*` 消息](/cn/apps/platform/app-state)。 |
+| `biosignal-session`、`biosignal-analytics`、`rppg-models-web` | 实验性 | 仅源码，尚未发布到 npm；API 可能变化。 |
+| 通过 Web Bluetooth 使用 Muse 2、Muse S、Muse S（Athena） | 已上线 | Chrome 或 Edge。[设备](/cn/users/devices) |
+| 使用网络摄像头进行 rPPG | 已上线 | |
+
+---
+
+<a id="data-and-research"></a>
+
+## 数据与研究
+
+| 功能 | 状态 | 说明 |
+| --- | --- | --- |
+| 原始信号在设备端处理 | 已上线 | 原始信号不需要离开设备 |
+| 本地会话存储、会话详情和设备端分析 | 实验性；生产环境禁用 | 已在 `feat/long-local-analytics` 中实现，需开发开关；录制保留在当前浏览器。[本地会话与分析](/cn/users/local-sessions-and-insights) |
+| 联邦学习（训练模型而不收集原始数据） | 计划中 | 研究方向，不属于已上线产品。[研究方向](/cn/overview/science/research-directions) |
+
+---
+
+<a id="elta-token"></a>
+
+## ELTA 代币
+
+| 功能 | 状态 | 说明 |
+| --- | --- | --- |
+| Base 上的 ELTA 代币 | 已上线 | 已部署，尚无官方流动性池。[ELTA 代币](/cn/overview/elta-token) |
+
+Elata 的更广泛链上协议（质押、应用代币、治理）不属于当前已上线产品。源码位于公开的 [elata-protocol](https://github.com/Elata-Biosciences/elata-protocol) 仓库，仓库说明该协议仍待外部审计。
+
+---
+
+<a id="retired-from-the-current-product"></a>
+
+## 从当前产品退役的功能
+
+应用代币、质押和治理目前退役，计划在以后恢复。尚未承诺恢复日期或最终设计。早期文档是历史资料，不代表当前发布或付款流程。其他归档项目另列。
+
+| 功能 | 替代方式 |
+| --- | --- |
+| 为每个应用发行代币、联合曲线和应用代币交易 | 一次性付费注册应用，不发行代币 |
+| 应用质押、锦标赛和本套文档中的 veELTA 页面 | 不属于当前已上线产品 |
+| “高级内容” | [应用内购买](/cn/apps/platform/in-app-purchases)与[订阅](/cn/apps/platform/subscriptions) |
+| API Reference 标签 | 开发者使用[宿主桥接](/cn/apps/platform/host-bridge) |
+| ElataEEG 硬件、ZORP、AgentForge、NewsReader | 归档项目，见[归档](/cn/archive/overview)。 |

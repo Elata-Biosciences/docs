@@ -24,6 +24,8 @@ rPPG 即远程光电容积脉搏波描记（remote photoplethysmography）。它
 
 ---
 
+<a id="install"></a>
+
 ## 安装
 
 <CodeGroup>
@@ -39,6 +41,8 @@ npm install @elata-biosciences/rppg-web
 </CodeGroup>
 
 ---
+
+<a id="recommended-vs-advanced"></a>
 
 ## 推荐用法与高级用法
 
@@ -58,6 +62,8 @@ npm install @elata-biosciences/rppg-web
 - 如果你不是在调试 SDK 本身，不要从生成的 WASM 导出开始。
 
 ---
+
+<a id="minimal-integration"></a>
 
 ## 最小集成
 
@@ -83,6 +89,8 @@ console.log(session.getMetrics());
 ```
 
 ---
+
+<a id="typical-integration-flow"></a>
 
 ## 典型的集成流程
 
@@ -116,6 +124,8 @@ const session = await createRppgSession({
 
 ---
 
+<a id="managed-restart-flow"></a>
+
 ## 托管重启流程
 
 如果你希望由 SDK 负责处理器终止性故障后的重启时机，请使用托管封装：
@@ -138,6 +148,8 @@ const managed = await createManagedRppgSession({
 
 ---
 
+<a id="advanced-helpers"></a>
+
 ## 高级辅助函数
 
 <AccordionGroup>
@@ -146,7 +158,7 @@ const managed = await createManagedRppgSession({
 
     ```ts
     const trace = session.getTraceSnapshot(300);
-
+    
     console.log(trace.points);
     console.log(trace.lastSample);
     console.log(trace.backendFailure);
@@ -156,7 +168,7 @@ const managed = await createManagedRppgSession({
 
     ```ts
     import { computeTraceWaveformDebug } from "@elata-biosciences/rppg-web";
-
+    
     const waveform = computeTraceWaveformDebug(session.getTraceSnapshot(300));
     console.log(waveform.peaks);
     ```
@@ -167,9 +179,9 @@ const managed = await createManagedRppgSession({
 
     ```ts
     import { normalizeRppgError } from "@elata-biosciences/rppg-web";
-
+    
     const normalized = normalizeRppgError(session.lastError, session.getDiagnostics());
-
+    
     console.log(normalized?.code);
     console.log(normalized?.message);
     console.log(normalized?.guidance);
@@ -186,19 +198,19 @@ const managed = await createManagedRppgSession({
       createManagedRppgSession,
       createRppgAppAdapter,
     } from "@elata-biosciences/rppg-web";
-
+    
     const managed = await createManagedRppgSession({
       video,
       faceMesh: "off",
     });
-
+    
     const adapter = createRppgAppAdapter();
     const app = adapter.getSnapshot(managed);
-
+    
     if (app.canPublish) {
       console.log(app.publishBpm);
     }
-
+    
     console.log(app.status, app.message);
     ```
   </Accordion>
@@ -211,12 +223,12 @@ const managed = await createManagedRppgSession({
       createManagedRppgSession,
       createRppgAppMonitor,
     } from "@elata-biosciences/rppg-web";
-
+    
     const managed = await createManagedRppgSession({
       video,
       faceMesh: "off",
     });
-
+    
     const monitor = createRppgAppMonitor(managed, { intervalMs: 500 });
     monitor.subscribe((snapshot) => {
       console.log(snapshot.status, snapshot.publishBpm);
@@ -230,13 +242,15 @@ const managed = await createManagedRppgSession({
 
     ```ts
     import { ensureVideoPlaying } from "@elata-biosciences/rppg-web";
-
+    
     await ensureVideoPlaying(video, { timeoutMs: 5000 });
     ```
   </Accordion>
 </AccordionGroup>
 
 ---
+
+<a id="when-to-use-the-rppg-template-instead"></a>
 
 ## 何时改用 rPPG 模板
 
@@ -247,6 +261,8 @@ const managed = await createManagedRppgSession({
 - 调试你自己的集成时，需要更快的对比基准
 
 ---
+
+<a id="common-gotchas"></a>
 
 ## 常见问题
 
@@ -261,6 +277,8 @@ const managed = await createManagedRppgSession({
 
 ---
 
+<a id="version-guidance"></a>
+
 ## 版本建议
 
 <Note>
@@ -269,18 +287,20 @@ const managed = await createManagedRppgSession({
 
 ---
 
+<a id="next"></a>
+
 ## 下一步
 
 <CardGroup cols={2}>
-  <Card title="现有应用教程" icon="circle-play" href="/cn/sdk/tutorials/rppg-existing-app">
+  <Card title="现有应用教程" icon="circle-play" iconType="light" href="/cn/sdk/tutorials/rppg-existing-app">
     分步集成 rPPG
   </Card>
 
-  <Card title="rppg-web 参考" icon="heart-pulse" href="/cn/sdk/rppg-web/getting-started">
+  <Card title="rppg-web 参考" icon="heart-pulse" iconType="light" href="/cn/sdk/rppg-web/getting-started">
     包 API 和导出
   </Card>
 
-  <Card title="故障排查" icon="wrench" href="/cn/sdk/operations/troubleshooting">
+  <Card title="故障排查" icon="wrench" iconType="light" href="/cn/sdk/operations/troubleshooting">
     常见故障及解决方法
   </Card>
 </CardGroup>

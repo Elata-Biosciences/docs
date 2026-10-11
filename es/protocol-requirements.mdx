@@ -1,0 +1,143 @@
+---
+title: "Requisitos de protocolo"
+description: "Recopile los detalles de protocolo, BLE y metadatos necesarios antes de codificar un adaptador de dispositivo."
+---
+
+Haga este trabajo antes de que comience la implementación.
+
+Un inventario de protocolo limpio previene la mayoría de los retrasos en la integración y evita el modo de falla común en el que el adaptador funciona solo para una sesión de prueba o una versión de firmware.
+
+<a id="required-handoff"></a>
+
+## Traspaso requerido
+
+Recopile esta información para cada dispositivo y línea de firmware que planee admitir.
+
+| Área | que capturar |
+| --- | --- |
+| Descubrimiento | patrones de nombres de dispositivos, UUID de servicio, filtros |
+| Diseño del GATT | características, dirección, comportamiento de notificación/lectura/escritura |
+| Formato de paquete | entramado, orden de bytes, encabezados, contadores, sumas de comprobación |
+| EEG carga útil | nombres de canales, recuento de canales, frecuencia de muestreo, unidades, escala |
+| Sincronización | marcas de tiempo del dispositivo, marcas de tiempo locales, comportamiento de secuencia |
+| control de sesión | cualquier comando necesario para iniciar o detener la transmisión |
+| Modos de falla | comportamiento de desconexión, comportamiento de batería baja, peculiaridades del firmware |
+
+<a id="ble-inventory-template"></a>
+
+## Plantilla de inventario BLE
+
+Utilice este como formato de ingesta mínima:
+
+```md
+## Device
+- Model:
+- Firmware:
+- Transport: Web Bluetooth / bridge / native helper
+
+## Discovery
+- Device name prefix:
+- Primary service UUIDs:
+- Required optional services:
+
+## Characteristics
+- UUID:
+  - purpose:
+  - read / write / notify:
+  - notes:
+
+## EEG payload
+- channel names:
+- channel count:
+- sample rate:
+- units and scaling:
+- timestamp source:
+
+## Session control
+- how streaming starts:
+- how streaming stops:
+- reconnect notes:
+```
+
+<a id="packet-questions-you-should-answer-early"></a>
+
+## Preguntas sobre paquetes que debe responder con anticipación
+
+| Pregunta | Por qué es importante |
+| --- | --- |
+| ¿Cómo comienza y termina un paquete? | El decodificador necesita una regla de encuadre determinista. |
+| ¿Existe un contador de paquetes o un campo de secuencia? | Esto ayuda a detectar caídas, reordenamiento y corrupción. |
+| ¿Existe una suma de comprobación o CRC? | Esto ayuda a rechazar paquetes defectuosos de forma segura. |
+| ¿Cómo se empaquetan las muestras? | El decodificador necesita el diseño de bytes y el endianidad exactos. |
+| ¿Pueden llegar varios pasos de tiempo en un paquete? | Esto afecta el procesamiento por lotes de filas y el manejo de marcas de tiempo. |
+| ¿Qué cambia entre las versiones de firmware? | Necesita control de versiones predecible y cobertura de prueba. |
+
+<a id="metadata-rules"></a>
+
+## Reglas de metadatos
+
+Su adaptador nunca debe adivinar lo básico.
+
+| Metadatos | regla |
+| --- | --- |
+| Nombres de canales | Utilice un pedido estable y documentado |
+| recuento de canales | Haga coincidir exactamente las filas EEG emitidas |
+| Frecuencia de muestreo | Utilice la tasa de salida real para el modo activo |
+| Unidades | Documentar si los valores están sin procesar, escalados o convertidos |
+| Fuente del reloj | Indique claramente `device` o `local` |
+
+<Warning>
+No ajuste los modelos ni la lógica de la aplicación descendente hasta que se verifiquen estos metadatos. La mayoría de los problemas de confiabilidad comienzan aquí.
+</Warning>
+
+<a id="browser-and-platform-questions"></a>
+
+## Preguntas sobre navegadores y plataformas
+
+Esta guía se centra en la integración de dispositivos, pero las limitaciones de la plataforma siguen siendo importantes.
+
+Confirme esto antes de planificar la implementación de BLE en el navegador:
+
+| Pregunta | Que confirmar |
+| --- | --- |
+| ¿El dispositivo funciona a través de Web Bluetooth? | Navegadores Chromium solo para este flujo de trabajo |
+| ¿Requiere un contexto seguro? | `https://` o `localhost` |
+| ¿Necesita un ayudante nativo? | En caso afirmativo, utilice un paquete independiente o una ruta puente |
+| ¿Importa Safari o iOS? | El navegador web Bluetooth no está disponible allí |
+
+Consulte [Compatibilidad](/es/sdk/operations/compatibility) para conocer las expectativas actuales de la plataforma.
+
+<a id="definition-of-ready"></a>
+
+## Definición de listo
+
+Estará listo para implementar cuando pueda responder todas las siguientes preguntas sin adivinar:
+
+1. qué ruta de transporte estás tomando
+2. cómo el navegador descubre el dispositivo
+3. cómo comienza y termina la sesión
+4. cómo los bytes de un paquete se convierten en EEG filas
+5. cómo se deben emitir las marcas de tiempo y los metadatos del canal
+6. qué advertencias se aplican según el firmware, el navegador o la plataforma
+
+<a id="related-docs"></a>
+
+## Documentos relacionados
+
+- [Rutas de integración](./integration-paths)
+- [Contrato de Transporte](./transport-contract)
+- [Compatibilidad](/es/sdk/operations/compatibility)
+- [Solución de problemas](/es/sdk/operations/troubleshooting)
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="Construye el adaptador" icon="arrow-right" href="./adapter-implementation">
+Utilice el inventario de protocolos para implementar una capa de dispositivo limpia.
+  </Card>
+  <Card title="Validar la confiabilidad" icon="arrow-right" href="./testing-and-validation">
+Convierta las suposiciones del protocolo en pruebas repetibles.
+  </Card>
+</CardGroup>

@@ -1,0 +1,194 @@
+---
+title: "Conceptos básicos"
+tag: "Archivado"
+description: "Escenarios, agentes, ticks, paquetes y determinismo en AgentForge"
+---
+
+<a id="scenarios"></a>
+
+## Escenarios
+
+Un escenario es la configuración de nivel superior para una ejecución de simulación. Define:
+
+- **`name`** — identificador del escenario
+- **`seed`** - semilla RNG determinista (misma semilla = mismos resultados)
+- **`ticks`** — número de pasos de simulación
+- **`tickSeconds`** — tiempo simulado por tick (por ejemplo, 3600 = 1 hora)
+- **`pack`** — adaptador de protocolo que configura el estado mundial
+- **`agents`** — lista de tipos, recuentos y parámetros de agentes
+- **`assertions`** — comprobaciones de validación posteriores a la ejecución
+- **`gossip`** : definiciones de canales, presupuestos y configuraciones de confianza
+
+```typescript
+import { defineScenario } from '@elata-biosciences/agentforge';
+
+export default defineScenario({
+  name: 'my-scenario',
+  seed: 42,
+  ticks: 200,
+  tickSeconds: 3600,
+  pack: myPack,
+  agents: [
+    { type: MyAgent, count: 10 },
+  ],
+  assertions: [
+    { type: 'gt', metric: 'totalVolume', value: 0 },
+  ],
+});
+```
+
+---
+
+<a id="ticks"></a>
+
+## Garrapatas
+
+Un tick es un paso de simulación. Durante cada tic:
+
+1. El motor llama al `step(ctx)` a cada agente en orden
+2. Cada agente devuelve cero, una o hasta tres acciones.
+3. El paquete ejecuta cada acción contra el estado del protocolo.
+4. Se registran métricas, chismes y artefactos.
+
+El orden de ticks se puede configurar: **basado en prioridad** (predeterminado), **aleatorio**o **personalizado**. La política de pedidos afecta los resultados; consulte los experimentos del mecanismo para su análisis.
+
+---
+
+<a id="agents"></a>
+
+## Agentes
+
+Los agentes son actores autónomos. Cada agente extiende `BaseAgent` e implementa `step()`:
+
+```typescript
+export class MyAgent extends BaseAgent {
+  async step(ctx: TickContext): Promise<Action | Action[] | null> {
+    // Observe state, decide, and return actions
+  }
+}
+```
+
+<a id="agent-context"></a>
+
+### Contexto del agente
+
+Cada tick, los agentes reciben un `TickContext` con:
+
+| Propiedad | Descripción |
+|----------|-------------|
+| `ctx.rng` | Generador de números aleatorios determinista |
+| `ctx.world` | Estado actual del protocolo |
+| `ctx.gossip` | Leer y publicar mensajes de chismes. |
+| `ctx.capabilities` | Contratos, herramientas y plantillas de acción disponibles |
+| `ctx.tick` | Número de marca actual |
+| `ctx.tickSeconds` | Segundos simulados por tick |
+
+<a id="agent-state"></a>
+
+### Estado del agente
+
+Los agentes pueden persistir en el estado entre ticks:
+
+- **`this.remember(key, value)`** - almacenar un valor
+- **`this.recall(key)`** — recuperar un valor almacenado
+- **`this.setCooldown(name, ticks)`** — límite de velocidad de una acción
+- **`this.isOnCooldown(name)`** — comprobar el estado de enfriamiento
+
+<a id="multi-action-support"></a>
+
+### Soporte de múltiples acciones
+
+Los agentes pueden devolver una serie de hasta 3 acciones por tick. El motor ejecuta cada acción en orden dentro del mismo tick:
+
+```typescript
+return [
+  { id: this.generateActionId('swap', ctx.tick), name: 'swap', params: { ... } },
+  { id: this.generateActionId('post', ctx.tick), name: 'PostMessage', params: { ... } },
+];
+```
+
+<a id="persona-llm-agents"></a>
+
+### Agentes personales de LLM
+
+`PersonaLlmAgentBase` proporciona una base reutilizable para agentes impulsados por LLM con:
+
+- Perfil de persona (identificación, estilo, objetivos, perfil de riesgo, preferencias de herramientas)
+- Conjunto de avisos estructurado con contexto de manifiesto de capacidad total
+- Bucle OODA de dos etapas: planifique y luego actúe, con respaldo al análisis de un solo disparo
+- Intenciones de acción validadas por esquema a través de Zod
+
+---
+
+<a id="packs"></a>
+
+## Paquetes
+
+Los paquetes son adaptadores de protocolo. Conectan AgentForge con sus contratos inteligentes mediante la implementación de la interfaz `Pack` :
+
+- **`setup()`** — implementar contratos, inicializar estado
+- **`executeAction(action)`** — ejecutar la acción de un agente contra el protocolo
+- **`getWorldState()`** : devuelve el estado actual del protocolo para que los agentes lo observen
+- **`getCapabilityManifest()`** : describe los contratos, funciones y plantillas de acción disponibles
+
+El `ToyPack` integrado proporciona un entorno sencillo de simulación de precios para empezar.
+
+---
+
+<a id="gossip"></a>
+
+## chismes
+
+El bus de chismes permite la comunicación entre agentes:
+
+- **Canales** : canales de transmisión global o de estrategia específica con listas de miembros
+- **Mensajes de formato libre** : cargas de texto con puntuaciones `credibilityPrior` opcionales (0-1)
+- **Presupuestos** : configurables `maxPostsPerTick` y `maxReadsPerTick` por agente
+- **Enfriamientos** - por canal `postCooldownTicks` para limitar la velocidad de publicación
+
+```typescript
+gossip: {
+  channels: [
+    { id: 'global', members: 'all' },
+    { id: 'strategy', members: ['LlmAgent-0', 'LlmAgent-1'] },
+  ],
+  budgets: { maxPostsPerTick: 3, maxReadsPerTick: 10 },
+}
+```
+
+Los canales estratégicos son útiles para la coordinación exclusiva de LLM sin inundar a los agentes deterministas.
+
+---
+
+<a id="determinism"></a>
+
+## Determinismo
+
+Misma semilla + mismo escenario = resultados idénticos. Toda la aleatoriedad fluye a través de un RNG sembrado. Esto permite:
+
+- **CI reproducible** : las afirmaciones se aprueban o fallan de manera consistente
+- **Repetir** : vuelva a ejecutar los seguimientos de exploración de forma determinista frente a contratos actualizados
+- **Comparación** - diferencia dos ejecuciones con `forge-sim compare`
+
+```bash
+forge-sim run --toy --seed 123 --out run1 --ci
+forge-sim run --toy --seed 123 --out run2 --ci
+forge-sim compare run1/toy-market-ci run2/toy-market-ci
+```
+
+---
+
+<a id="exploration--replay-workflow"></a>
+
+## Flujo de trabajo de exploración/reproducción
+
+1. **Explorar** : ejecute con agentes LLM en modo de exploración para descubrir comportamientos
+2. **Captura** — un `replay_bundle.json` registra el seguimiento de decisión completo
+3. **Repetir** : vuelva a ejecutar exactamente el mismo seguimiento de forma determinista contra contratos actualizados
+
+```bash
+forge-sim run scenario.ts --mode exploration
+forge-sim run scenario.ts --mode replay --replay-bundle results/run/replay_bundle.json
+```
+
+Esto le permite descubrir vectores de ataque emergentes con LLM y luego realizar pruebas de regresión después de cambios de contrato.

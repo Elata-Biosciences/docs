@@ -24,6 +24,8 @@ EEG 通过可穿戴头带测量大脑的电活动。在浏览器应用中，开�
 
 ---
 
+<a id="install"></a>
+
 ## 安装
 
 <CodeGroup>
@@ -40,6 +42,8 @@ npm install @elata-biosciences/eeg-web
 
 ---
 
+<a id="what-eeg-web-gives-you"></a>
+
 ## `eeg-web` 提供什么
 
 `@elata-biosciences/eeg-web` 提供：
@@ -51,6 +55,8 @@ npm install @elata-biosciences/eeg-web
 此包本身不负责蓝牙设备连接。如果还需要浏览器 BLE 传输，请添加 `@elata-biosciences/eeg-web-ble`。
 
 ---
+
+<a id="minimal-integration"></a>
 
 ## 最小集成
 
@@ -67,6 +73,8 @@ console.log("alpha", powers.alpha);
 
 ---
 
+<a id="typical-integration-flow"></a>
+
 ## 典型的集成流程
 
 1. 使用 `initEegWasm()` 初始化打包的 WASM 运行时。
@@ -74,6 +82,8 @@ console.log("alpha", powers.alpha);
 3. 如果之后需要实时设备传输，将此包与 `eeg-web-ble` 结合使用。
 
 ---
+
+<a id="when-to-use-the-eeg-template-instead"></a>
 
 ## 何时改用 EEG 模板
 
@@ -84,6 +94,8 @@ console.log("alpha", powers.alpha);
 - 你需要一个无需硬件就能运行的合成数据应用
 
 ---
+
+<a id="common-gotchas"></a>
 
 ## 常见问题
 
@@ -96,6 +108,8 @@ console.log("alpha", powers.alpha);
 
 ---
 
+<a id="next"></a>
+
 ## 下一步
 
 <CardGroup cols={2}>
@@ -103,7 +117,7 @@ console.log("alpha", powers.alpha);
     分步集成教程
   </Card>
 
-  <Card title="Web Bluetooth" icon="bluetooth" href="/cn/sdk/guides/web-bluetooth">
+  <Card title="网络蓝牙" icon="bluetooth" href="/cn/sdk/guides/web-bluetooth">
     连接 Muse 头带
   </Card>
 

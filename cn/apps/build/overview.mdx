@@ -7,6 +7,8 @@ description: "Elata 为你提供什么，以及你可以省去哪些开发工作
   仓库中的 `create-elata-demo` 0.12.1 缺少 `app-metrics` 版本元数据，打包后会在启动时失败。运行以下命令前请检查[脚手架状态](/cn/sdk/create-elata-demo)，目前可先使用[手动 rPPG 集成](/cn/sdk/tutorials/rppg-existing-app)。
 </Warning>
 
+<a id="what-you-get"></a>
+
 ## 你将获得
 
 你只需交付一个静态 Web 应用，其余由 Elata 提供：
@@ -21,6 +23,8 @@ description: "Elata 为你提供什么，以及你可以省去哪些开发工作
 
 ---
 
+<a id="what-you-avoid-building-yourself"></a>
+
 ## 你可以省去的工作
 
 | 原本需要自建 | Elata 代为处理 |
@@ -33,11 +37,15 @@ description: "Elata 为你提供什么，以及你可以省去哪些开发工作
 
 ---
 
+<a id="how-your-app-runs"></a>
+
 ## 你的应用如何运行
 
 你的应用运行在一个拥有独立源的沙箱 iframe 中。它无法访问 Elata 的 Cookie、用户的钱包或 Elata 的后端。它所需的平台能力都通过一个小型 `postMessage` 桥接完成，`@elata-biosciences/app-*` 包已为你封装好。参见[宿主桥接](/cn/apps/platform/host-bridge)。
 
 ---
+
+<a id="build-steps"></a>
 
 ## 构建步骤
 
@@ -57,6 +65,8 @@ description: "Elata 为你提供什么，以及你可以省去哪些开发工作
 </Steps>
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

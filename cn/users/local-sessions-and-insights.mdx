@@ -1,11 +1,52 @@
 ---
-title: "本地会话与分析"
-description: "设备端录制、分析和存储控制的实验性开发流程。"
-tag: "Experimental"
+title: "本地会议和见解"
+description: "实验性设备上记录流程、其存储控制以及它与云应用程序记录的区别。"
+tag: "实验性"
 ---
 
 <Warning>
-  此功能仅用于开发实验，在生产环境中明确禁用。录制数据保存在当前浏览器中，不会同步到服务器或其他设备。
+在应用商店的 `feat/long-local-analytics` 分支上进行仅限开发人员的实验。该分支在生产中明确禁用此功能，包括生产模式预览。这不是一个实时的消费者功能。
 </Warning>
 
-中文操作指南正在准备中，请参阅[英文指南](/users/local-sessions-and-insights)。英文版包含开发开关、兼容应用的录制流程、会话页面、存储持久性和本地删除操作。本地会话、账户事件记录和平台生物特征评分使用不同的数据路径。
+<a id="what-it-adds"></a>
+
+## 它添加了什么
+
+兼容的应用程序可以通过 `biosignal-session`记录键入的生物信号流。受信任的 Elata 主机将有效负载存储在用户设备上的 OPFS 中，并将目录存储在 IndexedDB中。录制路径没有服务器镜像。
+
+这与 [app-metrics](/cn/apps/platform/metrics-and-scores)分开，其事件和分数记录可以同步到登录用户的帐户，并且与同意门控 [平台生物识别分数](/cn/users/score-and-insights)分开。
+
+<a id="development-flow"></a>
+
+## 开发流程
+
+1. 使用 `NEXT_PUBLIC_LOCAL_BIOSIGNALS=true`在非生产开发环境中运行分支。
+2. 登录并打开实现生物信号记录协议的应用程序。普通应用程序不会自动创建录音。
+3. 完成录音。兼容的应用程序必须处理录音机启动、质量和连接故障以及最终确定。
+4. 打开 **见解** 查看设备上的摘要和最近的录音。
+5. 打开 [Sessions](https://app.elata.bio/insights/sessions) 浏览本地目录，然后选择一个会话来检查其详细信息。
+6. 打开 [本地数据](https://app.elata.bio/settings/local-data) 以检查存储、请求持久存储或删除一个或所有本地会话。
+
+上面的链接描述了发展路线；启用环境变量不能覆盖生产锁定。
+
+<a id="read-the-results"></a>
+
+## 阅读结果
+
+设备上的分数是相对于个人基线的解释。它们与平台生物识别分数是分开的。质量、输入缺失和基线不足可能会导致值被保留；缺乏价值不应被视为健康状况不佳或表现不佳。
+
+当前的设备仪表板包括测量质量和激活、指标趋势和最近的会话。某些贡献者可能无法使用。 SDK 的全套分数公式并不保证每个分数都会出现在应用商店 UI 中。
+
+<a id="storage-and-deletion"></a>
+
+## 存储与删除
+
+录音属于该浏览器和设备。登录另一台设备不会下载它们。清除站点数据或浏览器驱逐可以将其删除。持久存储请求可以提高保留率，但不应被描述为云备份。
+
+本地数据删除会删除本地有效负载、目录条目及其汇总贡献。它与删除云应用程序记录或撤销平台分数同意是分开的。当前的本地数据面板提供存储和删除控制；本指南不承诺完整的录音导出工作流程。
+
+<a id="builder-integration"></a>
+
+## 构建器集成
+
+使用 [biosignal-session](/cn/sdk/biosignal-session/getting-started) 来捕获和记录合约，并使用 [biosignal-analytics](/cn/sdk/biosignal-analytics/getting-started) 进行分析。保留 [应用程序状态](/cn/apps/platform/app-state) 用于小型保存和设置，并保留 `app-metrics` 用于事件/分数历史记录。这些满足不同的数据需求。

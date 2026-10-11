@@ -1,0 +1,36 @@
+---
+title: "Aportando EEG Transportes"
+description: "Cómo agregar transportes de auriculares más allá de la ruta Muse incorporada para la pila EEG del navegador Elata."
+---
+
+La guía canónica y detallada se encuentra en el monorepo del SDK:
+
+**[docs/contributing-eeg-transports.md](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/contributing-eeg-transports.md)**
+
+<a id="summary"></a>
+
+## Resumen
+
+- **`@elata-biosciences/eeg-web-ble`** es el paquete de transporte compartido **Web Bluetooth** . Incluye una implementación **integrada de Muse** y **no se limita a Muse** para contribuciones.
+- **Diseño:** `src/transport/` (`BleTransport`) vs `src/devices/muse/` (protocolo Muse). Agregue nuevos proveedores en `src/devices/<vendor>/`.
+- El nuevo hardware debería converger en **`HeadbandTransport`** y **`HeadbandFrameV1`** desde **`@elata-biosciences/eeg-web`**.
+- Prefiere un **nuevo módulo de dispositivo** en `eeg-web-ble`, un **`BleTransport` `device` adaptador**, o un **paquete hermano** bajo `packages/` cuando la integración es grande o necesita un puente.
+
+<a id="recommended-default-for-generally-useful-devices"></a>
+
+## Valor predeterminado recomendado para dispositivos generalmente útiles
+
+Utilice una contribución ascendente **dentro de `eeg-web-ble`**:
+
+- `packages/eeg-web-ble/src/devices/<vendor>/...` para protocolo, GATT y lógica de decodificación
+- reutilizar `src/transport/bleTransport.ts` para transporte y comportamiento del marco
+- adaptadores de tipo contra exportados `BleDeviceLike` desde `@elata-biosciences/eeg-web-ble`
+- agregue pruebas web Bluetooth simuladas en `src/__tests__/`
+- actualizar los documentos del paquete, los documentos del mantenedor y los documentos del SDK juntos
+- agregue un conjunto de cambios si el cambio debe enviarse
+
+Abra una incidencia de GitHub antes de cambios importantes en el protocolo o el paquete. Siga el repositorio **[Guía de CONTRIBUCIÓN](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/CONTRIBUTING.md)** para relaciones públicas, pruebas y conjuntos de cambios.
+
+Si necesita una lista de verificación lista para entregar a socios externos, utilice:
+
+- [Lista de verificación de incorporación de auriculares del proveedor](/es/sdk/maintainers/vendor-headset-onboarding)

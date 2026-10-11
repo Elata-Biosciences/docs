@@ -1,0 +1,158 @@
+---
+title: "Agregue EEG a una aplicación de navegador existente"
+description: "Paso a paso, conecte el procesamiento de Elata EEG a una aplicación de navegador y verifique que la ruta WASM funcione."
+---
+
+Utilice esta página si ya tiene una aplicación de navegador y desea la ruta de integración recomendada de la aplicación existente EEG .
+
+Si desea la ruta del andamio, utilice [Inicio rápido](/es/sdk/tutorials/first-app). Si primero solo necesita el modelo del paquete, use [EEG en una aplicación de navegador](/es/sdk/guides/eeg-browser).
+
+Este tutorial muestra la ruta recomendada para agregar `@elata-biosciences/eeg-web` a una aplicación de navegador existente.
+
+EEG es **opcional** en el típico viaje de Elata. **Cámara rPPG** es la integración principal habitual a menos que su producto necesite funciones de señales cerebrales.
+
+Úselo cuando su aplicación necesite EEG API de análisis en el navegador. Si también necesita transporte de auriculares en vivo, agregará `@elata-biosciences/eeg-web-ble` después de este tutorial.
+
+<a id="what-you-will-build"></a>
+
+## Lo que construirás
+
+Usted:
+
+1. instalar `@elata-biosciences/eeg-web`
+2. inicializar el tiempo de ejecución EEG WASM 
+3. ejecutar una llamada de análisis simple
+4. verifique que su aplicación pueda servir los activos empaquetados WASM 
+
+<a id="step-1-install-the-package"></a>
+
+## Paso 1: instale el paquete
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/eeg-web
+```
+
+```bash npm
+npm install @elata-biosciences/eeg-web
+```
+
+</CodeGroup>
+
+<a id="step-2-create-a-small-eeg-module"></a>
+
+## Paso 2: cree un módulo pequeño EEG 
+
+Cree un pequeño módulo en su aplicación para que la integración permanezca aislada y sea fácil de probar (por ejemplo `src/eeg.ts`):
+
+```ts eeg.ts
+import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
+
+let eegInitPromise: Promise<void> | null = null;
+
+async function ensureEegReady() {
+  if (!eegInitPromise) {
+    eegInitPromise = initEegWasm();
+  }
+  await eegInitPromise;
+}
+
+export async function analyzeExampleEeg() {
+  await ensureEegReady();
+
+  const eegData = new Float32Array([0.2, 0.5, 0.1, -0.3, -0.4, 0.1, 0.2, 0.6]);
+  const powers = band_powers(eegData, 256);
+
+  return powers;
+}
+```
+
+Por qué esta forma:
+
+- `initEegWasm()` debería ejecutarse antes de usar ayudas de análisis
+- la Promesa a nivel de módulo evita inicializaciones repetidas, incluidas llamadas simultáneas
+- mantenerlo en un archivo hace que sea más fácil intercambiar muestras reales más adelante
+
+<a id="step-3-call-it-from-your-ui"></a>
+
+## Paso 3: llámalo desde tu interfaz de usuario
+
+Por ejemplo, en un componente o archivo de entrada:
+
+```ts
+import { analyzeExampleEeg } from "./eeg";
+
+const powers = await analyzeExampleEeg();
+console.log("alpha", powers.alpha);
+console.log("beta", powers.beta);
+```
+
+En esta etapa todavía no estás utilizando unos auriculares reales. Está demostrando que la aplicación del navegador puede cargar el tiempo de ejecución y ejecutar las funciones EEG correctamente.
+
+<a id="step-4-verify-the-wasm-asset-path"></a>
+
+## Paso 4: Verifique la ruta del activo WASM 
+
+Ejecute su aplicación en desarrollo y confirme que el módulo se inicialice sin errores.
+
+Si `initEegWasm()` falla, el problema más probable es que la implementación de su paquete o aplicación no esté sirviendo correctamente los activos `wasm/` empaquetados.
+
+Esto es lo primero que hay que solucionar antes de agregar más lógica de producto.
+
+Si está utilizando Vite, las dos soluciones comunes son:
+
+1. agregue `vite-plugin-wasm` y `vite-plugin-top-level-await`, luego siga usando
+`await initEegWasm()`
+2. importe la URL del activo WASM directamente y pásela a `initEegWasm(wasmUrl)`
+
+Consulte [Solución de problemas](/es/sdk/operations/troubleshooting) para obtener más información sobre ambas soluciones.
+
+Si está atascado, compare su aplicación con la aplicación scaffolded `eeg-demo` antes de asumir que el paquete en sí no funciona.
+
+<a id="step-5-replace-example-data-with-real-app-data"></a>
+
+## Paso 5: reemplace datos de ejemplo con datos de aplicaciones reales
+
+Una vez que la llamada de ejemplo funcione, intercambie la matriz de marcador de posición con EEG buffers de muestra reales de su aplicación.
+
+El patrón común es:
+
+1. recibir o cargar EEG muestras
+2. normalizarlos en matrices escritas
+3. llame a los ayudantes de análisis de Elata
+4. asignar el resultado al estado de la aplicación, comentarios, puntuación o visualizaciones
+
+Ese último paso es donde reside el comportamiento de su producto.
+
+<a id="when-to-add-eeg-web-ble"></a>
+
+## Cuándo agregar `eeg-web-ble`
+
+Agregue `@elata-biosciences/eeg-web-ble` cuando necesite transporte en vivo del navegador desde un auricular compatible con Muse.
+
+No comience allí si el tiempo de ejecución simple EEG aún no funciona. Haga que la carga WASM funcione primero y luego agregue el transporte.
+
+<a id="common-problems"></a>
+
+## Problemas comunes
+
+- `initEegWasm()` arroja: su aplicación probablemente no esté cargando los recursos empaquetados `wasm/` correctamente
+- Esperabas el descubrimiento del dispositivo: `eeg-web` no realiza el transporte Bluetooth por sí solo
+- Está evaluando el SDK desde cero: comience con [Cree su primera aplicación Elata](/es/sdk/tutorials/first-app) en lugar de la configuración manual
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={3}>
+  <Card title="Agregar Bluetooth Web" icon="bluetooth" href="/es/sdk/tutorials/eeg-ble-live-stream">
+Transmita Muse EEG a través de BLE
+  </Card>
+  <Card title="Referencia eeg-web" icon="brain" href="/es/sdk/eeg-web/getting-started">
+Paquete API y exportaciones
+  </Card>
+  <Card title="EEG En un navegador" icon="book-open" href="/es/sdk/guides/eeg-browser">
+Descripción general de la integración
+  </Card>
+</CardGroup>

@@ -1,0 +1,64 @@
+---
+title: "Lo que puedes construir"
+description: "Categorías de aplicaciones, ideas de ejemplo y señales biológicas con las que puedes construir."
+---
+
+<a id="app-categories"></a>
+
+## Categorías de aplicaciones
+
+Cada aplicación en Elata aparece en una de cinco categorías.
+
+| categoría | lo que cubre | Ejemplo |
+| --- | --- | --- |
+| **Juegos** | Juegos casuales o competitivos impulsados por las señales del cuerpo. | Un corredor que acelera a medida que tu ritmo cardíaco se calma |
+| **Neurometría** | Medir y visualizar señales cerebrales y corporales. | Un panel de potencia de banda EEG en vivo para una diadema Muse |
+| **Bienestar** | Herramientas de respiración, meditación, recuperación y estrés. | Respiración guiada con retroalimentación en vivo de frecuencia cardíaca rPPG  |
+| **Herramientas** | Utilidades para entrenamiento, concentración y autoseguimiento | Un temporizador de concentración que registra una tendencia de calma/estrés por sesión. |
+| **Experimentos** | Aplicaciones, estudios y prototipos de estilo investigación. | Un estudio del tiempo de reacción que registra los resultados por sesión. |
+
+---
+
+<a id="building-with-biometrics"></a>
+
+## Construyendo con biometría
+
+Las aplicaciones de Elata se basan en el [Elata SDK](/es/sdk/overview). Elata verifica cada carga para determinar el uso real del SDK, por lo que su aplicación debe usar al menos una ruta de sensor:
+
+- **Cámara rPPG** (`@elata-biosciences/rppg-web`): señales de frecuencia cardíaca y pulso desde cualquier cámara web, sin hardware adicional
+- **EEG a través de Web Bluetooth** (`@elata-biosciences/eeg-web` + `eeg-web-ble`): señales cerebrales de diademas compatibles como Muse
+- **Diadema PPG** (`@elata-biosciences/ppg-web`): frecuencia cardíaca y HRV del sensor óptico de una diadema
+
+Además de la capa del sensor, puede agregar grabación y análisis con [`biosignal-session`](/es/sdk/biosignal-session/getting-started) y [`biosignal-analytics`](/es/sdk/biosignal-analytics/getting-started).
+
+<Tip>
+Todo el procesamiento de señales se ejecuta en el dispositivo del usuario. Los fotogramas de cámara sin procesar y las bioseñales sin procesar nunca necesitan salir del navegador.
+</Tip>
+
+---
+
+<a id="what-elata-adds"></a>
+
+## Lo que añade Elata
+
+Su aplicación también obtiene las funciones de la plataforma de Elata: inicio de sesión, compras dentro de la aplicación, suscripciones, almacenamiento por usuario, puntuación biométrica entre aplicaciones y recordatorios. Consulte [API de plataforma](/es/apps/platform/host-bridge).
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={3}>
+  <Card title="Ciclo de vida de la aplicación" icon="recycle" href="/es/apps/app-lifecycle">
+De subir a vivir
+  </Card>
+
+  <Card title="Descripción general del constructor" icon="hammer" href="/es/apps/build/overview">
+Empezar a construir
+  </Card>
+
+  <Card title="Aplicaciones de ejemplo" icon="grid-2x2" href="/es/sdk/guides/example-apps">
+Aplicaciones de código abierto basadas en los SDK
+  </Card>
+</CardGroup>

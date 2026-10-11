@@ -1,8 +1,79 @@
 ---
-title: "Elata 的科学立场"
-description: "这些测量的用途、如何对结论分级，以及延伸阅读。"
+title: "Elata科学"
+description: "Elata 的科学立场：测量的目的、声明如何分级以及在哪里阅读更多信息。"
 ---
 
-<Note>
-  本页的中文翻译正在准备中。请先阅读[英文版本](/overview/science/overview)。
-</Note>
+<a id="our-stance"></a>
+
+## 我们的立场
+
+Elata 为 **健康、游戏、学习和研究**构建工具。 Elata 应用程序使用的信号（相机心率、消费者 EEG和头带 PPG）是真实的生理测量值，但它们来自不受控制设置的消费者设备。它们是估计值，而不是临床读数。
+
+由此得出三个规则：
+
+1. **无诊断。** Elata 和 Elata 应用程序不诊断、治疗或监控医疗状况。
+2. **显示不确定性。** 测量值带有信号质量和置信度值，当数据不够好时，分数会自动保留，而不是猜测。
+3. **对每项索赔进行评分。** 测量的心率和“焦点”分数是不同类型的声明，SDK 对它们进行了不同的标记。
+
+---
+
+<a id="how-claims-are-graded"></a>
+
+## 索赔如何分级
+
+SDK 的分析包（`biosignal-analytics`，当前为 [实验版](/cn/overview/status)）为每个指标提供了带有两个标签的注册定义。
+
+**计量类：** 是什么样的数字。
+
+| 班级 | 含义 | 示例 |
+| --- | --- | --- |
+| 测量的 | 直接从信号中读取或多或少的内容 | 心率 |
+| 派生（确定性） | 根据测量值通过固定公式计算 | HRV (RMSSD)，频段功率 |
+| 模型推断 | 通过统计或学习模型估计 | 学习波形重建 |
+| 产品复合 | 结合多种输入的产品解释 | 专注、准备 |
+
+**证据层：** 指标的支持程度。
+
+| 等级 | 含义 |
+| --- | --- |
+| 测试版默认值 | 良好的支持；默认显示 |
+| 高级 | 支持，但适用于知情用户 |
+| 实验性 | 早；可能会改变或被删除 |
+| 被拒绝 | 已评估并故意不使用 |
+
+每个值还记录了生成它的确切算法和版本，因此当算法改进时可以对其进行跟踪和重新计算。功能代码针对参考实现 (NumPy/SciPy) 进行了测试，因此 Rust、 WebAssembly和 JavaScript 版本中的数字一致。
+
+---
+
+<a id="in-this-section"></a>
+
+## 在本节中
+
+<CardGroup cols={2}>
+  <Card title="相机心率 (rPPG)" icon="camera" href="/cn/overview/science/rppg">
+网络摄像头如何估计脉搏及其局限性
+  </Card>
+  <Card title="EEG 头带" icon="brain" href="/cn/overview/science/eeg">
+四个干式传感器可以告诉您什么，不能告诉您什么
+  </Card>
+  <Card title="PPG 和 HRV" icon="heart-pulse" href="/cn/overview/science/ppg-and-hrv">
+光学心率和心率变异性
+  </Card>
+  <Card title="指标和分数" icon="gauge" href="/cn/overview/science/metrics-and-scores">
+如何构建导出的度量和分数
+  </Card>
+  <Card title="研究数据" icon="database" href="/cn/overview/science/data-for-research">
+哪些数据存在，哪些不存在
+  </Card>
+  <Card title="研究方向" icon="telescope" href="/cn/overview/science/research-directions">
+计划并存档的研究工作
+  </Card>
+</CardGroup>
+
+---
+
+<a id="sources"></a>
+
+## 来源
+
+- [`biosignal-analytics` 自述文件和注册表](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) （公共 SDK 存储库）

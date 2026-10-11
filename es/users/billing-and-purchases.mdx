@@ -1,0 +1,90 @@
+---
+title: "Facturación y Compras"
+description: "Compre elementos de aplicaciones, administre el acceso mensual y comprenda su billetera y sus créditos."
+---
+
+Algunas aplicaciones ofrecen artículos únicos o acceso mensual pago. Elata maneja el pago y mantiene sus registros de compra y acceso en su cuenta.
+
+<Info>
+Es posible que las funciones pagas no estén disponibles hasta que se configuren para la implementación. Verifique [Estado actual](/es/overview/status) y la red que se muestra al finalizar la compra. Los elementos de aplicaciones y las suscripciones a aplicaciones utilizan USDC en Base en este flujo; Los fondos de testnet en otra red no pueden pagarlos.
+</Info>
+
+<a id="find-your-billing-settings"></a>
+
+## Encuentra tu configuración de facturación
+
+Abra [Configuración → Facturación](https://app.elata.bio/settings/billing).
+
+| Sección | Qué puedes hacer |
+| --- | --- |
+| [Compras](https://app.elata.bio/settings/billing/purchases) | Ver los elementos de la aplicación que posee y volver a sus aplicaciones |
+| [Suscripciones](https://app.elata.bio/settings/billing/subscriptions) | Revise el acceso a la aplicación y elija los períodos para pagar |
+| [Historial](https://app.elata.bio/settings/billing/history) | Revisar los pagos registrados de productos, suscripciones y créditos. |
+| [Billetera](https://app.elata.bio/settings/billing/wallet) | Verifique la billetera de su cuenta, la billetera conectada y el saldo de crédito |
+
+<a id="buy-an-in-app-item"></a>
+
+## Comprar un artículo dentro de la aplicación
+
+<Steps>
+  <Step title="Inicia sesión y elige el artículo">
+Abre las compras disponibles de la app o su propia tienda. Consulta la descripción del artículo y el precio. Los artículos únicos son desbloqueos permanentes en la cuenta de compras, en lugar de consumibles de gasto por uso.
+  </Step>
+  <Step title="Completar el pago de Elata">
+Conecte o abra la billetera solicitada al finalizar la compra. Los elementos de la aplicación se pagan desde una billetera con suficiente USDC en Base. Confirme las acciones de pago solicitadas y espere la liquidación y el registro.
+  </Step>
+  <Step title="Usa tu compra">
+Después de que Elata confirma el éxito, la aplicación aplica el desbloqueo. Puede encontrarlo nuevamente en **Facturación → Compras** y restaurarlo regresando a la aplicación en la misma cuenta.
+  </Step>
+</Steps>
+
+Un artículo que ya se posee debe mostrar el estado de propiedad en lugar de requerir otro pago. Si falta el beneficio, vuelva a abrir la aplicación en la cuenta de compras y verifique Compras antes de intentar pagar nuevamente.
+
+<a id="subscribe-to-an-app"></a>
+
+## Suscríbete a una aplicación
+
+Una aplicación con un plan mensual activo muestra su precio y cualquier prueba disponible en la página de su aplicación o en la pantalla de reproducción bloqueada. Una prueba gratuita elegible comienza sin pago; el acceso pago se gestiona en **Facturación → Suscripciones**.
+
+1. Utilice el mensaje de suscripción de la aplicación para realizar el pago en línea cuando esté disponible, o abra **Suscripciones** para administrar su carrito.
+2. Seleccione el período ofrecido: acceso del mes actual, acceso del mes siguiente o ambos cuando estén disponibles.
+3. Revisa las fechas de cobertura y el total en el carrito. Se pueden pagar varias aplicaciones juntas.
+4. Complete el pago y espere a que los períodos se muestren como pagados.
+
+Los períodos de suscripción de la aplicación siguen **meses calendario en UTC**, en lugar de 30 días desde la compra. El acceso del mes siguiente comienza el primero de ese mes. Cuando se ofrece acceso para el mes actual, el carrito muestra su cobertura y precio prorrateado.
+
+<a id="renew-or-stop-renewing"></a>
+
+### Renovar o dejar de renovar
+
+Las suscripciones a aplicaciones **no tienen pago automático**. Al seleccionar una aplicación para el próximo mes, la agrega a su carrito; todavía se requiere el pago.
+
+Para dejar de renovar, dejar el mes siguiente sin pagar. Al desmarcar una selección no pagada, se elimina del carrito. No cancela ni reembolsa un mes que ya compraste. El acceso continúa hasta la cobertura paga o la fecha de finalización de la prueba y luego vence a menos que se aplique otra forma de acceso.
+
+<a id="google-sign-in-wallets-and-credits"></a>
+
+## Inicio de sesión de Google, billeteras y créditos
+
+Iniciar sesión identifica su cuenta de Elata. Para completar un pago se requiere una billetera activa capaz de aprobarlo. El inicio de sesión de Google o de correo electrónico puede utilizar una billetera integrada. El pago actual intenta restaurar esa billetera automáticamente, por lo que no es necesario traer una billetera criptográfica externa solo para iniciar sesión o comenzar a pagar. Es posible que aún tengas que agregar USDC en Base. Siga las indicaciones de recuperación o conexión si no se puede restaurar la billetera de la cuenta; La confirmación del pago ocurre en la interfaz de la billetera.
+
+**Facturación → Billetera** muestra tanto la billetera de su cuenta como su billetera actualmente conectada. Si difieren, verifique la cuenta y la billetera antes de pagar. La conexión de Wallet por sí sola no garantiza que se pueda verificar un pagador diferente para su cuenta.
+
+Los créditos cubren funciones medidas admitidas. Recargar créditos no financia el saldo USDC de su billetera ni paga automáticamente un artículo o suscripción a una aplicación. [Los puntos](/es/overview/points) también son un sistema de participación independiente.
+
+<a id="payment-problems-and-history"></a>
+
+## Problemas de pago e historial.
+
+| Estado | Qué hacer |
+| --- | --- |
+| No iniciado sesión | Inicie sesión en la cuenta que debería ser propietaria de la compra. |
+| Restauración de billetera de cuenta | Espere a que se restaure la billetera integrada; siga la recuperación si falla |
+| No hay billetera de pago utilizable | Siga el mensaje de conexión de la billetera del proceso de pago |
+| Fondos insuficientes | Agregue USDC en Base a la billetera de pago y luego vuelva a intentarlo |
+| Esperando confirmación o registro | Mantenga abierto el proceso de pago hasta que termine |
+| Pago liquidado pero falta acceso | Guarde el hash de la transacción, verifique el Historial y su acceso, y comuníquese con el soporte antes de enviar otro pago |
+| Pagar no disponible | Es posible que la implementación no tenga pagos configurados; Vuelve a consultar o contacta con soporte. |
+
+El historial es un registro de pagos, no un portal de reembolsos o facturas. Las cantidades de productos marcadas **≈** son estimaciones que utilizan el precio actual del artículo; utilice el registro de transacciones para el monto realmente pagado. Un historial limitado puede mostrar sólo registros recientes.
+
+Para un problema de facturación, use [Ayuda](/es/users/help) e incluya la aplicación, el artículo o período, la cuenta de compras, el hash de transacción si está disponible y el error mostrado. No comparta secretos de billetera. Estas configuraciones no proporcionan un flujo de trabajo de reembolso de autoservicio.

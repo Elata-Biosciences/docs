@@ -13,6 +13,8 @@ description: "在受支持的 Chromium 浏览器中输出 Muse 兼容 EEG 设备
 
 ---
 
+<a id="start-with-a-known-good-scaffolded-app"></a>
+
 ## 从确认可用的脚手架应用开始
 
 如果你想以最快速度获得可运行的浏览器 BLE 示例，请先创建 EEG 入门应用：
@@ -39,6 +41,8 @@ npm run dev
 
 ---
 
+<a id="requirements"></a>
+
 ## 要求
 
 - Chrome、Edge，或 iOS 上的 Bluefy
@@ -58,6 +62,8 @@ npm run dev
 
 ---
 
+<a id="install"></a>
+
 ## 安装
 
 <CodeGroup>
@@ -73,6 +79,8 @@ npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
 </CodeGroup>
 
 ---
+
+<a id="minimal-integration"></a>
 
 ## 最小集成
 
@@ -100,6 +108,8 @@ await transport.start();
 
 ---
 
+<a id="typical-flow"></a>
+
 ## 典型流程
 
 1. 确认应用运行在安全上下文中。
@@ -109,6 +119,8 @@ await transport.start();
 5. 调用 `connect()`，然后调用 `start()`。
 
 ---
+
+<a id="when-to-use-the-ble-template-instead"></a>
 
 ## 何时改用 BLE 模板
 
@@ -120,6 +132,8 @@ await transport.start();
 
 ---
 
+<a id="common-gotchas"></a>
+
 ## 常见问题
 
 - 如果 `navigator.bluetooth` 不存在，你很可能在不受支持的浏览器或非安全上下文中。
@@ -129,19 +143,21 @@ await transport.start();
 
 ---
 
+<a id="next"></a>
+
 ## 下一步
 
 <CardGroup cols={2}>
-  <Card title="BLE 实时数据流教程" icon="circle-play" href="/cn/sdk/tutorials/eeg-ble-live-stream">
+  <Card title="BLE 实时数据流教程" icon="circle-play" iconType="light" href="/cn/sdk/tutorials/eeg-ble-live-stream">
     分步数据流指南
   </Card>
-  <Card title="在浏览器中使用 EEG" icon="brain" href="/cn/sdk/guides/eeg-browser">
+  <Card title="在浏览器中使用 EEG" icon="brain" iconType="light" href="/cn/sdk/guides/eeg-browser">
     浏览器 EEG 包模型
   </Card>
-  <Card title="eeg-web-ble 参考" icon="bluetooth" href="/cn/sdk/eeg-web-ble/getting-started">
+  <Card title="eeg-web-ble 参考" icon="bluetooth" iconType="light" href="/cn/sdk/eeg-web-ble/getting-started">
     传输 API 和选项
   </Card>
-  <Card title="故障排查" icon="wrench" href="/cn/sdk/operations/troubleshooting">
+  <Card title="故障排查" icon="wrench" iconType="light" href="/cn/sdk/operations/troubleshooting">
     常见故障及解决方法
   </Card>
 </CardGroup>

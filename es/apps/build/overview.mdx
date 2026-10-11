@@ -1,0 +1,83 @@
+---
+title: "Descripción general del constructor"
+description: "Lo que te aporta Elata y lo que evitas construir tú mismo."
+---
+
+<Warning>
+El `create-elata-demo` 0.12.1 del repositorio tiene un bloqueador de empaquetado: la falta de metadatos de la versión `app-metrics` impide el inicio. Verifique [estado de la carpeta de andamios](/es/sdk/create-elata-demo) antes de usar los siguientes comandos; por ahora, siga el [manual rPPG integración](/es/sdk/tutorials/rppg-existing-app).
+</Warning>
+
+<a id="what-you-get"></a>
+
+## Lo que obtienes
+
+Envías una aplicación web estática. Elata proporciona el resto:
+
+- Alojamiento para su compilación o incorporación de su propio sitio HTTPS
+- un listado de Elata con descubrimiento, reseñas, comentarios, votos y uso compartido
+- Usuarios que han iniciado sesión, sin código de autenticación en su aplicación
+- Compras únicas dentro de la aplicación y suscripciones mensuales, pagadas en USDC
+- Almacenamiento de valores clave por usuario, registros de eventos y tablas de clasificación de puntuaciones
+- Una puntuación biométrica entre aplicaciones y basada en el consentimiento
+- Recordatorios en primer plano y un canal de comentarios en la aplicación
+
+---
+
+<a id="what-you-avoid-building-yourself"></a>
+
+## Lo que evitas construir tú mismo
+
+| De lo contrario necesitarías | Elata lo maneja |
+| --- | --- |
+| Autenticación, sesiones, billeteras. | Los usuarios inician sesión en Elata. Su aplicación no recibe las credenciales de su cuenta ni los tokens de sesión a través del puente. |
+| Procesamiento de pago y pago | Elata realiza el pago y registra la propiedad. Lees derechos. |
+| Un backend para guardar y configurar | [`app-state`](/es/apps/platform/app-state) y [`app-metrics`](/es/apps/platform/metrics-and-scores) almacenan datos por usuario para usted. |
+| Flujos de consentimiento para datos biométricos | Elata muestra el consentimiento en su propio marco de confianza y lo aplica en el lado del servidor. |
+| Alojamiento, CDN, TLS | Sube un `.zip`. Elata lo ofrece en un origen aislado por aplicación. |
+
+---
+
+<a id="how-your-app-runs"></a>
+
+## Cómo se ejecuta su aplicación
+
+Su aplicación se ejecuta dentro de un iframe de espacio aislado en su propio origen. No tiene acceso a las cookies de Elata, a la billetera del usuario ni al backend de Elata. Todo lo que necesita de la plataforma pasa por un pequeño puente `postMessage` que los paquetes `@elata-biosciences/app-*` envuelven por usted. Consulte [Puente de host](/es/apps/platform/host-bridge).
+
+---
+
+<a id="build-steps"></a>
+
+## Pasos de construcción
+
+<Steps>
+  <Step title="Andamiar o integrar">
+Comience desde una plantilla con `npm create @elata-biosciences/elata-demo my-app`o agregue el SDK a una aplicación existente. Ver [Tu primera aplicación](/es/sdk/tutorials/first-app).
+  </Step>
+  <Step title="Consulta los requisitos">
+Asegúrese de que su compilación cumpla con los requisitos [Requisitos](/es/apps/build/requirements), incluido el uso real del SDK y una entrada `index.html` .
+  </Step>
+  <Step title="Agregar un elata.json">
+Declare su versión de lanzamiento en un manifiesto [`elata.json`](/es/apps/build/elata-json) .
+  </Step>
+  <Step title="Publicar">
+Siga el [Asistente para crear una aplicación](/es/apps/build/launch-your-app).
+  </Step>
+</Steps>
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={3}>
+  <Card title="Requisitos" icon="clipboard-check" href="/es/apps/build/requirements">
+Lo que tu aplicación necesita
+  </Card>
+  <Card title="Publica tu aplicación" icon="rocket" href="/es/apps/build/launch-your-app">
+El asistente, paso a paso
+  </Card>
+  <Card title="Puente anfitrión" icon="plug" href="/es/apps/platform/host-bridge">
+Cómo habla tu aplicación con Elata
+  </Card>
+</CardGroup>

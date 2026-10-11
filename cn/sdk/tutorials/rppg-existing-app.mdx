@@ -15,6 +15,8 @@ description: "使用 createRppgSession、诊断和清理构建一个可用的浏
 
 当你在[构建你的第一个 Elata 应用](/cn/sdk/tutorials/first-app)之后为摄像头 rPPG 选择**现有应用**分支时，这通常是**下一篇教程**。如果你是在**扩展脚手架**，请继续使用 `rppg-demo`，并参考[在浏览器应用中使用 rPPG](/cn/sdk/guides/rppg-browser) 和 [rppg-web](/cn/sdk/rppg-web/getting-started)。
 
+<a id="what-you-will-build"></a>
+
 ## 你将构建什么
 
 你将：
@@ -25,6 +27,8 @@ description: "使用 createRppgSession、诊断和清理构建一个可用的浏
 4. 启动 `createRppgSession()`
 5. 读取指标和诊断信息
 6. 在清理时停止会话
+
+<a id="step-1-install-the-package"></a>
 
 ## 第 1 步：安装包
 
@@ -40,11 +44,13 @@ npm install @elata-biosciences/rppg-web
 
 </CodeGroup>
 
+<a id="step-2-prepare-a-video-element"></a>
+
 ## 第 2 步：准备 video 元素
 
 你的应用需要一个可以接收摄像头流的 `video` 元素。
 
-```html index.html（或你的组件标记）
+```html index.html (or your component markup)
 <video id="camera" autoplay playsinline muted></video>
 ```
 
@@ -53,6 +59,8 @@ npm install @elata-biosciences/rppg-web
 - `autoplay`：视频流绑定后即可开始播放
 - `playsinline`：适配移动端浏览器行为
 - `muted`：避免受自动播放规则限制
+
+<a id="step-3-acquire-camera-access"></a>
 
 ## 第 3 步：获取摄像头访问
 
@@ -69,6 +77,8 @@ await videoEl.play();
 ```
 
 此时你的浏览器应用应该已经显示摄像头预览了。
+
+<a id="step-4-start-createrppgsession"></a>
 
 ## 第 4 步：启动 `createRppgSession()`
 
@@ -102,6 +112,8 @@ const session = await createRppgSession({
 - 输出诊断信息
 - 清理支持
 
+<a id="step-5-read-metrics-in-your-ui"></a>
+
 ## 第 5 步：在界面中读取指标
 
 ```ts
@@ -110,6 +122,8 @@ console.log(metrics);
 ```
 
 在真实应用中，你会通过自己的界面状态层轮询或订阅，并显示对你的产品重要的数值。
+
+<a id="step-6-clean-up-correctly"></a>
 
 ## 第 6 步：正确清理
 
@@ -126,6 +140,8 @@ for (const track of stream.getTracks()) {
 ```
 
 这一步比看起来更重要。它能防止之后的会话继承过时的摄像头或运行时状态。
+
+<a id="full-example-single-paste"></a>
 
 ## 完整示例（一次粘贴）
 
@@ -215,6 +231,8 @@ export default function App() {
 
 这个示例在 `<video>` 上使用 React `ref`，而不是上面步骤中的 `getElementById("camera")`。
 
+<a id="what-to-do-with-diagnostics"></a>
+
 ## 如何处理诊断信息
 
 最快能带来价值的应用行为是：
@@ -231,12 +249,16 @@ export default function App() {
 
 但请先从普通的 `createRppgSession()` 开始。
 
+<a id="common-problems"></a>
+
 ## 常见问题
 
 - `session.getDiagnostics().backendMode` 为 `unavailable`：你的应用很可能没有正确加载打包的 WASM 资源
 - 摄像头访问失败：检查浏览器权限和 `getUserMedia` 支持
 - 会话进入终止状态 `failed`：重新创建会话，而不是继续使用已损坏的处理器
 - 你想先调试底层生成的绑定：除非你确实在调试 SDK 本身，否则请从 `createRppgSession()` 开始
+
+<a id="next"></a>
 
 ## 下一步
 

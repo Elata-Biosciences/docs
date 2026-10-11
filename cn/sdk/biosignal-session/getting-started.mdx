@@ -1,12 +1,14 @@
 ---
 title: "快速上手"
-tag: "Experimental"
+tag: "实验性"
 description: "使用 @elata-biosciences/biosignal-session 在本地录制多传感器生物信号会话。"
 ---
 
 <Warning>
   `@elata-biosciences/biosignal-session` 尚未发布到 npm。以下 API 基于 [SDK 仓库](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-session)中的源码，在首次发布前可能会有变化。
 </Warning>
+
+<a id="what-it-does"></a>
 
 ## 功能
 
@@ -20,18 +22,22 @@ description: "使用 @elata-biosciences/biosignal-session 在本地录制多传�
 
 ---
 
+<a id="the-model"></a>
+
 ## 数据模型
 
 ```
-Session ─┬─ Source   （头带、摄像头、合成数据）
-         ├─ Stream   （eeg、ppg、optics、imu、rppg-metrics、ppg-metrics……）
-         │    └─ Chunk  （Arrow IPC 文件 + CRC32C，序号 0、1、2……）
-         └─ Event    （标记和注释）
+Session ─┬─ Source   (headset, camera, synthetic)
+         ├─ Stream   (eeg, ppg, optics, imu, rppg-metrics, ppg-metrics, …)
+         │    └─ Chunk  (Arrow IPC file + CRC32C, sequence 0, 1, 2, …)
+         └─ Event    (markers and annotations)
 ```
 
 时间以会话为基准、以整数**微秒**表示，在会话开始时锚定一次。
 
 ---
+
+<a id="roles"></a>
 
 ## 角色
 
@@ -48,10 +54,12 @@ Session ─┬─ Source   （头带、摄像头、合成数据）
 
 ---
 
+<a id="install"></a>
+
 ## 安装
 
 ```bash
-# 尚未发布到 npm。首次发布后此命令才可用。
+# Not on npm yet. This command works after the first release.
 npm install @elata-biosciences/biosignal-session
 ```
 
@@ -63,6 +71,8 @@ npm install @elata-biosciences/biosignal-session
 
 ---
 
+<a id="device-adapters"></a>
+
 ## 设备适配器
 
 将你已在使用的 SDK 对象包装为录制数据源：
@@ -72,6 +82,8 @@ npm install @elata-biosciences/biosignal-session
 - `createPpgSource(options)`：`ppg-web` 指标
 
 ---
+
+<a id="try-it-without-hardware"></a>
 
 ## 无需硬件即可试用
 
@@ -88,7 +100,7 @@ const source = createSyntheticSource({ seed: 1234 });
 
 await h.start();
 await h.startSource(source);
-source.pump(60_000);          // 60 秒的合成 EEG、rPPG 和 PPG
+source.pump(60_000);          // 60 s of synthetic EEG, rPPG, and PPG
 await h.advance(60_000);
 await source.stop();
 await h.finalize();
@@ -97,6 +109,8 @@ h.core.state();               // "complete"
 ```
 
 ---
+
+<a id="read-chunks-back"></a>
 
 ## 读取分块
 
@@ -110,6 +124,8 @@ const tp9 = readFloat32Column(table, 'TP9');
 ```
 
 ---
+
+<a id="full-guide"></a>
 
 ## 完整指南
 

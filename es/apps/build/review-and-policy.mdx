@@ -1,0 +1,58 @@
+---
+title: "Revisión y política"
+description: "Lo que verifican el análisis automatizado y los moderadores antes de que se active una aplicación."
+---
+
+<a id="how-review-works"></a>
+
+## Cómo funciona la revisión
+
+Cada versión se verifica dos veces antes de publicarse:
+
+1. **Análisis de seguridad automatizado.** Elata escanea su paquete en busca de patrones maliciosos conocidos, código que agota la billetera, intentos de escape de la zona de pruebas, código ofuscado y falta de uso del SDK. Además de las comprobaciones de patrones, se realiza una revisión de código asistida por modelo.
+2. **Revisión del moderador.** Un moderador de Elata revisa la versión, su listado y los resultados del escaneo, luego lo aprueba o rechaza.
+
+Una versión que no pasa el análisis se retiene y no se puede aprobar hasta que se resuelva.
+
+<Note>
+Para mantener el análisis efectivo, los resultados de seguridad detallados no se devuelven a quienes los suben. Los problemas de tiempo de carga que *puedes* solucionar tú mismo, como un `index.html` faltante o la falta de uso del SDK, siempre se te muestran directamente.
+</Note>
+
+---
+
+<a id="the-submission-policy"></a>
+
+## La política de presentación
+
+El texto completo está publicado en [app.elata.bio/policies/app-submission](https://app.elata.bio/policies/app-submission). En resumen, su aplicación no debe:
+
+<AccordionGroup>
+  <Accordion title="Vaciar billeteras u ocultar transacciones">
+No se permiten transferencias de tokens, firmas ni aprobaciones, excepto a través del proceso de pago de Elata. Sin aprobaciones de gastos ilimitadas y sin disfrazar lo que hace una transacción.
+  </Accordion>
+  <Accordion title="Exfiltrar datos biométricos, de cámara o micrófono">
+Los datos biométricos sin procesar, los marcos de las cámaras y el audio del micrófono no deben salir del dispositivo del usuario ni pasar a un tercero. Los resultados derivados en el dispositivo (por ejemplo, una puntuación de calma) están bien si se revelan al usuario. La única excepción propia es enviar resultados de sesión derivados a Elata a través de [`reportAffect`](/es/apps/platform/metrics-and-scores#reportaffect), con el consentimiento del usuario.
+  </Accordion>
+  <Accordion title="hacerse pasar por otros">
+No copiar el nombre, la marca, los íconos o el dominio de otra aplicación o empresa.
+  </Accordion>
+  <Accordion title="Escapar o debilitar la caja de arena">
+No hay intentos de llegar a la página principal, evitar el aislamiento del marco o eludir los controles de seguridad de Elata. En su lugar, informe los defectos del entorno sandbox a través de una divulgación responsable.
+  </Accordion>
+  <Accordion title="tergiversarse">
+El nombre, la descripción, las capturas de pantalla y el registro de cambios deben describir con precisión la aplicación. Los cambios materiales en el comportamiento o la monetización deben incluirse en el registro de cambios de su versión.
+  </Accordion>
+</AccordionGroup>
+
+Las infracciones pueden provocar la eliminación de una versión o la suspensión o prohibición de una aplicación o cuenta de desarrollador.
+
+---
+
+<a id="tips-for-a-smooth-review"></a>
+
+## Consejos para una revisión fluida
+
+- Mantenga su paquete legible. El código muy ofuscado atrae un mayor escrutinio.
+- Solicite acceso a la cámara o Bluetooth solo cuando el usuario inicie una sesión.
+- Asegúrese de que la aplicación funcione en la ventana de reproducción de Elata antes de enviarla.
+- Describe en tu listado qué mide la aplicación y qué hace con los datos.

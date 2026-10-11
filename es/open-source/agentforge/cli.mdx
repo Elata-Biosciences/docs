@@ -1,0 +1,167 @@
+---
+title: "Referencia CLI"
+tag: "Archivado"
+description: "Referencia completa de comandos y opciones para la CLI de AgentForge"
+---
+
+<a id="installation"></a>
+
+## Instalación
+
+La CLI está disponible como `forge-sim` (o `agentforge`) después de instalar el paquete:
+
+```bash
+pnpm add @elata-biosciences/agentforge
+```
+
+---
+
+<a id="commands"></a>
+
+## Comandos
+
+### `forge-sim init [path]`
+
+Cree una carpeta de simulación con escenarios de ejemplo y configuración.
+
+```bash
+forge-sim init                    # Initialize in current directory
+forge-sim init sim/               # Initialize in sim/ subdirectory
+```
+
+### `forge-sim run <scenario>`
+
+Ejecute un archivo de escenario y produzca artefactos.
+
+```bash
+forge-sim run sim/scenarios/stress.ts
+forge-sim run --toy                          # Run built-in demo scenario
+```
+
+**Opciones:**
+
+| Bandera | Descripción |
+|------|-------------|
+| `--seed <n>` | Anular semilla aleatoria |
+| `--ticks <n>` | Anular el recuento de ticks |
+| `--out <dir>` | Directorio de salida para artefactos |
+| `--mode <mode>` | `deterministic` (predeterminado), `exploration`o `replay` |
+| `--replay-bundle <path>` | Ruta del paquete de reproducción (para `--mode replay`) |
+| `--capture-memory` | Persistir instantáneas de memoria del agente |
+| `--live` | Habilitar la transmisión de eventos WebSocket en vivo |
+| `--ci` | Modo CI: sin colores, denominación estable |
+| `--verbose` | Registro detallado |
+| `--json` | Resultados de salida como JSON |
+
+**Guía de modo:**
+- **`deterministic`** — no hay llamadas de LLM en vivo; mejor para líneas de base y CI
+- **`exploration`** — Descubrimiento del equipo rojo habilitado por LLM; produce `replay_bundle.json`
+- **`replay`** — repetición determinista de rastros de exploración anteriores
+
+### `forge-sim studio`
+
+Inicie el panel de Studio para realizar análisis de ejecuciones múltiples.
+
+```bash
+forge-sim studio
+```
+
+### `forge-sim report <runDir>`
+
+Genere un informe de Markdown a partir de artefactos ejecutados.
+
+```bash
+forge-sim report results/market-stress-ci/
+```
+
+### `forge-sim dashboard <runDir>`
+
+Cree un panel HTML estático a partir de artefactos de ejecución.
+
+```bash
+forge-sim dashboard results/market-stress-ci/
+```
+
+### `forge-sim serve <runDir>`
+
+Ofrece un panel de ejecución a través de HTTP.
+
+```bash
+forge-sim serve results/market-stress-ci/
+```
+
+### `forge-sim compare <runA> <runB>`
+
+Diferencia dos ejecuciones: compara métricas, acciones y hashes de artefactos.
+
+```bash
+forge-sim compare results/run1 results/run2
+```
+
+### `forge-sim sweep <scenario>`
+
+Análisis estadístico multisemilla. Ejecuta el mismo escenario en una variedad de resultados de semillas y agregados.
+
+```bash
+forge-sim sweep sim/scenarios/stress.ts --seeds 1..50
+```
+
+### `forge-sim matrix <scenario>`
+
+Comparación de matrices multivariantes. Ejecuta múltiples combinaciones de parámetros y produce una matriz de comparación.
+
+```bash
+forge-sim matrix sim/scenarios/stress.ts
+```
+
+### `forge-sim extract-agent <bundle>`
+
+Genere un agente determinista a partir de un paquete de reproducción. Útil para convertir trazas de exploración LLM en agentes de prueba reproducibles.
+
+```bash
+forge-sim extract-agent results/run/replay_bundle.json
+```
+
+### `forge-sim doctor`
+
+Verifique que todas las dependencias (Node.js, Foundry, Anvil) estén disponibles y configuradas correctamente.
+
+```bash
+forge-sim doctor
+```
+
+### `forge-sim types`
+
+Genere tipos de TypeScript a partir de artefactos de Foundry.
+
+```bash
+forge-sim types
+```
+
+---
+
+<a id="ci-integration"></a>
+
+## Integración de CI
+
+AgentForge está diseñado para canalizaciones de CI. Códigos de salida:
+
+| Código | Significado |
+|------|---------|
+| `0` | Todas las afirmaciones pasaron |
+| `1` | Una o más afirmaciones fallaron |
+| `2` | Error de infraestructura |
+
+Ejemplo de flujo de trabajo de acciones de GitHub:
+
+```yaml
+- name: Run simulations
+  run: npx forge-sim run sim/scenarios/stress.ts --ci --seed 42
+
+- name: Upload artifacts
+  uses: actions/upload-artifact@v4
+  if: always()
+  with:
+    name: simulation-results
+    path: sim/results/
+```

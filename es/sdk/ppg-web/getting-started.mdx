@@ -1,0 +1,100 @@
+---
+title: "Empezando"
+description: "Frecuencia cardíaca y HRV del sensor óptico de una diadema Muse (PPG) con @elata-biosciences/ppg-web."
+---
+
+<a id="what-it-does"></a>
+
+## que hace
+
+`@elata-biosciences/ppg-web` estima la frecuencia cardíaca y la variabilidad de la frecuencia cardíaca a partir del sensor PPG (óptico) de una diadema, en el navegador. Se ejecuta en el mismo flujo de diadema normalizado que los paquetes EEG , por lo que funciona junto con EEG desde el mismo dispositivo.
+
+- Lee los marcos Muse classic `ppgRaw` y Muse S Athena `optics` 
+- Elige el mejor canal automáticamente o te permite fijar uno
+- Informes `bpm`, `rmssdMs`, `sdnnMs`y `meanNnMs`, además de confianza y calidad de la señal
+
+---
+
+<a id="install"></a>
+
+## Instalación
+
+```bash
+npm install @elata-biosciences/ppg-web @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble @elata-biosciences/rppg-web
+```
+
+O armar el iniciador: `npm create @elata-biosciences/elata-demo my-app -- --template ppg`.
+
+---
+
+<a id="connect-a-muse-and-read-metrics"></a>
+
+## Conecta un Muse y lee métricas
+
+```ts
+import { createMusePpgSession } from '@elata-biosciences/ppg-web';
+
+// Call from a user gesture (e.g. a "Connect" button): Web Bluetooth requires it.
+const session = await createMusePpgSession({
+  windowSec: 16,
+  onMetrics: (m) => {
+    console.log(m.bpm, m.rmssdMs, m.signalQuality);
+  },
+});
+
+// Or poll
+const metrics = session.getMetrics();
+
+// When done
+await session.stop();
+await session.dispose();
+```
+
+---
+
+<a id="use-any-headband-transport"></a>
+
+## Utilice cualquier transporte de diadema
+
+Si ya tienes un `HeadbandTransport` (por ejemplo, un `BleTransport` que creaste tú mismo), envuélvelo:
+
+```ts
+import { createPpgSession } from '@elata-biosciences/ppg-web';
+
+const session = await createPpgSession({
+  transport,
+  autoStart: true,
+  source: 'auto',   // 'auto' | 'ppgRaw' | 'optics'
+  channel: 'auto',
+});
+```
+
+---
+
+<a id="session-api"></a>
+
+## API de sesión
+
+| Miembro | que hace |
+| --- | --- |
+| `getMetrics()` | Últimas métricas (`bpm`, `rmssdMs`, `sdnnMs`, `meanNnMs`, `confidence`, `signalQuality`, `source`, `channel`,…) |
+| `getDiagnostics()` | Métricas más estado de transporte y diagnóstico de señales. |
+| `getTraceSnapshot(maxPoints?)` | Seguimiento filtrado reciente, para gráficos |
+| `start()` / `stop()` | Iniciar o detener la transmisión |
+| `disconnect()` | Desconectar el dispositivo |
+| `dispose()` | Detente y suelta todo |
+
+Devoluciones de llamada: `onMetrics`, `onDiagnostics`, `onStatus`.
+
+---
+
+<a id="notes"></a>
+
+## Notas
+
+<Note>
+En los dispositivos Muse clásicos (`ppgRaw`), la sincronización de fotogramas proviene del navegador, así que trate los valores HRV como una vista previa. Muse S Athena `optics` mantiene las marcas de tiempo del dispositivo y es la fuente preferida cuando está disponible.
+</Note>
+
+- Requiere Web Bluetooth: Chrome o Edge en escritorio o Android, a través de `https://` o `localhost`.
+- Para frecuencia cardíaca basada en cámara sin diadema, use [`rppg-web`](/es/sdk/rppg-web/getting-started).

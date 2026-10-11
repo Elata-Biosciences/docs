@@ -1,0 +1,77 @@
+---
+title: "¿Qué son las aplicaciones de Elata?"
+description: "Aplicaciones de navegador creadas en Elata SDK y publicadas en Elata."
+---
+
+<Warning>
+El `create-elata-demo` 0.12.1 del repositorio tiene un bloqueador de empaquetado: la falta de metadatos de la versión `app-metrics` impide el inicio. Verifique [estado de la carpeta de andamios](/es/sdk/create-elata-demo) antes de usar los siguientes comandos; por ahora, siga el [manual rPPG integración](/es/sdk/tutorials/rppg-existing-app).
+</Warning>
+
+<a id="the-idea"></a>
+
+## La idea
+
+Una aplicación Elata es una aplicación web que utiliza Elata SDK para trabajar con las señales del cuerpo: frecuencia cardíaca desde una cámara web, EEG desde una diadema de consumo o PPG desde el sensor óptico de una diadema. Lo construyes con herramientas web estándar, lo subes a [Elata](https://app.elata.bio)y los usuarios lo reproducen directamente en el navegador.
+
+Tú construyes el producto. Elata se encarga del alojamiento, el inicio de sesión, los pagos, el almacenamiento por usuario y la distribución.
+
+---
+
+<a id="what-you-get-when-you-publish"></a>
+
+## Lo que obtienes cuando publicas
+
+| Función | lo que te da |
+| --- | --- |
+| **Alojamiento** | Cargue una compilación estática (o apunte a su propia URL HTTPS). Elata lo sirve dentro de un marco seguro y protegido. |
+| **Distribución** | una lista de Elata en `app.elata.bio/app/<your-app>` con descubrimiento, reseñas, comentarios, votos y uso compartido. |
+| **Cuentas** | Los usuarios ya han iniciado sesión en Elata. Su aplicación nunca maneja contraseñas, billeteras ni tokens de sesión. |
+| **Compras dentro de la aplicación** | Venda artículos únicos a través del pago de Elata con [`app-payments`](/es/apps/platform/in-app-purchases). |
+| **Suscripciones** | Ofrezca un plan mensual con una prueba gratuita opcional. Ver [Suscripciones](/es/apps/platform/subscriptions). |
+| **Almacenamiento por usuario** | Guarda juegos, configuraciones y puntuaciones con [`app-state`](/es/apps/platform/app-state) y [`app-metrics`](/es/apps/platform/metrics-and-scores). Los datos de los usuarios que han iniciado sesión los siguen en todos los dispositivos. |
+| **Puntuación biométrica** | Con el consentimiento del usuario, contribuya con los resultados de la sesión derivados a la puntuación entre aplicaciones del usuario. Consulte [Consentimiento e información](/es/apps/platform/consent-and-insights). |
+| **Recordatorios** | Envíe notificaciones en primer plano a través de Elata con [Notificaciones](/es/apps/platform/notifications). |
+
+---
+
+<a id="how-it-works"></a>
+
+## Cómo funciona
+
+1. **Cree** una aplicación web con el [Elata SDK](/es/sdk/overview). El inicio más rápido es `npm create @elata-biosciences/elata-demo my-app`.
+2. **Registre** el nombre de su aplicación en el asistente [Crear una aplicación](https://app.elata.bio/build-app) .
+3. **Sube** tu compilación como `.zip` (o danos una URL HTTPS) y pruébalo en la ventana de reproducción de Elata.
+4. **Publicar**: agregue un ícono, una imagen de encabezado y una descripción, luego envíelo para su revisión.
+5. **Publicarse** una vez que el lanzamiento pase el análisis de seguridad automatizado y un moderador lo apruebe.
+
+La secuencia completa se trata en [Ciclo de vida de la aplicación](/es/apps/app-lifecycle).
+
+---
+
+<a id="who-this-is-for"></a>
+
+## ¿Para quién es esto?
+
+- **Constructores** que desean enviar una aplicación de bioseñal sin crear alojamiento, cuentas, pagos ni almacenamiento
+- **Fabricantes de dispositivos** que quieren que su sensor llegue a un ecosistema de aplicaciones (consulte [Integración de dispositivos](/es/integrate))
+- **Usuarios** que quieran descubrir y reproducir aplicaciones de bioseñales
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={3}>
+  <Card title="Elige tu camino" icon="compass" href="/es/apps/choose-your-path">
+¿Constructor o usuario?
+  </Card>
+
+  <Card title="Ciclo de vida de la aplicación" icon="recycle" href="/es/apps/app-lifecycle">
+De subir a vivir
+  </Card>
+
+  <Card title="Descripción general del constructor" icon="hammer" href="/es/apps/build/overview">
+Empezar a construir
+  </Card>
+</CardGroup>

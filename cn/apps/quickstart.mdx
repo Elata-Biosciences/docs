@@ -1,13 +1,17 @@
 ---
-title: "快速开始"
-description: "构建一个生物信号应用并发布到 Elata。"
+title: "快速入门"
+description: "构建生物信号应用程序并将其发布到 Elata。"
 ---
 
-本指南带你从零开始，直到提交应用。你需要 Node.js 20 或更高版本，以及一个网络摄像头。
+本指南将带您从一无所有到提交应用程序。您需要 Node.js 20 或更新版本以及网络摄像头。
+
+<Warning>
+**已知问题：** 存储库的 `create-elata-demo` 0.12.1 具有打包阻止程序，并且在没有同级工作区元数据的情况下无法启动。在使用之前验证固定版本。现在，请按照 [将 rPPG 添加到现有应用程序](/cn/sdk/tutorials/rppg-existing-app) ，在您自己的 Web 应用程序中设置 SDK。请参阅 [直播内容](/cn/overview/status)。
+</Warning>
 
 <Steps>
-  <Step title="创建应用骨架">
-    创建一个摄像头心率（rPPG）入门应用：
+  <Step title="搭建一个应用程序支架">
+创建相机心率 (rPPG) 入门应用：
 
     ```bash
     npm create @elata-biosciences/elata-demo my-app -- --template rppg
@@ -15,56 +19,58 @@ description: "构建一个生物信号应用并发布到 Elata。"
     npm install
     ```
 
-    想用 EEG、头带 PPG 或做一个游戏？请查看[模板列表](/cn/sdk/create-elata-demo)。
+喜欢 EEG、头带 PPG，还是游戏？参见 [模板列表](/cn/sdk/create-elata-demo)。
   </Step>
 
-  <Step title="在本地运行">
+  <Step title="本地运行">
     ```bash
     npm run dev
     ```
 
-    打开本地地址，允许访问摄像头，你应该能看到实时脉搏信号。
+打开本地 URL，允许摄像头访问，您应该会看到实时脉冲信号。
   </Step>
 
-  <Step title="打造你自己的应用">
-    在 `src/` 中修改应用。[rPPG 指南](/cn/sdk/guides/rppg-browser)介绍了会话 API，[平台 API](/cn/apps/platform/host-bridge) 可以为应用添加购买、进度保存和分数功能。
+  <Step title="让它成为你的">
+在 `src/`中编辑应用程序。 [rPPG 指南](/cn/sdk/guides/rppg-browser) 解释了会话 API， [平台 API](/cn/apps/platform/host-bridge) 添加购买、保存的进度和分数。
   </Step>
 
-  <Step title="添加版本号">
-    创建 `public/elata.json`：
+  <Step title="添加版本">
+创建 `public/elata.json`：
 
     ```json
     { "version": "1.0.0" }
     ```
 
-    参见 [elata.json](/cn/apps/build/elata-json)。
+请参阅 [elata.json](/cn/apps/build/elata-json)。
   </Step>
 
-  <Step title="生成上传包">
+  <Step title="构建上传">
     ```bash
     npm run build:zip
     ```
 
-    这会生成根目录包含 `index.html` 的 `app.zip`。
+这会在根处写入 `app.zip` 和 `index.html` 。
   </Step>
 
   <Step title="发布">
-    访问 [app.elata.bio/build-app](https://app.elata.bio/build-app)，注册应用名称，上传 `app.zip`，在试玩窗口中试用，添加图标和头图，然后提交审核。完整流程见[发布你的应用](/cn/apps/build/launch-your-app)。
+前往 [app.elata.bio/build-app](https://app.elata.bio/build-app)，注册您的应用名称，上传 `app.zip`，在播放窗口中尝试，添加图标和标题图片，然后提交审核。完整的演练位于 [发布您的应用程序](/cn/apps/build/launch-your-app)。
   </Step>
 </Steps>
 
 ---
 
+<a id="next"></a>
+
 ## 下一步
 
 <CardGroup cols={3}>
-  <Card title="你的第一个应用" icon="graduation-cap" href="/cn/sdk/tutorials/first-app">
-    更深入的 SDK 教程
+  <Card title="你的第一个应用程序" icon="graduation-cap" href="/cn/sdk/tutorials/first-app">
+更深入的SDK教程
   </Card>
   <Card title="要求" icon="clipboard-check" href="/cn/apps/build/requirements">
     每次上传需要满足的条件
   </Card>
   <Card title="宿主桥接" icon="plug" href="/cn/apps/platform/host-bridge">
-    从应用与 Elata 通信
+从您的应用程序与 Elata 交谈
   </Card>
 </CardGroup>

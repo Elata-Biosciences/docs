@@ -1,0 +1,179 @@
+---
+title: "Transmita EEG a través de Web Bluetooth"
+description: "Cree un flujo de navegador EEG que descubra un dispositivo compatible, se conecte y comience a recibir fotogramas."
+---
+
+Utilice esta página si ya tiene una aplicación de navegador y necesita la ruta de transporte BLE recomendada para la aplicación existente.
+
+Si desea la ruta del andamio, utilice [Inicio rápido](/es/sdk/tutorials/first-app). Si primero solo necesita el modelo de transporte, use [Web Bluetooth con dispositivos compatibles](/es/sdk/guides/web-bluetooth).
+
+Este tutorial se basa en el paquete EEG del navegador y agrega transporte web Bluetooth en vivo con `@elata-biosciences/eeg-web-ble`.
+
+Úselo cuando su aplicación necesite datos reales de auriculares en Chrome o Edge.
+
+Este paso **activa Web Bluetooth** para unos auriculares compatibles con Muse en la parte superior de la pila EEG . Viene **después de** con el que estás comprometido EEG (y generalmente **después de** [rPPG](/es/sdk/guides/rppg-browser) si su producto también utiliza bioseñales de cámara).
+
+<a id="before-you-start"></a>
+
+## Antes de comenzar
+
+Necesitas:
+
+- Cromo o borde
+- `https://` o `localhost`
+- Bluetooth habilitado en la máquina
+- un dispositivo compatible con Muse
+- `@elata-biosciences/eeg-web` instalado junto a `@elata-biosciences/eeg-web-ble`
+
+Safari e iOS no son compatibles con este flujo de trabajo BLE del navegador.
+
+<a id="what-you-will-build"></a>
+
+## Lo que construirás
+
+Usted:
+
+1. instalar el paquete de transporte BLE
+2. crear un `BleTransport`
+3. suscribirse a eventos de marco y estado
+4. conéctate y comienza a transmitir
+
+<a id="step-1-install-the-packages"></a>
+
+## Paso 1: instale los paquetes
+
+<CodeGroup>
+
+```bash pnpm
+pnpm add @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+```
+
+```bash npm
+npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
+```
+
+</CodeGroup>
+
+<a id="step-2-transport-module--connect-single-paste"></a>
+
+## Paso 2: Módulo de transporte + conexión (pega única)
+
+Utilice un módulo para que las importaciones, los controladores y el ciclo de vida permanezcan juntos (por ejemplo, `src/headbandBle.ts`). Llame al `connectHeadband()` desde un botón **y haga clic en** (el navegador BLE requiere un gesto del usuario).
+
+```ts headbandBle.ts
+import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+import { BleTransport } from "@elata-biosciences/eeg-web-ble";
+
+let transport: BleTransport | null = null;
+
+export function createHeadbandTransport() {
+  const next = new BleTransport({
+    deviceOptions: {
+      athenaDecoderFactory: () => new AthenaWasmDecoder(),
+    },
+  });
+
+  next.onStatus = (status) => {
+    console.log("status", status.state, status.reason);
+  };
+
+  next.onFrame = (frame) => {
+    console.log("eeg samples", frame.eeg.samples.length);
+  };
+
+  return next;
+}
+
+export async function connectHeadband() {
+  transport = createHeadbandTransport();
+  try {
+    await transport.startStreaming();
+  } catch (error) {
+    console.error("BLE start failed", error);
+  }
+}
+```
+
+¿Por qué incluir `athenaDecoderFactory` al principio?
+
+- mantiene funcionando los dispositivos compatibles con Athena
+- utiliza la ruta del decodificador compatible desde `@elata-biosciences/eeg-web`
+- evita un modo de falla común más adelante cuando se prueban distintas variantes de dispositivos
+
+`startStreaming()` es el valor predeterminado recomendado porque maneja la secuencia común `connect()` más `start()` en una sola llamada y evita un error frecuente en el que las aplicaciones se conectan correctamente pero nunca comienzan a transmitir.
+
+<a id="step-3-turn-frames-into-app-state"></a>
+
+## Paso 3: convierte los marcos en estado de aplicación
+
+Una vez que `onFrame` comience a activarse, mueva los datos al estado de su propia aplicación en lugar de dejarlos solo en `console.log`.
+
+El patrón habitual es:
+
+1. recibir `HeadbandFrameV1` marcos
+2. extraer EEG muestras o metadatos
+3. calcular o reenviar los valores que le interesan a su aplicación
+4. renderizar gráficos, puntuaciones o lógica de adaptación
+
+<a id="step-4-clean-up-on-route-or-component-exit"></a>
+
+## Paso 4: Limpieza en la ruta o salida del componente
+
+Cuando la vista actual desaparezca, detenga la transmisión para que los intentos de reconexión posteriores comiencen desde un estado limpio. Agregue esto junto a los ayudantes anteriores (mismo módulo que `transport`). Agregar a **diademaBle.ts**:
+
+```ts
+export async function stopHeadband() {
+  if (!transport) return;
+  await transport.stop();
+  transport = null;
+}
+```
+
+Si prefiere un control más detallado del ciclo de vida, aún puede llamar al `connect()` y al `start()` por separado. El tutorial utiliza `startStreaming()` porque es el valor predeterminado más seguro para la mayoría de las integraciones de aplicaciones.
+
+<a id="step-5-handle-browser-and-platform-constraints"></a>
+
+## Paso 5: Manejar las restricciones del navegador y de la plataforma
+
+Si el selector nunca aparece o falta `navigator.bluetooth` , verifique esto primero:
+
+- la página se está ejecutando en `https://` o `localhost`
+- estás usando Chrome o Edge
+- Bluetooth está habilitado
+- el dispositivo de destino está encendido y disponible
+
+<a id="athena-and-classic-devices"></a>
+
+## Atenas y dispositivos clásicos
+
+El SDK admite:
+
+- Dispositivos BLE clásicos Muse 2 y Muse S
+- Dispositivos Muse S Athena protocolo v2
+
+Incluir `athenaDecoderFactory` es la forma más sencilla de mantener ambos flujos cubiertos.
+
+<a id="common-problems"></a>
+
+## Problemas comunes
+
+- `navigator.bluetooth` no está definido: navegador no compatible o contexto inseguro
+- No aparece ningún selector de dispositivo: Bluetooth deshabilitado o la página no se ejecuta en un origen seguro
+- La decodificación de Athena falla: asegúrese de haber aprobado `athenaDecoderFactory`
+- Necesita compatibilidad con Safari o iOS: este paquete de navegador no es el camino correcto; utilizar una estrategia nativa o puente
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={3}>
+  <Card title="eeg-web-ble Referencia" icon="bluetooth" href="/es/sdk/eeg-web-ble/getting-started">
+API de transporte y opciones
+  </Card>
+  <Card title="Referencia eeg-web" icon="brain" href="/es/sdk/eeg-web/getting-started">
+EEG tiempo de ejecución y modelos
+  </Card>
+  <Card title="Guía web de Bluetooth" icon="book-open" href="/es/sdk/guides/web-bluetooth">
+Descripción general del modelo de transporte
+  </Card>
+</CardGroup>

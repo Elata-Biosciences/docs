@@ -1,0 +1,52 @@
+---
+title: "Sesiones e ideas locales"
+description: "El flujo de grabación experimental en el dispositivo, sus controles de almacenamiento y en qué se diferencia de los registros de aplicaciones en la nube."
+tag: "Experimental"
+---
+
+<Warning>
+Experimento exclusivo para desarrolladores en la rama `feat/long-local-analytics` de la tienda de aplicaciones. La rama deshabilita explícitamente esta función en producción, incluidas las vistas previas en modo de producción. No es una característica del consumidor en vivo.
+</Warning>
+
+<a id="what-it-adds"></a>
+
+## lo que agrega
+
+Las aplicaciones compatibles pueden registrar secuencias de bioseñales escritas a través de `biosignal-session`. El host confiable de Elata almacena cargas útiles en OPFS y un catálogo en IndexedDB, en el dispositivo del usuario. La ruta de grabación no tiene espejo de servidor.
+
+Esto es independiente de [app-metrics](/es/apps/platform/metrics-and-scores), cuyos registros de eventos y puntuaciones se pueden sincronizar con la cuenta del usuario que ha iniciado sesión, y de la puntuación biométrica de la plataforma [controlada por consentimiento](/es/users/score-and-insights).
+
+<a id="development-flow"></a>
+
+## Flujo de desarrollo
+
+1. Ejecute la sucursal en un entorno de desarrollo que no sea de producción con `NEXT_PUBLIC_LOCAL_BIOSIGNALS=true`.
+2. Inicie sesión y abra una aplicación que implemente el protocolo de grabación de bioseñales. Las aplicaciones normales no crean grabaciones automáticamente.
+3. Completa una grabación. Una aplicación compatible debe manejar el inicio de la grabadora, los fallos de calidad y conexión, y la finalización.
+4. Abra **Insights** para ver resúmenes en el dispositivo y grabaciones recientes.
+5. Abra [Sesiones](https://app.elata.bio/insights/sessions) para explorar el catálogo local, luego elija una sesión para inspeccionar sus detalles.
+6. Abra [Datos locales](https://app.elata.bio/settings/local-data) para inspeccionar el almacenamiento, solicitar almacenamiento persistente o eliminar una o todas las sesiones locales.
+
+Los enlaces anteriores describen rutas de desarrollo; habilitar una variable de entorno no puede anular el bloqueo de producción.
+
+<a id="read-the-results"></a>
+
+## Lee los resultados
+
+Las puntuaciones en el dispositivo son interpretaciones relativas a puntos de referencia personales. Están separados de la plataforma Score biométrica. La calidad, la falta de insumos y una base de referencia insuficiente pueden hacer que se retenga un valor; La ausencia de un valor no debe presentarse como mala salud o mal desempeño.
+
+El panel de control actual en el dispositivo incluye calidad y activación de mediciones, tendencias de métricas y sesiones recientes. Es posible que algunos contribuyentes no estén disponibles. El conjunto completo de fórmulas de puntuación del SDK no es una promesa de que todas las puntuaciones aparezcan en la interfaz de usuario de la tienda de aplicaciones.
+
+<a id="storage-and-deletion"></a>
+
+## Almacenamiento y eliminación
+
+Las grabaciones pertenecen a este navegador y dispositivo. Iniciar sesión en otro dispositivo no los descarga. Borrar los datos del sitio o desalojar el navegador puede eliminarlos. Una solicitud de almacenamiento persistente puede mejorar la retención, pero no debe describirse como una copia de seguridad en la nube.
+
+La eliminación de datos locales elimina las cargas útiles locales, las entradas de catálogo y sus contribuciones acumulativas. Es independiente de eliminar registros de aplicaciones en la nube o revocar el consentimiento de Score de la plataforma. El panel de datos locales actual proporciona controles de almacenamiento y eliminación; Esta guía no promete un flujo de trabajo completo de exportación de grabaciones.
+
+<a id="builder-integration"></a>
+
+## Integración del constructor
+
+Utilice [biosignal-session](/es/sdk/biosignal-session/getting-started) para capturar y registrar contratos y [biosignal-analytics](/es/sdk/biosignal-analytics/getting-started) para análisis. Mantenga [estado de la aplicación](/es/apps/platform/app-state) para pequeños guardados y configuraciones, y `app-metrics` para el historial de eventos/puntuaciones. Estos satisfacen diferentes necesidades de datos.

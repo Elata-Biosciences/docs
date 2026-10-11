@@ -3,6 +3,8 @@ title: "故障排查"
 description: "Elata SDK 集成中常见的设置故障及最快的检查方法。"
 ---
 
+<a id="pnpm-install-did-not-create-node_modules-in-my-scaffolded-app"></a>
+
 ## 脚手架应用中的 `pnpm install` 没有创建 `node_modules`
 
 你很可能是在另一个 `pnpm` 工作区中创建了该应用。
@@ -26,6 +28,8 @@ npm run dev
 
 ---
 
+<a id="web-bluetooth-is-unavailable"></a>
+
 ## Web Bluetooth 不可用
 
 请检查以下几点：
@@ -37,6 +41,8 @@ npm run dev
 
 ---
 
+<a id="loadwasmbackend-returned-null"></a>
+
 ## `loadWasmBackend()` 返回 `null`
 
 确保你的应用从浏览器可以访问的路径提供打包的 `pkg/rppg_wasm.js` 和 `pkg/rppg_wasm_bg.wasm` 资源。
@@ -44,6 +50,8 @@ npm run dev
 如果不确定，请将你的应用与脚手架生成的 `rppg-demo` 应用进行对比。
 
 ---
+
+<a id="initeegwasm-failed"></a>
 
 ## `initEegWasm()` 失败
 
@@ -57,6 +65,8 @@ npm run dev
 
 ---
 
+<a id="elata-upload-says-elata-sensor-sdk-not-detected"></a>
+
 ## Elata 上传提示“Elata sensor SDK not detected”
 
 Elata 会检查每次上传是否真正使用了 SDK。请确认你的构建产物：
@@ -68,11 +78,15 @@ Elata 会检查每次上传是否真正使用了 SDK。请确认你的构建产�
 
 ---
 
+<a id="app-payments-app-state-or-app-metrics-calls-time-out"></a>
+
 ## `app-payments`、`app-state` 或 `app-metrics` 调用超时
 
 这些包与 Elata 的父框架通信。当你在 `localhost` 上运行应用时，没有父框架来响应，因此调用会超时或以 `no_parent` 拒绝。请妥善处理这种情况，并在 Elata 的试玩窗口中测试完整流程。对于购买功能，[`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo) 包含一个可在本地运行的模拟宿主。
 
 ---
+
+<a id="i-am-not-sure-which-package-i-need"></a>
 
 ## 我不确定需要哪个包
 
@@ -81,6 +95,8 @@ Elata 会检查每次上传是否真正使用了 SDK。请确认你的构建产�
 如果你只想要最快的路径，请使用 `create-elata-demo`。
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

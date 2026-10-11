@@ -13,6 +13,8 @@ description: "构建一个浏览器 EEG 流程：发现受支持的设备、连�
 
 这一步在 EEG 技术栈之上为 Muse 兼容头带**开启 Web Bluetooth**。它应在你确定使用 EEG **之后**进行（如果你的产品也使用摄像头生物信号，通常还在 [rPPG](/cn/sdk/guides/rppg-browser) **之后**）。
 
+<a id="before-you-start"></a>
+
 ## 开始之前
 
 你需要：
@@ -25,6 +27,8 @@ description: "构建一个浏览器 EEG 流程：发现受支持的设备、连�
 
 此浏览器 BLE 流程不支持 Safari 和 iOS。
 
+<a id="what-you-will-build"></a>
+
 ## 你将构建什么
 
 你将：
@@ -33,6 +37,8 @@ description: "构建一个浏览器 EEG 流程：发现受支持的设备、连�
 2. 创建 `BleTransport`
 3. 订阅帧和状态事件
 4. 连接并开始数据流
+
+<a id="step-1-install-the-packages"></a>
 
 ## 第 1 步：安装包
 
@@ -47,6 +53,8 @@ npm install @elata-biosciences/eeg-web @elata-biosciences/eeg-web-ble
 ```
 
 </CodeGroup>
+
+<a id="step-2-transport-module--connect-single-paste"></a>
 
 ## 第 2 步：传输模块 + 连接（一次粘贴）
 
@@ -94,6 +102,8 @@ export async function connectHeadband() {
 
 `startStreaming()` 是推荐的默认方式，因为它在一次调用中完成常见的 `connect()` 加 `start()` 流程，避免了应用连接成功却从未真正开始数据流的常见错误。
 
+<a id="step-3-turn-frames-into-app-state"></a>
+
 ## 第 3 步：将数据帧转化为应用状态
 
 `onFrame` 开始触发后，把数据移入你自己的应用状态，而不是只停留在 `console.log` 中。
@@ -104,6 +114,8 @@ export async function connectHeadband() {
 2. 提取 EEG 样本或元数据
 3. 计算或转发应用关心的数值
 4. 渲染图表、分数或自适应逻辑
+
+<a id="step-4-clean-up-on-route-or-component-exit"></a>
 
 ## 第 4 步：在离开路由或组件时清理
 
@@ -119,6 +131,8 @@ export async function stopHeadband() {
 
 如果你希望更精细地控制生命周期，仍然可以分别调用 `connect()` 和 `start()`。本教程使用 `startStreaming()`，因为对大多数应用集成来说它是最安全的默认选择。
 
+<a id="step-5-handle-browser-and-platform-constraints"></a>
+
 ## 第 5 步：处理浏览器和平台限制
 
 如果选择器始终不出现或 `navigator.bluetooth` 不存在，请先检查：
@@ -127,6 +141,8 @@ export async function stopHeadband() {
 - 你使用的是 Chrome 或 Edge
 - 蓝牙已开启
 - 目标设备已开机且可用
+
+<a id="athena-and-classic-devices"></a>
 
 ## Athena 和经典版设备
 
@@ -137,12 +153,16 @@ SDK 支持：
 
 加入 `athenaDecoderFactory` 是同时覆盖两种流程的最简单的受支持方式。
 
+<a id="common-problems"></a>
+
 ## 常见问题
 
 - `navigator.bluetooth` 未定义：浏览器不受支持或不是安全上下文
 - 没有出现设备选择器：蓝牙已关闭，或页面没有运行在安全源上
 - Athena 解码失败：确认你传入了 `athenaDecoderFactory`
 - 你需要支持 Safari 或 iOS：这个浏览器包不是合适的路径，请使用原生或桥接方案
+
+<a id="next"></a>
 
 ## 下一步
 

@@ -1,0 +1,110 @@
+---
+title: "Solución de problemas"
+description: "Fallos de configuración comunes y las comprobaciones más rápidas para las integraciones del SDK de Elata."
+---
+
+<a id="pnpm-install-did-not-create-node_modules-in-my-scaffolded-app"></a>
+
+## `pnpm install` No creó `node_modules` en mi aplicación scaffolded
+
+Probablemente creaste la aplicación dentro de otro espacio de trabajo `pnpm` .
+
+Ejecutar desde el directorio principal:
+
+<CodeGroup>
+
+```bash pnpm
+pnpm --dir my-app --ignore-workspace install
+pnpm --dir my-app --ignore-workspace run dev
+```
+
+```bash npm
+cd my-app
+npm install
+npm run dev
+```
+
+</CodeGroup>
+
+---
+
+<a id="web-bluetooth-is-unavailable"></a>
+
+## Web Bluetooth no está disponible
+
+Verifique lo siguiente:
+
+- Usar Chrome o Edge
+- Ejecute en `https://` o `localhost`
+- Asegúrese de que Bluetooth esté habilitado en la máquina
+- No espere que este flujo de trabajo funcione en Safari o iOS
+
+---
+
+<a id="loadwasmbackend-returned-null"></a>
+
+## `loadWasmBackend()` Devuelto `null`
+
+Asegúrese de que su aplicación proporcione los activos `pkg/rppg_wasm.js` y `pkg/rppg_wasm_bg.wasm` empaquetados desde una ruta que el navegador pueda alcanzar.
+
+Si no está seguro, compare su aplicación con la aplicación andamiada `rppg-demo` .
+
+---
+
+<a id="initeegwasm-failed"></a>
+
+## `initEegWasm()` Falló
+
+Es probable que su aplicación no proporcione correctamente los `wasm/` activos empaquetados de `@elata-biosciences/eeg-web` .
+
+Compare el diseño de sus activos con la aplicación `eeg-demo` con andamios.
+
+<Tip>
+Si está utilizando Vite, las dos soluciones comunes son: agregar `vite-plugin-wasm` y `vite-plugin-top-level-await`, o importar la URL del recurso WASM directamente y pasarla a `initEegWasm(wasmUrl)`.
+</Tip>
+
+---
+
+<a id="elata-upload-says-elata-sensor-sdk-not-detected"></a>
+
+## La carga de Elata dice "SDK del sensor Elata no detectado"
+
+Elata comprueba cada carga para comprobar el uso real del SDK. Asegúrate de que tu compilación:
+
+- en realidad llama al SDK, por ejemplo `createRppgSession(...)` o `initEegWasm(...)`, no solo lo importa
+- incluye los archivos empaquetados `.wasm` en el resultado de la compilación
+
+Las plantillas `create-elata-demo` pasan esta verificación, así que compara tu compilación con una de ellas.
+
+---
+
+<a id="app-payments-app-state-or-app-metrics-calls-time-out"></a>
+
+## `app-payments`, `app-state`, o `app-metrics` Tiempo de espera de llamadas
+
+Estos paquetes se comunican con el marco principal de Elata. Cuando ejecuta su aplicación en `localhost` no hay ningún padre para responder, por lo que las llamadas se suspenden o se rechazan con `no_parent`. Maneje ese caso con elegancia y pruebe el flujo completo en la ventana de reproducción de Elata. Para compras, [`examples/iap-demo`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/examples/iap-demo) incluye un host simulado que puedes ejecutar localmente.
+
+---
+
+<a id="i-am-not-sure-which-package-i-need"></a>
+
+## No estoy seguro de qué paquete necesito
+
+Comience con [Elija el paquete correcto](/es/sdk/guides/choose-the-right-package).
+
+Si aún desea la ruta más rápida, use `create-elata-demo`.
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="Elija un paquete" icon="compass" href="/es/sdk/guides/choose-the-right-package">
+Guía de decisión de paquetes
+  </Card>
+  <Card title="Compatibilidad" icon="circle-check" href="/es/sdk/operations/compatibility">
+Soporte para navegadores, dispositivos y herramientas
+  </Card>
+</CardGroup>

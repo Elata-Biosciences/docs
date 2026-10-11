@@ -1,0 +1,66 @@
+---
+title: "PPG y variabilidad de la frecuencia cardíaca"
+description: "Frecuencia cardíaca óptica desde una diadema, variabilidad de la frecuencia cardíaca y las condiciones que hacen que HRV sea significativo."
+---
+
+<a id="contact-ppg"></a>
+
+## Contacto PPG
+
+**Fotopletismografía (PPG)** ilumina la piel y mide cuánto regresa. A medida que el volumen de sangre pulsa con cada latido del corazón, la luz reflejada cambia. Es el mismo principio que rPPG, pero con un sensor que toca la piel, lo que da una señal mucho más fuerte. Los relojes inteligentes lo utilizan, al igual que algunas cintas para la cabeza, como Muse S.
+
+El paquete `ppg-web` del Elata SDK lee el sensor óptico de una diadema a través de Web Bluetooth y estima la frecuencia cardíaca y la variabilidad de la frecuencia cardíaca en el dispositivo.
+
+---
+
+<a id="heart-rate-variability-hrv"></a>
+
+## Variabilidad de la frecuencia cardíaca (HRV)
+
+Tu corazón no late como un metrónomo. El tiempo entre latidos varía ligeramente de un latido a otro, y esa variación es **variabilidad de la frecuencia cardíaca**. Un HRV más alto en reposo suele estar relacionado con la recuperación y la relajación, y un HRV más bajo con el estrés o la fatiga, aunque también varía con la edad, el estado físico, la respiración y la hora del día.
+
+El SDK informa dos medidas comunes en el dominio del tiempo:
+
+| Medida | que es |
+| --- | --- |
+| **RMSSD** | Raíz cuadrática media de diferencias sucesivas entre tiempos. Refleja la variación a corto plazo, latido a latido. |
+| **SDNN** | Desviación estándar de los intervalos latido a latido a lo largo de la grabación. Refleja la variación general. |
+
+Estrictamente, la variabilidad medida desde PPG es **variabilidad de la frecuencia del pulso**. Sigue de cerca el HRV basado en ECG en reposo, pero los dos no siempre son intercambiables.
+
+---
+
+<a id="what-makes-hrv-meaningful"></a>
+
+## ¿Qué hace que HRV sea significativo?
+
+| Condición | ¿Por qué? |
+| --- | --- |
+| **En reposo** | La concordancia entre el HRV portátil y el basado en ECG es de muy buena a excelente en reposo y disminuye a medida que aumenta la actividad |
+| **Lo suficientemente largo** | Un minuto o más de datos limpios; unos segundos no son suficientes |
+| **Detección de latido limpio** | Un latido perdido o extra distorsiona gravemente el RMSSD, por lo que se deben excluir los segmentos ruidosos |
+| **Comparado contigo mismo** | HRV difiere ampliamente entre las personas; Las tendencias comparadas con su propia línea de base son más informativas que los números absolutos. |
+
+El SDK retiene valores HRV (no devuelve ningún valor) cuando no puede detectar latidos de manera confiable, en lugar de informar un número engañoso.
+
+---
+
+<a id="what-it-cant-claim"></a>
+
+## Lo que no puede reclamar
+
+La frecuencia cardíaca basada enPPGse usa ampliamente y generalmente es precisa en reposo. No diagnostica arritmias u otras afecciones cardíacas: las revisiones publicadas señalan que la confirmación del ECG sigue siendo necesaria para el diagnóstico.
+
+---
+
+<a id="sources"></a>
+
+## Fuentes
+
+Literatura revisada por pares, recuperada a través de PubMed:
+
+- Georgiou K, et al. ¿Pueden los dispositivos portátiles medir con precisión la variabilidad de la frecuencia cardíaca? Una revisión sistemática. *Folia Medica*, 2018. [doi:10.2478/folmed-2018-0012](https://doi.org/10.2478/folmed-2018-0012)
+- Hejjel L, Béres S. Comentario sobre "Variabilidad de la frecuencia del pulso en la salud cardiovascular: una revisión sobre sus aplicaciones y relación con la variabilidad de la frecuencia cardíaca". *Medición fisiológica*, 2021. [doi:10.1088/1361-6579/abd332](https://doi.org/10.1088/1361-6579/abd332)
+- De Wever M, et al. Fotopletismografía para la monitorización de la frecuencia y el ritmo cardíacos: evidencia actual y aplicaciones clínicas. *JACC: Electrofisiología Clínica*, 2026. [doi:10.1016/j.jacep.2026.06.034](https://doi.org/10.1016/j.jacep.2026.06.034)
+
+Implementación del SDK: [`ppg-web`](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/ppg-web) (repositorio público de SDK).

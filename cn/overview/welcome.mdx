@@ -1,109 +1,104 @@
 ---
-title: "什么是 Elata？"
-description: "生物信号 SDK、Elata，以及隐私优先的数据模型，用于构建基于人体信号的应用。"
+title: "欢迎来到 Elata"
+description: "了解 Elata 是什么、适合谁，以及如何阅读这些文档。"
 ---
+
+<a id="what-elata-is"></a>
+
+## Elata 是什么
+
+Elata 是一个用于构建和使用面向消费者的生物传感、神经科学和认知应用的平台，尊重用户隐私。
+
+- **Elata**（[app.elata.bio](https://app.elata.bio)）是用户在浏览器中发现和使用应用、开发者发布应用的地方。
+- **[Elata SDK](/cn/overview/elata-sdk)** 是一组开源软件包，可将网络摄像头或消费级头带变成生物信号传感器，在用户自己的设备上处理信号。
+- **隐私从设备端开始。** 原始信号在本地处理。Elata 可以存储应用存档、事件记录、分数和付款记录；派生结果只有经过同意才能贡献到跨应用生物特征评分。你可以撤销同意并请求删除数据。[你的数据](/cn/users/your-data)说明了不同的存储和删除方式。
+
+开始使用时，_不需要专用硬件_：摄像头应用可以使用你已有的网络摄像头或手机摄像头。
+
+Elata 应用可以将普通网络摄像头或手机摄像头变成生物传感器，根据面部和行为的细微变化测量或估计心率、心率变异性、呼吸频率、眨眼频率、情感状态等信号。
+
+可用输出及其可靠性取决于应用、传感器、软件包版本、信号质量和算法。心率、HRV、呼吸估计和基于面部的情感估计是不同的信号；生理激活评分并不直接测量情绪。参见[生物信号说明](/cn/overview/biosignals)和[SDK 输出指南](/cn/sdk/rppg-web/getting-started#output-and-quality-guidance)。
+
+我们也支持通过网络读取脑活动的应用。这些应用需要 [Muse](https://choosemuse.com/) 等消费级 EEG 设备。
 
 <Note>
-  本页英文版本已更新，中文翻译将随后同步。最新内容请参阅[英文版本](/overview/welcome)。
+Elata 应用用于健康生活、游戏、学习和研究。它们不是医疗器械，也不诊断或治疗任何疾病。参见[安全与局限](/cn/users/safety-and-limitations)。
 </Note>
 
-## 概述
+---
 
-Elata 是一个用于构建和分发人体信号应用的平台：通过网络摄像头获取心率、通过消费级 EEG 头带获取脑电活动，等等。
+<a id="building-technology-thats-open-transparent-and-private"></a>
 
-它由三部分组成：
+## 构建开放、透明且尊重隐私的技术
 
-1. **Elata SDK**：在浏览器中跨设备采集和处理生物信号的 npm 包。
-2. **设备端处理**：原始信号始终保留在用户的设备上。
-3. **Elata**：开发者在这里发布应用，用户在这里发现和使用应用，并内置登录、支付和存储功能。
+Elata 以开源软件、透明实验为基础，希望生物传感技术对使用者而言易于理解、可以检查、可以扩展，并尊重隐私。
 
-<Columns cols={2}>
-  <Column>
-    <Card icon="hammer" href="/cn/apps/build/overview" title="面向开发者">
-      安装 SDK，构建 Web 应用，并发布到 Elata。
-    </Card>
-  </Column>
-  <Column>
-    <Card icon="user" href="/cn/users/explore-apps" title="面向用户">
-      发现应用，在浏览器中直接使用，并追踪你的进展。
-    </Card>
-  </Column>
-</Columns>
+Elata 背后的许多技术在 GitHub 上公开开发，包括支持当前应用的 SDK，以及帮助塑造 Elata 的早期实验。
+
+两个值得了解的例子：
+
+- [**Elata EEG**](https://github.com/Elata-Biosciences/elata-eeg) 是我们构建低成本、可维修开源 EEG 硬件的项目，用于神经科学研究和有趣的 DIY 脑机接口（BCI）项目，例如我们于 2025 年在新加坡举办的[脑控游戏比赛](https://x.com/DeSciWorld/status/1978762697022865576?s=20)。
+- [**ZORP**](https://github.com/Elata-Biosciences/zorp) 是我们探索无需许可的研究基础设施的实验，用于收集数据、协调科学研究并奖励参与者。
+
+并非每个实验都会成为当前产品的一部分，但我们保留这些公开成果，因为有价值的想法、代码和研究不应随着项目转向而消失。
+
+你可以在 [GitHub](https://github.com/Elata-Biosciences) 上探索我们当前和过去的工作。
 
 ---
 
-## 为什么需要 Elata
+<a id="who-these-docs-are-for"></a>
 
-消费级设备已经悄然成为生物信号传感器。手机或笔记本电脑的摄像头可以估算心率和呼吸；消费级 EEG 头带能够采集十年前还需要临床设备才能获取的脑电活动。
+## 这些文档适合谁
 
-传感器已经在人们的口袋里。缺少的是建立在它们之上的标准应用层。如今，处理生物信号的公司通常会把用户数据发送到自己的服务器，而每个开发者都在从零重建相同的信号处理流程。
-
-Elata 通过以下方式解决这个问题：
-
-1. **公开发布的 SDK**，在不同设备间统一生物信号采集。
-2. **设备端处理**，原始数据无需离开用户的设备。
-3. **内置基础设施的 Elata**，开发者无需自建认证、支付、托管或存储，就能发布生物信号应用。
+<CardGroup cols={3}>
+  <Card title="用户" icon="user" href="/cn/users/get-started">
+发现应用、使用应用并控制自己的数据
+  </Card>
+  <Card title="开发者" icon="hammer" href="/cn/apps/quickstart">
+构建生物信号应用并发布到 Elata
+  </Card>
+  <Card title="研究人员" icon="flask-conical" href="/cn/overview/science/overview">
+了解测量原理和局限
+  </Card>
+  <Card title="合作伙伴" icon="handshake" href="/cn/overview/partners">
+与 Elata 社区或团队合作
+  </Card>
+  <Card title="设备制造商" icon="cpu" href="/cn/integrate">
+将硬件接入 Elata SDK
+  </Card>
+  <Card title="社区" icon="users" href="/cn/overview/community">
+Discord、X、Farcaster 和 GitHub
+  </Card>
+</CardGroup>
 
 ---
 
-## Elata 提供什么
+<a id="how-to-read-these-docs"></a>
 
-### Elata SDK
+## 如何阅读文档
 
-| 包 | 功能 |
+文档中的功能标有状态，方便你判断目前可以使用什么：
+
+| 标签 | 含义 |
 | --- | --- |
-| `@elata-biosciences/rppg-web` | 通过普通网络摄像头获取心率和脉搏信号（rPPG），无需可穿戴设备。 |
-| `@elata-biosciences/eeg-web` | 在浏览器中进行 EEG 信号处理和模型计算（WebAssembly）。 |
-| `@elata-biosciences/eeg-web-ble` | 通过 Web Bluetooth 连接消费级 EEG 头带，内置 Muse 支持。 |
-| `@elata-biosciences/ppg-web` | 通过头带的光学（PPG）传感器获取心率和 HRV。 |
-| `@elata-biosciences/biosignal-session` | 在本地录制多传感器会话。 |
-| `@elata-biosciences/biosignal-analytics` | 从录制的信号中计算特征、HRV 和总体评分。 |
+| **已上线** | 目前对所有人开放。 |
+| **实验性** | 可以使用，但可能变化或存在限制，例如仅以源码提供的软件包。 |
+| **计划中** | 正在探索的方向，尚不可用，细节可能变化。 |
+| **已退役** | 曾经存在但已移除，仅为旧链接保留说明。 |
 
-完整列表见 [SDK 概览](/cn/sdk/overview)。
-
-### 隐私优先
-
-信号处理在浏览器中完成。原始摄像头画面和原始生物信号无需离开设备。用户可以选择分享**派生的**会话结果，用于构建跨应用评分，并且可以随时关闭。参见[隐私与数据](/cn/overview/privacy-and-consent)。
-
-### Elata
-
-开发者上传 Web 构建产物。Elata 会对其进行扫描和审核，将其托管在安全的沙箱中，并通过一组[平台 API](/cn/apps/platform/host-bridge) 为它提供登录、应用内购买、订阅和按用户存储。
+尚未全面上线的页面在侧边栏中有标签。完整清单见[状态](/cn/overview/status)页面。
 
 ---
 
-## 选择你的路径
+<a id="where-to-start"></a>
 
-<Columns cols={2}>
-  <Column>
-    <Card icon="recycle" href="/cn/overview/ecosystem-map" title="Elata 如何运作">
-      从传感器到应用再到 Elata
-    </Card>
-  </Column>
-  <Column>
-    <Card icon="rocket" href="/cn/apps/quickstart" title="快速开始">
-      构建并发布你的第一个应用
-    </Card>
-  </Column>
-</Columns>
+## 从哪里开始
 
-<Columns cols={2}>
-  <Column>
-    <Card icon="brain-circuit" href="/cn/sdk/overview" title="Elata SDK">
-      rPPG、EEG、PPG 和分析包
-    </Card>
-  </Column>
-  <Column>
-    <Card icon="archive" href="/cn/open-source/agentforge/overview" title="归档">
-      Elata 早期的开源项目
-    </Card>
-  </Column>
-</Columns>
-
----
-
-## 链接
-
-- [Elata](https://app.elata.bio)
-- [GitHub](https://github.com/elata-biosciences)
-- [Discord](https://discord.gg/GqS9CstffK)
-- [X / Twitter](https://x.com/elata_bio)
+<CardGroup cols={2}>
+  <Card title="各部分如何连接" icon="network" href="/cn/overview/ecosystem-map">
+生态系统关系：设备、SDK、应用和 Elata
+  </Card>
+  <Card title="找到你的路径" icon="compass" href="/cn/overview/find-your-path">
+适合各类读者的阅读顺序
+  </Card>
+</CardGroup>

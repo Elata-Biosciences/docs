@@ -10,14 +10,14 @@ description: "EEG 头带设备的规范化帧结构和传输接口"
 ```typescript
 interface HeadbandFrameV1 {
   schemaVersion: "v1";
-  source: string;                        // 例如 "muse-ble"
+  source: string;                        // e.g., "muse-ble"
   sequenceId: number;
   emittedAtMs: number;
-  eeg: HeadbandSignalBlock;              // 始终存在
-  ppgRaw?: HeadbandSignalBlock;          // PPG（如有）
-  optics?: HeadbandSignalBlock;          // Athena 光学传感器
-  accgyro?: HeadbandSignalBlock;         // Athena 加速度计/陀螺仪
-  battery?: HeadbandBatteryBlock;        // 电量
+  eeg: HeadbandSignalBlock;              // always present
+  ppgRaw?: HeadbandSignalBlock;          // PPG (if available)
+  optics?: HeadbandSignalBlock;          // Athena optics
+  accgyro?: HeadbandSignalBlock;         // Athena accelerometer/gyroscope
+  battery?: HeadbandBatteryBlock;        // battery level
 }
 ```
 
@@ -30,9 +30,9 @@ interface HeadbandFrameV1 {
 ```typescript
 interface HeadbandSignalBlock {
   sampleRateHz: number;
-  channelNames: string[];                // 例如 ["TP9", "AF7", "AF8", "TP10"]
+  channelNames: string[];                // e.g., ["TP9", "AF7", "AF8", "TP10"]
   channelCount: number;
-  samples: number[][];                   // 行：[ch0, ch1, ch2, ch3]
+  samples: number[][];                   // rows of [ch0, ch1, ch2, ch3]
   timestampsMs?: number[];
   clockSource?: "device" | "local";
 }
@@ -56,6 +56,8 @@ interface HeadbandSignalBlock {
 | `Error` | 不可恢复的错误 |
 
 ---
+
+<a id="headbandtransport-interface"></a>
 
 ## HeadbandTransport 接口
 
@@ -108,14 +110,16 @@ interface HeadbandTransportStatus {
 
 ---
 
+<a id="usage-pattern"></a>
+
 ## 用法
 
 ```typescript
-const transport: HeadbandTransport = /* BleTransport 或其他传输 */;
+const transport: HeadbandTransport = /* BleTransport or other */;
 
 transport.onFrame = (frame) => {
   const eegSamples = frame.eeg.samples;
-  // samples[sampleIdx][channelIdx]：每行一个时间步 [tp9, af7, af8, tp10]
+  // samples[sampleIdx][channelIdx]: each row is one time step [tp9, af7, af8, tp10]
 };
 
 transport.onStatus = (status) => {
@@ -125,12 +129,14 @@ transport.onStatus = (status) => {
 await transport.connect();
 await transport.start();
 
-// ……之后
+// ... later
 await transport.stop();
 await transport.disconnect();
 ```
 
 ---
+
+<a id="helpers"></a>
 
 ## 辅助函数
 
@@ -143,6 +149,8 @@ await transport.disconnect();
 | `getEegSignalBlock(frame, source?)` | 原始或处理后的 EEG 块 |
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

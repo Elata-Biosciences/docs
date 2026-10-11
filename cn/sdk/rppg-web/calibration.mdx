@@ -3,6 +3,8 @@ title: "校准与融合"
 description: "Muse PPG 校准和多源心率融合"
 ---
 
+<a id="overview"></a>
+
 ## 概述
 
 当 Muse 头带的 PPG 与基于摄像头的 rPPG 同时可用时，SDK 支持**传感器融合**：以接触式 PPG 为参考，校准并改进基于摄像头的心率估算。
@@ -16,18 +18,18 @@ description: "Muse PPG 校准和多源心率融合"
 ```typescript
 import { RppgProcessor, MuseFusionCalibrator, loadWasmBackend } from "@elata-biosciences/rppg-web";
 
-const backend = await loadWasmBackend(); // 无法加载打包的 WASM 时返回 null
+const backend = await loadWasmBackend(); // null if the packaged WASM can't be loaded
 if (!backend) throw new Error("rPPG WASM backend unavailable");
 const processor = new RppgProcessor(backend, 30);
 const calibrator = new MuseFusionCalibrator();
 
-// 输入 Muse PPG 读数（来自头带）
+// Feed Muse PPG readings (from headband)
 calibrator.updateMuse(museBpm, quality, timestampMs);
 
-// 输入摄像头 rPPG 读数
+// Feed camera rPPG readings
 calibrator.updateCamera(cameraBpm, cameraQuality, timestampMs);
 
-// 获取融合结果
+// Get fused result
 const fused = calibrator.fuse(cameraBpm, cameraQuality, timestampMs);
 ```
 
@@ -48,21 +50,23 @@ import { MuseCalibrationModel } from "@elata-biosciences/rppg-web";
 
 const model = new MuseCalibrationModel();
 
-// 使用成对观测值训练
+// Train with paired observations
 model.train(spectralBpm, acfBpm, trueBpm);
 
-// 检查是否已收集足够数据
+// Check if enough data collected
 if (model.isTrained()) {
   const predictedBpm = model.predict(spectralBpm, acfBpm);
 }
 
-// 持久化
+// Persistence
 const snapshot = model.getSnapshot();
 model.loadSnapshot(snapshot);
 model.reset();
 ```
 
 ---
+
+<a id="bpm-evidence-types"></a>
 
 ## BPM 证据类型
 
@@ -82,13 +86,15 @@ type BpmResolutionResult = {
   confidence: number;
   winningSources: BpmEvidenceSource[];
   aliasFlag: boolean;
-  debug: { /* 候选项、历史中位数、胜出项 */ };
+  debug: { /* candidates, history median, winner */ };
 };
 
 type FusionSource = "camera" | "muse" | "blend" | "none";
 ```
 
 ---
+
+<a id="muse-ppg-filter"></a>
 
 ## Muse PPG 滤波
 
@@ -102,16 +108,18 @@ const filtered = museStyleFilter(ppgSamples, sampleRate);
 
 ---
 
+<a id="calibration-workflow"></a>
+
 ## 校准流程
 
 ```mermaid
 flowchart TD
-    MUS["Muse 头带 PPG"] -->|"updateMuse(bpm)"| CAL["MuseFusionCalibrator"]
-    CAM["摄像头 rPPG"] -->|"updateCamera(bpm)"| CAL
-    CAL -->|"fuse()"| FUSED["融合后的 BPM 估算"]
+    MUS["Muse Headband PPG"] -->|"updateMuse(bpm)"| CAL["MuseFusionCalibrator"]
+    CAM["Camera rPPG"] -->|"updateCamera(bpm)"| CAL
+    CAL -->|"fuse()"| FUSED["Fused BPM Estimate"]
     CAM -->|"spectral + ACF"| MOD["MuseCalibrationModel"]
-    MUS -->|"真实 BPM"| MOD
-    MOD -->|"predict()"| CALIBRATED["校准后的摄像头 BPM"]
+    MUS -->|"true BPM"| MOD
+    MOD -->|"predict()"| CALIBRATED["Calibrated Camera BPM"]
 ```
 
 1. 从仅使用摄像头的 rPPG 开始
@@ -121,6 +129,8 @@ flowchart TD
 5. 融合校准器结合两种来源，以获得最高准确性
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

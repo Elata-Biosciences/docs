@@ -1,0 +1,63 @@
+---
+title: "El SDK de Elata"
+description: "Paquetes de código abierto que convierten cámaras web y diademas de consumo en sensores de bioseñales, con procesamiento en el dispositivo del usuario."
+---
+
+<a id="what-it-does"></a>
+
+## que hace
+
+Elata SDK es un conjunto de paquetes JavaScript de código abierto para crear aplicaciones a partir de bioseñales. Maneja las partes difíciles:
+
+- **Conexión** a dispositivos: una cámara web o una diadema Bluetooth EEG como Muse
+- **Procesamiento de** señales sin procesar en medidas utilizables: frecuencia cardíaca, variabilidad de la frecuencia cardíaca, EEG potencias de banda, calidad de la señal
+- **Ejecutándose en el dispositivo**: el núcleo de procesamiento está escrito en Rust y compilado en WebAssembly, por lo que se ejecuta en el navegador y los datos sin procesar no tienen que ir a un servidor
+
+El SDK es de uso gratuito, está publicado en [npm](https://www.npmjs.com/org/elata-biosciences)y desarrollado abiertamente en [GitHub](https://github.com/Elata-Biosciences/elata-bio-sdk).
+
+---
+
+<a id="package-families"></a>
+
+## Familias de paquetes
+
+| familia | Paquetes | Estado |
+| --- | --- | --- |
+| **Sensores** | `rppg-web` (frecuencia cardíaca de la cámara web), `eeg-web` (procesamientoEEG ), `eeg-web-ble` (diademas Bluetooth), `ppg-web` (frecuencia cardíaca de la diadema) | Disponible |
+| **Plataforma Elata** | `app-payments` (compras), `app-metrics` (registros y puntuaciones) | Disponible |
+|| `app-state` (progreso guardado) | Experimental |
+| **Registro y análisis** | `biosignal-session` (grabación de sesión local), `biosignal-analytics` (características y puntuaciones), `rppg-models-web` (modelos de forma de onda aprendidos) | Experimental |
+| **Herramientas** | `create-elata-demo` (aplicaciones de inicio) | Problema conocido y activo |
+
+Los paquetes "experimentales" están disponibles como código fuente, pero aún no en npm. Ver [Qué hay en vivo](/es/overview/status).
+
+---
+
+<a id="supported-devices"></a>
+
+## Dispositivos compatibles
+
+| Dispositivo | Señales | Navegador |
+| --- | --- | --- |
+| Cualquier cámara web | Pulso (rPPG) | Navegadores modernos |
+| Musa 2 y Musa S | 4 canales EEG, PPG | Chrome o Edge (WebBluetooth) |
+| Musa S (Atenea) | 8 canales EEG, óptica, movimiento | Chrome o Edge (WebBluetooth) |
+
+Se pueden agregar otros auriculares a través del contrato de dispositivo del SDK. Consulte [Integración de dispositivos](/es/integrate).
+
+---
+
+<a id="you-dont-have-to-publish-on-elata"></a>
+
+## No es necesario publicar en Elata
+
+El SDK funciona en cualquier aplicación web. Publicar en Elata agrega distribución, cuentas y pagos, pero los paquetes de sensores no lo requieren.
+
+<CardGroup cols={2}>
+  <Card title="Descripción general del SDK" icon="package" href="/es/sdk/overview">
+Paquetes, instalación y soporte de dispositivos
+  </Card>
+  <Card title="Tu primera aplicación" icon="graduation-cap" href="/es/sdk/tutorials/first-app">
+Un tutorial práctico
+  </Card>
+</CardGroup>

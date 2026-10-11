@@ -1,0 +1,79 @@
+---
+title: "Ciencia en Elata"
+description: "La postura científica de Elata: para qué sirven las mediciones, cómo se clasifican las reclamaciones y dónde leer más."
+---
+
+<a id="our-stance"></a>
+
+## Nuestra postura
+
+Elata crea herramientas para **bienestar, juegos, aprendizaje e investigación**. Las señales que utilizan las aplicaciones de Elata (frecuencia cardíaca de la cámara, consumidor EEGy diadema PPG) son mediciones fisiológicas reales, pero provienen de dispositivos de consumo en entornos no controlados. Son estimaciones, no lecturas clínicas.
+
+De esto se siguen tres reglas:
+
+1. **Sin diagnóstico.** Las aplicaciones Elata y Elata no diagnostican, tratan ni monitorean condiciones médicas.
+2. **Muestra la incertidumbre.** Las medidas vienen con valores de confianza y calidad de la señal, y las puntuaciones se retienen cuando los datos no son lo suficientemente buenos en lugar de adivinar.
+3. **Califica cada reclamo.** Una frecuencia cardíaca medida y una puntuación de "concentración" son diferentes tipos de afirmaciones y el SDK las etiqueta de manera diferente.
+
+---
+
+<a id="how-claims-are-graded"></a>
+
+## Cómo se califican las reclamaciones
+
+El paquete de análisis del SDK (`biosignal-analytics`, actualmente [experimental](/es/overview/status)) proporciona a cada métrica una definición registrada con dos etiquetas.
+
+**Clase de medida:** qué tipo de número es.
+
+| clase | Significado | Ejemplo |
+| --- | --- | --- |
+| medido | Leer más o menos directamente de la señal. | frecuencia cardiaca |
+| Derivado (determinista) | Calculado a partir de valores medidos mediante una fórmula fija. | HRV (RMSSD), potencia de banda |
+| Inferido por el modelo | Estimado por un modelo estadístico o aprendido | Una reconstrucción de forma de onda aprendida |
+| compuesto de producto | Una interpretación del producto que combina varios insumos. | Enfoque, preparación |
+
+**Nivel de evidencia:** qué tan fuertemente se respalda la métrica.
+
+| Nivel | Significado |
+| --- | --- |
+| Predeterminado beta | Bien apoyado; mostrado por defecto |
+| Avanzado | Compatible, pero para usuarios informados. |
+| Experimental | Temprano; puede cambiar o ser eliminado |
+| Rechazado | Evaluado y deliberadamente no utilizado. |
+
+Cada valor también registra el algoritmo exacto y la versión que lo produjo, de modo que se pueda rastrear y volver a calcular cuando un algoritmo mejora. El código de característica se prueba con implementaciones de referencia (NumPy/SciPy), por lo que los números coinciden en las versiones de Rust, WebAssemblyy JavaScript.
+
+---
+
+<a id="in-this-section"></a>
+
+## En esta sección
+
+<CardGroup cols={2}>
+  <Card title="Frecuencia cardíaca de la cámara (rPPG)" icon="camera" href="/es/overview/science/rppg">
+Cómo una cámara web calcula el pulso y sus límites
+  </Card>
+  <Card title="EEG diademas" icon="brain" href="/es/overview/science/eeg">
+Lo que cuatro sensores secos pueden y no pueden decirte
+  </Card>
+  <Card title="PPG y HRV" icon="heart-pulse" href="/es/overview/science/ppg-and-hrv">
+Frecuencia cardíaca óptica y variabilidad de la frecuencia cardíaca.
+  </Card>
+  <Card title="Métricas y puntuaciones" icon="gauge" href="/es/overview/science/metrics-and-scores">
+Cómo se construyen las medidas y puntuaciones derivadas
+  </Card>
+  <Card title="Datos para la investigación" icon="database" href="/es/overview/science/data-for-research">
+Qué datos existen y cuáles no
+  </Card>
+  <Card title="Direcciones de investigación" icon="telescope" href="/es/overview/science/research-directions">
+Trabajo de investigación planificado y archivado.
+  </Card>
+</CardGroup>
+
+---
+
+<a id="sources"></a>
+
+## Fuentes
+
+- [`biosignal-analytics` README y registro](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-analytics) (repositorio público de SDK)

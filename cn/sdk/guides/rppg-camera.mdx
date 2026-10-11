@@ -1,12 +1,14 @@
 ---
-title: 摄像头集成
-description: 使用 Elata rPPG Web SDK 为浏览器应用添加基于摄像头的心率测量。
-sidebarTitle: 摄像头集成
+title: "摄像头集成"
+description: "使用 Elata rPPG Web SDK 为浏览器应用添加基于摄像头的心率测量。"
+sidebarTitle: "摄像头集成"
 ---
 
 <Note>
 如果你希望对浏览器应用中的摄像头心率测量进行更底层的控制，请阅读本指南。推荐的高层 API 请先参阅[在浏览器应用中使用 rPPG](/cn/sdk/guides/rppg-browser)。
 </Note>
+
+<a id="what-this-guide-covers"></a>
 
 ## 本指南涵盖的内容
 
@@ -17,6 +19,8 @@ sidebarTitle: 摄像头集成
 - 将样本输入 rPPG 处理器
 - 读取实时 BPM 和信号质量
 - 在有 Muse PPG 时改进估算结果
+
+<a id="before-you-start"></a>
 
 ## 开始之前
 
@@ -46,6 +50,8 @@ pnpm add @elata-biosciences/rppg-web
 大多数应用应使用 `createRppgSession()`，它封装了本页的所有内容（WASM 初始化、帧采集、ROI 选择、诊断、清理）。参见[在浏览器应用中使用 rPPG](/cn/sdk/guides/rppg-browser)。只有在需要自定义编排时，才使用下面的底层组件。
 </Tip>
 
+<a id="choose-a-starting-point"></a>
+
 ## 选择起点
 
 <Columns cols={2}>
@@ -66,6 +72,8 @@ pnpm add @elata-biosciences/rppg-web
   </Card>
 </Columns>
 
+<a id="quick-integration-with-demorunner"></a>
+
 ## 使用 DemoRunner 快速集成
 
 `DemoRunner` 在一个流程中处理帧采集、人脸检测、ROI 提取和处理，同时让你保留对处理器的控制。
@@ -78,8 +86,8 @@ import {
   loadWasmBackend,
 } from "@elata-biosciences/rppg-web";
 
-const video = document.querySelector("video")!; // 正在播放的摄像头 <video>
-const backend = await loadWasmBackend(); // 无法加载打包的 WASM 时返回 null
+const video = document.querySelector("video")!; // a playing camera <video>
+const backend = await loadWasmBackend(); // null if the packaged WASM can't be loaded
 if (!backend) throw new Error("rPPG WASM backend unavailable");
 const source = new MediaPipeFrameSource(video);
 const processor = new RppgProcessor(backend, 30);
@@ -101,8 +109,10 @@ await runner.start();
 ```
 
 <Tip>
-只在 `metrics.confidence` 高于应用阈值时显示 BPM。0.5 左右是比较实用的起点。
+仅当 `metrics.confidence` 高于应用的阈值时才显示 BPM。 `0.5` 左右的阈值是一个实用的起点。
 </Tip>
+
+<a id="manual-pipeline"></a>
 
 ## 手动流水线
 
@@ -117,7 +127,7 @@ await runner.start();
     loadFaceLandmarker,
   } from "@elata-biosciences/rppg-web";
 
-  // 从 CDN 加载 MediaPipe FaceLandmarker；不可用时返回 null。
+  // Loads MediaPipe FaceLandmarker from a CDN; returns null if unavailable.
   const faceLandmarker = await loadFaceLandmarker();
   if (!faceLandmarker) throw new Error("Face tracking unavailable");
   const source = new MediaPipeFaceFrameSource(video, faceLandmarker);
@@ -173,18 +183,22 @@ await runner.start();
   </Step>
 </Steps>
 
+<a id="add-muse-calibration"></a>
+
 ## 添加 Muse 校准
 
 如果有 Muse 设备，你可以将其 PPG 作为参考信号来改进基于摄像头的估算。
 
 ```ts
-// `processor` 是上面创建的 RppgProcessor
+// `processor` is the RppgProcessor created above
 processor.updateMuseMetrics(museBpm, 0.9, performance.now());
 ```
 
 <Info>
 更完整的融合流程（包括 `MuseFusionCalibrator` 和校准模型）请继续阅读[校准](/cn/sdk/rppg-web/calibration)。
 </Info>
+
+<a id="quality-checklist"></a>
 
 ## 质量检查清单
 
@@ -195,6 +209,8 @@ processor.updateMuseMetrics(museBpm, 0.9, performance.now());
 - 在信任早期 BPM 输出前等待 5 到 10 秒
 - 确认确实检测到了面部 ROI
 - 使用 `DemoRunner` 时启用 `useSkinMask`
+
+<a id="where-to-go-next"></a>
 
 ## 下一步
 
@@ -211,7 +227,7 @@ processor.updateMuseMetrics(museBpm, 0.9, performance.now());
     通过基于 Muse 的校准和多源融合改进估算。
   </Card>
 
-  <Card title="create-elata-demo" href="/cn/sdk/create-elata-demo">
+  <Card title="创建 elata 演示" href="/cn/sdk/create-elata-demo">
     如果想更快上手，从可运行的参考应用开始。
   </Card>
 </Columns>

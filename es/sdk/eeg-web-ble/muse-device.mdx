@@ -1,0 +1,148 @@
+---
+title: "Dispositivo musa"
+description: "Componentes internos, detalles del protocolo y compatibilidad de MuseBleDevice"
+---
+
+<a id="musebledevice"></a>
+
+## MuseBleDispositivo
+
+`MuseBleDevice` es la clase de Bluetooth web de bajo nivel que maneja el emparejamiento de dispositivos, las suscripciones a características GATT y la decodificación de paquetes. `BleTransport` lo envuelve para proporcionar la interfaz `HeadbandTransport` normalizada.
+
+Normalmente no utilizas `MuseBleDevice` directamente. Utilice `BleTransport` en su lugar.
+
+---
+
+<a id="supported-protocols"></a>
+
+## Protocolos admitidos
+
+| Protocolo | Diademas | EEG Canales | Datos adicionales |
+|----------|-----------|-------------|------------|
+| **Clásico** | Muse 2, Muse S (clásico) | 4 (TP9, AF7, AF8, TP10) | PPG (3 canales) |
+| **Atenea** | Muse S (firmware Atenea) | 8 (TP9, AF7, AF8, TP10, AUX1-4) | Óptica, accgyro, batería. |
+
+El protocolo se detecta automáticamente durante la conexión según las características del dispositivo.
+
+---
+
+<a id="classic-protocol"></a>
+
+## Protocolo clásico
+
+Las diademas Classic Muse exponen 4 EEG canales a 256 Hz. Cada canal tiene su propia característica GATT:
+
+| Característica | canal |
+|---------------|---------|
+| `273e0003-...` | TP9 |
+| `273e0004-...` | AF7 |
+| `273e0005-...` | AF8 |
+| `273e0006-...` | TP10 |
+
+PPG está disponible en 3 características adicionales (`PPG1`, `PPG2`, `PPG3`).
+
+---
+
+<a id="athena-protocol"></a>
+
+## Protocolo de Atenas
+
+Las diademas Athena utilizan un formato de paquete diferente con dos características principales:
+
+| Característica | Datos |
+|---------------|------|
+| `273e0013-...` | EEG (8 canales, multiplexado) |
+| `273e0014-...` | Auxiliar (óptica, accgyro, batería) |
+
+Athena requiere una fábrica de decodificadores. Sin uno, la conexión fallará:
+
+```typescript
+import { AthenaWasmDecoder } from "@elata-biosciences/eeg-web";
+
+const transport = new BleTransport({
+  deviceOptions: {
+    athenaDecoderFactory: () => new AthenaWasmDecoder(),
+  },
+});
+```
+
+---
+
+<a id="musedeviceoptions"></a>
+
+## Opciones de dispositivo Muse
+
+```typescript
+interface MuseDeviceOptions {
+  athenaDecoderFactory?: AthenaDecoderFactory;
+  sleepMs?: (ms: number) => Promise<void>;
+  logger?: (message: string) => void;
+  onDisconnected?: () => void;
+}
+```
+
+---
+
+## MuseBoardInfo
+
+Devuelto por `getBoardInfo()` después de la conexión:
+
+```typescript
+interface MuseBoardInfo {
+  device_name: string;
+  sample_rate_hz: number;        // 256
+  channel_count: number;         // 4 or 8
+  eeg_channel_names: string[];
+  board_id: number;
+  protocol: "classic" | "athena";
+  optics_channel_count: number;
+  description: string;
+}
+```
+
+---
+
+<a id="browser-compatibility"></a>
+
+## Compatibilidad del navegador
+
+| Navegador | Plataforma | Estado |
+|---------|----------|--------|
+| Cromo 56+ | Windows, macOS, Linux, Android | Compatible |
+| Borde 79+ | Windows, Mac OS | Compatible |
+| Ópera 43+ | Escritorio | Compatible |
+| safari | macOS, iOS | No compatible |
+| Firefox | Todos | No compatible |
+
+<Warning>
+Web Bluetooth requiere HTTPS. No funcionará en `http://` (excepto `localhost` para desarrollo).
+</Warning>
+
+---
+
+<a id="safariios-workarounds"></a>
+
+## Soluciones alternativas para Safari/iOS
+
+Tres estrategias para la compatibilidad con iOS:
+
+1. **Shell de aplicación nativa** (recomendado): implemente BLE en Swift con CoreBluetooth, conecte marcos a la interfaz de usuario web
+2. **Puente complementario**: la aplicación nativa transmite fotogramas a través de WebSocket/WebRTC a la aplicación web
+3. **WebView híbrido**: `WKWebView` con controladores de mensajes nativos para BLE
+
+En todos los casos, utilice el esquema `HeadbandFrameV1` como límite de la interfaz para que el navegador y los transportes nativos emitan la misma forma de marco.
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="EEG Introducción a BLE" icon="bluetooth" href="/es/sdk/eeg-web-ble/getting-started">
+API de transporte y guía de conexión
+  </Card>
+  <Card title="Transporte de diadema" icon="signal-stream" href="/es/sdk/eeg-web/headband-transport">
+Esquema de trama e interfaz de transporte.
+  </Card>
+</CardGroup>

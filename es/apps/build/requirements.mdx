@@ -1,0 +1,71 @@
+---
+title: "Requisitos"
+description: "Lo que necesita su aplicación antes de cargarla y enviarla."
+---
+
+<a id="checklist"></a>
+
+## Lista de verificación
+
+<Steps>
+  <Step title="Una cuenta de Elata">
+Inicie sesión en [app.elata.bio](https://app.elata.bio). Puede iniciar sesión con un inicio de sesión social o conectar una billetera existente.
+  </Step>
+  <Step title="Una tarifa de registro">
+Registrar el nombre de una aplicación cuesta una pequeña tarifa única de USDC. El importe actual se muestra en el asistente.
+  </Step>
+  <Step title="Una aplicación que utiliza un SDK de sensor Elata">
+Las cargas se rechazan si no se detecta el uso del SDK de Elata. Utilice la cámara rPPG (`rppg-web`), EEG a través de Bluetooth (`eeg-web` + `eeg-web-ble`), o la diadema PPG (`ppg-web`, que se ejecuta en el EEG transporte).
+  </Step>
+  <Step title="Una construcción web estática">
+Un `.zip` con `index.html` en su raíz (o un único archivo `.html` ). Las rutas de los activos deben ser **relativas**, porque las aplicaciones se sirven bajo una subruta. Consulte [Carga y alojamiento](/es/apps/build/upload-and-hosting).
+  </Step>
+  <Step title="una versión">
+Agregue un [`elata.json`](/es/apps/build/elata-json) para que Elata muestre `v1.2.3` en lugar de un número de versión.
+  </Step>
+  <Step title="Listado de activos">
+Para enviar, se requiere un ícono de aplicación y una imagen de encabezado. Se recomiendan capturas de pantalla y una descripción ampliada. Consulte [Listado de aplicaciones](/es/apps/build/app-metadata).
+  </Step>
+</Steps>
+
+---
+
+<a id="sdk-usage-check"></a>
+
+## Comprobación de uso del SDK
+
+Elata busca llamadas reales en el SDK de Elata en su paquete, por ejemplo `createRppgSession(...)` de `rppg-web`, o `initEegWasm(...)` y `BleTransport` de los paquetes EEG , junto con el WASM empaquetado archivos. Importar un paquete sin usarlo no es suficiente.
+
+<Tip>
+Las plantillas de `npm create @elata-biosciences/elata-demo` ya pasan esta verificación. Si integra el SDK manualmente, mantenga los archivos empaquetados `.wasm` en la salida de su compilación.
+</Tip>
+
+---
+
+<a id="things-your-app-must-not-do"></a>
+
+## Cosas que tu aplicación no debe hacer
+
+Las aplicaciones se ejecutan en una zona de pruebas. Las reseñas y el análisis automatizado rechazan aplicaciones que:
+
+- iniciar transacciones de billetera, firmas o aprobaciones fuera del proceso de pago de Elata
+- enviar fotogramas de cámara sin procesar, audio de micrófono o señales biológicas sin procesar desde el dispositivo
+- intente acceder a la página principal, sus cookies o almacenamiento, o escape del entorno limitado
+- hacerse pasar por otra aplicación, desarrollador o servicio
+
+La lista completa se encuentra en [Revisión y política](/es/apps/build/review-and-policy).
+
+---
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="Publica tu aplicación" icon="rocket" href="/es/apps/build/launch-your-app">
+Camina por el asistente
+  </Card>
+  <Card title="elata.json" icon="file-code" href="/es/apps/build/elata-json">
+El manifiesto de la aplicación.
+  </Card>
+</CardGroup>

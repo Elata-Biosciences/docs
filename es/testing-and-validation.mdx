@@ -1,0 +1,136 @@
+---
+title: "Pruebas y Validación"
+description: "Valide la corrección del marco, el comportamiento del ciclo de vida y el manejo de fallas antes de enviar la integración de un dispositivo."
+---
+
+La confiabilidad es el objetivo principal de esta página.
+
+La integración de un dispositivo debería sobrevivir a las condiciones del mundo real, no sólo a una sesión de demostración limpia.
+
+<a id="definition-of-done"></a>
+
+## Definición de hecho
+
+La integración estará lista cuando se cumpla todo lo siguiente:
+
+| comprobar | Que verificar |
+| --- | --- |
+| Ancho del marco | Cada ancho de fila coincide con `numEegChannels` |
+| Orden de canales | El pedido es estable y está documentado. |
+| Frecuencia de muestreo | Coincide con la salida real del dispositivo |
+| Transiciones de estado | Conecte, inicie, pare, desconecte y las fallas aparecerán limpiamente |
+| Manejo de paquetes | Los paquetes cortos o con formato incorrecto se rechazan de forma segura |
+| Reconectar el comportamiento | La sesión puede recuperarse o fallar claramente. |
+
+<a id="minimum-test-set"></a>
+
+## Conjunto de prueba mínimo
+
+<Steps>
+  <Step title="feliz camino">
+Verifique `connect -> start -> frames -> stop -> disconnect` con BLE simulado o accesorios de puente.
+  </Step>
+  <Step title="Manejo de paquetes mal formados">
+Introduzca paquetes cortos, corruptos o parciales en el decodificador y confirme que se rechacen de forma segura.
+  </Step>
+  <Step title="Comportamiento de desconectar y reconectar">
+Simule la pérdida del dispositivo, las desconexiones del navegador y el comportamiento de reintento.
+  </Step>
+  <Step title="Variantes de firmware">
+Agregue accesorios para diferencias de protocolo conocidas en las líneas de firmware compatibles.
+  </Step>
+  <Step title="Verificación de metadatos">
+Confirme los nombres de los canales, el recuento, la frecuencia de muestreo y el manejo de la marca de tiempo.
+  </Step>
+</Steps>
+
+<a id="what-to-test-first"></a>
+
+## Qué probar primero
+
+| Área | Por qué suele fallar primero |
+| --- | --- |
+| Filtros de descubrimiento | Los filtros incorrectos ocultan el dispositivo o exponen dispositivos no relacionados |
+| Configuración característica | Un UUID incorrecto o un paso de notificación faltante bloquea la transmisión |
+| Supuestos del decodificador | Errores de endianidad, tamaño de paquete o escalado filas corruptas |
+| Desmontaje de sesión | Las suscripciones huérfanas dificultan las reconexiones |
+| Lógica de marca de tiempo | Las muestras atractivas aún pueden llegar con metadatos en el momento incorrecto |
+
+<a id="ci-guidance"></a>
+
+## Guía de IC
+
+No se requiere hardware real para CI.
+
+Utilice Bluetooth simulado o puente de E/S y accesorios de paquetes estables para que las pruebas sean repetibles y fáciles de mantener.
+
+<Check>
+Un buen conjunto de dispositivos es más valioso que una prueba manual de unos auriculares reales.
+</Check>
+
+<a id="manual-validation-pass"></a>
+
+## Pase de validación manual
+
+Después de que las pruebas automatizadas estén en verde, realice una pasada de dispositivo real para cada línea de firmware compatible.
+
+| Verificación manual | Que confirmar |
+| --- | --- |
+| Emparejamiento inicial | el navegador puede descubrir y conectarse limpiamente |
+| inicio de transmisión | Los marcos comienzan sin suscripciones duplicadas. |
+| Duración de la sesión | la corriente se mantiene estable con el tiempo |
+| Interrupciones | las desconexiones transitorias se comportan de manera predecible |
+| Recuperación | el dispositivo se puede detener y reiniciar |
+
+<a id="common-failure-patterns"></a>
+
+## Patrones de falla comunes
+
+<AccordionGroup>
+  <Accordion title="Los marcos parecen válidos pero las funciones posteriores son incorrectas">
+Verifique el orden de los canales, la escala y la frecuencia de muestreo antes de mirar los modelos.
+  </Accordion>
+  <Accordion title="La primera transmisión funciona pero falla la reconexión.">
+Revisar el desmontaje. La mayoría de los errores de reconexión provienen de suscripciones obsoletas o de una versión incompleta de la sesión.
+  </Accordion>
+  <Accordion title="La transmisión comienza pero el tiempo no es consistente">
+Revise el comportamiento de las marcas de tiempo y el procesamiento por lotes de paquetes. Los valores de muestra pueden verse bien, aunque los metadatos de sincronización aún sean incorrectos.
+  </Accordion>
+  <Accordion title="La integración funciona en un solo firmware.">
+Separe el manejo de paquetes específicos de la versión y agregue accesorios para cada rama de firmware compatible.
+  </Accordion>
+</AccordionGroup>
+
+<a id="release-readiness-checklist"></a>
+
+## Lista de verificación de preparación para el lanzamiento
+
+Antes de entregar la integración, asegúrese de poder responder estas preguntas con claridad:
+
+1. qué dispositivos y versiones de firmware se probaron
+2. qué navegadores y plataformas se probaron
+3. ¿Qué limitaciones conocidas aún existen?
+4. qué comportamiento de recuperación deben esperar las aplicaciones
+5. ¿A quién pertenece el mantenimiento futuro?
+
+<a id="related-docs"></a>
+
+## Documentos relacionados
+
+- [Contrato de Transporte](./transport-contract)
+- [Requisitos de protocolo](./protocol-requirements)
+- [Envío y soporte](./submission-and-support)
+- [Solución de problemas](/es/sdk/operations/troubleshooting)
+
+<a id="next"></a>
+
+## Siguiente
+
+<CardGroup cols={2}>
+  <Card title="preparar el traspaso" icon="arrow-right" href="./submission-and-support">
+Empaquete la integración probada para su revisión o entrega de socios.
+  </Card>
+  <Card title="Volver al índice de la guía" icon="arrow-right" href="/es/integrate">
+Revise el flujo de integración completo.
+  </Card>
+</CardGroup>

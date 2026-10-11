@@ -3,6 +3,8 @@ title: "快速上手"
 description: "安装并初始化 @elata-biosciences/eeg-web WASM 包"
 ---
 
+<a id="when-to-use-this-package"></a>
+
 ## 何时使用此包
 
 当你的应用需要以下功能时，使用 `@elata-biosciences/eeg-web`：
@@ -18,6 +20,8 @@ description: "安装并初始化 @elata-biosciences/eeg-web WASM 包"
 </Tip>
 
 ---
+
+<a id="installation"></a>
 
 ## 安装
 
@@ -36,6 +40,8 @@ npm install @elata-biosciences/eeg-web
 要求：服务器端使用和本地仓库工具需要 Node.js 20+；浏览器内使用需要支持 WebAssembly 的现代浏览器。
 
 ---
+
+<a id="wasm-initialization"></a>
 
 ## WASM 初始化
 
@@ -57,6 +63,8 @@ initEegWasmSync(wasmModule);
 
 ---
 
+<a id="basic-usage"></a>
+
 ## 基本用法
 
 从 EEG 数据计算频段功率：
@@ -67,7 +75,7 @@ import { initEegWasm, band_powers } from "@elata-biosciences/eeg-web";
 await initEegWasm();
 
 const sampleRate = 256;
-const eegSamples = new Float32Array(/* ……单通道 EEG 样本…… */);
+const eegSamples = new Float32Array(/* ... one channel of EEG samples ... */);
 
 const powers = band_powers(eegSamples, sampleRate);
 console.log("Alpha:", powers.alpha);
@@ -79,6 +87,8 @@ console.log("Gamma:", powers.gamma);
 
 ---
 
+<a id="package-structure"></a>
+
 ## 包结构
 
 `@elata-biosciences/eeg-web` 是围绕 `wasm-bindgen` 生成的 WASM 绑定的一层轻量 TypeScript 封装：
@@ -86,6 +96,8 @@ console.log("Gamma:", powers.gamma);
 - `initEegWasm` / `initEegWasmSync`：WASM 初始化辅助函数
 - 头带帧类型：EEG 传输使用的规范化数据结构
 - 所有 WASM API：从生成的绑定中重新导出
+
+<a id="key-exports"></a>
 
 ### 主要导出
 
@@ -106,6 +118,8 @@ console.log("Gamma:", powers.gamma);
 </Note>
 
 ---
+
+<a id="next"></a>
 
 ## 下一步
 

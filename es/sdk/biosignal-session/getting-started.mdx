@@ -1,0 +1,132 @@
+---
+title: "Empezando"
+tag: "Experimental"
+description: "Grabe sesiones de bioseñales multisensor localmente con @elata-biosciences/biosignal-session."
+---
+
+<Warning>
+`@elata-biosciences/biosignal-session` aún no está publicado en npm. La API a continuación refleja la fuente en el [repositorio SDK](https://github.com/Elata-Biosciences/elata-bio-sdk/tree/main/packages/biosignal-session) y puede cambiar antes del primer lanzamiento.
+</Warning>
+
+<a id="what-it-does"></a>
+
+## que hace
+
+`@elata-biosciences/biosignal-session` registra una sesión de bioseñal (EEG, PPG, rPPG métricas y más) como un conjunto de flujos escritos, fragmentados en [Apache Arrow autónomo](https://arrow.apache.org/) archivos. La grabación es **solo local**: el paquete no tiene cliente de red.
+
+Está diseñado para brindar confiabilidad:
+
+- cada fragmento lleva una suma de comprobación CRC32C y una identidad `(session, stream, sequence)` idempotente
+- la grabadora vuelve a intentarlo, aplica contrapresión y nunca deja caer datos en silencio
+- las brechas reales se registran como discontinuidades explícitas, nunca interpoladas
+
+---
+
+<a id="the-model"></a>
+
+## el modelo
+
+```
+Session ─┬─ Source   (headset, camera, synthetic)
+         ├─ Stream   (eeg, ppg, optics, imu, rppg-metrics, ppg-metrics, …)
+         │    └─ Chunk  (Arrow IPC file + CRC32C, sequence 0, 1, 2, …)
+         └─ Event    (markers and annotations)
+```
+
+El tiempo es un entero relativo a la sesión **microsegundos**, anclado una vez cuando comienza la sesión.
+
+---
+
+## Roles
+
+Una grabación tiene dos caras que hablan por un `MessagePort`:
+
+| Lado | Responsabilidad | Proporcionado por este paquete |
+| --- | --- | --- |
+| **Grabadora** (tu aplicación) | Almacena muestras, cierra fragmentos, codifica Arrow, sumas de comprobación, reintentos | Sí: `RecorderCore`, adaptadores de dispositivos, un lanzador de trabajadores |
+| **Anfitrión** (incrustador confiable) | Almacena fragmentos de forma duradera y reconoce cada uno de ellos. | Un host en memoria de referencia para pruebas (`createMemoryHost`) |
+
+<Note>
+La tienda de aplicaciones tiene un host local experimental en `feat/long-local-analytics`, deshabilitado en producción. Utilice su propia página de host o el host en memoria para el desarrollo y las pruebas, o siga las [sesiones e información local](/es/users/local-sessions-and-insights) para el flujo de desarrollo de la tienda de aplicaciones. Se trata de almacenamiento local del navegador, no de alojamiento en la nube.
+</Note>
+
+---
+
+<a id="install"></a>
+
+## Instalación
+
+```bash
+# Not on npm yet. This command works after the first release.
+npm install @elata-biosciences/biosignal-session
+```
+
+| Importar | Contenidos |
+| --- | --- |
+| `@elata-biosciences/biosignal-session` | Contratos, tipos de protocolo, códigos de error, ayudantes de tiempo, CRC32C |
+| `@elata-biosciences/biosignal-session/browser` | `RecorderCore`, protocolo de enlace, codificación/decodificación de flechas, adaptadores de dispositivos, iniciador de trabajadores |
+| `@elata-biosciences/biosignal-session/testing` | Fuente sintética, host en memoria, reloj falso, arnés de grabadora |
+
+---
+
+<a id="device-adapters"></a>
+
+## Adaptadores de dispositivos
+
+Ajusta los objetos del SDK que ya utilizas como fuentes de grabación:
+
+- `createHeadbandSource(transport)`: a `HeadbandTransport` de `eeg-web` / `eeg-web-ble`
+- `createRppgSource(options)`: una sesión `rppg-web` 
+- `createPpgSource(options)`: `ppg-web` métricas
+
+---
+
+<a id="try-it-without-hardware"></a>
+
+## Pruébalo sin hardware
+
+La entrada de prueba ejecuta una grabación completa en un host en memoria con una fuente sintética inicializada. Horas de señal virtual ejecutadas en segundos:
+
+```ts
+import {
+  createRecorderHarness,
+  createSyntheticSource,
+} from '@elata-biosciences/biosignal-session/testing';
+
+const h = createRecorderHarness();
+const source = createSyntheticSource({ seed: 1234 });
+
+await h.start();
+await h.startSource(source);
+source.pump(60_000);          // 60 s of synthetic EEG, rPPG, and PPG
+await h.advance(60_000);
+await source.stop();
+await h.finalize();
+
+h.core.state();               // "complete"
+```
+
+---
+
+<a id="read-chunks-back"></a>
+
+## Leer fragmentos atrás
+
+Cada fragmento es un archivo Arrow IPC completo que lleva su propio esquema e identidad, por lo que puedes decodificar uno solo, en JavaScript o Python con `pyarrow`:
+
+```ts
+import { decodeChunk, readFloat32Column } from '@elata-biosciences/biosignal-session/browser';
+
+const { table, identity } = decodeChunk(bytes);
+const tp9 = readFloat32Column(table, 'TP9');
+```
+
+---
+
+<a id="full-guide"></a>
+
+## guía completa
+
+El flujo de grabación paso a paso (anclaje del reloj, apretón de manos, apertura de transmisiones, envío de muestras, finalización) y las garantías del anfitrión se encuentran en la [guía de grabación](https://github.com/Elata-Biosciences/elata-bio-sdk/blob/main/docs/guides/using-biosignal-sessions.md). Las herramientas de IA pueden leer `node_modules/@elata-biosciences/biosignal-session/llms.txt`.
+
+Para analizar lo que registra, consulte [biosignal-analytics](/es/sdk/biosignal-analytics/getting-started).

@@ -1,0 +1,76 @@
+---
+title: "Bioseñales explicadas"
+description: "Una guía en lenguaje sencillo sobre la frecuencia cardíaca de la cámara, EEG diademas y diadema PPG: qué mide cada uno y qué no puede decirle."
+---
+
+Una **bioseñal** es una señal mensurable del cuerpo, como un latido del corazón o la actividad eléctrica del cerebro. Las aplicaciones de Elata utilizan tres tipos, todas provenientes de dispositivos que la gente ya posee o puede comprar.
+
+---
+
+<a id="camera-heart-rate-rppg"></a>
+
+## Frecuencia cardíaca de la cámara (rPPG)
+
+**Qué es.** Cada latido empuja sangre hacia la piel, lo que cambia su
+colorea muy ligeramente. Una cámara web puede captar ese cambio, aunque sea demasiado pequeño para verlo con los ojos. Esto se llama fotopletismografía remota o rPPG.
+
+**Lo que puede estimar.** Frecuencia del pulso y qué tan estable es la señal.
+
+**Qué le afecta.** Movimiento, luz tenue o parpadeante, sombras fuertes, vídeo
+La compresión y las bajas velocidades de fotogramas reducen la precisión. La precisión también puede variar según el tono de piel y la calidad de la cámara.
+
+Más detalles: [Frecuencia cardíaca de la cámara (rPPG)](/es/overview/science/rppg).
+
+---
+
+<a id="eeg-headbands"></a>
+
+## EEG diademas
+
+**Qué es.** La electroencefalografía (EEG) mide diminutas señales eléctricas
+señales del cerebro a través de sensores en el cuero cabelludo. Las cintas para la cabeza de consumo como Muse utilizan algunos sensores secos en la frente y detrás de las orejas.
+
+**Lo que puede estimar.** Qué tan fuertes son los diferentes ritmos, como el alfa
+ondas, que tienden a subir cuando estás relajado con los ojos cerrados. Las aplicaciones las convierten en medidas como "calma" o "concentración".
+
+**Qué le afecta.** Parpadeo, apretamiento de la mandíbula, movimiento y mal contacto del sensor
+crean señales mucho más grandes que la actividad cerebral. Algunos sensores no pueden localizar la actividad con precisión, y las puntuaciones de "calma" o "concentración" son estimaciones, no lecturas directas de un estado mental.
+
+Más detalle: [EEG diademas](/es/overview/science/eeg).
+
+---
+
+<a id="headband-ppg-and-heart-rate-variability"></a>
+
+## Diadema PPG y variabilidad del ritmo cardíaco
+
+**Qué es.** Algunas diademas, como Muse S, tienen un sensor óptico que
+ilumina la piel y mide el reflejo, el mismo principio que un sensor de frecuencia cardíaca de reloj inteligente (fotopletismografía o PPG).
+
+**Lo que puede estimar.** Frecuencia cardíaca y **variabilidad de la frecuencia cardíaca (HRV)**: el
+pequeña variación en el tiempo entre latidos, que a menudo está relacionada con la recuperación y el estrés.
+
+**Qué le afecta.** Movimiento, ajuste holgado y grabaciones cortas. HRV en
+En particular, se necesitan datos limpios durante un minuto o más para que sean significativos.
+
+Más detalle: [PPG y HRV](/es/overview/science/ppg-and-hrv).
+
+---
+
+<a id="what-these-signals-are-not"></a>
+
+## Qué no son estas señales
+
+<Warning>
+Las aplicaciones de Elata no son dispositivos médicos. No diagnostican, tratan ni monitorean ninguna condición médica. Si una aplicación muestra una lectura que le preocupa, hable con un profesional médico en lugar de confiar en la aplicación.
+</Warning>
+
+Estas medidas son útiles para juegos, comentarios y exploración personal. Son estimaciones que dependen de las condiciones, y una misma persona puede obtener lecturas diferentes en días distintos.
+
+---
+
+<a id="where-processing-happens"></a>
+
+## donde ocurre el procesamiento
+
+Los tres tipos de señal se procesan en su dispositivo mediante el [Elata SDK](/es/overview/elata-sdk). No es necesario que los fotogramas de cámara sin procesar y las bioseñales sin procesar salgan de su dispositivo. Consulte [Privacidad y consentimiento](/es/overview/privacy-and-consent).
