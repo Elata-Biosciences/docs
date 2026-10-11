@@ -30,6 +30,7 @@ jobs:
           git add cn es docs.json
           if [ -f scripts/localization-cache.json ]; then git add scripts/localization-cache.json; fi
           if [ -f scripts/localization-qa.json ]; then git add scripts/localization-qa.json; fi
+          if [ -f scripts/localization-fallbacks.json ]; then git add scripts/localization-fallbacks.json; fi
           if ! git diff --cached --quiet; then
             git commit -m 'docs: synchronize Chinese and add Spanish translations'
             git push origin HEAD:docs/chinese-spanish-2026-10-11

@@ -51,6 +51,48 @@ function extract(b){
    }catch(err){if(retry===5)throw err;await new Promise(r=>setTimeout(r,Math.min(1000*2**retry,20000)));}
   }
  }
+ async function safeFallback(entry,tl){
+  const fallbackPath="scripts/localization-fallbacks.json";
+  const records=fs.existsSync(fallbackPath)?JSON.parse(fs.readFileSync(fallbackPath,"utf8")):[];
+  async function cell(text){
+   const marker=text.match(/^(\s*(?:#{1,6}\s+|[-*]\s+|\d+\.\s+))/);
+   const prefix=marker?.[0]??"",inner=text.slice(prefix.length);
+   const held=[];
+   const protectedText=inner.replace(/`[^`]*`|\]\([^)\n]+\)|https?:\/\/[^\s<>)]+|\*\*|\[|(?<!\w)_(?!\s)|(?<!\s)_(?!\w)/g,m=>{const i=held.length;held.push(m);return " ⟦"+(9100000+i)+"⟧ ";});
+   if(!/[A-Za-z]{2}/.test(protectedText.replace(/⟦\d+⟧/g,"")))return text;
+   const translated=await service(protectedText,tl);
+   try{return prefix+restore(translated.trim(),held);}
+   catch(err){
+    const parts=protectedText.split(/(⟦910\d{4}⟧)/g);
+    let out=prefix;
+    for(const part of parts){
+     const m=part.match(/^⟦(910\d{4})⟧$/);
+     if(m)out+=held[Number(m[1])-9100000];
+     else if(/[A-Za-z]{2}/.test(part))out+=await service(part,tl);
+     else out+=part;
+    }
+    return out.trimEnd();
+   }
+  }
+  let output;
+  if(/^\s*\|/.test(entry.text)){
+   const parts=[];let current="",code=false;
+   for(let i=0;i<entry.text.length;i++){
+    const c=entry.text[i];
+    if(c==="`"&&entry.text[i-1]!=="\\")code=!code;
+    if(c==="|"&&!code&&entry.text[i-1]!=="\\"){parts.push(current);current="";}
+    else current+=c;
+   }parts.push(current);
+   const translated=[];
+   for(const p of parts)translated.push(await cell(p));
+   output=translated.join("|");
+  }else output=await cell(entry.text);
+  if(tl==="zh-CN")output=output.replaceAll("埃拉塔","Elata");
+  records.push({language:tl,source:entry.text,translation:output});
+  fs.writeFileSync(fallbackPath,JSON.stringify(records,null,2));
+  console.log("Used structured fallback for",tl,entry.text.slice(0,100));
+  return output;
+ }
  async function batchTranslate(entries,tl) {
   const text=entries.map((e,i)=>"⟦"+(9000000+i)+"⟧\n"+e.protected.text).join("\n\n");
   const translated=await service(text,tl);
@@ -68,7 +110,7 @@ function extract(b){
    }catch(err){console.log("Retrying batch per segment:",String(err));}
   }
   results.length=0;
-  for(const e of entries){ const translated=await service(e.protected.text,tl); try { results.push(restore(translated.trim(),e.protected.held)); } catch(err){ console.error("Unpreserved source:",e.text,"Response:",translated); throw err; } }
+  for(const e of entries){ const translated=await service(e.protected.text,tl); try { results.push(restore(translated.trim(),e.protected.held)); } catch(err){ console.log("Repairing unstable token placement:",e.text.slice(0,100)); results.push(await safeFallback(e,tl)); } }
   return results;
  }
  const chinese={};
