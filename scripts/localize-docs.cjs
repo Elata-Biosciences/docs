@@ -24,13 +24,14 @@ function extract(b){
  const literals=/`[^`]*`|\]\([^)\n]+\)|https?:\/\/[^\s<>)]+|(?:^\s*(?:#{1,6}\s+|[-*]\s+|\d+\.\s+))|\*\*|(?<!\w)_(?!\s)|(?<!\s)_(?!\w)|\[|(?<!\\)\||\b(?:USDC|ELTA|veELTA|EEG|PPG|rPPG|HRV|BPM|OPFS|IndexedDB|WebAssembly|WASM|Arrow|CRC32C|Muse|Athena|Elata|SDK|CLI|API|MessagePort|MessageChannel|JSON|npm|pnpm|Rust|TypeScript|JavaScript|GitHub|Base|Node\.js|Chrome|Edge|Safari|Firefox|Web Bluetooth|React|Vite|NumPy|SciPy)\b/gm;
  function protect(s) {
   const held=[];
-  const text=s.replace(literals,m=>{let i=held.length;held.push(m);return "ELATAZX"+i+"XZ";});
+  const tokenPattern=new RegExp("\\s*(?:"+literals.source+")\\s*",literals.flags);
+  const text=s.replace(tokenPattern,m=>{let i=held.length;held.push(m);return " ELATAZX"+i+"XZ ";});
   return {text,held};
  }
  function restore(text,held) {
   let remaining=text;
   const seen=new Set();
-  remaining=remaining.replace(/ELATA\s*ZX\s*(\d+)\s*XZ/gi,(m,id)=>{
+  remaining=remaining.replace(/\s*ELATA\s*ZX\s*(\d+)\s*XZ\s*/gi,(m,id)=>{
    id=Number(id);if(id>=held.length)throw Error("Unknown literal "+id);
    if(seen.has(id))throw Error("Duplicated literal "+id);seen.add(id);return held[id];
   });
@@ -67,7 +68,7 @@ function extract(b){
    }catch(err){console.log("Retrying batch per segment:",String(err));}
   }
   results.length=0;
-  for(const e of entries)results.push(restore((await service(e.protected.text,tl)).trim(),e.protected.held));
+  for(const e of entries){ const translated=await service(e.protected.text,tl); try { results.push(restore(translated.trim(),e.protected.held)); } catch(err){ console.error("Unpreserved source:",e.text,"Response:",translated); throw err; } }
   return results;
  }
  const chinese={};
