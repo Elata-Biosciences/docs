@@ -137,7 +137,7 @@ function extract(b){
   for(const [p,b]of Object.entries(docs)){
    let out=b;
    for(const s of [...segments[p]].reverse()){
-    let t=translated[s.text];validateSegment(s.text,t);
+    let t=translated[s.text]; const prefix=s.text.match(/^\s*(?:#{1,6}\s+|[-*]\s+|\d+\.\s+)/)?.[0]; if(prefix)t=prefix+t.replace(/^\s*(?:#{1,6}\s+|[-*]\s+|\d+\.\s+)/,"").trimStart(); validateSegment(s.text,t);
     t=escape(s,t,b);
     if(s.kind==="heading"&&slug(s.text)!==slug(t))t='<a id="'+slug(s.text)+'"></a>\n\n'+t;
     out=out.slice(0,s.start)+t+out.slice(s.end);
