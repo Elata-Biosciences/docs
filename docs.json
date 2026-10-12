@@ -861,13 +861,13 @@
   "navbar": {
     "links": [
       {
-        "label": "Build",
-        "href": "https://app.elata.bio/build-app"
+        "href": "https://elata.bio/",
+        "label": "About"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Go",
+      "label": "Launch platform",
       "href": "https://app.elata.bio/"
     }
   },
